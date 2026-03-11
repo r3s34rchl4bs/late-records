@@ -1,0 +1,1338 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Loading… | Late Records</title>
+<meta name="description" content="">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+/* ============================================================
+   LATE RECORDS — Shared Stylesheet
+   style.css — imported by every page
+   ============================================================ */
+
+/* ── Variables ────────────────────────────────────────────── */
+
+:root {
+  --black:     #0a0a0a;
+  --white:     #f5f3ef;
+  --gray-1:    #e8e5df;
+  --gray-2:    #c8c4bc;
+  --gray-3:    #888078;
+  --accent:    #c8b97a;
+  --available: #4a7c59;
+  --border:    rgba(10,10,10,0.12);
+  --header-h:  56px;
+  --footer-h:  40px;
+  --max-w:     1200px;
+  --pad-h:     30px;
+}
+
+/* ── Reset ────────────────────────────────────────────────── */
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: 'Inter', sans-serif;
+  background: var(--white);
+  color: var(--black);
+  min-height: 100vh;
+  -webkit-font-smoothing: antialiased;
+}
+
+img { display: block; max-width: 100%; }
+
+a { color: inherit; }
+
+button { cursor: pointer; font-family: inherit; }
+
+/* ── Header ───────────────────────────────────────────────── */
+
+.site-header {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%;
+  z-index: 100;
+  background: var(--white);
+  border-bottom: 1px solid var(--border);
+  height: var(--header-h);
+}
+
+.header-inner {
+  max-width: var(--max-w);
+  margin: 0 auto;
+  padding: 0 var(--pad-h);
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.site-name {
+  font-weight: 700;
+  font-size: 13px;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  color: var(--black);
+  text-decoration: none;
+}
+
+.header-right {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.back-link {
+  font-size: 11px;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+  color: var(--gray-3);
+  text-decoration: none;
+  transition: color .15s;
+}
+
+.back-link:hover { color: var(--black); }
+
+.cart-btn {
+  font-family: inherit;
+  font-size: 11px;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+  color: var(--black);
+  text-decoration: none;
+  border: 1px solid var(--black);
+  padding: 6px 12px;
+  background: transparent;
+  transition: all .15s;
+}
+
+.cart-btn:hover {
+  background: var(--black);
+  color: var(--white);
+}
+
+/* ── Footer ───────────────────────────────────────────────── */
+
+.site-footer {
+  position: fixed;
+  bottom: 0; left: 0;
+  width: 100%;
+  background: var(--white);
+  border-top: 1px solid var(--border);
+  height: var(--footer-h);
+  z-index: 100;
+}
+
+.footer-inner {
+  max-width: var(--max-w);
+  margin: 0 auto;
+  padding: 0 var(--pad-h);
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 10px;
+  letter-spacing: .06em;
+  color: var(--gray-3);
+}
+
+.footer-links { display: flex; gap: 20px; }
+
+.footer-links a {
+  color: var(--gray-3);
+  text-decoration: none;
+  text-transform: uppercase;
+  font-size: 10px;
+  letter-spacing: .08em;
+  transition: color .15s;
+}
+
+.footer-links a:hover { color: var(--black); }
+
+/* ── Container ────────────────────────────────────────────── */
+
+.container {
+  max-width: var(--max-w);
+  margin: 0 auto;
+  padding: calc(var(--header-h) + 24px) var(--pad-h) calc(var(--footer-h) + 48px);
+}
+
+/* ── Page heading pattern ─────────────────────────────────── */
+
+.page-eyebrow {
+  font-size: 10px;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  color: var(--gray-3);
+  margin-bottom: 6px;
+}
+
+.page-heading {
+  font-size: clamp(32px, 4vw, 56px);
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: -.02em;
+}
+
+/* ── Block label ──────────────────────────────────────────── */
+
+.block-label {
+  font-size: 9px;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  color: var(--gray-3);
+}
+
+/* ── Tags ─────────────────────────────────────────────────── */
+
+.tag {
+  display: inline-block;
+  font-size: 9px;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  padding: 4px 8px;
+  border: 1px solid var(--border);
+  color: var(--gray-3);
+}
+
+/* ── Buttons ──────────────────────────────────────────────── */
+
+.btn-primary {
+  font-family: inherit;
+  font-size: 12px;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  background: var(--black);
+  color: var(--white);
+  border: 1px solid var(--black);
+  padding: 14px 20px;
+  width: 100%;
+  transition: all .15s;
+}
+
+.btn-primary:hover {
+  background: transparent;
+  color: var(--black);
+}
+
+.btn-primary:disabled {
+  opacity: .4;
+  cursor: not-allowed;
+}
+
+.btn-primary:disabled:hover {
+  background: var(--black);
+  color: var(--white);
+}
+
+/* ── Form fields ──────────────────────────────────────────── */
+
+.form-section {
+  padding: 24px 28px;
+  border-bottom: 1px solid var(--border);
+}
+
+.form-section:last-child { border-bottom: none; }
+
+.section-label {
+  font-size: 9px;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  color: var(--gray-3);
+  margin-bottom: 16px;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  margin-bottom: 12px;
+}
+
+.field:last-child { margin-bottom: 0; }
+
+.field label {
+  font-size: 9px;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  color: var(--gray-3);
+}
+
+.field input,
+.field select,
+.field textarea {
+  font-family: inherit;
+  font-size: 13px;
+  color: var(--black);
+  background: transparent;
+  border: none;
+  border-bottom: 1px solid var(--border);
+  padding: 8px 0;
+  outline: none;
+  transition: border-color .15s;
+  width: 100%;
+  border-radius: 0;
+  -webkit-appearance: none;
+  appearance: none;
+}
+
+.field input::placeholder,
+.field textarea::placeholder { color: var(--gray-2); }
+
+.field input:focus,
+.field select:focus,
+.field textarea:focus { border-bottom-color: var(--black); }
+
+.field textarea { resize: none; min-height: 60px; line-height: 1.5; }
+
+.field select {
+  cursor: pointer;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%23888078'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 4px center;
+  padding-right: 20px;
+}
+
+.field-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+.field-row.full  { grid-template-columns: 1fr; }
+.field-row.third { grid-template-columns: 1fr 1fr 80px; }
+
+/* ── Status dots ──────────────────────────────────────────── */
+
+.status-dot {
+  display: inline-block;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+}
+
+.status-dot.available { background: var(--available); }
+.status-dot.sold-out  { background: var(--gray-2); }
+
+/* ── Loading skeleton ─────────────────────────────────────── */
+
+.skeleton {
+  background: linear-gradient(90deg, var(--gray-1) 25%, var(--white) 50%, var(--gray-1) 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.4s infinite;
+  border-radius: 0;
+}
+
+@keyframes shimmer {
+  0%   { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+/* ── Modal base ───────────────────────────────────────────── */
+
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(10,10,10,.5);
+  z-index: 200;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+
+.modal-overlay.open { display: flex; }
+
+.modal {
+  background: var(--white);
+  border: 1px solid var(--black);
+  max-width: 520px;
+  width: 100%;
+  max-height: 80vh;
+  overflow-y: auto;
+  position: relative;
+}
+
+.modal-header {
+  padding: 20px 24px 16px;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  position: sticky;
+  top: 0;
+  background: var(--white);
+}
+
+.modal-title {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+}
+
+.modal-close {
+  background: none;
+  border: none;
+  font-size: 20px;
+  color: var(--gray-3);
+  line-height: 1;
+  padding: 0;
+  transition: color .15s;
+}
+
+.modal-close:hover { color: var(--black); }
+
+.modal-body {
+  padding: 20px 24px 28px;
+}
+
+/* ── Responsive helpers ───────────────────────────────────── */
+
+@media (max-width: 600px) {
+  :root { --pad-h: 20px; }
+
+  .field-row       { grid-template-columns: 1fr; }
+  .field-row.third { grid-template-columns: 1fr 1fr; }
+}
+
+</style>
+<style>
+
+/* ── Breadcrumb ─────────────────────────────────────────────── */
+
+.breadcrumb {
+  padding: 16px 0 0;
+  font-size: 10px;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+  color: var(--gray-3);
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  margin-bottom: 0;
+}
+
+.breadcrumb a { text-decoration: none; color: var(--gray-3); transition: color .15s; }
+.breadcrumb a:hover { color: var(--black); }
+.breadcrumb span { color: var(--gray-2); }
+
+/* ── Album layout ───────────────────────────────────────────── */
+
+.album-layout {
+  display: grid;
+  grid-template-columns: 320px 1fr;
+  border: 1px solid var(--black);
+  margin-top: 0;
+}
+
+/* ── Image column ───────────────────────────────────────────── */
+
+.album-image-col {
+  border-right: 1px solid var(--black);
+}
+
+.album-cover {
+  width: 100%;
+  aspect-ratio: 1/1;
+  object-fit: cover;
+  display: block;
+  background: var(--gray-1);
+}
+
+.album-cover.skeleton { aspect-ratio: 1/1; }
+
+.image-meta {
+  padding: 10px 16px;
+  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.image-tag {
+  font-size: 9px;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  color: var(--gray-3);
+}
+
+.image-year {
+  font-size: 9px;
+  letter-spacing: .06em;
+  color: var(--gray-3);
+}
+
+/* Meta strip */
+.meta-strip {
+  padding: 16px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px 0;
+}
+
+.meta-item { display: flex; flex-direction: column; gap: 3px; }
+
+.meta-key {
+  font-size: 9px;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  color: var(--gray-3);
+}
+
+.meta-val {
+  font-size: 11px;
+  font-weight: 500;
+}
+
+/* ── Info column ────────────────────────────────────────────── */
+
+.album-info-col { display: flex; flex-direction: column; }
+
+.info-top { padding: 24px 32px; border-bottom: 1px solid var(--border); }
+
+.album-genre {
+  font-size: 9px;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-bottom: 8px;
+}
+
+.album-title {
+  font-size: clamp(22px, 2.5vw, 32px);
+  font-weight: 700;
+  letter-spacing: -.02em;
+  line-height: 1.1;
+}
+
+.album-artist {
+  font-size: 12px;
+  color: var(--gray-3);
+  text-transform: uppercase;
+  letter-spacing: .06em;
+  margin-top: 6px;
+}
+
+.album-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 14px;
+}
+
+.album-desc {
+  font-size: 13px;
+  font-weight: 300;
+  line-height: 1.8;
+  color: var(--gray-3);
+  margin-top: 16px;
+}
+
+.desc-collapsed { display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
+.desc-expanded  { display: block; }
+
+.read-more {
+  background: none;
+  border: none;
+  padding: 0;
+  font-size: 11px;
+  letter-spacing: .06em;
+  color: var(--black);
+  margin-top: 8px;
+  text-decoration: underline;
+}
+
+/* Purchase */
+.purchase-block {
+  padding: 20px 32px;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.price-group { display: flex; flex-direction: column; gap: 3px; }
+
+.price-label {
+  font-size: 9px;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  color: var(--gray-3);
+}
+
+.price-value { font-size: 24px; font-weight: 700; letter-spacing: -.01em; }
+
+.purchase-right { display: flex; flex-direction: column; align-items: flex-end; gap: 10px; }
+
+.stock-badge {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 10px;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+}
+
+.stock-badge .status-dot { flex-shrink: 0; }
+
+.add-btn {
+  font-family: inherit;
+  font-size: 11px;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  background: var(--black);
+  color: var(--white);
+  border: 1px solid var(--black);
+  padding: 10px 18px;
+  transition: all .15s;
+}
+
+.add-btn:hover { background: transparent; color: var(--black); }
+.add-btn:disabled { opacity: .4; cursor: not-allowed; }
+.add-btn:disabled:hover { background: var(--black); color: var(--white); }
+
+/* Audio */
+.audio-block {
+  padding: 16px 32px;
+  border-bottom: 1px solid var(--border);
+}
+
+.audio-block .block-label { margin-bottom: 12px; }
+
+.audio-controls {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.audio-play-btn {
+  width: 28px;
+  height: 28px;
+  border: 1px solid var(--black);
+  background: transparent;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.audio-play-btn svg {
+  width: 10px;
+  height: 10px;
+  fill: var(--black);
+}
+
+.audio-nav { display: flex; gap: 2px; }
+
+.audio-arrow {
+  background: none;
+  border: none;
+  font-size: 18px;
+  color: var(--gray-3);
+  padding: 0 4px;
+  transition: color .15s;
+  line-height: 1;
+}
+
+.audio-arrow:hover:not(:disabled) { color: var(--black); }
+.audio-arrow:disabled { opacity: .3; cursor: not-allowed; }
+
+.audio-sample-label {
+  font-size: 9px;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  color: var(--gray-3);
+  white-space: nowrap;
+}
+
+.audio-progress {
+  flex: 1;
+  height: 1px;
+  background: var(--gray-1);
+  cursor: pointer;
+  position: relative;
+}
+
+.audio-progress-fill {
+  height: 100%;
+  background: var(--black);
+  width: 0%;
+  transition: width .1s linear;
+  pointer-events: none;
+}
+
+.audio-time {
+  font-size: 10px;
+  letter-spacing: .04em;
+  color: var(--gray-3);
+  white-space: nowrap;
+}
+
+/* Tracklist */
+.tracklist-block {
+  padding: 20px 32px;
+  flex: 1;
+}
+
+.tracklist-block .block-label { margin-bottom: 12px; }
+
+.tracklist {
+  list-style: none;
+  counter-reset: track;
+  columns: 2;
+  column-gap: 24px;
+}
+
+.tracklist li {
+  counter-increment: track;
+  font-size: 12px;
+  font-weight: 300;
+  color: var(--gray-3);
+  padding: 7px 0;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  gap: 10px;
+  align-items: baseline;
+  break-inside: avoid;
+  line-height: 1.4;
+}
+
+.tracklist li:last-child { border-bottom: none; }
+
+.tracklist li::before {
+  content: counter(track, decimal-leading-zero);
+  font-size: 9px;
+  color: var(--gray-2);
+  letter-spacing: .04em;
+  flex-shrink: 0;
+  width: 20px;
+}
+
+/* ── Related section ────────────────────────────────────────── */
+
+.related-section {
+  border: 1px solid var(--black);
+  border-top: none;
+  padding: 24px 32px;
+}
+
+.related-section .block-label { margin-bottom: 16px; }
+
+.related-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 24px;
+}
+
+.related-card {
+  text-decoration: none;
+  color: var(--black);
+  display: block;
+}
+
+.related-card:hover .related-title { text-decoration: underline; }
+
+.related-cover {
+  width: 100%;
+  aspect-ratio: 1/1;
+  object-fit: cover;
+  background: var(--gray-1);
+  filter: grayscale(15%);
+  transition: filter .2s;
+}
+
+.related-card:hover .related-cover { filter: none; }
+
+.related-info { margin-top: 8px; }
+
+.related-title { font-size: 12px; font-weight: 600; line-height: 1.3; }
+
+.related-artist {
+  font-size: 10px;
+  color: var(--gray-3);
+  margin-top: 2px;
+  letter-spacing: .03em;
+  text-transform: uppercase;
+}
+
+/* ── Not found ──────────────────────────────────────────────── */
+
+.not-found {
+  padding: 60px 0;
+  display: none;
+}
+
+.not-found h2 { font-size: 24px; font-weight: 700; margin-bottom: 12px; }
+.not-found p  { font-size: 13px; color: var(--gray-3); margin-bottom: 24px; }
+
+/* ── Responsive ─────────────────────────────────────────────── */
+
+@media (max-width: 900px) {
+  .album-layout { grid-template-columns: 1fr; }
+  .album-image-col { border-right: none; border-bottom: 1px solid var(--black); }
+  .related-grid { grid-template-columns: repeat(2, 1fr); }
+  .tracklist { columns: 1; }
+  .info-top, .purchase-block, .audio-block, .tracklist-block { padding-left: 20px; padding-right: 20px; }
+}
+
+@media (max-width: 600px) {
+  .purchase-block { flex-direction: column; align-items: flex-start; gap: 14px; }
+  .purchase-right { align-items: flex-start; }
+}
+
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header class="site-header">
+  <div class="header-inner">
+    <a href="../index.html" class="site-name">Late Records</a>
+    <div class="header-right">
+      <a href="../index.html" class="back-link">← Catalog</a>
+      <a href="../cart.html" class="cart-btn">Cart (<span class="cart-count">0</span>)</a>
+    </div>
+  </div>
+</header>
+
+<!-- MAIN -->
+<div class="container">
+
+  <!-- BREADCRUMB -->
+  <div class="breadcrumb" id="breadcrumb">
+    <a href="../index.html">Catalog</a>
+    <span>/</span>
+    <span id="bcGenre">—</span>
+    <span>/</span>
+    <span id="bcTitle">—</span>
+  </div>
+
+  <!-- NOT FOUND -->
+  <div class="not-found" id="notFound">
+    <h2>Album not found</h2>
+    <p>The album you're looking for doesn't exist or has been removed.</p>
+    <a href="../index.html" class="btn-primary" style="display:inline-block;width:auto;padding:12px 20px;text-decoration:none;">← Back to Catalog</a>
+  </div>
+
+  <!-- ALBUM LAYOUT (hidden until loaded) -->
+  <div id="albumContent" style="display:none;">
+
+    <div class="album-layout">
+
+      <!-- IMAGE + META -->
+      <div class="album-image-col">
+        <img id="albumCover" class="album-cover skeleton" src="" alt="">
+        <div class="image-meta">
+          <span class="image-tag">Vinyl LP</span>
+          <span class="image-year" id="imageYear">—</span>
+        </div>
+        <div class="meta-strip" id="metaStrip">
+          <div class="meta-item"><span class="meta-key">Format</span><span class="meta-val">Vinyl LP</span></div>
+          <div class="meta-item"><span class="meta-key">Origin</span><span class="meta-val" id="metaOrigin">—</span></div>
+          <div class="meta-item"><span class="meta-key">Condition</span><span class="meta-val">VG+</span></div>
+          <div class="meta-item"><span class="meta-key">Cat No.</span><span class="meta-val" id="metaCat">—</span></div>
+        </div>
+      </div>
+
+      <!-- INFO -->
+      <div class="album-info-col">
+
+        <div class="info-top">
+          <p class="album-genre" id="albumGenre">—</p>
+          <h1 class="album-title" id="albumTitle">—</h1>
+          <p class="album-artist" id="albumArtist">—</p>
+          <div class="album-tags" id="albumTags"></div>
+          <p class="album-desc desc-collapsed" id="albumDesc"></p>
+          <button class="read-more" id="readMore" style="display:none;">+ Read more</button>
+        </div>
+
+        <!-- PURCHASE -->
+        <div class="purchase-block">
+          <div class="price-group">
+            <span class="price-label">Price</span>
+            <span class="price-value" id="albumPrice">—</span>
+          </div>
+          <div class="purchase-right">
+            <div class="stock-badge" id="stockBadge">
+              <span class="status-dot" id="stockDot"></span>
+              <span id="stockText">—</span>
+            </div>
+            <button class="add-btn" id="addToCart">Add to Cart</button>
+          </div>
+        </div>
+
+        <!-- AUDIO -->
+        <div class="audio-block" id="audioBlock" style="display:none;">
+          <p class="block-label">Audio Samples</p>
+          <div class="audio-controls">
+            <button class="audio-play-btn" id="playBtn">
+              <svg id="playIcon" viewBox="0 0 10 10"><polygon points="2,1 9,5 2,9"/></svg>
+            </button>
+            <div class="audio-nav">
+              <button class="audio-arrow" id="audioPrev" disabled>‹</button>
+              <button class="audio-arrow" id="audioNext">›</button>
+            </div>
+            <span class="audio-sample-label" id="sampleLabel">Sample 1</span>
+            <div class="audio-progress" id="audioProgress">
+              <div class="audio-progress-fill" id="progressFill"></div>
+            </div>
+            <span class="audio-time" id="audioTime">0:00</span>
+          </div>
+          <audio id="albumAudio" preload="none"></audio>
+        </div>
+
+        <!-- TRACKLIST -->
+        <div class="tracklist-block">
+          <p class="block-label">Tracklist</p>
+          <ul class="tracklist" id="tracklistEl"></ul>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- RELATED -->
+    <div class="related-section" id="relatedSection" style="display:none;">
+      <p class="block-label">You May Also Like</p>
+      <div class="related-grid" id="relatedGrid"></div>
+    </div>
+
+  </div>
+
+</div>
+
+<!-- FOOTER -->
+<footer class="site-footer">
+  <div class="footer-inner">
+    <span id="datetime-footer"></span>
+    <div class="footer-links">
+      <a href="https://instagram.com" target="_blank" rel="noopener">Instagram</a>
+      <a href="../guide.html">Guide</a>
+    </div>
+  </div>
+</footer>
+
+<script>
+/**
+ * Late Records — Shared Script
+ * script.js — loaded by every page
+ *
+ * Exports (globals):
+ *   LR.api.catalog()
+ *   LR.api.album(id)
+ *   LR.api.order(payload)
+ *   LR.cart.*
+ *   LR.ui.datetime(el)
+ *   LR.ui.syncCartBadge()
+ */
+
+const LR = (() => {
+
+  // ── Config ───────────────────────────────────────────────────────────────
+
+  const API_BASE = ''; // Empty = same origin (Worker route on /api/*)
+
+  // ── API ──────────────────────────────────────────────────────────────────
+
+  const api = {
+    async catalog() {
+      const res = await fetch(`${API_BASE}/api/catalog`);
+      if (!res.ok) throw new Error('Failed to load catalog');
+      return res.json();
+    },
+
+    async album(id) {
+      const res = await fetch(`${API_BASE}/api/album?id=${encodeURIComponent(id)}`);
+      if (res.status === 404) return null;
+      if (!res.ok) throw new Error('Failed to load album');
+      return res.json();
+    },
+
+    async order(payload) {
+      const res = await fetch(`${API_BASE}/api/order`, {
+        method:  'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body:    JSON.stringify(payload)
+      });
+      return res.json();
+    }
+  };
+
+  // ── Cart ─────────────────────────────────────────────────────────────────
+
+  const CART_KEY = 'lr_cart';
+
+  const cart = {
+    get() {
+      try { return JSON.parse(localStorage.getItem(CART_KEY)) || []; }
+      catch { return []; }
+    },
+
+    save(items) {
+      localStorage.setItem(CART_KEY, JSON.stringify(items));
+      cart._emit();
+    },
+
+    add(item) {
+      // item: { id, title, artist, price, stock }
+      const items = cart.get();
+      const existing = items.find(i => i.id === item.id);
+      if (existing) {
+        if (existing.qty < (item.stock || 1)) existing.qty++;
+      } else {
+        items.push({ ...item, qty: 1 });
+      }
+      cart.save(items);
+    },
+
+    remove(id) {
+      cart.save(cart.get().filter(i => i.id !== id));
+    },
+
+    updateQty(id, delta) {
+      const items = cart.get();
+      const item  = items.find(i => i.id === id);
+      if (!item) return;
+      item.qty = Math.max(1, Math.min(item.qty + delta, item.stock || 99));
+      cart.save(items);
+    },
+
+    clear() {
+      localStorage.removeItem(CART_KEY);
+      cart._emit();
+    },
+
+    count() {
+      return cart.get().reduce((n, i) => n + i.qty, 0);
+    },
+
+    subtotal() {
+      return cart.get().reduce((n, i) => n + i.price * i.qty, 0);
+    },
+
+    shipping() {
+      const qty = cart.count();
+      if (qty <= 2) return 250;
+      if (qty <= 5) return 350;
+      return 450;
+    },
+
+    total() {
+      return cart.subtotal() + cart.shipping();
+    },
+
+    // Dispatch a custom event so any open page can react
+    _emit() {
+      window.dispatchEvent(new CustomEvent('lr:cart:updated'));
+    }
+  };
+
+  // ── UI helpers ────────────────────────────────────────────────────────────
+
+  const ui = {
+    // Update a datetime element every second
+    datetime(el) {
+      if (!el) return;
+      const tick = () => {
+        const now  = new Date();
+        const date = now.toLocaleDateString('en-GB', { day:'2-digit', month:'short', year:'numeric' });
+        const hh   = String(now.getHours()).padStart(2, '0');
+        const mm   = String(now.getMinutes()).padStart(2, '0');
+        el.textContent = `${date} — ${hh}:${mm} GMT+8`;
+      };
+      tick();
+      setInterval(tick, 1000);
+    },
+
+    // Sync the cart count badge in the header
+    syncCartBadge() {
+      document.querySelectorAll('.cart-count').forEach(el => {
+        el.textContent = cart.count();
+      });
+    },
+
+    // Format peso
+    peso(n) {
+      return '₱' + Number(n).toLocaleString('en-PH');
+    },
+
+    // Simple modal open/close
+    modal(overlayEl, open) {
+      if (!overlayEl) return;
+      overlayEl.classList.toggle('open', open);
+    }
+  };
+
+  // Keep badge synced on cart changes
+  window.addEventListener('lr:cart:updated', () => ui.syncCartBadge());
+
+  // ── Init ─────────────────────────────────────────────────────────────────
+
+  document.addEventListener('DOMContentLoaded', () => {
+    ui.syncCartBadge();
+    ui.datetime(document.getElementById('datetime'));
+    ui.datetime(document.getElementById('datetime-footer'));
+
+    // Global escape key closes any open modal
+    document.addEventListener('keydown', e => {
+      if (e.key === 'Escape') {
+        document.querySelectorAll('.modal-overlay.open').forEach(el => {
+          el.classList.remove('open');
+        });
+      }
+    });
+  });
+
+  return { api, cart, ui };
+
+})();
+
+</script>
+<script>
+
+document.addEventListener('DOMContentLoaded', async () => {
+
+  const params  = new URLSearchParams(window.location.search);
+  const albumId = params.get('id');
+
+  function showNotFound() {
+    document.getElementById('notFound').style.display = 'block';
+    document.title = 'Not Found | Late Records';
+  }
+
+  if (!albumId) { showNotFound(); return; }
+
+  // ── Load album ─────────────────────────────────────────────
+  let album, catalog;
+  try {
+    [album, catalog] = await Promise.all([
+      LR.api.album(albumId),
+      LR.api.catalog()
+    ]);
+  } catch (e) {
+    showNotFound(); return;
+  }
+
+  if (!album) { showNotFound(); return; }
+
+  // ── Populate page ──────────────────────────────────────────
+  document.title = `${album.title} — Late Records`;
+
+  const genres  = (album.genre   || '').split('||').map(s => s.trim()).filter(Boolean);
+  const context = (album.context || '').split('||').map(s => s.trim()).filter(Boolean);
+  const tracks  = (album.tracklist || '').split('||').map(s => s.trim()).filter(Boolean);
+
+  // Breadcrumb
+  document.getElementById('bcGenre').textContent = genres[0] || 'Album';
+  document.getElementById('bcTitle').textContent = album.title;
+
+  // Cover image with fallback chain
+  const cover = document.getElementById('albumCover');
+  const exts  = ['jpg', 'jpeg', 'png', 'webp'];
+  let extIdx  = 0;
+
+  function tryNextExt() {
+    if (extIdx >= exts.length) { cover.src = ''; cover.style.background = 'var(--gray-1)'; return; }
+    cover.src = `../images/${albumId}.${exts[extIdx++]}`;
+  }
+
+  cover.onerror = tryNextExt;
+  cover.onload  = () => cover.classList.remove('skeleton');
+  tryNextExt();
+  cover.alt = album.title;
+
+  // Meta
+  document.getElementById('imageYear').textContent  = album.year ? `${album.year} — ${album.origin || ''}` : (album.origin || '');
+  document.getElementById('metaOrigin').textContent = [album.origin, album.year].filter(Boolean).join(', ');
+  document.getElementById('metaCat').textContent    = album.cat_no || `LR-${String(albumId).slice(-3)}`;
+
+  // Info
+  document.getElementById('albumGenre').textContent  = genres[0] || '';
+  document.getElementById('albumTitle').textContent  = album.title;
+  document.getElementById('albumArtist').textContent = album.artist;
+
+  // Tags
+  const tagsEl = document.getElementById('albumTags');
+  [...genres, ...context].slice(0, 6).forEach(t => {
+    const s = document.createElement('span');
+    s.className = 'tag';
+    s.textContent = t;
+    tagsEl.appendChild(s);
+  });
+
+  // Description
+  const descEl = document.getElementById('albumDesc');
+  const rmBtn  = document.getElementById('readMore');
+  descEl.textContent = album.description || '';
+  if (album.description && album.description.length > 200) {
+    rmBtn.style.display = 'inline';
+    rmBtn.addEventListener('click', () => {
+      const collapsed = descEl.classList.contains('desc-collapsed');
+      descEl.classList.toggle('desc-collapsed', !collapsed);
+      descEl.classList.toggle('desc-expanded',   collapsed);
+      rmBtn.textContent = collapsed ? '− Read less' : '+ Read more';
+    });
+  }
+
+  // Price + stock
+  const isSold = album.status !== 'available';
+  document.getElementById('albumPrice').textContent = LR.ui.peso(album.price);
+
+  const dot  = document.getElementById('stockDot');
+  const txt  = document.getElementById('stockText');
+  const btn  = document.getElementById('addToCart');
+
+  dot.className = `status-dot ${isSold ? 'sold-out' : 'available'}`;
+  txt.textContent = isSold ? 'Sold Out' : `${album.stock || 1} available`;
+  if (isSold) { btn.disabled = true; btn.textContent = 'Sold Out'; }
+
+  btn.addEventListener('click', () => {
+    LR.cart.add({
+      id:     album.album_id,
+      title:  album.title,
+      artist: album.artist,
+      price:  Number(album.price),
+      stock:  Number(album.stock) || 1
+    });
+    btn.textContent = 'Added ✓';
+    setTimeout(() => btn.textContent = 'Add to Cart', 1500);
+  });
+
+  // Tracklist
+  const trackEl = document.getElementById('tracklistEl');
+  tracks.forEach(t => {
+    const li = document.createElement('li');
+    li.textContent = t;
+    trackEl.appendChild(li);
+  });
+
+  // ── Audio player ───────────────────────────────────────────
+  const audioEl   = document.getElementById('albumAudio');
+  const playBtn   = document.getElementById('playBtn');
+  const playIcon  = document.getElementById('playIcon');
+  const prevBtn   = document.getElementById('audioPrev');
+  const nextBtn   = document.getElementById('audioNext');
+  const labelEl   = document.getElementById('sampleLabel');
+  const progress  = document.getElementById('audioProgress');
+  const fill      = document.getElementById('progressFill');
+  const timeEl    = document.getElementById('audioTime');
+  const audioBlock = document.getElementById('audioBlock');
+
+  const pauseShape = 'M2,1 L4,1 L4,9 L2,9 Z M6,1 L8,1 L8,9 L6,9 Z';
+  const playShape  = 'M2,1 L9,5 L2,9 Z';
+
+  let samples   = [];
+  let sampleIdx = 0;
+  let playing   = false;
+
+  // Probe for audio samples
+  async function probeSamples() {
+    const found = [];
+    for (let n = 1; n <= 4; n++) {
+      const url  = `../audio/${albumId}-sample-${n}.mp3`;
+      const ok   = await fetch(url, { method: 'HEAD' }).then(r => r.ok).catch(() => false);
+      if (ok) found.push(url); else break;
+    }
+    return found;
+  }
+
+  probeSamples().then(found => {
+    if (!found.length) return;
+    samples = found;
+    audioBlock.style.display = 'block';
+    loadSample(0);
+  });
+
+  function loadSample(idx) {
+    sampleIdx = idx;
+    audioEl.src = samples[idx];
+    labelEl.textContent = `Sample ${idx + 1} / ${samples.length}`;
+    prevBtn.disabled = idx === 0;
+    nextBtn.disabled = idx === samples.length - 1;
+    fill.style.width = '0%';
+    timeEl.textContent = '0:00';
+    if (playing) audioEl.play();
+  }
+
+  function fmt(s) {
+    const m = Math.floor(s / 60);
+    return `${m}:${String(Math.floor(s % 60)).padStart(2,'0')}`;
+  }
+
+  playBtn.addEventListener('click', () => {
+    if (playing) {
+      audioEl.pause(); playing = false;
+      playIcon.setAttribute('points', playShape.includes('M') ? '2,1 9,5 2,9' : '2,1 9,5 2,9');
+      playIcon.innerHTML = '<polygon points="2,1 9,5 2,9"/>';
+    } else {
+      audioEl.play(); playing = true;
+      playIcon.innerHTML = '<rect x="2" y="1" width="2.5" height="8"/><rect x="5.5" y="1" width="2.5" height="8"/>';
+    }
+  });
+
+  audioEl.addEventListener('ended', () => {
+    playing = false;
+    playIcon.innerHTML = '<polygon points="2,1 9,5 2,9"/>';
+    if (sampleIdx < samples.length - 1) loadSample(sampleIdx + 1);
+  });
+
+  audioEl.addEventListener('timeupdate', () => {
+    if (!audioEl.duration) return;
+    fill.style.width = (audioEl.currentTime / audioEl.duration * 100) + '%';
+    timeEl.textContent = fmt(audioEl.currentTime);
+  });
+
+  progress.addEventListener('click', e => {
+    if (!audioEl.duration) return;
+    const r = progress.getBoundingClientRect();
+    audioEl.currentTime = ((e.clientX - r.left) / r.width) * audioEl.duration;
+  });
+
+  prevBtn.addEventListener('click', () => loadSample(sampleIdx - 1));
+  nextBtn.addEventListener('click', () => loadSample(sampleIdx + 1));
+
+  // ── Related albums ─────────────────────────────────────────
+  const albumGenres  = new Set(genres);
+  const albumContext = new Set(context);
+
+  const scored = catalog
+    .filter(a => a.album_id !== albumId)
+    .map(a => {
+      let score = 0;
+      (a.genre   || '').split('||').forEach(g => { if (albumGenres.has(g.trim()))   score += 3; });
+      (a.context || '').split('||').forEach(c => { if (albumContext.has(c.trim())) score += 2; });
+      return { ...a, score };
+    })
+    .sort((a, b) => b.score - a.score)
+    .slice(0, 4);
+
+  if (scored.length) {
+    const grid = document.getElementById('relatedGrid');
+    document.getElementById('relatedSection').style.display = 'block';
+    scored.forEach(a => {
+      const el = document.createElement('a');
+      el.href      = `/albums/album.html?id=${a.album_id}`;
+      el.className = 'related-card';
+      el.innerHTML = `
+        <img src="../images/${a.album_id}.jpg" class="related-cover" alt="${a.title}"
+          onerror="this.style.background='var(--gray-1)';this.removeAttribute('src')">
+        <div class="related-info">
+          <p class="related-title">${a.title}</p>
+          <p class="related-artist">${a.artist}</p>
+        </div>
+      `;
+      grid.appendChild(el);
+    });
+  }
+
+  // Show content
+  document.getElementById('albumContent').style.display = 'block';
+
+});
+</script>
+</body>
+</html>
