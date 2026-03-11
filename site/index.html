@@ -56,10 +56,10 @@ html, body {
 
 /* ── Catalog table ──────────────────────────────────────────── */
 
-/* Mobile: 2 cols — title | genre */
+/* Mobile: 1 col — title only */
 .catalog-header {
   display: grid;
-  grid-template-columns: 55% 1fr;
+  grid-template-columns: 1fr;
   gap: 0;
   padding: 0 0 10px;
   border-bottom: 1px solid var(--rule-strong);
@@ -77,15 +77,14 @@ html, body {
 .catalog-header-col.right { text-align: right; }
 .col-format    { display: none; }
 .col-stock-hdr { display: none; }
-/* Genre header: right-aligned on mobile */
-.col-genre-hdr { text-align: right; }
+.col-genre-hdr { display: none; }
 
 /* Desktop: 4 cols */
 @media (min-width: 901px) {
   .catalog-header { grid-template-columns: 1fr 140px 120px 80px; }
   .col-format     { display: block; }
   .col-stock-hdr  { display: block; text-align: right; }
-  .col-genre-hdr  { text-align: left; }
+  .col-genre-hdr  { display: block; text-align: left; }
 }
 
 /* Genre as clickable link — stop propagation so row click still works */
@@ -98,7 +97,7 @@ a.row-genre:hover { color: var(--text); text-decoration: underline; }
 
 .catalog-row {
   display: grid;
-  grid-template-columns: 55% 1fr;
+  grid-template-columns: 1fr;
   gap: 0;
   padding: 18px 0;
   border-bottom: 1px solid var(--rule);
@@ -133,7 +132,7 @@ a.row-genre:hover { color: var(--text); text-decoration: underline; }
   letter-spacing: .01em;
 }
 
-/* Genre: right on mobile, left on desktop */
+/* Genre: hidden on mobile, shown in column on desktop */
 .row-genre {
   font-size: 11px;
   letter-spacing: .08em;
@@ -141,7 +140,7 @@ a.row-genre:hover { color: var(--text); text-decoration: underline; }
   color: var(--text-mid);
   font-weight: 600;
   align-self: center;
-  text-align: right;
+  display: none;
 }
 
 /* Format + stock: hidden on mobile */
@@ -153,7 +152,7 @@ a.row-genre:hover { color: var(--text); text-decoration: underline; }
     grid-template-columns: 1fr 140px 120px 80px;
     padding: 16px var(--pad-h);
   }
-  .row-genre  { text-align: left; }
+  .row-genre  { display: block; text-align: left; }
   .row-format {
     display: block;
     font-size: 11px;
@@ -192,7 +191,7 @@ a.row-genre:hover { color: var(--text); text-decoration: underline; }
 
 .sk-row {
   display: grid;
-  grid-template-columns: 55% 1fr;
+  grid-template-columns: 1fr;
   gap: 0;
   padding: 18px var(--pad-h);
   border-bottom: 1px solid var(--rule);
