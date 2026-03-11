@@ -269,10 +269,10 @@ document.addEventListener('DOMContentLoaded', () => {
         subtotal,
         shipping,
         total,
-        items: cart.map(i => ({ id: i.id, title: i.title, qty: i.qty, price: i.price }))
+        items: cart.map(i => ({ album_id: i.id, quantity: i.qty }))
       });
 
-      if (!result.ok) throw new Error(result.error || 'Order failed');
+      if (!result.ok && !result.success) throw new Error(result.error || result.message || 'Order failed');
 
       localStorage.setItem('lr_buyer',       document.getElementById('name').value.trim());
       localStorage.setItem('lr_order_total', LR.ui.peso(total));
