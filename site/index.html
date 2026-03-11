@@ -6,73 +6,198 @@
 <title>LATE RECORDS</title>
 <meta name="description" content="Curated vinyl records. Rare, used, and hard to find.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
-<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Symbols+2&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="style.css">
 <style>
 
-/* ── Grid ───────────────────────────────────────────────────── */
+/* ── Page-level color overrides ─────────────────────────────── */
 
-.album-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 30px;
+:root {
+  --bg:          #e2e2e2;
+  --text:        #1a1a14;
+  --text-mid:    rgba(26,26,20,.55);
+  --text-dim:    rgba(26,26,20,.35);
+  --rule:        rgba(26,26,20,.1);
+  --rule-mid:    rgba(26,26,20,.18);
+  --rule-strong: rgba(26,26,20,.28);
 }
 
-.album-card {
-  text-decoration: none;
-  color: #000;
-  display: block;
+html, body {
+  background-color: #e2e2e2;
+  background-image: radial-gradient(circle, rgba(0,0,0,.08) 0.5px, transparent 0.5px);
+  background-size: 3px 3px;
+  color: var(--text);
 }
 
-.album-cover {
-  width: 100%;
-  aspect-ratio: 1 / 1;
-  object-fit: cover;
-  display: block;
-  background: #f0f0f0;
+.fixed-header,
+.fixed-footer {
+  background-color: #e2e2e2;
+  background-image: radial-gradient(circle, rgba(0,0,0,.08) 0.5px, transparent 0.5px);
+  background-size: 3px 3px;
 }
 
-.album-cover.sold-out { opacity: .5; }
-
-.album-info { margin-top: 10px; }
-
-.album-title {
-  font-size: 14px;
-  font-weight: 600;
-  margin: 0;
-  line-height: 1.3;
+/* Logo: dark on light bg — no invert needed */
+.header-logo {
+  filter: none;
+  opacity: 1;
 }
+.header-logo:hover { opacity: .5; }
 
-.album-artist {
-  font-size: 12px;
-  color: #555;
-  margin-top: 3px;
-}
-
-.album-status {
+/* Cart — no border/box */
+.cart-link {
+  color: var(--text);
+  border: none;
+  padding: 0;
   font-size: 11px;
-  margin-top: 4px;
-  color: #aaa;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+  font-weight: 500;
+}
+.cart-link:hover { background: none; color: var(--text-mid); }
+
+.footer-inner a, .footer-inner { color: var(--text-mid); }
+.footer-inner a:hover { color: var(--text); }
+
+/* ── Catalog table ──────────────────────────────────────────── */
+
+/* Mobile: title takes 55%, genre right-aligned in remaining 45% */
+.catalog-header {
+  display: grid;
+  grid-template-columns: 55% 1fr;
+  gap: 0;
+  padding: 0 0 10px;
+  border-bottom: 1px solid var(--rule-strong);
+  margin-bottom: 0;
 }
 
-.album-status.available { color: #3a7d52; }
+.catalog-header-col {
+  font-size: 10px;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+  font-weight: 500;
+}
 
-/* ── Skeleton ───────────────────────────────────────────────── */
+.catalog-header-col.right { text-align: right; }
+.col-format    { display: none; }
+.col-stock-hdr { display: none; }
 
-.skeleton-card .album-cover {
-  background: linear-gradient(90deg, #f0f0f0 25%, #e8e8e8 50%, #f0f0f0 75%);
-  background-size: 200% 100%;
-  animation: shimmer 1.4s infinite;
+@media (min-width: 901px) {
+  .catalog-header { grid-template-columns: 1fr 140px 120px 80px; }
+  .col-format     { display: block; }
+  .col-stock-hdr  { display: block; }
+  .col-genre-hdr  { text-align: left; }
+}
+
+.catalog-row {
+  display: grid;
+  grid-template-columns: 55% 1fr;
+  gap: 0;
+  padding: 18px 0;
+  border-bottom: 1px solid var(--rule);
+  text-decoration: none;
+  color: var(--text);
+  transition: background .15s;
+  cursor: pointer;
+  align-items: center;
+  margin: 0 calc(-1 * var(--pad-h));
+  padding-left: var(--pad-h);
+  padding-right: var(--pad-h);
+}
+
+.catalog-row:hover { background: rgba(0,0,0,.06); }
+.catalog-row.sold  { opacity: .4; }
+
+.row-title-block { min-width: 0; }
+
+/* Genre: shown right-aligned on mobile */
+.row-genre {
+  font-size: 11px;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  color: var(--text-mid);
+  font-weight: 500;
+  align-self: center;
+  text-align: right;
+}
+
+/* Format + stock: hidden on mobile */
+.row-format { display: none; }
+.row-stock  { display: none; }
+
+@media (min-width: 901px) {
+  .catalog-row {
+    grid-template-columns: 1fr 140px 120px 80px;
+    padding: 16px var(--pad-h);
+  }
+  .row-genre  { text-align: left; }
+  .row-format { display: block; font-size: 11px; letter-spacing: .05em; text-transform: uppercase; color: var(--text-mid); font-weight: 400; align-self: center; }
+  .row-stock  { font-size: 11px; letter-spacing: .08em; text-transform: uppercase; font-weight: 600; align-self: center; text-align: right; display: flex; align-items: center; justify-content: flex-end; gap: 6px; }
+}
+
+/* ── Skeleton rows ──────────────────────────────────────────── */
+
+.row-title {
+  font-size: 15px;
+  font-weight: 600;
+  line-height: 1.2;
+  letter-spacing: -.01em;
+  word-break: break-word;
+}
+
+.row-artist {
+  font-size: 11px;
+  color: var(--text-mid);
+  margin-top: 3px;
+  font-weight: 400;
+  letter-spacing: .01em;
+}
+
+.row-format {
+  font-size: 11px;
+  letter-spacing: .05em;
+  text-transform: uppercase;
+  color: var(--text-mid);
+  font-weight: 400;
+  align-self: center;
+  display: none;
+}
+
+@media (min-width: 901px) { .row-format { display: block; } }
+
+.stock-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  display: inline-block;
+  flex-shrink: 0;
+}
+
+.stock-dot.avail { background: var(--text); }
+.stock-dot.sold  { background: var(--text-dim); }
+
+/* ── Skeleton rows ──────────────────────────────────────────── */
+
+.sk-row {
+  display: grid;
+  grid-template-columns: 55% 1fr;
+  gap: 0;
+  padding: 18px var(--pad-h);
+  border-bottom: 1px solid var(--rule);
+  margin: 0 calc(-1 * var(--pad-h));
+  align-items: center;
+}
+
+@media (min-width: 901px) {
+  .sk-row { grid-template-columns: 1fr 140px 120px 80px; }
 }
 
 .sk-line {
-  height: 12px;
+  height: 11px;
   border-radius: 2px;
-  background: linear-gradient(90deg, #f0f0f0 25%, #e8e8e8 50%, #f0f0f0 75%);
+  background: linear-gradient(90deg, rgba(0,0,0,.06) 25%, rgba(0,0,0,.11) 50%, rgba(0,0,0,.06) 75%);
   background-size: 200% 100%;
-  animation: shimmer 1.4s infinite;
-  margin-top: 8px;
+  animation: shimmer 1.6s infinite;
 }
 
 @keyframes shimmer {
@@ -80,14 +205,11 @@
   100% { background-position: -200% 0; }
 }
 
-/* ── Responsive ─────────────────────────────────────────────── */
-
-@media (max-width: 900px) {
-  .album-grid { grid-template-columns: repeat(2, 1fr); gap: 20px; }
-}
-
-@media (max-width: 600px) {
-  .album-grid { grid-template-columns: 1fr; gap: 18px; }
+.shop-heading {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  margin-bottom: 20px;
 }
 
 </style>
@@ -106,15 +228,25 @@
 
 <!-- MAIN -->
 <div class="container">
-  <div class="album-grid" id="albumGrid">
-    <!-- Skeleton placeholders -->
-    <div class="skeleton-card album-card"><div class="album-cover"></div><div class="sk-line" style="width:70%"></div><div class="sk-line" style="width:45%"></div></div>
-    <div class="skeleton-card album-card"><div class="album-cover"></div><div class="sk-line" style="width:60%"></div><div class="sk-line" style="width:40%"></div></div>
-    <div class="skeleton-card album-card"><div class="album-cover"></div><div class="sk-line" style="width:75%"></div><div class="sk-line" style="width:50%"></div></div>
-    <div class="skeleton-card album-card"><div class="album-cover"></div><div class="sk-line" style="width:55%"></div><div class="sk-line" style="width:35%"></div></div>
-    <div class="skeleton-card album-card"><div class="album-cover"></div><div class="sk-line" style="width:65%"></div><div class="sk-line" style="width:45%"></div></div>
-    <div class="skeleton-card album-card"><div class="album-cover"></div><div class="sk-line" style="width:70%"></div><div class="sk-line" style="width:40%"></div></div>
+
+  <div class="shop-heading">
+    <div class="catalog-header" style="flex:1;margin-bottom:0;padding-bottom:0;border-bottom:none;">
+      <span class="catalog-header-col">Title / Artist</span>
+      <span class="catalog-header-col col-format" style="display:none;">Format</span>
+      <span class="catalog-header-col col-stock-hdr right" style="display:none;">Stock</span>
+      <span class="catalog-header-col col-genre-hdr right">Genre</span>
+    </div>
   </div>
+  <div style="border-bottom:1px solid var(--rule-strong);margin:0 calc(-1 * var(--pad-h)) 0;"></div>
+
+  <div id="catalogList">
+    <div class="sk-row"><div><div class="sk-line" style="width:55%;margin-bottom:8px"></div><div class="sk-line" style="width:30%"></div></div><div class="sk-line" style="width:60%"></div><div class="sk-line" style="width:70%"></div></div>
+    <div class="sk-row"><div><div class="sk-line" style="width:70%;margin-bottom:8px"></div><div class="sk-line" style="width:40%"></div></div><div class="sk-line" style="width:50%"></div><div class="sk-line" style="width:60%"></div></div>
+    <div class="sk-row"><div><div class="sk-line" style="width:45%;margin-bottom:8px"></div><div class="sk-line" style="width:25%"></div></div><div class="sk-line" style="width:55%"></div><div class="sk-line" style="width:65%"></div></div>
+    <div class="sk-row"><div><div class="sk-line" style="width:60%;margin-bottom:8px"></div><div class="sk-line" style="width:35%"></div></div><div class="sk-line" style="width:45%"></div><div class="sk-line" style="width:70%"></div></div>
+    <div class="sk-row"><div><div class="sk-line" style="width:50%;margin-bottom:8px"></div><div class="sk-line" style="width:28%"></div></div><div class="sk-line" style="width:58%"></div><div class="sk-line" style="width:62%"></div></div>
+  </div>
+
 </div>
 
 <!-- FOOTER -->
@@ -123,9 +255,8 @@
     <span class="footer-left" id="datetime-footer"></span>
     <div class="footer-links">
       <a href="https://instagram.com/late.records.ph" target="_blank" rel="noopener">
-        Instagram<span class="external-arrow">↗</span>
+        Instagram<span class="external-arrow"> ↗</span>
       </a>
-      <a href="guide.html">Guide</a>
     </div>
   </div>
 </footer>
@@ -133,32 +264,41 @@
 <script src="script.js"></script>
 <script>
 document.addEventListener('DOMContentLoaded', async () => {
-  const grid = document.getElementById('albumGrid');
+  const list = document.getElementById('catalogList');
+
+  const formatCols = document.querySelectorAll('.col-format');
+  function updateHeaderCols() {
+    const isDesktop = window.innerWidth >= 901;
+    formatCols.forEach(el => el.style.display = isDesktop ? 'block' : 'none');
+  }
+  updateHeaderCols();
+  window.addEventListener('resize', updateHeaderCols);
 
   try {
     const catalog = await LR.api.catalog();
 
-    grid.innerHTML = catalog.map(item => {
-      const sold = item.status !== 'available';
+    list.innerHTML = catalog.map(item => {
+      const sold   = item.status !== 'available';
+      const genre  = (item.genre || '').split('||')[0].trim();
+      const format = item.format || 'LP';
       return `
-        <a href="albums/album.html?id=${item.album_id}" class="album-card">
-          <img
-            src="images/${item.album_id}.jpg"
-            class="album-cover${sold ? ' sold-out' : ''}"
-            alt="${item.title}"
-            loading="lazy"
-          >
-          <div class="album-info">
-            <p class="album-title">${item.title}</p>
-            <p class="album-artist">${item.artist}</p>
-            <p class="album-status ${sold ? '' : 'available'}">${sold ? 'Sold Out' : LR.ui.peso(item.price)}</p>
+        <a href="albums/album.html?id=${item.album_id}" class="catalog-row${sold ? ' sold' : ''}">
+          <div class="row-title-block">
+            <div class="row-title">${item.title}</div>
+            <div class="row-artist">${item.artist}</div>
+          </div>
+          <div class="row-format">${format}</div>
+          <div class="row-genre">${genre}</div>
+          <div class="row-stock">
+            <span class="stock-dot ${sold ? 'sold' : 'avail'}"></span>
+            <span>${sold ? 'Sold' : 'Avail'}</span>
           </div>
         </a>
       `;
     }).join('');
 
   } catch (e) {
-    grid.innerHTML = '<p style="color:#888;font-size:14px;grid-column:1/-1">Could not load catalog. Please refresh.</p>';
+    list.innerHTML = '<p style="color:var(--text-dim);font-size:13px;padding:40px 0;">Could not load catalog. Please refresh.</p>';
   }
 });
 </script>
