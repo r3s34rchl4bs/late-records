@@ -15,7 +15,7 @@ const LR = (() => {
 
   // ── Config ───────────────────────────────────────────────────────────────
 
-  const API_BASE = ''; // Empty = same origin (Worker route on /api/*)
+  const API_BASE = 'https://late-records.shop'; // Empty = same origin (Worker route on /api/*)
 
   // ── API ──────────────────────────────────────────────────────────────────
 
