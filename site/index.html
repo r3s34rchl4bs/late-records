@@ -81,6 +81,8 @@ html, body {
 .catalog-header-col.right { text-align: right; }
 .col-format    { display: none; }
 .col-stock-hdr { display: none; }
+/* Genre header: right on mobile (it's the only right column), left on desktop */
+.col-genre-hdr { text-align: right; }
 
 @media (min-width: 901px) {
   .catalog-header { grid-template-columns: 1fr 140px 120px 80px; }
@@ -233,8 +235,8 @@ html, body {
     <div class="catalog-header" style="flex:1;margin-bottom:0;padding-bottom:0;border-bottom:none;">
       <span class="catalog-header-col">Title / Artist</span>
       <span class="catalog-header-col col-format" style="display:none;">Format</span>
+      <span class="catalog-header-col col-genre-hdr">Genre</span>
       <span class="catalog-header-col col-stock-hdr right" style="display:none;">Stock</span>
-      <span class="catalog-header-col col-genre-hdr right">Genre</span>
     </div>
   </div>
   <div style="border-bottom:1px solid var(--rule-strong);margin:0 calc(-1 * var(--pad-h)) 0;"></div>
@@ -252,12 +254,6 @@ html, body {
 <!-- FOOTER -->
 <footer class="fixed-footer">
   <div class="footer-inner">
-    <span class="footer-left" id="datetime-footer"></span>
-    <div class="footer-links">
-      <a href="https://instagram.com/late.records.ph" target="_blank" rel="noopener">
-        Instagram<span class="external-arrow"> ↗</span>
-      </a>
-    </div>
   </div>
 </footer>
 
