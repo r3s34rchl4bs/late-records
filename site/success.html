@@ -882,10 +882,12 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   if (total) {
-    document.getElementById('amountDue').textContent = LR.ui.peso(total);
+    const totalNum = parseFloat(total);
+    const totalFormatted = '₱' + totalNum.toLocaleString('en-PH');
+    document.getElementById('amountDue').textContent = totalFormatted;
 
     document.getElementById('urgencyText').innerHTML =
-      `Please send <strong>${LR.ui.peso(total)}</strong> within <strong>24 hours</strong>.
+      `Please send <strong>${totalFormatted}</strong> within <strong>24 hours</strong>.
        Unpaid orders may be cancelled to release the record for other buyers.`;
   }
 
@@ -895,7 +897,7 @@ document.addEventListener('DOMContentLoaded', () => {
     : 'Payment Screenshot';
 
   const emailBody = total
-    ? `Hi, I've sent payment of ${LR.ui.peso(total)} for my order. Please see screenshot attached.`
+    ? `Hi, I've sent payment of ₱${parseFloat(total).toLocaleString('en-PH')} for my order. Please see screenshot attached.`
     : `Hi, I've sent payment for my order. Please see screenshot attached.`;
 
   document.getElementById('screenshotLink').href =
