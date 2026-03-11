@@ -3,463 +3,59 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Checkout | Late Records</title>
+<title>Checkout — LATE RECORDS</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-<style>
-/* ============================================================
-   LATE RECORDS — Shared Stylesheet
-   style.css — imported by every page
-   ============================================================ */
-
-/* ── Variables ────────────────────────────────────────────── */
-
-:root {
-  --black:     #0a0a0a;
-  --white:     #f5f3ef;
-  --gray-1:    #e8e5df;
-  --gray-2:    #c8c4bc;
-  --gray-3:    #888078;
-  --accent:    #c8b97a;
-  --available: #4a7c59;
-  --border:    rgba(10,10,10,0.12);
-  --header-h:  56px;
-  --footer-h:  40px;
-  --max-w:     1200px;
-  --pad-h:     30px;
-}
-
-/* ── Reset ────────────────────────────────────────────────── */
-
-*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
-body {
-  font-family: 'Inter', sans-serif;
-  background: var(--white);
-  color: var(--black);
-  min-height: 100vh;
-  -webkit-font-smoothing: antialiased;
-}
-
-img { display: block; max-width: 100%; }
-
-a { color: inherit; }
-
-button { cursor: pointer; font-family: inherit; }
-
-/* ── Header ───────────────────────────────────────────────── */
-
-.site-header {
-  position: fixed;
-  top: 0; left: 0;
-  width: 100%;
-  z-index: 100;
-  background: var(--white);
-  border-bottom: 1px solid var(--border);
-  height: var(--header-h);
-}
-
-.header-inner {
-  max-width: var(--max-w);
-  margin: 0 auto;
-  padding: 0 var(--pad-h);
-  height: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-}
-
-.site-name {
-  font-weight: 700;
-  font-size: 13px;
-  letter-spacing: .12em;
-  text-transform: uppercase;
-  color: var(--black);
-  text-decoration: none;
-}
-
-.header-right {
-  display: flex;
-  align-items: center;
-  gap: 16px;
-}
-
-.back-link {
-  font-size: 11px;
-  letter-spacing: .06em;
-  text-transform: uppercase;
-  color: var(--gray-3);
-  text-decoration: none;
-  transition: color .15s;
-}
-
-.back-link:hover { color: var(--black); }
-
-.cart-btn {
-  font-family: inherit;
-  font-size: 11px;
-  letter-spacing: .06em;
-  text-transform: uppercase;
-  color: var(--black);
-  text-decoration: none;
-  border: 1px solid var(--black);
-  padding: 6px 12px;
-  background: transparent;
-  transition: all .15s;
-}
-
-.cart-btn:hover {
-  background: var(--black);
-  color: var(--white);
-}
-
-/* ── Footer ───────────────────────────────────────────────── */
-
-.site-footer {
-  position: fixed;
-  bottom: 0; left: 0;
-  width: 100%;
-  background: var(--white);
-  border-top: 1px solid var(--border);
-  height: var(--footer-h);
-  z-index: 100;
-}
-
-.footer-inner {
-  max-width: var(--max-w);
-  margin: 0 auto;
-  padding: 0 var(--pad-h);
-  height: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  font-size: 10px;
-  letter-spacing: .06em;
-  color: var(--gray-3);
-}
-
-.footer-links { display: flex; gap: 20px; }
-
-.footer-links a {
-  color: var(--gray-3);
-  text-decoration: none;
-  text-transform: uppercase;
-  font-size: 10px;
-  letter-spacing: .08em;
-  transition: color .15s;
-}
-
-.footer-links a:hover { color: var(--black); }
-
-/* ── Container ────────────────────────────────────────────── */
-
-.container {
-  max-width: var(--max-w);
-  margin: 0 auto;
-  padding: calc(var(--header-h) + 24px) var(--pad-h) calc(var(--footer-h) + 48px);
-}
-
-/* ── Page heading pattern ─────────────────────────────────── */
-
-.page-eyebrow {
-  font-size: 10px;
-  letter-spacing: .14em;
-  text-transform: uppercase;
-  color: var(--gray-3);
-  margin-bottom: 6px;
-}
-
-.page-heading {
-  font-size: clamp(32px, 4vw, 56px);
-  font-weight: 700;
-  line-height: 1;
-  letter-spacing: -.02em;
-}
-
-/* ── Block label ──────────────────────────────────────────── */
-
-.block-label {
-  font-size: 9px;
-  letter-spacing: .14em;
-  text-transform: uppercase;
-  color: var(--gray-3);
-}
-
-/* ── Tags ─────────────────────────────────────────────────── */
-
-.tag {
-  display: inline-block;
-  font-size: 9px;
-  letter-spacing: .08em;
-  text-transform: uppercase;
-  padding: 4px 8px;
-  border: 1px solid var(--border);
-  color: var(--gray-3);
-}
-
-/* ── Buttons ──────────────────────────────────────────────── */
-
-.btn-primary {
-  font-family: inherit;
-  font-size: 12px;
-  letter-spacing: .1em;
-  text-transform: uppercase;
-  background: var(--black);
-  color: var(--white);
-  border: 1px solid var(--black);
-  padding: 14px 20px;
-  width: 100%;
-  transition: all .15s;
-}
-
-.btn-primary:hover {
-  background: transparent;
-  color: var(--black);
-}
-
-.btn-primary:disabled {
-  opacity: .4;
-  cursor: not-allowed;
-}
-
-.btn-primary:disabled:hover {
-  background: var(--black);
-  color: var(--white);
-}
-
-/* ── Form fields ──────────────────────────────────────────── */
-
-.form-section {
-  padding: 24px 28px;
-  border-bottom: 1px solid var(--border);
-}
-
-.form-section:last-child { border-bottom: none; }
-
-.section-label {
-  font-size: 9px;
-  letter-spacing: .14em;
-  text-transform: uppercase;
-  color: var(--gray-3);
-  margin-bottom: 16px;
-}
-
-.field {
-  display: flex;
-  flex-direction: column;
-  gap: 5px;
-  margin-bottom: 12px;
-}
-
-.field:last-child { margin-bottom: 0; }
-
-.field label {
-  font-size: 9px;
-  letter-spacing: .1em;
-  text-transform: uppercase;
-  color: var(--gray-3);
-}
-
-.field input,
-.field select,
-.field textarea {
-  font-family: inherit;
-  font-size: 13px;
-  color: var(--black);
-  background: transparent;
-  border: none;
-  border-bottom: 1px solid var(--border);
-  padding: 8px 0;
-  outline: none;
-  transition: border-color .15s;
-  width: 100%;
-  border-radius: 0;
-  -webkit-appearance: none;
-  appearance: none;
-}
-
-.field input::placeholder,
-.field textarea::placeholder { color: var(--gray-2); }
-
-.field input:focus,
-.field select:focus,
-.field textarea:focus { border-bottom-color: var(--black); }
-
-.field textarea { resize: none; min-height: 60px; line-height: 1.5; }
-
-.field select {
-  cursor: pointer;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%23888078'/%3E%3C/svg%3E");
-  background-repeat: no-repeat;
-  background-position: right 4px center;
-  padding-right: 20px;
-}
-
-.field-row {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 16px;
-}
-
-.field-row.full  { grid-template-columns: 1fr; }
-.field-row.third { grid-template-columns: 1fr 1fr 80px; }
-
-/* ── Status dots ──────────────────────────────────────────── */
-
-.status-dot {
-  display: inline-block;
-  width: 6px;
-  height: 6px;
-  border-radius: 50%;
-}
-
-.status-dot.available { background: var(--available); }
-.status-dot.sold-out  { background: var(--gray-2); }
-
-/* ── Loading skeleton ─────────────────────────────────────── */
-
-.skeleton {
-  background: linear-gradient(90deg, var(--gray-1) 25%, var(--white) 50%, var(--gray-1) 75%);
-  background-size: 200% 100%;
-  animation: shimmer 1.4s infinite;
-  border-radius: 0;
-}
-
-@keyframes shimmer {
-  0%   { background-position: 200% 0; }
-  100% { background-position: -200% 0; }
-}
-
-/* ── Modal base ───────────────────────────────────────────── */
-
-.modal-overlay {
-  position: fixed;
-  inset: 0;
-  background: rgba(10,10,10,.5);
-  z-index: 200;
-  display: none;
-  align-items: center;
-  justify-content: center;
-  padding: 20px;
-}
-
-.modal-overlay.open { display: flex; }
-
-.modal {
-  background: var(--white);
-  border: 1px solid var(--black);
-  max-width: 520px;
-  width: 100%;
-  max-height: 80vh;
-  overflow-y: auto;
-  position: relative;
-}
-
-.modal-header {
-  padding: 20px 24px 16px;
-  border-bottom: 1px solid var(--border);
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  position: sticky;
-  top: 0;
-  background: var(--white);
-}
-
-.modal-title {
-  font-size: 11px;
-  font-weight: 600;
-  letter-spacing: .08em;
-  text-transform: uppercase;
-}
-
-.modal-close {
-  background: none;
-  border: none;
-  font-size: 20px;
-  color: var(--gray-3);
-  line-height: 1;
-  padding: 0;
-  transition: color .15s;
-}
-
-.modal-close:hover { color: var(--black); }
-
-.modal-body {
-  padding: 20px 24px 28px;
-}
-
-/* ── Responsive helpers ───────────────────────────────────── */
-
-@media (max-width: 600px) {
-  :root { --pad-h: 20px; }
-
-  .field-row       { grid-template-columns: 1fr; }
-  .field-row.third { grid-template-columns: 1fr 1fr; }
-}
-
-</style>
-<!-- Cloudflare Turnstile -->
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+<!-- Turnstile -->
 <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
 <style>
 
-/* ── Page top ──────────────────────────────────────────────── */
+.checkout-page .cart-link { display: none; }
 
-.page-top { padding: 24px 0 32px; }
+.page-title { font-size: 32px; font-weight: 600; margin: 0 0 30px; }
 
-/* ── Checkout layout ────────────────────────────────────────── */
+/* ── Two-column grid ──────────────────────────────────────── */
 
-.checkout-layout {
+.checkout-grid {
   display: grid;
   grid-template-columns: 1fr 400px;
-  border: 1px solid var(--black);
+  column-gap: 60px;
+  align-items: start;
+  position: relative;
 }
 
-/* ── Form side ──────────────────────────────────────────────── */
+.checkout-grid::after {
+  content: '';
+  position: absolute;
+  top: 0; bottom: 0;
+  right: 400px;
+  width: 1px;
+  background: rgba(0,0,0,.08);
+}
 
-.form-side { border-right: 1px solid var(--black); }
+/* ── Form ─────────────────────────────────────────────────── */
 
-/* Payment note */
 .payment-note {
-  border-left: 2px solid var(--black);
+  border-left: 2px solid #000;
   padding-left: 14px;
-  font-size: 13px;
-  line-height: 1.7;
-  color: var(--gray-3);
-  font-weight: 300;
+  margin-top: 10px;
+  font-size: 14px;
+  line-height: 1.65;
+  color: #444;
 }
 
-.payment-note strong { color: var(--black); font-weight: 600; }
+/* ── Order summary ────────────────────────────────────────── */
 
-/* Turnstile widget */
-.turnstile-wrap {
-  margin-top: 16px;
-}
-
-/* ── Order side ─────────────────────────────────────────────── */
-
-.order-side { display: flex; flex-direction: column; }
-
-.order-items { padding: 24px 24px 0; flex: 1; }
-
-.order-label {
-  font-size: 9px;
-  letter-spacing: .14em;
-  text-transform: uppercase;
-  color: var(--gray-3);
-  margin-bottom: 14px;
-}
+.order-summary { padding-left: 30px; }
 
 .order-item {
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
   gap: 16px;
-  padding: 10px 0;
-  border-bottom: 1px solid var(--border);
+  margin-bottom: 14px;
 }
-
-.order-item:last-child { border-bottom: none; }
 
 .order-item-left { flex: 1; min-width: 0; }
 
@@ -467,377 +63,169 @@ button { cursor: pointer; font-family: inherit; }
   font-size: 12px;
   font-weight: 600;
   line-height: 1.35;
+  color: #111;
   word-break: break-word;
 }
 
 .order-item-meta {
-  font-size: 10px;
-  color: var(--gray-3);
+  font-size: 11px;
+  color: #888;
   margin-top: 2px;
-  text-transform: uppercase;
-  letter-spacing: .03em;
+  font-weight: 400;
 }
 
 .order-item-price {
-  flex-shrink: 0;
-  font-size: 12px;
+  font-size: 14px;
   font-weight: 500;
   white-space: nowrap;
+  flex-shrink: 0;
 }
 
-/* Summary */
-.order-summary {
-  padding: 20px 24px;
-  border-top: 1px solid var(--border);
-}
+.order-divider { border-top: 1px solid rgba(0,0,0,.12); margin: 14px 0; }
 
-.summary-row {
+.order-total {
   display: flex;
   justify-content: space-between;
-  align-items: baseline;
-  margin-bottom: 8px;
+  font-weight: 600;
+  font-size: 18px;
 }
 
-.summary-row:last-child { margin-bottom: 0; }
-
-.summary-key {
-  font-size: 10px;
-  letter-spacing: .1em;
-  text-transform: uppercase;
-  color: var(--gray-3);
+.complete-btn {
+  margin-top: 18px;
+  padding: 12px 18px;
+  border: 1px solid #000;
+  background: #fff;
+  cursor: pointer;
+  font-family: inherit;
+  font-size: 14px;
+  width: 100%;
+  transition: all .15s;
 }
 
-.summary-val { font-size: 12px; }
+.complete-btn:hover    { background: #000; color: #fff; }
+.complete-btn:disabled { opacity: .5; cursor: not-allowed; }
+.complete-btn:disabled:hover { background: #fff; color: #000; }
 
-.summary-total {
-  padding-top: 12px;
-  border-top: 1px solid var(--border);
-  margin-top: 8px;
-}
+/* ── Shipping modal ───────────────────────────────────────── */
 
-.summary-total .summary-key { font-size: 11px; color: var(--black); font-weight: 600; }
-.summary-total .summary-val { font-size: 20px; font-weight: 700; letter-spacing: -.01em; }
+.cf-turnstile { margin-top: 16px; }
 
-/* Submit */
-.order-submit { padding: 20px 24px; border-top: 1px solid var(--border); }
-
-.submit-note {
-  font-size: 10px;
-  color: var(--gray-3);
-  letter-spacing: .03em;
-  line-height: 1.6;
-  margin-top: 10px;
-  font-weight: 300;
-}
-
-/* ── Responsive ─────────────────────────────────────────────── */
+/* ── Responsive ───────────────────────────────────────────── */
 
 @media (max-width: 900px) {
-  .checkout-layout { grid-template-columns: 1fr; }
-  .form-side { border-right: none; border-bottom: 1px solid var(--black); }
-  .order-side { order: -1; }
+  .checkout-grid { grid-template-columns: 1fr; gap: 40px; }
+  .checkout-grid::after { display: none; }
+  .order-summary { padding-left: 0; order: 2; }
+  #checkoutForm  { order: 1; }
+}
+
+@media (max-width: 600px) {
+  .page-title { font-size: 26px; }
 }
 
 </style>
 </head>
-<body>
+<body class="checkout-page">
 
 <!-- HEADER -->
-<header class="site-header">
+<header class="fixed-header">
   <div class="header-inner">
-    <a href="index.html" class="site-name">Late Records</a>
-    <a href="cart.html" class="back-link">← Back to Cart</a>
+    <a href="index.html">
+      <img src="images/late-records-logo.png" class="header-logo" alt="LATE RECORDS">
+    </a>
+    <a href="cart.html" class="cart-link">Cart (<span class="cart-count">0</span>)</a>
   </div>
 </header>
 
 <!-- MAIN -->
 <div class="container">
 
-  <div class="page-top">
-    <p class="page-eyebrow">Almost There</p>
-    <h1 class="page-heading">Checkout</h1>
-  </div>
+  <h1 class="page-title">Checkout</h1>
 
-  <div class="checkout-layout">
+  <div class="checkout-grid">
 
-    <!-- LEFT: FORM -->
-    <div class="form-side">
+    <!-- FORM -->
+    <form id="checkoutForm">
+      <div class="section-label">Shipping Details</div>
 
-      <!-- SHIPPING DETAILS -->
-      <div class="form-section">
-        <p class="section-label">Shipping Details</p>
-
-        <div class="field">
-          <label for="name">Name</label>
-          <input type="text" id="name" required placeholder="Juan dela Cruz">
-        </div>
-
-        <div class="field">
-          <label for="email">Email</label>
-          <input type="email" id="email" required placeholder="juan@email.com">
-        </div>
-
-        <div class="field">
-          <label for="phone">Phone</label>
-          <input type="tel" id="phone" required placeholder="+63 917 000 0000">
-        </div>
-
-        <div class="field">
-          <label for="address">Shipping Address</label>
-          <input type="text" id="address" required placeholder="Street, Barangay, City, Province">
-        </div>
+      <div class="form-group">
+        <label>Name</label>
+        <input type="text" id="name" required placeholder="Full name">
+      </div>
+      <div class="form-group">
+        <label>Email</label>
+        <input type="email" id="email" required placeholder="your@email.com">
+      </div>
+      <div class="form-group">
+        <label>Phone</label>
+        <input type="tel" id="phone" required placeholder="+63 xxx xxx xxxx">
+      </div>
+      <div class="form-group">
+        <label>Shipping Address</label>
+        <input type="text" id="address" required placeholder="Street address, city, province">
       </div>
 
-      <!-- PAYMENT -->
-      <div class="form-section">
-        <p class="section-label">Payment</p>
-        <div class="payment-note">
-          <strong>E-Wallet / QR PH</strong><br><br>
-          Payments are accepted via <strong>GoTyme, GCash, or Maya</strong>.
-          A QR code will appear on the next page after completing your order.
-        </div>
-
-        <!-- Turnstile widget — replace data-sitekey with your real site key -->
-        <div class="turnstile-wrap">
-          <div
-            class="cf-turnstile"
-            data-sitekey="0x4AAAAAACpBT7ijFgQum-H_"
-            data-theme="light"
-            data-size="normal"
-          ></div>
-        </div>
+      <div class="payment-note">
+        <strong>E-Wallet / QR PH</strong><br><br>
+        Payments accepted via <strong>GoTyme, GCash, or Maya</strong>.<br>
+        Payment instructions and QR code will appear on the next page.
       </div>
 
-    </div>
+      <!-- Turnstile widget — replace data-sitekey with your key -->
+      <div class="cf-turnstile" data-sitekey="0x4AAAAAAACpBT7ijFgQum-H_" data-theme="light"></div>
+    </form>
 
-    <!-- RIGHT: ORDER SUMMARY -->
-    <div class="order-side">
-
-      <div class="order-items">
-        <p class="order-label">Order Summary</p>
-        <div id="orderItems"></div>
+    <!-- ORDER SUMMARY -->
+    <div class="order-summary">
+      <div class="section-label">Order Summary</div>
+      <div id="orderItems"></div>
+      <div class="order-divider"></div>
+      <div class="order-item">
+        <div class="order-item-left"><div class="order-item-title">Shipping</div></div>
+        <div class="order-item-price" id="shippingFee">₱0</div>
       </div>
-
-      <div class="order-summary">
-        <div class="summary-row">
-          <span class="summary-key">Shipping</span>
-          <span class="summary-val" id="shippingFee">—</span>
-        </div>
-        <div class="summary-row summary-total">
-          <span class="summary-key">Total</span>
-          <span class="summary-val" id="orderTotal">—</span>
-        </div>
+      <div class="order-divider"></div>
+      <div class="order-total">
+        <span>Total</span>
+        <span id="orderTotal">₱0</span>
       </div>
-
-      <div class="order-submit">
-        <button class="btn-primary" id="completeOrder">Complete Order →</button>
-        <p class="submit-note">By placing your order you agree to our returns and shipping policy.</p>
-      </div>
-
+      <button class="complete-btn" id="completeBtn">Complete Order</button>
     </div>
 
   </div>
-
 </div>
 
 <!-- FOOTER -->
-<footer class="site-footer">
+<footer class="fixed-footer">
   <div class="footer-inner">
     <span id="datetime-footer"></span>
-    <div class="footer-links">
-      <a href="https://instagram.com" target="_blank" rel="noopener">Instagram</a>
-      <a href="guide.html">Guide</a>
-    </div>
   </div>
 </footer>
 
-<script>
-/**
- * Late Records — Shared Script
- * script.js — loaded by every page
- *
- * Exports (globals):
- *   LR.api.catalog()
- *   LR.api.album(id)
- *   LR.api.order(payload)
- *   LR.cart.*
- *   LR.ui.datetime(el)
- *   LR.ui.syncCartBadge()
- */
+<!-- SHIPPING INFO MODAL -->
+<div class="modal" id="shippingModal">
+  <div class="modal-inner">
+    <button class="modal-close" id="shippingClose">×</button>
+    <h2>Shipping Info</h2>
+    <p>Orders are prepared and shipped within 1–2 business days.</p>
+    <p>Shipping rates are based on quantity and calculated before checkout.</p>
+    <p>A tracking number will be provided once dispatched.</p>
+    <p>Each record is carefully packed in sturdy mailers.</p>
+  </div>
+</div>
 
-const LR = (() => {
-
-  // ── Config ───────────────────────────────────────────────────────────────
-
-  const API_BASE = 'https://late-records.shop';
-
-  // ── API ──────────────────────────────────────────────────────────────────
-
-  const api = {
-    async catalog() {
-      const res = await fetch(`${API_BASE}/api/catalog`);
-      if (!res.ok) throw new Error('Failed to load catalog');
-      return res.json();
-    },
-
-    async album(id) {
-      const res = await fetch(`${API_BASE}/api/album?id=${encodeURIComponent(id)}`);
-      if (res.status === 404) return null;
-      if (!res.ok) throw new Error('Failed to load album');
-      return res.json();
-    },
-
-    async order(payload) {
-      const res = await fetch(`${API_BASE}/api/order`, {
-        method:  'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body:    JSON.stringify(payload)
-      });
-      return res.json();
-    }
-  };
-
-  // ── Cart ─────────────────────────────────────────────────────────────────
-
-  const CART_KEY = 'lr_cart';
-
-  const cart = {
-    get() {
-      try { return JSON.parse(localStorage.getItem(CART_KEY)) || []; }
-      catch { return []; }
-    },
-
-    save(items) {
-      localStorage.setItem(CART_KEY, JSON.stringify(items));
-      cart._emit();
-    },
-
-    add(item) {
-      // item: { id, title, artist, price, stock }
-      const items = cart.get();
-      const existing = items.find(i => i.id === item.id);
-      if (existing) {
-        if (existing.qty < (item.stock || 1)) existing.qty++;
-      } else {
-        items.push({ ...item, qty: 1 });
-      }
-      cart.save(items);
-    },
-
-    remove(id) {
-      cart.save(cart.get().filter(i => i.id !== id));
-    },
-
-    updateQty(id, delta) {
-      const items = cart.get();
-      const item  = items.find(i => i.id === id);
-      if (!item) return;
-      item.qty = Math.max(1, Math.min(item.qty + delta, item.stock || 99));
-      cart.save(items);
-    },
-
-    clear() {
-      localStorage.removeItem(CART_KEY);
-      cart._emit();
-    },
-
-    count() {
-      return cart.get().reduce((n, i) => n + i.qty, 0);
-    },
-
-    subtotal() {
-      return cart.get().reduce((n, i) => n + i.price * i.qty, 0);
-    },
-
-    shipping() {
-      const qty = cart.count();
-      if (qty <= 2) return 250;
-      if (qty <= 5) return 350;
-      return 450;
-    },
-
-    total() {
-      return cart.subtotal() + cart.shipping();
-    },
-
-    // Dispatch a custom event so any open page can react
-    _emit() {
-      window.dispatchEvent(new CustomEvent('lr:cart:updated'));
-    }
-  };
-
-  // ── UI helpers ────────────────────────────────────────────────────────────
-
-  const ui = {
-    // Update a datetime element every second
-    datetime(el) {
-      if (!el) return;
-      const tick = () => {
-        const now  = new Date();
-        const date = now.toLocaleDateString('en-GB', { day:'2-digit', month:'short', year:'numeric' });
-        const hh   = String(now.getHours()).padStart(2, '0');
-        const mm   = String(now.getMinutes()).padStart(2, '0');
-        el.textContent = `${date} — ${hh}:${mm} GMT+8`;
-      };
-      tick();
-      setInterval(tick, 1000);
-    },
-
-    // Sync the cart count badge in the header
-    syncCartBadge() {
-      document.querySelectorAll('.cart-count').forEach(el => {
-        el.textContent = cart.count();
-      });
-    },
-
-    // Format peso
-    peso(n) {
-      return '₱' + Number(n).toLocaleString('en-PH');
-    },
-
-    // Simple modal open/close
-    modal(overlayEl, open) {
-      if (!overlayEl) return;
-      overlayEl.classList.toggle('open', open);
-    }
-  };
-
-  // Keep badge synced on cart changes
-  window.addEventListener('lr:cart:updated', () => ui.syncCartBadge());
-
-  // ── Init ─────────────────────────────────────────────────────────────────
-
-  document.addEventListener('DOMContentLoaded', () => {
-    ui.syncCartBadge();
-    ui.datetime(document.getElementById('datetime'));
-    ui.datetime(document.getElementById('datetime-footer'));
-
-    // Global escape key closes any open modal
-    document.addEventListener('keydown', e => {
-      if (e.key === 'Escape') {
-        document.querySelectorAll('.modal-overlay.open').forEach(el => {
-          el.classList.remove('open');
-        });
-      }
-    });
-  });
-
-  return { api, cart, ui };
-
-})();
-
-</script>
+<script src="script.js"></script>
 <script>
 
 document.addEventListener('DOMContentLoaded', () => {
 
-  const cart    = LR.cart.get();
-  const listEl  = document.getElementById('orderItems');
+  const cart     = LR.cart.get();
+  const shipping = LR.cart.shipping();
+  const subtotal = LR.cart.subtotal();
+  const total    = subtotal + shipping;
 
-  // Redirect to cart if empty
-  if (!cart.length) { window.location.href = 'cart.html'; return; }
-
-  // ── Render order summary ───────────────────────────────────
+  // Render order items
+  const itemsEl = document.getElementById('orderItems');
   cart.forEach(item => {
     const div = document.createElement('div');
     div.className = 'order-item';
@@ -848,64 +236,61 @@ document.addEventListener('DOMContentLoaded', () => {
       </div>
       <div class="order-item-price">${LR.ui.peso(item.price * item.qty)}</div>
     `;
-    listEl.appendChild(div);
+    itemsEl.appendChild(div);
   });
 
-  document.getElementById('shippingFee').textContent = LR.ui.peso(LR.cart.shipping());
-  document.getElementById('orderTotal').textContent  = LR.ui.peso(LR.cart.total());
+  document.getElementById('shippingFee').textContent = LR.ui.peso(shipping);
+  document.getElementById('orderTotal').textContent  = LR.ui.peso(total);
 
-  // ── Submit ─────────────────────────────────────────────────
-  document.getElementById('completeOrder').addEventListener('click', async function () {
+  // Shipping modal
+  document.getElementById('shippingClose').addEventListener('click', () => {
+    document.getElementById('shippingModal').classList.remove('is-open');
+  });
+  document.getElementById('shippingModal').addEventListener('click', e => {
+    if (e.target === e.currentTarget) e.currentTarget.classList.remove('is-open');
+  });
 
-    // Basic validation
-    const name    = document.getElementById('name').value.trim();
-    const email   = document.getElementById('email').value.trim();
-    const phone   = document.getElementById('phone').value.trim();
-    const address = document.getElementById('address').value.trim();
+  // Submit order
+  document.getElementById('completeBtn').addEventListener('click', async () => {
+    const form = document.getElementById('checkoutForm');
 
-    if (!name || !email || !phone || !address) {
-      alert('Please fill in all required fields.');
-      return;
-    }
+    if (!form.checkValidity()) { form.reportValidity(); return; }
+    if (!cart.length)          { alert('Your cart is empty.'); return; }
 
-    // Turnstile token
-    const token = turnstile.getResponse();
-    if (!token) {
-      alert('Please complete the verification.');
-      return;
-    }
+    // Get Turnstile token
+    const token = document.querySelector('[name="cf-turnstile-response"]')?.value;
+    if (!token) { alert('Please complete the security check.'); return; }
 
-    const btn = this;
-    btn.disabled     = true;
-    btn.textContent  = 'Processing...';
+    const btn = document.getElementById('completeBtn');
+    btn.disabled    = true;
+    btn.textContent = 'Processing…';
 
     try {
       const result = await LR.api.order({
-        name, email, phone, address,
-        shipping: LR.cart.shipping(),
+        name:           document.getElementById('name').value.trim(),
+        email:          document.getElementById('email').value.trim(),
+        phone:          document.getElementById('phone').value.trim(),
+        address:        document.getElementById('address').value.trim(),
+        subtotal,
+        shipping,
+        total,
         turnstileToken: token,
-        items: cart.map(i => ({ id: i.id, album_id: i.id, title: i.title, qty: i.qty, quantity: i.qty }))
+        items: cart.map(i => ({ id: i.id, title: i.title, qty: i.qty, price: i.price }))
       });
 
-      console.log('Order result:', JSON.stringify(result));
-      if (!result.success) throw new Error(result.error || 'Order failed');
+      if (!result.ok) throw new Error(result.error || 'Order failed');
 
-      // Store for success page
-      localStorage.setItem('lr_buyer',   name);
-      localStorage.setItem('lr_total',   LR.cart.total());
-      localStorage.setItem('lr_deadline', Date.now() + 24 * 60 * 60 * 1000);
-
+      localStorage.setItem('lr_buyer',       document.getElementById('name').value.trim());
+      localStorage.setItem('lr_order_total', LR.ui.peso(total));
       LR.cart.clear();
       window.location.href = 'success.html';
 
     } catch (err) {
       console.error(err);
-      alert('There was a problem placing your order. Please try again.');
+      alert('There was a problem processing your order. Please try again.');
       btn.disabled    = false;
-      btn.textContent = 'Complete Order →';
-      turnstile.reset();
+      btn.textContent = 'Complete Order';
     }
-
   });
 
 });
