@@ -10,69 +10,6 @@
 <link rel="stylesheet" href="../style.css">
 <style>
 
-/* ── Color + pattern overrides ──────────────────────────────── */
-
-:root {
-  --bg:          #e2e2e2;
-  --text:        #1a1a14;
-  --text-mid:    rgba(26,26,20,.6);
-  --text-dim:    rgba(26,26,20,.35);
-  --rule:        rgba(26,26,20,.1);
-  --rule-mid:    rgba(26,26,20,.18);
-  --rule-strong: rgba(26,26,20,.28);
-}
-
-html, body {
-  background-color: #e2e2e2;
-  background-image: radial-gradient(circle, rgba(0,0,0,.08) 0.5px, transparent 0.5px);
-  background-size: 3px 3px;
-  color: var(--text);
-}
-
-.fixed-header {
-  background-color: #e2e2e2;
-  background-image: radial-gradient(circle, rgba(0,0,0,.08) 0.5px, transparent 0.5px);
-  background-size: 3px 3px;
-}
-
-/* No footer */
-.fixed-footer { display: none; }
-
-.header-logo       { filter: none; opacity: 1; }
-.header-logo:hover { opacity: .5; }
-
-/* Cart — no border/box */
-.cart-link {
-  color: var(--text);
-  border: none;
-  padding: 0;
-  font-size: 11px;
-  letter-spacing: .06em;
-  text-transform: uppercase;
-  font-weight: 600;
-}
-.cart-link:hover { background: none; color: var(--text-mid); }
-
-/* Buttons */
-.btn {
-  font-family: inherit;
-  font-size: 11px;
-  letter-spacing: .1em;
-  text-transform: uppercase;
-  padding: 11px 20px;
-  border: 1px solid var(--rule-strong);
-  background: transparent;
-  color: var(--text);
-  cursor: pointer;
-  transition: all .2s;
-  font-weight: 600;
-}
-.btn:hover       { background: var(--text); color: #e2e2e2; }
-.btn-solid       { background: var(--text); color: #e2e2e2; border-color: var(--text); }
-.btn-solid:hover { background: rgba(26,26,20,.8); }
-.btn:disabled    { opacity: .35; cursor: not-allowed; }
-.btn:disabled:hover { background: transparent; color: var(--text); }
-
 /* ── Album page layout ────────────────────────────────────── */
 
 .album-page {
@@ -81,18 +18,14 @@ html, body {
   align-items: flex-start;
 }
 
-.album-image-wrap {
-  width: 58%;
-  flex-shrink: 0;
-  position: sticky;
-  top: calc(var(--header-h, 60px) + 20px);
-}
+.album-image-wrap { width: 58%; flex-shrink: 0; }
 
 .album-image {
   width: 100%;
   aspect-ratio: 1 / 1;
   object-fit: cover;
   display: block;
+  background: #f0f0f0;
 }
 
 .album-details {
@@ -103,9 +36,9 @@ html, body {
   min-width: 0;
 }
 
-.album-title  { font-size: 32px; font-weight: 700; line-height: 1.12; margin: 0; color: var(--text); }
-.album-artist { font-size: 18px; font-weight: 400; color: var(--text-mid); margin: 0; }
-.album-price  { font-size: 20px; font-weight: 600; color: var(--text); }
+.album-title  { font-size: 32px; font-weight: 600; line-height: 1.12; margin: 0; }
+.album-artist { font-size: 18px; font-weight: 400; color: #555; margin: 0; }
+.album-price  { font-size: 20px; font-weight: 500; }
 
 /* ── Button row ───────────────────────────────────────────── */
 
@@ -117,13 +50,9 @@ html, body {
 }
 
 .cart-confirm {
-  font-size: 10px;
-  letter-spacing: .1em;
-  text-transform: uppercase;
-  color: var(--text-mid);
+  font-size: 13px;
   opacity: 0;
   transition: opacity .2s;
-  font-weight: 600;
 }
 .cart-confirm.show { opacity: 1; }
 
@@ -135,7 +64,6 @@ html, body {
   font-weight: 300;
   margin: 0;
   overflow: hidden;
-  color: var(--text-mid);
 }
 
 .description.is-collapsed { max-height: 6.4em; }
@@ -144,13 +72,10 @@ html, body {
   background: none;
   border: 0;
   padding: 0;
-  font-size: 11px;
-  letter-spacing: .08em;
-  text-transform: uppercase;
-  color: var(--text);
+  font-size: 13px;
+  color: #000;
   cursor: pointer;
   text-decoration: underline;
-  font-weight: 600;
 }
 
 /* ── Audio player ─────────────────────────────────────────── */
@@ -159,9 +84,8 @@ html, body {
 .audio-block.is-visible { display: flex; }
 
 .audio-shell {
-  border: 1px solid var(--rule-strong);
+  border: 1px solid rgba(0,0,0,.08);
   padding: 12px;
-  background: rgba(0,0,0,.03);
 }
 
 .audio-top {
@@ -172,29 +96,22 @@ html, body {
   margin-bottom: 10px;
 }
 
-.audio-label {
-  font-size: 10px;
-  letter-spacing: .1em;
-  text-transform: uppercase;
-  color: var(--text-mid);
-  font-weight: 600;
-}
+.audio-label { font-size: 13px; color: #444; }
 
 .audio-nav { display: flex; align-items: center; gap: 8px; }
 
 .audio-arrow {
   background: none;
-  border: 1px solid var(--rule-strong);
+  border: 1px solid rgba(0,0,0,.15);
   padding: 4px 10px;
   font-size: 20px;
   line-height: 1;
   cursor: pointer;
-  color: var(--text);
-  transition: all .15s;
+  color: #000;
+  font-weight: 600;
 }
-.audio-arrow:hover        { background: var(--text); color: #e2e2e2; }
-.audio-arrow:disabled     { opacity: .3; cursor: not-allowed; }
-.audio-arrow:disabled:hover { background: none; color: var(--text); }
+
+.audio-arrow:disabled { opacity: .3; cursor: not-allowed; }
 
 audio { width: 100%; }
 
@@ -203,14 +120,18 @@ audio { width: 100%; }
 .tracklist-block { display: flex; flex-direction: column; gap: 10px; }
 
 .block-heading {
-  font-size: 10px;
-  letter-spacing: .1em;
+  font-size: 11px;
+  letter-spacing: .08em;
   text-transform: uppercase;
-  color: var(--text-mid);
-  font-weight: 600;
+  color: rgba(0,0,0,.5);
+  font-weight: 400;
 }
 
-.tracklist { list-style: none; padding: 0; margin: 0; }
+.tracklist {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
 
 @media (min-width: 901px) {
   .tracklist { column-count: 2; column-gap: 22px; }
@@ -220,9 +141,9 @@ audio { width: 100%; }
   font-size: 14px;
   line-height: 1.5;
   padding: 6px 0;
-  border-bottom: 1px solid var(--rule);
-  font-weight: 400;
-  color: var(--text-mid);
+  border-bottom: 1px solid rgba(0,0,0,.05);
+  font-weight: 300;
+  color: rgba(0,0,0,.65);
   break-inside: avoid;
 }
 
@@ -231,12 +152,11 @@ audio { width: 100%; }
 .related-section { margin-top: 48px; }
 
 .related-title {
-  font-size: 10px;
-  letter-spacing: .1em;
+  font-size: 12px;
+  letter-spacing: .05em;
   text-transform: uppercase;
-  color: var(--text-mid);
+  color: #777;
   margin: 0 0 16px;
-  font-weight: 600;
 }
 
 .related-grid {
@@ -245,26 +165,25 @@ audio { width: 100%; }
   gap: 24px;
 }
 
-.related-card { display: block; text-decoration: none; color: var(--text); }
+.related-card { display: block; text-decoration: none; color: #000; }
 
 .related-cover {
   width: 100%;
   aspect-ratio: 1 / 1;
   object-fit: cover;
   display: block;
-  transition: opacity .2s;
+  background: #f0f0f0;
 }
-.related-card:hover .related-cover { opacity: .75; }
 
 .related-info  { margin-top: 8px; }
-.related-name  { font-size: 13px; font-weight: 600; line-height: 1.25; margin: 0; word-break: break-word; color: var(--text); }
-.related-artist{ font-size: 11px; color: var(--text-mid); margin-top: 2px; }
+.related-name  { font-size: 13px; font-weight: 600; line-height: 1.25; margin: 0; word-break: break-word; }
+.related-artist{ font-size: 11px; color: #555; margin-top: 2px; }
 
 /* ── Responsive ───────────────────────────────────────────── */
 
 @media (max-width: 900px) {
   .album-page { flex-direction: column; gap: 24px; }
-  .album-image-wrap { width: 100%; position: static; }
+  .album-image-wrap { width: 100%; }
   .related-grid { grid-template-columns: repeat(2, 1fr); gap: 18px; }
 }
 
@@ -291,18 +210,32 @@ audio { width: 100%; }
 <!-- MAIN -->
 <div class="container" id="mainContainer"></div>
 
+<!-- FOOTER -->
+<footer class="fixed-footer">
+  <div class="footer-inner">
+    <span id="datetime-footer"></span>
+    <div class="footer-links">
+      <a href="https://instagram.com/late.records.ph" target="_blank" rel="noopener">
+        Instagram<span class="external-arrow">↗</span>
+      </a>
+    </div>
+  </div>
+</footer>
+
 <script src="../script.js"></script>
 <script>
 
 const ALBUM_ID  = new URLSearchParams(location.search).get('id') || '';
 const AUDIO_BASE = '../audio/';
 
+// ── Render helpers ───────────────────────────────────────────
+
 function renderNotFound() {
   document.getElementById('mainContainer').innerHTML = `
     <div style="padding:80px 0;text-align:center;">
-      <h2 style="font-size:24px;margin:0 0 12px;color:var(--text);">Album not found</h2>
-      <p style="color:var(--text-mid);margin:0 0 24px;">We couldn't find that record.</p>
-      <a href="../index.html" style="font-size:11px;text-transform:uppercase;letter-spacing:.08em;text-decoration:underline;color:var(--text);">← Back to shop</a>
+      <h2 style="font-size:24px;margin:0 0 12px;">Album not found</h2>
+      <p style="color:#555;margin:0 0 24px;">We couldn't find that record.</p>
+      <a href="../index.html" style="font-size:14px;text-decoration:underline;">← Back to shop</a>
     </div>
   `;
 }
@@ -311,8 +244,8 @@ function scoreRelated(cur, cand) {
   let s = 0;
   const cg = LR.ui.splitPipe(cur.genre);
   const cc = LR.ui.splitPipe(cur.context);
-  LR.ui.splitPipe(cand.genre).forEach(t   => { if (cg.includes(t)) s += 3; });
-  LR.ui.splitPipe(cand.context).forEach(t => { if (cc.includes(t)) s += 2; });
+  LR.ui.splitPipe(cand.genre).forEach(t    => { if (cg.includes(t)) s += 3; });
+  LR.ui.splitPipe(cand.context).forEach(t  => { if (cc.includes(t)) s += 2; });
   return s;
 }
 
@@ -347,7 +280,7 @@ function renderAlbum(item, all) {
         </div>
 
         <div>
-          <p class="album-price" id="albumPrice">${sold ? '<span style="color:var(--text-dim);text-decoration:line-through;">' + LR.ui.peso(item.price) + '</span>' : LR.ui.peso(item.price)}</p>
+          <p class="album-price" id="albumPrice">${sold ? '<span style="color:#aaa;text-decoration:line-through;">' + LR.ui.peso(item.price) + '</span>' : LR.ui.peso(item.price)}</p>
           <div class="button-row" style="margin-top:10px;">
             <button
               class="btn btn-solid"
@@ -414,10 +347,13 @@ function renderAlbum(item, all) {
   setupAddToCart(item);
 }
 
+// ── Description toggle ───────────────────────────────────────
+
 function setupDescToggle() {
   const desc   = document.getElementById('albumDesc');
   const toggle = document.getElementById('descToggle');
   if (!desc || !toggle) return;
+
   requestAnimationFrame(() => {
     if (desc.scrollHeight > 175) {
       desc.classList.add('is-collapsed');
@@ -425,11 +361,14 @@ function setupDescToggle() {
       toggle.textContent = '+ Read more';
     }
   });
+
   toggle.addEventListener('click', () => {
     const c = desc.classList.toggle('is-collapsed');
     toggle.textContent = c ? '+ Read more' : '− Read less';
   });
 }
+
+// ── Audio player ─────────────────────────────────────────────
 
 function setupAudio(albumId) {
   const block  = document.getElementById('audioBlock');
@@ -438,8 +377,10 @@ function setupAudio(albumId) {
   const prev   = document.getElementById('audioPrev');
   const next   = document.getElementById('audioNext');
   if (!block || !audio) return;
+
   const valid = [];
   let cur = 0;
+
   function probe(i) {
     const url = `${AUDIO_BASE}${albumId}/${albumId}-sample-${i}.mp3`;
     const a   = new Audio();
@@ -450,6 +391,7 @@ function setupAudio(albumId) {
     }, { once: true });
     a.src = url;
   }
+
   function setTrack(i) {
     cur = i;
     audio.src = valid[i];
@@ -457,15 +399,20 @@ function setupAudio(albumId) {
     prev.disabled = i === 0;
     next.disabled = i === valid.length - 1;
   }
+
   prev.addEventListener('click', () => { if (cur > 0) setTrack(cur - 1); });
   next.addEventListener('click', () => { if (cur < valid.length - 1) setTrack(cur + 1); });
+
   probe(1);
 }
+
+// ── Add to cart ───────────────────────────────────────────────
 
 function setupAddToCart(item) {
   const btn     = document.getElementById('addToCartBtn');
   const confirm = document.getElementById('cartConfirm');
   if (!btn) return;
+
   btn.addEventListener('click', () => {
     const result = LR.cart.add({
       id:     item.album_id,
@@ -474,19 +421,31 @@ function setupAddToCart(item) {
       price:  item.price,
       stock:  item.stock
     });
-    confirm.textContent = result === 'exists' ? 'Already in cart' : '✓ Added';
+
+    if (result === 'exists') {
+      confirm.textContent = 'Already in cart';
+    } else {
+      confirm.textContent = '✓ Added';
+    }
+
     confirm.classList.add('show');
     setTimeout(() => confirm.classList.remove('show'), 2000);
   });
 }
 
+// ── Init ──────────────────────────────────────────────────────
+
 (async () => {
   if (!ALBUM_ID) { renderNotFound(); return; }
+
   try {
     const album = await LR.api.album(ALBUM_ID);
     if (!album) { renderNotFound(); return; }
+
+    // Fetch full catalog for related section
     const all = await LR.api.catalog().catch(() => []);
     renderAlbum(album, all);
+
   } catch (e) {
     renderNotFound();
   }
