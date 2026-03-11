@@ -15,7 +15,7 @@
 :root {
   --bg:          #e2e2e2;
   --text:        #1a1a14;
-  --text-mid:    rgba(26,26,20,.55);
+  --text-mid:    rgba(26,26,20,.6);
   --text-dim:    rgba(26,26,20,.35);
   --rule:        rgba(26,26,20,.1);
   --rule-mid:    rgba(26,26,20,.18);
@@ -29,18 +29,14 @@ html, body {
   color: var(--text);
 }
 
-.fixed-header,
-.fixed-footer {
+.fixed-header {
   background-color: #e2e2e2;
   background-image: radial-gradient(circle, rgba(0,0,0,.08) 0.5px, transparent 0.5px);
   background-size: 3px 3px;
 }
 
-/* Logo: dark on light bg — no invert needed */
-.header-logo {
-  filter: none;
-  opacity: 1;
-}
+/* Logo */
+.header-logo       { filter: none; opacity: 1; }
 .header-logo:hover { opacity: .5; }
 
 /* Cart — no border/box */
@@ -51,16 +47,16 @@ html, body {
   font-size: 11px;
   letter-spacing: .06em;
   text-transform: uppercase;
-  font-weight: 500;
+  font-weight: 600;
 }
 .cart-link:hover { background: none; color: var(--text-mid); }
 
-.footer-inner a, .footer-inner { color: var(--text-mid); }
-.footer-inner a:hover { color: var(--text); }
+/* Remove footer bar entirely */
+.fixed-footer { display: none; }
 
 /* ── Catalog table ──────────────────────────────────────────── */
 
-/* Mobile: title takes 55%, genre right-aligned in remaining 45% */
+/* Mobile: 2 cols — title | genre */
 .catalog-header {
   display: grid;
   grid-template-columns: 55% 1fr;
@@ -74,22 +70,31 @@ html, body {
   font-size: 10px;
   letter-spacing: .12em;
   text-transform: uppercase;
-  color: var(--text-dim);
-  font-weight: 500;
+  color: var(--text-mid);
+  font-weight: 600;
 }
 
 .catalog-header-col.right { text-align: right; }
 .col-format    { display: none; }
 .col-stock-hdr { display: none; }
-/* Genre header: right on mobile (it's the only right column), left on desktop */
+/* Genre header: right-aligned on mobile */
 .col-genre-hdr { text-align: right; }
 
+/* Desktop: 4 cols */
 @media (min-width: 901px) {
   .catalog-header { grid-template-columns: 1fr 140px 120px 80px; }
   .col-format     { display: block; }
-  .col-stock-hdr  { display: block; }
+  .col-stock-hdr  { display: block; text-align: right; }
   .col-genre-hdr  { text-align: left; }
 }
+
+/* Genre as clickable link — stop propagation so row click still works */
+a.row-genre {
+  text-decoration: none;
+  transition: color .15s;
+  cursor: pointer;
+}
+a.row-genre:hover { color: var(--text); text-decoration: underline; }
 
 .catalog-row {
   display: grid;
@@ -112,13 +117,29 @@ html, body {
 
 .row-title-block { min-width: 0; }
 
-/* Genre: shown right-aligned on mobile */
+.row-title {
+  font-size: 15px;
+  font-weight: 700;
+  line-height: 1.2;
+  letter-spacing: -.01em;
+  word-break: break-word;
+}
+
+.row-artist {
+  font-size: 11px;
+  color: var(--text-mid);
+  margin-top: 3px;
+  font-weight: 600;
+  letter-spacing: .01em;
+}
+
+/* Genre: right on mobile, left on desktop */
 .row-genre {
   font-size: 11px;
   letter-spacing: .08em;
   text-transform: uppercase;
   color: var(--text-mid);
-  font-weight: 500;
+  font-weight: 600;
   align-self: center;
   text-align: right;
 }
@@ -133,39 +154,28 @@ html, body {
     padding: 16px var(--pad-h);
   }
   .row-genre  { text-align: left; }
-  .row-format { display: block; font-size: 11px; letter-spacing: .05em; text-transform: uppercase; color: var(--text-mid); font-weight: 400; align-self: center; }
-  .row-stock  { font-size: 11px; letter-spacing: .08em; text-transform: uppercase; font-weight: 600; align-self: center; text-align: right; display: flex; align-items: center; justify-content: flex-end; gap: 6px; }
+  .row-format {
+    display: block;
+    font-size: 11px;
+    letter-spacing: .06em;
+    text-transform: uppercase;
+    color: var(--text-mid);
+    font-weight: 600;
+    align-self: center;
+  }
+  .row-stock {
+    display: flex;
+    font-size: 11px;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+    font-weight: 700;
+    align-self: center;
+    text-align: right;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 6px;
+  }
 }
-
-/* ── Skeleton rows ──────────────────────────────────────────── */
-
-.row-title {
-  font-size: 15px;
-  font-weight: 600;
-  line-height: 1.2;
-  letter-spacing: -.01em;
-  word-break: break-word;
-}
-
-.row-artist {
-  font-size: 11px;
-  color: var(--text-mid);
-  margin-top: 3px;
-  font-weight: 400;
-  letter-spacing: .01em;
-}
-
-.row-format {
-  font-size: 11px;
-  letter-spacing: .05em;
-  text-transform: uppercase;
-  color: var(--text-mid);
-  font-weight: 400;
-  align-self: center;
-  display: none;
-}
-
-@media (min-width: 901px) { .row-format { display: block; } }
 
 .stock-dot {
   width: 6px;
@@ -236,7 +246,7 @@ html, body {
       <span class="catalog-header-col">Title / Artist</span>
       <span class="catalog-header-col col-format" style="display:none;">Format</span>
       <span class="catalog-header-col col-genre-hdr">Genre</span>
-      <span class="catalog-header-col col-stock-hdr right" style="display:none;">Stock</span>
+      <span class="catalog-header-col col-stock-hdr right">Stock</span>
     </div>
   </div>
   <div style="border-bottom:1px solid var(--rule-strong);margin:0 calc(-1 * var(--pad-h)) 0;"></div>
@@ -250,12 +260,6 @@ html, body {
   </div>
 
 </div>
-
-<!-- FOOTER -->
-<footer class="fixed-footer">
-  <div class="footer-inner">
-  </div>
-</footer>
 
 <script src="script.js"></script>
 <script>
@@ -284,7 +288,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             <div class="row-artist">${item.artist}</div>
           </div>
           <div class="row-format">${format}</div>
-          <div class="row-genre">${genre}</div>
+          <a class="row-genre" href="genre.html?g=${encodeURIComponent(genre.toLowerCase())}" onclick="event.stopPropagation()">${genre}</a>
           <div class="row-stock">
             <span class="stock-dot ${sold ? 'sold' : 'avail'}"></span>
             <span>${sold ? 'Sold' : 'Avail'}</span>
