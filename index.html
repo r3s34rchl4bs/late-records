@@ -1,0 +1,647 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Late Records</title>
+<meta name="description" content="Curated vinyl records. Rare, used, and hard to find.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --black:     #0a0a0a;
+  --white:     #f0ede6;
+  --gray-1:    #e2dfd8;
+  --gray-2:    #c8c4bc;
+  --gray-3:    #999490;
+  --accent:    #c8b97a;
+  --available: #4a7c59;
+  --border:    rgba(10,10,10,0.14);
+  --border-s:  #0a0a0a;
+  --mono:      'IBM Plex Mono', monospace;
+  --header-h:  56px;
+  --ticker-h:  30px;
+  --footer-h:  38px;
+  --max-w:     1160px;
+  --pad:       28px;
+}
+
+*,*::before,*::after { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: 'Inter', sans-serif; background: var(--white); color: var(--black); min-height: 100vh; -webkit-font-smoothing: antialiased; }
+img { display: block; max-width: 100%; }
+a { color: inherit; text-decoration: none; }
+button { cursor: pointer; font-family: inherit; }
+
+/* ─── Header ─────────────────────────────────── */
+.site-header {
+  position: fixed; top: 0; left: 0; width: 100%;
+  z-index: 200; background: var(--white);
+  border-bottom: 2px solid var(--border-s);
+  height: var(--header-h);
+}
+.header-inner {
+  max-width: var(--max-w); margin: 0 auto;
+  padding: 0 var(--pad); height: 100%;
+  display: flex; align-items: center; justify-content: space-between;
+}
+.site-logo-img { height: 30px; width: auto; display: block; }
+.header-right { display: flex; align-items: center; gap: 16px; }
+.header-open {
+  display: flex; align-items: center; gap: 6px;
+  font-family: var(--mono); font-size: 9px;
+  letter-spacing: .1em; text-transform: uppercase; color: var(--gray-3);
+}
+.open-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--available); flex-shrink: 0; }
+.cart-btn {
+  font-family: var(--mono); font-size: 10px;
+  letter-spacing: .08em; text-transform: uppercase;
+  color: var(--black); border: 1.5px solid var(--border-s);
+  padding: 6px 14px; background: transparent; transition: all .15s;
+}
+.cart-btn:hover { background: var(--black); color: var(--white); }
+
+/* ─── Ticker ──────────────────────────────────
+   Outer wrap is full-width but transparent.
+   The black box is bounded to the content column
+   (same max-w / pad as the header).
+   ─────────────────────────────────────────── */
+.ticker-wrap {
+  position: fixed;
+  top: var(--header-h); left: 0; width: 100%;
+  z-index: 190;
+  height: var(--ticker-h);
+  background: transparent;          /* no bleed */
+  pointer-events: none;
+}
+.ticker-inner {
+  max-width: var(--max-w); margin: 0 auto;
+  padding: 0 var(--pad); height: 100%;
+  display: flex; align-items: center;
+  pointer-events: all;
+}
+.ticker-band {
+  /* The actual black rectangle, same width as the content column */
+  background: var(--black);
+  height: 100%; width: 100%;
+  overflow: hidden;
+  display: flex; align-items: center;
+}
+.ticker-track {
+  display: flex; white-space: nowrap;
+  animation: ticker-scroll 35s linear infinite;
+}
+.ticker-track:hover { animation-play-state: paused; }
+.ticker-item {
+  font-family: var(--mono); font-size: 10px;
+  letter-spacing: .1em; text-transform: uppercase;
+  color: var(--accent); padding: 0 28px; flex-shrink: 0;
+}
+.ticker-sep { font-family: var(--mono); font-size: 10px; color: #2a2a2a; padding: 0 2px; flex-shrink: 0; }
+@keyframes ticker-scroll { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
+
+/* ─── Container ───────────────────────────── */
+.container {
+  max-width: var(--max-w); margin: 0 auto;
+  padding: calc(var(--header-h) + var(--ticker-h)) var(--pad) calc(var(--footer-h) + 48px);
+}
+.section-rule { border-bottom: 2px solid var(--border-s); }
+
+/* ─── Featured card ───────────────────────────
+   Card outer box is COMPLETELY STATIC.
+   No transition on the card itself — ever.
+   Only the .featured-text-body fades.
+   Fixed height set explicitly on desktop + tablet + mobile.
+   ─────────────────────────────────────────── */
+.featured-card {
+  display: grid;
+  grid-template-columns: 42% 58%;
+  border: 2px solid var(--border-s);
+  border-top: none;
+  height: 320px;          /* FIXED — never changes, no transition */
+  /* NO transition here */
+}
+
+.featured-img-col {
+  overflow: hidden;
+  background: var(--gray-1);
+  height: 100%;            /* fills exactly the fixed card height */
+  position: relative;
+}
+.featured-img-col img {
+  width: 100%; height: 100%;
+  object-fit: cover; display: block;
+}
+/* dither overlay */
+.featured-img-col::after {
+  content: ''; position: absolute; inset: 0;
+  background-image: radial-gradient(circle, rgba(0,0,0,.75) 1px, transparent 1px);
+  background-size: 3px 3px; opacity: .04; pointer-events: none;
+}
+
+.featured-info-col {
+  display: flex; flex-direction: column;
+  border-left: 2px solid var(--border-s);
+  height: 100%; overflow: hidden;
+}
+
+.featured-header-row {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 13px 22px 12px;
+  border-bottom: 1px solid var(--border);
+  flex-shrink: 0;
+}
+.featured-eyebrow {
+  font-family: var(--mono); font-size: 9px;
+  letter-spacing: .2em; text-transform: uppercase; color: var(--accent);
+}
+.featured-nav-group { display: flex; align-items: center; gap: 10px; }
+.featured-counter {
+  font-family: var(--mono); font-size: 9px;
+  letter-spacing: .08em; color: var(--gray-3);
+}
+.carousel-nav { display: flex; gap: 3px; }
+.carousel-btn {
+  background: none; border: 1px solid var(--border);
+  width: 24px; height: 24px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 18px; line-height: 1; color: var(--gray-3);
+  transition: border-color .15s, color .15s; padding: 0;
+}
+.carousel-btn:hover { border-color: var(--border-s); color: var(--border-s); }
+
+/* Text body — this and ONLY this fades on carousel change */
+.featured-text-body {
+  padding: 20px 22px;
+  flex: 1; overflow: hidden;
+  display: flex; flex-direction: column;
+  transition: opacity .16s ease;
+}
+.featured-text-body.fading { opacity: 0; }
+
+.featured-title {
+  font-family: 'Inter', sans-serif;
+  font-size: 26px; font-weight: 700;
+  letter-spacing: -.03em; line-height: 1.1;
+  display: -webkit-box;
+  -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
+}
+.featured-artist {
+  font-family: var(--mono); font-size: 10px;
+  letter-spacing: .1em; text-transform: uppercase; color: var(--gray-3);
+  margin-top: 8px;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.featured-desc {
+  font-family: 'Inter', sans-serif; font-size: 12px;
+  color: var(--gray-3); line-height: 1.65; margin-top: 12px;
+  display: -webkit-box;
+  -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
+}
+
+.featured-cta-row {
+  display: flex; align-items: center; justify-content: flex-end;
+  padding: 13px 22px;
+  border-top: 1px solid var(--border);
+  flex-shrink: 0;
+}
+.featured-link {
+  font-family: var(--mono); font-size: 10px;
+  letter-spacing: .12em; text-transform: uppercase; color: var(--black);
+  border-bottom: 1.5px solid var(--black); padding-bottom: 1px;
+  transition: opacity .15s;
+}
+.featured-link:hover { opacity: .4; }
+
+/* ─── Skeleton ────────────────────────────── */
+.skel {
+  background: linear-gradient(90deg, var(--gray-1) 25%, var(--white) 50%, var(--gray-1) 75%);
+  background-size: 200% 100%; animation: shimmer 1.4s infinite;
+}
+@keyframes shimmer { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
+
+/* ─── Catalog ─────────────────────────────── */
+.catalog-header {
+  display: grid;
+  grid-template-columns: 1fr 172px 76px 88px;
+  padding: 7px 0; border-bottom: 1px solid var(--border);
+  font-family: var(--mono); font-size: 8px;
+  letter-spacing: .16em; text-transform: uppercase; color: var(--gray-3);
+}
+.catalog-list { list-style: none; }
+.catalog-row {
+  display: grid;
+  grid-template-columns: 1fr 172px 76px 88px;
+  border-bottom: 1px solid var(--border);
+  align-items: center; color: var(--black);
+  transition: background .1s; position: relative;
+}
+.catalog-row:hover { background: var(--gray-1); }
+.catalog-row.sold-out { opacity: .38; }
+
+.col-title { padding: 12px 16px 12px 0; }
+.col-title-main { font-family: 'Inter', sans-serif; font-size: 13px; font-weight: 600; line-height: 1.3; letter-spacing: -.01em; }
+.col-title-sub  { font-family: var(--mono); font-size: 9px; color: var(--gray-3); text-transform: uppercase; letter-spacing: .06em; margin-top: 3px; }
+
+.col-genre  { font-family: var(--mono); font-size: 9px; color: var(--gray-3); padding-right: 12px; letter-spacing: .04em; }
+.col-format { font-family: var(--mono); font-size: 9px; color: var(--gray-3); text-transform: uppercase; letter-spacing: .06em; }
+.col-stock  { display: flex; align-items: center; gap: 6px; font-family: var(--mono); font-size: 9px; letter-spacing: .08em; text-transform: uppercase; }
+.col-stock.available { color: var(--available); }
+.col-stock.sold-out  { color: var(--gray-2); }
+.stock-dot { width: 5px; height: 5px; border-radius: 50%; flex-shrink: 0; }
+.available .stock-dot { background: var(--available); }
+.sold-out  .stock-dot { background: var(--gray-2); }
+
+/* Mobile-only genre column — hidden on desktop */
+.col-mobile-genre { display: none; }
+
+/* Desktop hover cover */
+.hover-cover {
+  pointer-events: none; position: fixed;
+  width: 152px; height: 152px; object-fit: cover;
+  border: 2px solid var(--border-s);
+  opacity: 0; transition: opacity .12s; z-index: 300;
+  transform: translate(20px, -50%);
+}
+.hover-cover.visible { opacity: 1; }
+
+/* Mobile tap cover overlay */
+.tap-cover {
+  position: fixed; z-index: 300;
+  width: 120px; height: 120px;
+  object-fit: cover;
+  border: 2px solid var(--border-s);
+  box-shadow: 0 4px 16px rgba(0,0,0,.2);
+  opacity: 0; pointer-events: none;
+  transition: opacity .15s;
+  transform: translate(-50%, -110%);
+}
+.tap-cover.visible { opacity: 1; }
+
+/* Skeleton rows */
+.skeleton-row {
+  display: grid; grid-template-columns: 1fr 172px 76px 88px;
+  padding: 14px 0; border-bottom: 1px solid var(--border); align-items: center;
+}
+.sk { height: 10px; }
+.load-error { padding: 48px 0; font-family: var(--mono); font-size: 11px; color: var(--gray-3); letter-spacing: .06em; }
+
+/* ─── Footer ──────────────────────────────── */
+.site-footer {
+  position: fixed; bottom: 0; left: 0; width: 100%;
+  background: var(--white); border-top: 1px solid var(--border);
+  height: var(--footer-h); z-index: 200;
+}
+.footer-inner {
+  max-width: var(--max-w); margin: 0 auto; padding: 0 var(--pad);
+  height: 100%; display: flex; align-items: center; justify-content: flex-end;
+}
+.footer-links a {
+  font-family: var(--mono); font-size: 9px;
+  letter-spacing: .1em; text-transform: uppercase;
+  color: var(--gray-3); transition: color .15s;
+}
+.footer-links a:hover { color: var(--black); }
+
+/* ─── Tablet ──────────────────────────────── */
+@media (max-width: 860px) {
+  :root { --pad: 20px; }
+  /* Collapse to: Title/Artist | Genre */
+  .catalog-header,
+  .catalog-row,
+  .skeleton-row { grid-template-columns: 1fr 100px; }
+  .catalog-header .col-format,
+  .catalog-header .col-stock,
+  .col-format, .col-stock, .col-genre { display: none; }
+  .col-mobile-genre {
+    display: block;
+    font-family: var(--mono); font-size: 9px;
+    color: var(--gray-3); text-transform: uppercase;
+    letter-spacing: .05em; padding: 12px 0;
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  }
+  .hover-cover { display: none; }
+  .featured-card { height: 280px; }
+  .featured-title { font-size: 22px; }
+}
+
+/* ─── Mobile ──────────────────────────────── */
+@media (max-width: 540px) {
+  :root { --pad: 16px; --header-h: 50px; --ticker-h: 26px; }
+  .site-logo-img { height: 26px; }
+  .cart-btn { padding: 5px 11px; font-size: 9px; }
+  .ticker-item { font-size: 9px; padding: 0 20px; }
+
+  /* Card stays grid (image left, info right) but shorter */
+  .featured-card { grid-template-columns: 40% 60%; height: 200px; }
+  .featured-desc { display: none !important; }
+  .featured-header-row { padding: 8px 12px; }
+  .featured-text-body { padding: 12px; }
+  .featured-cta-row { padding: 8px 12px; }
+  .featured-title { font-size: 15px; -webkit-line-clamp: 3; }
+  .featured-artist { font-size: 8px; margin-top: 5px; }
+  .carousel-btn { width: 20px; height: 20px; font-size: 15px; }
+  .featured-counter { display: none; }
+
+  .catalog-header,
+  .catalog-row,
+  .skeleton-row { grid-template-columns: 1fr 90px; }
+  .col-title-main { font-size: 12px; }
+  .col-title-sub  { font-size: 8px; }
+  .col-mobile-genre { font-size: 8px; }
+}
+</style>
+</head>
+<body>
+
+<header class="site-header">
+  <div class="header-inner">
+    <a href="index.html">
+      <img src="/images/late-records-logo.png" alt="Late Records" class="site-logo-img">
+    </a>
+    <div class="header-right">
+      <span class="header-open"><span class="open-dot"></span> Open</span>
+      <a href="cart.html" class="cart-btn">Cart (<span class="cart-count">0</span>)</a>
+    </div>
+  </div>
+</header>
+
+<!-- Ticker: outer is transparent, inner black band is bounded to content column -->
+<div class="ticker-wrap" id="tickerWrap">
+  <div class="ticker-inner">
+    <div class="ticker-band">
+      <div class="ticker-track" id="tickerTrack"></div>
+    </div>
+  </div>
+</div>
+
+<!-- Desktop hover cover -->
+<img id="hoverCover" class="hover-cover" src="" alt="">
+<!-- Mobile tap cover -->
+<img id="tapCover" class="tap-cover" src="" alt="">
+
+<div class="container">
+  <div class="section-rule"></div>
+
+  <!-- Featured card: outer box is static, only .featured-text-body fades -->
+  <div class="featured-card" id="featuredCard">
+
+    <div class="featured-img-col skel" id="featuredImgCol"></div>
+
+    <div class="featured-info-col">
+      <div class="featured-header-row">
+        <span class="featured-eyebrow">Staff Pick</span>
+        <div class="featured-nav-group">
+          <span class="featured-counter" id="featuredCounter">1 / 1</span>
+          <div class="carousel-nav">
+            <button class="carousel-btn" id="prevBtn" aria-label="Previous">&#8249;</button>
+            <button class="carousel-btn" id="nextBtn" aria-label="Next">&#8250;</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Only this element fades on carousel change -->
+      <div class="featured-text-body" id="featuredTextBody">
+        <div class="featured-title skel" id="featuredTitle" style="height:58px;width:82%;"></div>
+        <div class="featured-artist skel" id="featuredArtist" style="height:10px;width:52%;margin-top:10px;"></div>
+        <div class="featured-desc" id="featuredDesc"></div>
+      </div>
+
+      <div class="featured-cta-row">
+        <a href="#" class="featured-link" id="featuredLink">View Record &rarr;</a>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Catalog -->
+  <div class="catalog-header" style="margin-top:32px;">
+    <span>Title / Artist</span>
+    <span class="col-genre">Genre</span>
+    <span class="col-mobile-genre">Genre</span>
+    <span class="col-format">Format</span>
+    <span class="col-stock">Stock</span>
+  </div>
+
+  <ul class="catalog-list" id="catalogList">
+    <li class="skeleton-row"><div class="sk skel" style="width:55%"></div><div class="sk skel" style="width:65%"></div><div class="sk skel" style="width:40px"></div><div class="sk skel" style="width:56px"></div></li>
+    <li class="skeleton-row"><div class="sk skel" style="width:70%"></div><div class="sk skel" style="width:50%"></div><div class="sk skel" style="width:40px"></div><div class="sk skel" style="width:56px"></div></li>
+    <li class="skeleton-row"><div class="sk skel" style="width:45%"></div><div class="sk skel" style="width:72%"></div><div class="sk skel" style="width:40px"></div><div class="sk skel" style="width:56px"></div></li>
+  </ul>
+
+  <div class="load-error" id="loadError" style="display:none;">could_not_load_catalog — please refresh</div>
+</div>
+
+<footer class="site-footer">
+  <div class="footer-inner">
+    <div class="footer-links">
+      <a href="https://instagram.com" target="_blank" rel="noopener">Instagram &#8599;</a>
+    </div>
+  </div>
+</footer>
+
+<script>
+const LR = (() => {
+  const API_BASE = 'https://late-records.shop';
+  const api = {
+    async catalog() { const r = await fetch(`${API_BASE}/api/catalog`); if (!r.ok) throw new Error(); return r.json(); },
+    async album(id) { const r = await fetch(`${API_BASE}/api/album?id=${encodeURIComponent(id)}`); if (r.status === 404) return null; if (!r.ok) throw new Error(); return r.json(); },
+    async order(p)  { const r = await fetch(`${API_BASE}/api/order`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(p) }); return r.json(); }
+  };
+  const CART_KEY = 'lr_cart';
+  const cart = {
+    get()            { try { return JSON.parse(localStorage.getItem(CART_KEY)) || []; } catch { return []; } },
+    save(i)          { localStorage.setItem(CART_KEY, JSON.stringify(i)); cart._emit(); },
+    add(item)        { const i = cart.get(); const e = i.find(x => x.id === item.id); if (e) { if (e.qty < (item.stock || 1)) e.qty++; } else i.push({ ...item, qty: 1 }); cart.save(i); },
+    remove(id)       { cart.save(cart.get().filter(i => i.id !== id)); },
+    updateQty(id, d) { const i = cart.get(); const e = i.find(x => x.id === id); if (!e) return; e.qty = Math.max(1, Math.min(e.qty + d, e.stock || 99)); cart.save(i); },
+    clear()          { localStorage.removeItem(CART_KEY); cart._emit(); },
+    count()          { return cart.get().reduce((n, i) => n + i.qty, 0); },
+    subtotal()       { return cart.get().reduce((n, i) => n + i.price * i.qty, 0); },
+    shipping()       { const q = cart.count(); return q <= 2 ? 250 : q <= 5 ? 350 : 450; },
+    total()          { return cart.subtotal() + cart.shipping(); },
+    _emit()          { window.dispatchEvent(new CustomEvent('lr:cart:updated')); }
+  };
+  const ui = {
+    syncCartBadge() { document.querySelectorAll('.cart-count').forEach(e => { e.textContent = cart.count(); }); },
+    peso(n)  { return '₱' + Number(n).toLocaleString('en-PH'); },
+    modal(el, o) { if (el) el.classList.toggle('open', o); }
+  };
+  window.addEventListener('lr:cart:updated', () => ui.syncCartBadge());
+  document.addEventListener('DOMContentLoaded', () => {
+    ui.syncCartBadge();
+    document.addEventListener('keydown', e => {
+      if (e.key === 'Escape') document.querySelectorAll('.modal-overlay.open').forEach(el => el.classList.remove('open'));
+    });
+  });
+  return { api, cart, ui };
+})();
+</script>
+
+<script>
+document.addEventListener('DOMContentLoaded', async () => {
+  const listEl    = document.getElementById('catalogList');
+  const errorEl   = document.getElementById('loadError');
+  const hoverImg  = document.getElementById('hoverCover');
+  const tapImg    = document.getElementById('tapCover');
+  const tickerEl  = document.getElementById('tickerTrack');
+
+  let catalog = [], carouselItems = [], carouselIdx = 0;
+
+  try {
+    catalog = await LR.api.catalog();
+  } catch (e) {
+    listEl.innerHTML = '';
+    errorEl.style.display = 'block';
+    return;
+  }
+
+  const available = catalog.filter(a => a.status === 'available');
+  carouselItems = available.slice(0, 5);
+
+  /* ── Ticker ──────────────────────────────── */
+  const tickerItems = catalog.map(a => {
+    const label = a.status === 'available' ? 'In Stock' : 'Sold Out';
+    return `<span class="ticker-item">${label}: ${a.title} — ${a.artist}</span><span class="ticker-sep">·</span>`;
+  }).join('');
+  tickerEl.innerHTML = tickerItems + tickerItems; // duplicate for seamless loop
+
+  /* ── Featured card ───────────────────────── */
+  function renderFeatured(album) {
+    if (!album) return;
+
+    // Image swaps immediately — no fade on image, card box never moves
+    const imgCol = document.getElementById('featuredImgCol');
+    imgCol.className = 'featured-img-col';
+    imgCol.innerHTML = `<img src="/images/${album.album_id}.jpg" alt="${album.title}" onerror="this.parentElement.style.background='var(--gray-1)';this.remove()">`;
+
+    // Text
+    const titleEl   = document.getElementById('featuredTitle');
+    const artistEl  = document.getElementById('featuredArtist');
+    const descEl    = document.getElementById('featuredDesc');
+    const linkEl    = document.getElementById('featuredLink');
+    const counterEl = document.getElementById('featuredCounter');
+
+    titleEl.className  = 'featured-title';
+    artistEl.className = 'featured-artist';
+    titleEl.removeAttribute('style');
+    artistEl.removeAttribute('style');
+
+    titleEl.textContent  = album.title;
+    artistEl.textContent = album.artist;
+
+    const desc = (album.description || '').trim().split(/[.!?]/)[0].trim();
+    descEl.textContent = desc ? desc + '.' : '';
+
+    counterEl.textContent = `${carouselIdx + 1} / ${carouselItems.length}`;
+    linkEl.href = `/albums/album.html?id=${album.album_id}`;
+  }
+
+  if (carouselItems.length) renderFeatured(carouselItems[0]);
+
+  function goTo(idx) {
+    if (!carouselItems.length) return;
+    carouselIdx = ((idx % carouselItems.length) + carouselItems.length) % carouselItems.length;
+
+    // Fade ONLY the text body — card box is untouched
+    const textBody = document.getElementById('featuredTextBody');
+    textBody.classList.add('fading');
+    setTimeout(() => {
+      renderFeatured(carouselItems[carouselIdx]);
+      textBody.classList.remove('fading');
+    }, 160);
+  }
+
+  document.getElementById('prevBtn').addEventListener('click', () => goTo(carouselIdx - 1));
+  document.getElementById('nextBtn').addEventListener('click', () => goTo(carouselIdx + 1));
+
+  /* ── Catalog list ────────────────────────── */
+  listEl.innerHTML = '';
+  catalog.forEach(album => {
+    const isSold    = album.status !== 'available';
+    const genres    = (album.genre || '').split('||').map(g => g.trim()).filter(Boolean);
+    const mainGenre = genres[0] || '';
+    const stockCls  = isSold ? 'sold-out' : 'available';
+    const stockLbl  = isSold ? 'Sold Out' : 'Available';
+
+    const li = document.createElement('li');
+    li.innerHTML = `
+      <a href="/albums/album.html?id=${album.album_id}"
+         class="catalog-row${isSold ? ' sold-out' : ''}"
+         data-id="${album.album_id}">
+        <div class="col-title">
+          <div class="col-title-main">${album.title}</div>
+          <div class="col-title-sub">${album.artist}</div>
+        </div>
+        <div class="col-genre">${genres.slice(0,2).join(' · ')}</div>
+        <div class="col-mobile-genre">${mainGenre}</div>
+        <div class="col-format">Vinyl LP</div>
+        <div class="col-stock ${stockCls}">
+          <span class="stock-dot"></span>${stockLbl}
+        </div>
+      </a>`;
+    listEl.appendChild(li);
+  });
+
+  /* ── Desktop hover cover ─────────────────── */
+  const isTouchDevice = () => window.matchMedia('(hover: none)').matches;
+
+  listEl.addEventListener('mouseover', e => {
+    if (isTouchDevice()) return;
+    const row = e.target.closest('.catalog-row');
+    if (!row) return;
+    hoverImg.src = `/images/${row.dataset.id}.jpg`;
+    hoverImg.classList.add('visible');
+  });
+  listEl.addEventListener('mouseout', e => {
+    if (isTouchDevice()) return;
+    if (!e.target.closest('.catalog-row')) return;
+    hoverImg.classList.remove('visible');
+  });
+  document.addEventListener('mousemove', e => {
+    hoverImg.style.left = e.clientX + 'px';
+    hoverImg.style.top  = e.clientY + 'px';
+  });
+
+  /* ── Mobile tap cover ────────────────────────
+     Tap a row → small cover pops above the row.
+     Tap anywhere else → dismisses.
+     The tap still navigates to the album page normally.
+  ─────────────────────────────────────────── */
+  let activeTapRow = null;
+
+  listEl.addEventListener('touchstart', e => {
+    const row = e.target.closest('.catalog-row');
+    if (!row) return;
+
+    if (activeTapRow === row) {
+      // Second tap = navigate (let default happen)
+      tapImg.classList.remove('visible');
+      activeTapRow = null;
+      return;
+    }
+
+    // First tap = show cover, prevent navigation
+    e.preventDefault();
+    activeTapRow = row;
+
+    const rect = row.getBoundingClientRect();
+    const cx   = rect.left + rect.width / 2;
+    const ty   = rect.top + window.scrollY;
+
+    tapImg.src = `/images/${row.dataset.id}.jpg`;
+    tapImg.style.left = cx + 'px';
+    tapImg.style.top  = (ty - 8) + 'px';
+    tapImg.classList.add('visible');
+  }, { passive: false });
+
+  document.addEventListener('touchstart', e => {
+    if (!activeTapRow) return;
+    if (!e.target.closest('.catalog-row') && e.target !== tapImg) {
+      tapImg.classList.remove('visible');
+      activeTapRow = null;
+    }
+  });
+});
+</script>
+</body>
+</html>
