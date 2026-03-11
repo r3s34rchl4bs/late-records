@@ -19,7 +19,7 @@
   --border:    rgba(10,10,10,0.14);
   --border-s:  #0a0a0a;
   --mono:      'IBM Plex Mono', monospace;
-  --header-h:  56px;
+  --header-h:  58px;
   --ticker-h:  30px;
   --footer-h:  38px;
   --max-w:     1160px;
@@ -44,51 +44,56 @@ button { cursor: pointer; font-family: inherit; }
   padding: 0 var(--pad); height: 100%;
   display: flex; align-items: center; justify-content: space-between;
 }
-.site-logo-img { height: 30px; width: auto; display: block; }
-.header-right { display: flex; align-items: center; gap: 16px; }
+.site-logo-img { height: 34px; width: auto; display: block; }
+.header-right { display: flex; align-items: center; gap: 24px; }
+
+/* Store open indicator — sits to the left, separated from cart */
 .header-open {
-  display: flex; align-items: center; gap: 6px;
+  display: flex; align-items: center; gap: 7px;
   font-family: var(--mono); font-size: 9px;
-  letter-spacing: .1em; text-transform: uppercase; color: var(--gray-3);
+  letter-spacing: .12em; text-transform: uppercase; color: var(--gray-3);
 }
 .open-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--available); flex-shrink: 0; }
+
+/* Cart — no border, just text */
 .cart-btn {
   font-family: var(--mono); font-size: 10px;
   letter-spacing: .08em; text-transform: uppercase;
-  color: var(--black); border: 1.5px solid var(--border-s);
-  padding: 6px 14px; background: transparent; transition: all .15s;
+  color: var(--black);
+  background: transparent;
+  border: none; padding: 0;
+  transition: opacity .15s;
 }
-.cart-btn:hover { background: var(--black); color: var(--white); }
+.cart-btn:hover { opacity: .5; }
 
-/* ─── Ticker ──────────────────────────────────
-   Outer wrap is full-width but transparent.
-   The black box is bounded to the content column
-   (same max-w / pad as the header).
-   ─────────────────────────────────────────── */
+/* ─── Ticker ─────────────────────────────────────
+   Outer wrap is transparent — background color sits
+   only on .ticker-band which is bounded to the same
+   max-width / padding column as the header.
+   No border, no extra lines anywhere.
+   ─────────────────────────────────────────────── */
 .ticker-wrap {
   position: fixed;
   top: var(--header-h); left: 0; width: 100%;
   z-index: 190;
   height: var(--ticker-h);
-  background: transparent;          /* no bleed */
+  background: transparent;
   pointer-events: none;
 }
 .ticker-inner {
   max-width: var(--max-w); margin: 0 auto;
   padding: 0 var(--pad); height: 100%;
-  display: flex; align-items: center;
+  display: flex; align-items: stretch;
   pointer-events: all;
 }
 .ticker-band {
-  /* The actual black rectangle, same width as the content column */
   background: var(--black);
-  height: 100%; width: 100%;
-  overflow: hidden;
+  width: 100%; overflow: hidden;
   display: flex; align-items: center;
 }
 .ticker-track {
   display: flex; white-space: nowrap;
-  animation: ticker-scroll 35s linear infinite;
+  animation: ticker-scroll 38s linear infinite;
 }
 .ticker-track:hover { animation-play-state: paused; }
 .ticker-item {
@@ -96,42 +101,34 @@ button { cursor: pointer; font-family: inherit; }
   letter-spacing: .1em; text-transform: uppercase;
   color: var(--accent); padding: 0 28px; flex-shrink: 0;
 }
-.ticker-sep { font-family: var(--mono); font-size: 10px; color: #2a2a2a; padding: 0 2px; flex-shrink: 0; }
+.ticker-sep { font-family: var(--mono); font-size: 10px; color: #2a2a2a; flex-shrink: 0; }
 @keyframes ticker-scroll { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
 
-/* ─── Container ───────────────────────────── */
+/* ─── Container ───────────────────────────────── */
 .container {
   max-width: var(--max-w); margin: 0 auto;
   padding: calc(var(--header-h) + var(--ticker-h)) var(--pad) calc(var(--footer-h) + 48px);
 }
 .section-rule { border-bottom: 2px solid var(--border-s); }
 
-/* ─── Featured card ───────────────────────────
-   Card outer box is COMPLETELY STATIC.
-   No transition on the card itself — ever.
-   Only the .featured-text-body fades.
-   Fixed height set explicitly on desktop + tablet + mobile.
-   ─────────────────────────────────────────── */
+/* ─── Featured card ───────────────────────────────
+   Height is explicit and FIXED on every breakpoint.
+   The card element itself has NO transition — ever.
+   Only .featured-text-body fades on prev/next.
+   ─────────────────────────────────────────────── */
 .featured-card {
   display: grid;
   grid-template-columns: 42% 58%;
   border: 2px solid var(--border-s);
   border-top: none;
-  height: 320px;          /* FIXED — never changes, no transition */
-  /* NO transition here */
+  height: 320px;
 }
 
 .featured-img-col {
-  overflow: hidden;
-  background: var(--gray-1);
-  height: 100%;            /* fills exactly the fixed card height */
-  position: relative;
+  overflow: hidden; background: var(--gray-1);
+  height: 100%; position: relative;
 }
-.featured-img-col img {
-  width: 100%; height: 100%;
-  object-fit: cover; display: block;
-}
-/* dither overlay */
+.featured-img-col img { width: 100%; height: 100%; object-fit: cover; display: block; }
 .featured-img-col::after {
   content: ''; position: absolute; inset: 0;
   background-image: radial-gradient(circle, rgba(0,0,0,.75) 1px, transparent 1px);
@@ -169,10 +166,9 @@ button { cursor: pointer; font-family: inherit; }
 }
 .carousel-btn:hover { border-color: var(--border-s); color: var(--border-s); }
 
-/* Text body — this and ONLY this fades on carousel change */
+/* Only this fades on carousel change — nothing else */
 .featured-text-body {
-  padding: 20px 22px;
-  flex: 1; overflow: hidden;
+  padding: 20px 22px; flex: 1; overflow: hidden;
   display: flex; flex-direction: column;
   transition: opacity .16s ease;
 }
@@ -197,7 +193,6 @@ button { cursor: pointer; font-family: inherit; }
   display: -webkit-box;
   -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
 }
-
 .featured-cta-row {
   display: flex; align-items: center; justify-content: flex-end;
   padding: 13px 22px;
@@ -212,17 +207,17 @@ button { cursor: pointer; font-family: inherit; }
 }
 .featured-link:hover { opacity: .4; }
 
-/* ─── Skeleton ────────────────────────────── */
+/* ─── Skeleton ────────────────────────────────── */
 .skel {
   background: linear-gradient(90deg, var(--gray-1) 25%, var(--white) 50%, var(--gray-1) 75%);
   background-size: 200% 100%; animation: shimmer 1.4s infinite;
 }
 @keyframes shimmer { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
 
-/* ─── Catalog ─────────────────────────────── */
+/* ─── Catalog ─────────────────────────────────── */
 .catalog-header {
   display: grid;
-  grid-template-columns: 1fr 172px 76px 88px;
+  grid-template-columns: 1fr 160px 76px 88px;
   padding: 7px 0; border-bottom: 1px solid var(--border);
   font-family: var(--mono); font-size: 8px;
   letter-spacing: .16em; text-transform: uppercase; color: var(--gray-3);
@@ -230,7 +225,7 @@ button { cursor: pointer; font-family: inherit; }
 .catalog-list { list-style: none; }
 .catalog-row {
   display: grid;
-  grid-template-columns: 1fr 172px 76px 88px;
+  grid-template-columns: 1fr 160px 76px 88px;
   border-bottom: 1px solid var(--border);
   align-items: center; color: var(--black);
   transition: background .1s; position: relative;
@@ -239,19 +234,34 @@ button { cursor: pointer; font-family: inherit; }
 .catalog-row.sold-out { opacity: .38; }
 
 .col-title { padding: 12px 16px 12px 0; }
-.col-title-main { font-family: 'Inter', sans-serif; font-size: 13px; font-weight: 600; line-height: 1.3; letter-spacing: -.01em; }
-.col-title-sub  { font-family: var(--mono); font-size: 9px; color: var(--gray-3); text-transform: uppercase; letter-spacing: .06em; margin-top: 3px; }
+.col-title-main {
+  font-family: 'Inter', sans-serif; font-size: 13px; font-weight: 600;
+  line-height: 1.3; letter-spacing: -.01em;
+}
+.col-title-sub {
+  font-family: var(--mono); font-size: 9px; color: var(--gray-3);
+  text-transform: uppercase; letter-spacing: .06em; margin-top: 3px;
+}
+.col-genre {
+  font-family: var(--mono); font-size: 9px; color: var(--gray-3);
+  padding-right: 12px; letter-spacing: .04em;
+}
+/* Clickable genre links */
+.genre-link {
+  color: var(--gray-3); text-decoration: none;
+  transition: color .12s;
+}
+.genre-link:hover { color: var(--black); }
 
-.col-genre  { font-family: var(--mono); font-size: 9px; color: var(--gray-3); padding-right: 12px; letter-spacing: .04em; }
 .col-format { font-family: var(--mono); font-size: 9px; color: var(--gray-3); text-transform: uppercase; letter-spacing: .06em; }
-.col-stock  { display: flex; align-items: center; gap: 6px; font-family: var(--mono); font-size: 9px; letter-spacing: .08em; text-transform: uppercase; }
+.col-stock { display: flex; align-items: center; gap: 6px; font-family: var(--mono); font-size: 9px; letter-spacing: .08em; text-transform: uppercase; }
 .col-stock.available { color: var(--available); }
 .col-stock.sold-out  { color: var(--gray-2); }
 .stock-dot { width: 5px; height: 5px; border-radius: 50%; flex-shrink: 0; }
 .available .stock-dot { background: var(--available); }
 .sold-out  .stock-dot { background: var(--gray-2); }
 
-/* Mobile-only genre column — hidden on desktop */
+/* Mobile genre — hidden on desktop */
 .col-mobile-genre { display: none; }
 
 /* Desktop hover cover */
@@ -264,28 +274,18 @@ button { cursor: pointer; font-family: inherit; }
 }
 .hover-cover.visible { opacity: 1; }
 
-/* Mobile tap cover overlay */
-.tap-cover {
-  position: fixed; z-index: 300;
-  width: 120px; height: 120px;
-  object-fit: cover;
-  border: 2px solid var(--border-s);
-  box-shadow: 0 4px 16px rgba(0,0,0,.2);
-  opacity: 0; pointer-events: none;
-  transition: opacity .15s;
-  transform: translate(-50%, -110%);
-}
-.tap-cover.visible { opacity: 1; }
-
 /* Skeleton rows */
 .skeleton-row {
-  display: grid; grid-template-columns: 1fr 172px 76px 88px;
+  display: grid; grid-template-columns: 1fr 160px 76px 88px;
   padding: 14px 0; border-bottom: 1px solid var(--border); align-items: center;
 }
 .sk { height: 10px; }
-.load-error { padding: 48px 0; font-family: var(--mono); font-size: 11px; color: var(--gray-3); letter-spacing: .06em; }
+.load-error {
+  padding: 48px 0; font-family: var(--mono);
+  font-size: 11px; color: var(--gray-3); letter-spacing: .06em;
+}
 
-/* ─── Footer ──────────────────────────────── */
+/* ─── Footer ──────────────────────────────────── */
 .site-footer {
   position: fixed; bottom: 0; left: 0; width: 100%;
   background: var(--white); border-top: 1px solid var(--border);
@@ -302,21 +302,20 @@ button { cursor: pointer; font-family: inherit; }
 }
 .footer-links a:hover { color: var(--black); }
 
-/* ─── Tablet ──────────────────────────────── */
+/* ─── Tablet ──────────────────────────────────── */
 @media (max-width: 860px) {
   :root { --pad: 20px; }
-  /* Collapse to: Title/Artist | Genre */
   .catalog-header,
   .catalog-row,
-  .skeleton-row { grid-template-columns: 1fr 100px; }
+  .skeleton-row { grid-template-columns: 1fr 96px; }
   .catalog-header .col-format,
   .catalog-header .col-stock,
   .col-format, .col-stock, .col-genre { display: none; }
   .col-mobile-genre {
     display: block;
-    font-family: var(--mono); font-size: 9px;
-    color: var(--gray-3); text-transform: uppercase;
-    letter-spacing: .05em; padding: 12px 0;
+    font-family: var(--mono); font-size: 9px; color: var(--gray-3);
+    text-transform: uppercase; letter-spacing: .05em;
+    padding: 12px 0;
     white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
   }
   .hover-cover { display: none; }
@@ -324,30 +323,37 @@ button { cursor: pointer; font-family: inherit; }
   .featured-title { font-size: 22px; }
 }
 
-/* ─── Mobile ──────────────────────────────── */
+/* ─── Mobile ──────────────────────────────────── */
 @media (max-width: 540px) {
-  :root { --pad: 16px; --header-h: 50px; --ticker-h: 26px; }
-  .site-logo-img { height: 26px; }
-  .cart-btn { padding: 5px 11px; font-size: 9px; }
+  :root { --pad: 16px; --header-h: 52px; --ticker-h: 26px; }
+
+  .site-logo-img { height: 30px; }
+  .cart-btn { font-size: 9px; }
+  .header-open { font-size: 8px; }
   .ticker-item { font-size: 9px; padding: 0 20px; }
 
-  /* Card stays grid (image left, info right) but shorter */
+  /* Card: same side-by-side layout but shorter */
   .featured-card { grid-template-columns: 40% 60%; height: 200px; }
   .featured-desc { display: none !important; }
   .featured-header-row { padding: 8px 12px; }
   .featured-text-body { padding: 12px; }
   .featured-cta-row { padding: 8px 12px; }
   .featured-title { font-size: 15px; -webkit-line-clamp: 3; }
-  .featured-artist { font-size: 8px; margin-top: 5px; }
+  .featured-artist { font-size: 8px; margin-top: 4px; }
   .carousel-btn { width: 20px; height: 20px; font-size: 15px; }
   .featured-counter { display: none; }
 
+  /* Mobile catalog: Title/Artist | Genre — both columns aligned */
   .catalog-header,
   .catalog-row,
-  .skeleton-row { grid-template-columns: 1fr 90px; }
+  .skeleton-row { grid-template-columns: 1fr 88px; }
+
+  .catalog-header .col-mobile-genre,
+  .col-mobile-genre { display: block; text-align: right; }
+
   .col-title-main { font-size: 12px; }
   .col-title-sub  { font-size: 8px; }
-  .col-mobile-genre { font-size: 8px; }
+  .col-mobile-genre { font-size: 8px; padding: 12px 0; text-align: right; }
 }
 </style>
 </head>
@@ -359,14 +365,16 @@ button { cursor: pointer; font-family: inherit; }
       <img src="/images/late-records-logo.png" alt="Late Records" class="site-logo-img">
     </a>
     <div class="header-right">
-      <span class="header-open"><span class="open-dot"></span> Open</span>
+      <span class="header-open">
+        <span class="open-dot"></span> Store Open
+      </span>
       <a href="cart.html" class="cart-btn">Cart (<span class="cart-count">0</span>)</a>
     </div>
   </div>
 </header>
 
-<!-- Ticker: outer is transparent, inner black band is bounded to content column -->
-<div class="ticker-wrap" id="tickerWrap">
+<!-- Ticker: transparent outer, black band bounded to content column -->
+<div class="ticker-wrap">
   <div class="ticker-inner">
     <div class="ticker-band">
       <div class="ticker-track" id="tickerTrack"></div>
@@ -376,13 +384,11 @@ button { cursor: pointer; font-family: inherit; }
 
 <!-- Desktop hover cover -->
 <img id="hoverCover" class="hover-cover" src="" alt="">
-<!-- Mobile tap cover -->
-<img id="tapCover" class="tap-cover" src="" alt="">
 
 <div class="container">
   <div class="section-rule"></div>
 
-  <!-- Featured card: outer box is static, only .featured-text-body fades -->
+  <!-- Featured card -->
   <div class="featured-card" id="featuredCard">
 
     <div class="featured-img-col skel" id="featuredImgCol"></div>
@@ -399,10 +405,10 @@ button { cursor: pointer; font-family: inherit; }
         </div>
       </div>
 
-      <!-- Only this element fades on carousel change -->
+      <!-- Only this fades on carousel change -->
       <div class="featured-text-body" id="featuredTextBody">
-        <div class="featured-title skel" id="featuredTitle" style="height:58px;width:82%;"></div>
-        <div class="featured-artist skel" id="featuredArtist" style="height:10px;width:52%;margin-top:10px;"></div>
+        <div class="featured-title skel" id="featuredTitle" style="height:56px;width:80%;"></div>
+        <div class="featured-artist skel" id="featuredArtist" style="height:10px;width:50%;margin-top:10px;"></div>
         <div class="featured-desc" id="featuredDesc"></div>
       </div>
 
@@ -423,12 +429,29 @@ button { cursor: pointer; font-family: inherit; }
   </div>
 
   <ul class="catalog-list" id="catalogList">
-    <li class="skeleton-row"><div class="sk skel" style="width:55%"></div><div class="sk skel" style="width:65%"></div><div class="sk skel" style="width:40px"></div><div class="sk skel" style="width:56px"></div></li>
-    <li class="skeleton-row"><div class="sk skel" style="width:70%"></div><div class="sk skel" style="width:50%"></div><div class="sk skel" style="width:40px"></div><div class="sk skel" style="width:56px"></div></li>
-    <li class="skeleton-row"><div class="sk skel" style="width:45%"></div><div class="sk skel" style="width:72%"></div><div class="sk skel" style="width:40px"></div><div class="sk skel" style="width:56px"></div></li>
+    <li class="skeleton-row">
+      <div class="sk skel" style="width:55%"></div>
+      <div class="sk skel" style="width:60%"></div>
+      <div class="sk skel" style="width:40px"></div>
+      <div class="sk skel" style="width:52px"></div>
+    </li>
+    <li class="skeleton-row">
+      <div class="sk skel" style="width:70%"></div>
+      <div class="sk skel" style="width:48%"></div>
+      <div class="sk skel" style="width:40px"></div>
+      <div class="sk skel" style="width:52px"></div>
+    </li>
+    <li class="skeleton-row">
+      <div class="sk skel" style="width:45%"></div>
+      <div class="sk skel" style="width:65%"></div>
+      <div class="sk skel" style="width:40px"></div>
+      <div class="sk skel" style="width:52px"></div>
+    </li>
   </ul>
 
-  <div class="load-error" id="loadError" style="display:none;">could_not_load_catalog — please refresh</div>
+  <div class="load-error" id="loadError" style="display:none;">
+    could_not_load_catalog — please refresh
+  </div>
 </div>
 
 <footer class="site-footer">
@@ -463,8 +486,8 @@ const LR = (() => {
   };
   const ui = {
     syncCartBadge() { document.querySelectorAll('.cart-count').forEach(e => { e.textContent = cart.count(); }); },
-    peso(n)  { return '₱' + Number(n).toLocaleString('en-PH'); },
-    modal(el, o) { if (el) el.classList.toggle('open', o); }
+    peso(n)         { return '₱' + Number(n).toLocaleString('en-PH'); },
+    modal(el, o)    { if (el) el.classList.toggle('open', o); }
   };
   window.addEventListener('lr:cart:updated', () => ui.syncCartBadge());
   document.addEventListener('DOMContentLoaded', () => {
@@ -479,11 +502,10 @@ const LR = (() => {
 
 <script>
 document.addEventListener('DOMContentLoaded', async () => {
-  const listEl    = document.getElementById('catalogList');
-  const errorEl   = document.getElementById('loadError');
-  const hoverImg  = document.getElementById('hoverCover');
-  const tapImg    = document.getElementById('tapCover');
-  const tickerEl  = document.getElementById('tickerTrack');
+  const listEl   = document.getElementById('catalogList');
+  const errorEl  = document.getElementById('loadError');
+  const hoverImg = document.getElementById('hoverCover');
+  const tickerEl = document.getElementById('tickerTrack');
 
   let catalog = [], carouselItems = [], carouselIdx = 0;
 
@@ -499,29 +521,28 @@ document.addEventListener('DOMContentLoaded', async () => {
   carouselItems = available.slice(0, 5);
 
   /* ── Ticker ──────────────────────────────── */
-  const tickerItems = catalog.map(a => {
+  const tickerHTML = catalog.map(a => {
     const label = a.status === 'available' ? 'In Stock' : 'Sold Out';
     return `<span class="ticker-item">${label}: ${a.title} — ${a.artist}</span><span class="ticker-sep">·</span>`;
   }).join('');
-  tickerEl.innerHTML = tickerItems + tickerItems; // duplicate for seamless loop
+  tickerEl.innerHTML = tickerHTML + tickerHTML;
 
   /* ── Featured card ───────────────────────── */
   function renderFeatured(album) {
     if (!album) return;
 
-    // Image swaps immediately — no fade on image, card box never moves
+    // Swap image immediately — no transition on the card box
     const imgCol = document.getElementById('featuredImgCol');
     imgCol.className = 'featured-img-col';
     imgCol.innerHTML = `<img src="/images/${album.album_id}.jpg" alt="${album.title}" onerror="this.parentElement.style.background='var(--gray-1)';this.remove()">`;
 
-    // Text
     const titleEl   = document.getElementById('featuredTitle');
     const artistEl  = document.getElementById('featuredArtist');
     const descEl    = document.getElementById('featuredDesc');
     const linkEl    = document.getElementById('featuredLink');
     const counterEl = document.getElementById('featuredCounter');
 
-    titleEl.className  = 'featured-title';
+    titleEl.className = 'featured-title';
     artistEl.className = 'featured-artist';
     titleEl.removeAttribute('style');
     artistEl.removeAttribute('style');
@@ -541,13 +562,11 @@ document.addEventListener('DOMContentLoaded', async () => {
   function goTo(idx) {
     if (!carouselItems.length) return;
     carouselIdx = ((idx % carouselItems.length) + carouselItems.length) % carouselItems.length;
-
-    // Fade ONLY the text body — card box is untouched
-    const textBody = document.getElementById('featuredTextBody');
-    textBody.classList.add('fading');
+    const tb = document.getElementById('featuredTextBody');
+    tb.classList.add('fading');
     setTimeout(() => {
       renderFeatured(carouselItems[carouselIdx]);
-      textBody.classList.remove('fading');
+      tb.classList.remove('fading');
     }, 160);
   }
 
@@ -563,6 +582,14 @@ document.addEventListener('DOMContentLoaded', async () => {
     const stockCls  = isSold ? 'sold-out' : 'available';
     const stockLbl  = isSold ? 'Sold Out' : 'Available';
 
+    // Genre links — clickable, go to /genre.html?g=Jazz etc.
+    const genreLinksDesktop = genres.slice(0, 2)
+      .map(g => `<a href="/genre.html?g=${encodeURIComponent(g)}" class="genre-link" onclick="event.stopPropagation()">${g}</a>`)
+      .join(' · ');
+    const genreLinkMobile = mainGenre
+      ? `<a href="/genre.html?g=${encodeURIComponent(mainGenre)}" class="genre-link" onclick="event.stopPropagation()">${mainGenre}</a>`
+      : '';
+
     const li = document.createElement('li');
     li.innerHTML = `
       <a href="/albums/album.html?id=${album.album_id}"
@@ -572,8 +599,8 @@ document.addEventListener('DOMContentLoaded', async () => {
           <div class="col-title-main">${album.title}</div>
           <div class="col-title-sub">${album.artist}</div>
         </div>
-        <div class="col-genre">${genres.slice(0,2).join(' · ')}</div>
-        <div class="col-mobile-genre">${mainGenre}</div>
+        <div class="col-genre">${genreLinksDesktop}</div>
+        <div class="col-mobile-genre">${genreLinkMobile}</div>
         <div class="col-format">Vinyl LP</div>
         <div class="col-stock ${stockCls}">
           <span class="stock-dot"></span>${stockLbl}
@@ -583,63 +610,19 @@ document.addEventListener('DOMContentLoaded', async () => {
   });
 
   /* ── Desktop hover cover ─────────────────── */
-  const isTouchDevice = () => window.matchMedia('(hover: none)').matches;
-
   listEl.addEventListener('mouseover', e => {
-    if (isTouchDevice()) return;
     const row = e.target.closest('.catalog-row');
     if (!row) return;
     hoverImg.src = `/images/${row.dataset.id}.jpg`;
     hoverImg.classList.add('visible');
   });
   listEl.addEventListener('mouseout', e => {
-    if (isTouchDevice()) return;
     if (!e.target.closest('.catalog-row')) return;
     hoverImg.classList.remove('visible');
   });
   document.addEventListener('mousemove', e => {
     hoverImg.style.left = e.clientX + 'px';
     hoverImg.style.top  = e.clientY + 'px';
-  });
-
-  /* ── Mobile tap cover ────────────────────────
-     Tap a row → small cover pops above the row.
-     Tap anywhere else → dismisses.
-     The tap still navigates to the album page normally.
-  ─────────────────────────────────────────── */
-  let activeTapRow = null;
-
-  listEl.addEventListener('touchstart', e => {
-    const row = e.target.closest('.catalog-row');
-    if (!row) return;
-
-    if (activeTapRow === row) {
-      // Second tap = navigate (let default happen)
-      tapImg.classList.remove('visible');
-      activeTapRow = null;
-      return;
-    }
-
-    // First tap = show cover, prevent navigation
-    e.preventDefault();
-    activeTapRow = row;
-
-    const rect = row.getBoundingClientRect();
-    const cx   = rect.left + rect.width / 2;
-    const ty   = rect.top + window.scrollY;
-
-    tapImg.src = `/images/${row.dataset.id}.jpg`;
-    tapImg.style.left = cx + 'px';
-    tapImg.style.top  = (ty - 8) + 'px';
-    tapImg.classList.add('visible');
-  }, { passive: false });
-
-  document.addEventListener('touchstart', e => {
-    if (!activeTapRow) return;
-    if (!e.target.closest('.catalog-row') && e.target !== tapImg) {
-      tapImg.classList.remove('visible');
-      activeTapRow = null;
-    }
   });
 });
 </script>
