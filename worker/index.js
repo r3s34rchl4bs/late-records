@@ -104,39 +104,14 @@ async function handleOrder(request, env) {
     return json({ error: 'Invalid JSON' }, 400);
   }
 
-  // ── Turnstile verification ────────────────────────────────────────────────
-  const token = body.turnstileToken;
-  if (!token) return json({ error: 'Missing verification token' }, 400);
-
-  const verifyRes = await fetch('https://challenges.cloudflare.com/turnstile/v0/siteverify', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-    body: new URLSearchParams({
-      secret:   env.TURNSTILE_SECRET,
-      response: token,
-    })
-  });
-
-  const verify = await verifyRes.json();
-  // Bypassed for pages.dev testing — token validates on late-records.shop only
-  if (!verify.success && !request.headers.get('referer')?.includes('pages.dev')) {
-    return json({ error: 'Verification failed. Please try again.' }, 403);
-  }
-
   // ── Forward to Apps Script ────────────────────────────────────────────────
-  // Strip token before forwarding
-  const { turnstileToken: _t, ...payload } = body;
-
   const appsRes = await fetch(env.APPS_SCRIPT_URL, {
     method:  'POST',
     headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-    body:    JSON.stringify(payload)
+    body:    JSON.stringify(body)
   });
 
-  let result;
-  try { result = await appsRes.json(); } 
-  catch { return json({ success: false, error: 'Apps Script error' }, 500); }
-  if (result.ok === true) result.success = true;
+  const result = await appsRes.json();
   return json(result);
 }
 

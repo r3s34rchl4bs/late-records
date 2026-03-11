@@ -7,8 +7,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="style.css">
-<!-- Turnstile -->
-<script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
+
 <style>
 
 .checkout-page .cart-link { display: none; }
@@ -171,10 +170,6 @@
         Payment instructions and QR code will appear on the next page.
       </div>
 
-      <!-- Turnstile widget -->
-      <div style="margin-top:20px;min-height:65px;overflow:visible;">
-        <div class="cf-turnstile" data-sitekey="0x4AAAAAAACpBT7ijFgQum-H_" data-theme="light"></div>
-      </div>
     </form>
 
     <!-- ORDER SUMMARY -->
@@ -260,8 +255,6 @@ document.addEventListener('DOMContentLoaded', () => {
     if (!cart.length)          { alert('Your cart is empty.'); return; }
 
     // Get Turnstile token
-    const token = document.querySelector('[name="cf-turnstile-response"]')?.value;
-    if (!token) { alert('Please complete the security check.'); return; }
 
     const btn = document.getElementById('completeBtn');
     btn.disabled    = true;
@@ -276,7 +269,6 @@ document.addEventListener('DOMContentLoaded', () => {
         subtotal,
         shipping,
         total,
-        turnstileToken: token,
         items: cart.map(i => ({ id: i.id, title: i.title, qty: i.qty, price: i.price }))
       });
 
