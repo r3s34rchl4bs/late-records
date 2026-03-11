@@ -821,13 +821,13 @@ button { cursor: pointer; font-family: inherit; }
         <h3>Returns & Exchanges</h3>
         <p>Return requests accepted within 7 days of receiving your order.</p>
         <p>If your order arrives damaged or incorrect, contact us within 3 days with photos or an unboxing video. Once confirmed, we'll arrange a replacement or refund.</p>
-        <p>Email <strong><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="b2dbdcd4dd9cded3c6d79cc0d7d1ddc0d6c1f2d5dfd3dbde9cd1dddf">[email&#160;protected]</a></strong> with your order number.</p>
+        <p>Email <strong>info.late.records@gmail.com</strong> with your order number.</p>
       </div>
     </div>
   </div>
 </div>
 
-<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+<script>
 /**
  * Late Records — Shared Script
  * script.js — loaded by every page
@@ -1074,4 +1074,12 @@ function renderCart() {
 // Guide modal
 const guideModal = document.getElementById('guideModal');
 document.getElementById('modalClose').addEventListener('click', () => LR.ui.modal(guideModal, false));
-guideModal.add
+guideModal.addEventListener('click', e => { if (e.target === guideModal) LR.ui.modal(guideModal, false); });
+
+// Render immediately and on cart updates
+renderCart();
+window.addEventListener('lr:cart:updated', renderCart);
+
+</script>
+</body>
+</html>
