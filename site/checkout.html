@@ -884,9 +884,10 @@ document.addEventListener('DOMContentLoaded', () => {
         name, email, phone, address,
         shipping: LR.cart.shipping(),
         turnstileToken: token,
-        items: cart.map(i => ({ album_id: i.id, quantity: i.qty }))
+        items: cart.map(i => ({ id: i.id, album_id: i.id, title: i.title, qty: i.qty, quantity: i.qty }))
       });
 
+      console.log('Order result:', JSON.stringify(result));
       if (!result.success) throw new Error(result.error || 'Order failed');
 
       // Store for success page
