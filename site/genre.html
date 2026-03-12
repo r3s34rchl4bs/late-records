@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Genre — LATE RECORDS</title>
+<meta name="description" content="Curated vinyl records. Rare, used, and hard to find.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html, body {
+  font-family: 'Inter', system-ui, sans-serif;
+  background-color: #e2e2e2;
+  background-image: radial-gradient(circle, rgba(0,0,0,.08) 0.5px, transparent 0.5px);
+  background-size: 3px 3px;
+  color: #1a1a14;
+  -webkit-font-smoothing: antialiased;
+}
+
+img { display: block; max-width: 100%; }
+a   { color: inherit; text-decoration: none; }
+button { cursor: pointer; font-family: inherit; }
+
+/* ── Header ──────────────────────────────────────────────── */
+.fixed-header {
+  position: fixed; top: 0; left: 0; width: 100%;
+  background-color: #e2e2e2;
+  background-image: radial-gradient(circle, rgba(0,0,0,.08) 0.5px, transparent 0.5px);
+  background-size: 3px 3px;
+  z-index: 1000;
+  border-bottom: 1px solid rgba(26,26,20,.22);
+  height: 74px;
+}
+.header-inner {
+  max-width: 1200px; margin: 0 auto; padding: 0 30px;
+  display: flex; align-items: center; justify-content: space-between; height: 100%;
+}
+.header-logo { height: 44px; display: block; }
+.header-logo:hover { opacity: .5; transition: opacity .15s; }
+.cart-link {
+  font-size: 11px; font-weight: 500; letter-spacing: .07em;
+  text-transform: uppercase; color: #1a1a14;
+}
+.cart-link:hover { color: rgba(26,26,20,.5); }
+
+/* ── Container ───────────────────────────────────────────── */
+.container {
+  max-width: 1200px; margin: 0 auto; padding: 110px 30px 80px;
+}
+
+/* ── Genre pills ─────────────────────────────────────────── */
+.browse-label {
+  font-size: 11px; font-weight: 500; letter-spacing: .08em;
+  text-transform: uppercase; color: rgba(26,26,20,.38);
+  margin-bottom: 12px;
+}
+
+.genre-pills {
+  display: flex; flex-wrap: wrap; gap: 6px;
+  margin-bottom: 0;
+}
+
+.genre-pill {
+  font-size: 10px; font-weight: 500; letter-spacing: .06em;
+  text-transform: uppercase; border: 1px solid rgba(26,26,20,.22);
+  padding: 4px 10px; color: rgba(26,26,20,.45);
+  cursor: pointer; transition: all .15s; text-decoration: none;
+}
+.genre-pill:hover { color: #1a1a14; border-color: #1a1a14; }
+.genre-pill.active { background: #1a1a14; color: #e2e2e2; border-color: #1a1a14; }
+
+.section-divider {
+  border: none; border-top: 1px solid rgba(26,26,20,.1);
+  margin: 24px 0;
+}
+
+/* ── Table ───────────────────────────────────────────────── */
+.tbl { width: 100%; border-collapse: collapse; table-layout: fixed; }
+col.c-title  { width: auto; }
+col.c-format { width: 13%; }
+col.c-stock  { width: 15%; }
+
+.tbl thead th {
+  padding: 0 12px 10px 0; font-size: 11px; font-weight: 500;
+  letter-spacing: .09em; text-transform: uppercase; color: rgba(26,26,20,.48);
+  text-align: left; border-bottom: 1px solid rgba(26,26,20,.26); vertical-align: bottom;
+}
+.tbl thead th:first-child { padding-left: 0; }
+.tbl thead th.c-stock { text-align: right; padding-right: 0; }
+
+.tbl tbody tr { cursor: pointer; transition: background .1s; }
+.tbl tbody tr:hover td { background: rgba(0,0,0,.05); }
+.tbl tbody tr:hover .rec-title,
+.tbl tbody tr:hover .rec-artist { color: #1a1a14; }
+
+.tbl tbody td {
+  padding: 14px 12px 14px 0;
+  border-bottom: 1px solid rgba(26,26,20,.12); vertical-align: middle;
+}
+.tbl tbody td:first-child { padding-left: 0; }
+.tbl tbody td:last-child  { padding-right: 0; }
+
+.rec-title {
+  font-size: 14px; font-weight: 400; line-height: 1.25;
+  letter-spacing: -.01em; transition: color .15s;
+}
+.rec-artist {
+  font-size: 12px; font-weight: 400; color: rgba(26,26,20,.48);
+  margin-top: 3px; line-height: 1.4; transition: color .15s;
+}
+
+.rec-format {
+  font-size: 11px; font-weight: 400; letter-spacing: .05em;
+  text-transform: uppercase; color: rgba(26,26,20,.48);
+}
+
+.rec-stock {
+  display: flex; align-items: center; justify-content: flex-end;
+  gap: 6px; font-size: 11px; font-weight: 500;
+  letter-spacing: .06em; text-transform: uppercase;
+}
+.sdot { width: 5px; height: 5px; border-radius: 50%; flex-shrink: 0; }
+.sdot.a { background: #1a1a14; }
+.sdot.s { background: rgba(26,26,20,.28); }
+
+.tbl tbody tr.sold .rec-title  { color: rgba(26,26,20,.48); }
+.tbl tbody tr.sold .rec-artist { color: rgba(26,26,20,.28); }
+.tbl tbody tr.sold .rec-format { color: rgba(26,26,20,.28); }
+.tbl tbody tr.sold .rec-stock  { color: rgba(26,26,20,.28); }
+.tbl tbody tr.sold .sdot       { background: rgba(26,26,20,.28) !important; }
+
+.empty-state {
+  padding: 60px 0; font-size: 13px;
+  color: rgba(26,26,20,.38); letter-spacing: .02em;
+}
+
+/* ── Skeleton ────────────────────────────────────────────── */
+.sk {
+  display: inline-block; height: 9px; border-radius: 2px;
+  background: linear-gradient(90deg, rgba(0,0,0,.07) 25%, rgba(0,0,0,.13) 50%, rgba(0,0,0,.07) 75%);
+  background-size: 200% 100%; animation: sh 1.4s infinite;
+}
+@keyframes sh { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
+
+/* ── Responsive ──────────────────────────────────────────── */
+@media (max-width: 900px) {
+  col.c-stock { display: none; }
+  .tbl thead th.c-stock, .tbl tbody td.c-stock { display: none; }
+  col.c-format { width: auto; }
+  .tbl thead th.c-format { text-align: right; padding-right: 0; }
+  .tbl tbody  td.c-format { text-align: right; padding-right: 0; }
+}
+
+@media (max-width: 600px) {
+  .container    { padding: 94px 20px 80px; }
+  .header-inner { padding: 0 20px; }
+  col.c-stock { display: none; }
+  .tbl thead th.c-stock, .tbl tbody td.c-stock { display: none; }
+  col.c-format { width: auto; }
+  .tbl thead th.c-format { text-align: right; padding-right: 0; }
+  .tbl tbody  td.c-format { text-align: right; padding-right: 0; }
+  .rec-title  { font-size: 13px; }
+  .rec-artist { font-size: 11px; }
+}
+
+</style>
+</head>
+<body>
+
+<header class="fixed-header">
+  <div class="header-inner">
+    <a href="index.html">
+      <img src="images/late-records-logo.png" class="header-logo" alt="LATE RECORDS">
+    </a>
+    <a href="cart.html" class="cart-link">Cart (<span class="cart-count">0</span>)</a>
+  </div>
+</header>
+
+<div class="container">
+
+  <div class="browse-label">Browse</div>
+  <div class="genre-pills" id="genrePills">
+    <!-- pills injected by JS from real catalog -->
+  </div>
+
+  <hr class="section-divider">
+
+  <table class="tbl">
+    <colgroup>
+      <col class="c-title"><col class="c-format"><col class="c-stock">
+    </colgroup>
+    <thead>
+      <tr>
+        <th class="c-title">Title / Artist</th>
+        <th class="c-format">Format</th>
+        <th class="c-stock">Stock</th>
+      </tr>
+    </thead>
+    <tbody id="genreList">
+      <tr><td class="c-title"><div class="sk" style="width:55%;margin-bottom:8px"></div><br><div class="sk" style="width:30%"></div></td><td class="c-format"><div class="sk" style="width:55%"></div></td><td class="c-stock"><div class="sk" style="width:68%;float:right"></div></td></tr>
+      <tr><td class="c-title"><div class="sk" style="width:68%;margin-bottom:8px"></div><br><div class="sk" style="width:38%"></div></td><td class="c-format"><div class="sk" style="width:55%"></div></td><td class="c-stock"><div class="sk" style="width:68%;float:right"></div></td></tr>
+      <tr><td class="c-title"><div class="sk" style="width:44%;margin-bottom:8px"></div><br><div class="sk" style="width:24%"></div></td><td class="c-format"><div class="sk" style="width:55%"></div></td><td class="c-stock"><div class="sk" style="width:68%;float:right"></div></td></tr>
+    </tbody>
+  </table>
+
+</div>
+
+<script src="script.js"></script>
+<script>
+
+function splitPipe(val) {
+  return String(val || '').split('||').map(s => s.trim()).filter(Boolean);
+}
+
+const params   = new URLSearchParams(window.location.search);
+const rawGenre = params.get('g') || '';
+const activeGenre = rawGenre.toLowerCase();
+
+document.addEventListener('DOMContentLoaded', async () => {
+  try {
+    const catalog = await LR.api.catalog();
+
+    // Build unique genre list from real catalog
+    const genreSet = new Set();
+    catalog.forEach(a => splitPipe(a.genre).forEach(g => genreSet.add(g)));
+    const allGenres = [...genreSet].sort();
+
+    // Render pills
+    const pillsEl = document.getElementById('genrePills');
+    pillsEl.innerHTML = allGenres.map(g => {
+      const isActive = g.toLowerCase() === activeGenre;
+      return `<a class="genre-pill${isActive ? ' active' : ''}"
+                 href="genre.html?g=${encodeURIComponent(g.toLowerCase())}">${g}</a>`;
+    }).join('');
+
+    // Set page title
+    const displayGenre = rawGenre
+      ? rawGenre.replace(/\b\w/g, c => c.toUpperCase())
+      : (allGenres[0] || 'Genre');
+    document.title = `${displayGenre} — LATE RECORDS`;
+
+    // Filter & render table
+    const filtered = catalog
+      .filter(a => splitPipe(a.genre).some(g => g.toLowerCase() === activeGenre))
+      .sort((a, b) => a.artist.localeCompare(b.artist));
+
+    const tbody = document.getElementById('genreList');
+
+    if (!filtered.length) {
+      tbody.innerHTML = `<tr><td colspan="3" class="empty-state">No records found for this genre.</td></tr>`;
+    } else {
+      tbody.innerHTML = filtered.map(item => {
+        const sold   = item.status !== 'available';
+        const format = (item.format || 'LP').trim();
+        return `
+          <tr class="${sold ? 'sold' : ''}" onclick="location.href='albums/album.html?id=${item.album_id}'">
+            <td class="c-title">
+              <div class="rec-title">${item.title}</div>
+              <div class="rec-artist">${item.artist}</div>
+            </td>
+            <td class="c-format"><span class="rec-format">${format}</span></td>
+            <td class="c-stock">
+              <div class="rec-stock">
+                <span class="sdot ${sold ? 's' : 'a'}"></span>
+                <span>${sold ? 'Sold' : 'Avail'}</span>
+              </div>
+            </td>
+          </tr>`;
+      }).join('');
+    }
+
+  } catch(e) {
+    document.getElementById('genreList').innerHTML =
+      `<tr><td colspan="3" style="padding:40px 0;font-size:13px;color:rgba(26,26,20,.48)">Could not load catalog. Please refresh.</td></tr>`;
+  }
+});
+
+</script>
+</body>
+</html>

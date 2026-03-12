@@ -7,10 +7,9 @@
 <meta name="description" content="Curated vinyl records. Rare, used, and hard to find.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="style.css">
 <style>
 
-/* ── Page overrides ──────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
 html, body {
   font-family: 'Inter', system-ui, sans-serif;
@@ -18,136 +17,178 @@ html, body {
   background-image: radial-gradient(circle, rgba(0,0,0,.08) 0.5px, transparent 0.5px);
   background-size: 3px 3px;
   color: #1a1a14;
+  -webkit-font-smoothing: antialiased;
 }
 
+img { display: block; max-width: 100%; }
+a   { color: inherit; text-decoration: none; }
+button { cursor: pointer; font-family: inherit; }
+
+/* ── Header ──────────────────────────────────────────────── */
 .fixed-header {
+  position: fixed; top: 0; left: 0; width: 100%;
   background-color: #e2e2e2;
   background-image: radial-gradient(circle, rgba(0,0,0,.08) 0.5px, transparent 0.5px);
   background-size: 3px 3px;
-  border-bottom-color: rgba(26,26,20,.22);
+  z-index: 1000;
+  border-bottom: 1px solid rgba(26,26,20,.22);
+  height: 74px;
 }
-
-.header-logo       { height: 44px; filter: none; }
+.header-inner {
+  max-width: 1200px; margin: 0 auto; padding: 0 30px;
+  display: flex; align-items: center; justify-content: space-between; height: 100%;
+}
+.header-logo { height: 44px; display: block; }
 .header-logo:hover { opacity: .5; transition: opacity .15s; }
-
 .cart-link {
-  border: none;
-  padding: 0;
-  background: none;
-  font-family: 'Inter', system-ui, sans-serif;
-  font-size: 11px;
-  font-weight: 500;
-  letter-spacing: .07em;
-  text-transform: uppercase;
-  color: #1a1a14;
+  font-size: 11px; font-weight: 500; letter-spacing: .07em;
+  text-transform: uppercase; color: #1a1a14;
 }
-.cart-link:hover { background: none; color: rgba(26,26,20,.5); }
+.cart-link:hover { color: rgba(26,26,20,.5); }
 
-.fixed-footer { display: none; }
-.container    { padding-bottom: 80px; }
+/* ── Container ───────────────────────────────────────────── */
+.container {
+  max-width: 1200px; margin: 0 auto; padding: 110px 30px 80px;
+}
+
+/* ── Carousel ────────────────────────────────────────────── */
+.carousel-section { margin-bottom: 40px; }
+
+.carousel-viewport {
+  height: 220px; overflow: hidden; position: relative;
+}
+.carousel-track {
+  display: flex; height: 100%;
+  transition: transform .38s cubic-bezier(.4,0,.2,1);
+}
+
+.carousel-card {
+  min-width: 100%; height: 100%;
+  display: flex; flex-direction: column;
+  position: relative; cursor: default;
+}
+
+.card-inner {
+  width: 100%; padding: 22px 0 20px; height: 100%;
+  display: flex; flex-direction: column; justify-content: space-between;
+  position: relative;
+}
+
+.carousel-nav {
+  position: absolute; top: 22px; right: 0;
+  display: flex; align-items: center; gap: 5px; z-index: 2;
+}
+.carousel-counter {
+  font-size: 10px; color: rgba(26,26,20,.35);
+  min-width: 28px; text-align: center;
+  font-variant-numeric: tabular-nums; letter-spacing: .04em;
+}
+.carousel-btn {
+  width: 26px; height: 26px;
+  border: 1px solid rgba(26,26,20,.2); background: transparent;
+  cursor: pointer; display: flex; align-items: center; justify-content: center;
+  font-size: 13px; color: #1a1a14; transition: all .15s;
+}
+.carousel-btn:hover { background: #1a1a14; color: #e2e2e2; border-color: #1a1a14; }
+.carousel-btn:disabled { opacity: .22; cursor: not-allowed; }
+.carousel-btn:disabled:hover { background: transparent; color: #1a1a14; border-color: rgba(26,26,20,.2); }
+
+.card-top { flex: 1; min-height: 0; padding-right: 110px; }
+
+.card-staff-pick {
+  font-size: 9px; font-weight: 600; letter-spacing: .12em;
+  text-transform: uppercase; color: rgba(26,26,20,.3); margin-bottom: 10px;
+}
+.card-artist {
+  font-size: 11px; font-weight: 500; letter-spacing: .06em;
+  text-transform: uppercase; color: rgba(26,26,20,.42); margin-bottom: 6px;
+}
+.card-title {
+  font-size: 22px; font-weight: 600; line-height: 1.2;
+  letter-spacing: -.02em; margin-bottom: 10px; word-break: break-word;
+  color: rgba(26,26,20,.88); transition: color .15s;
+}
+.card-tags {
+  display: flex; gap: 5px; flex-wrap: wrap;
+  align-items: center; margin-bottom: 10px;
+}
+.card-tag {
+  font-size: 9px; font-weight: 500; letter-spacing: .07em;
+  text-transform: uppercase; border: 1px solid rgba(26,26,20,.24);
+  padding: 3px 7px; color: rgba(26,26,20,.45);
+  cursor: pointer; text-decoration: none;
+}
+.card-tag:hover { color: #1a1a14; border-color: #1a1a14; }
+.card-desc {
+  font-size: 13px; line-height: 1.65;
+  color: rgba(26,26,20,.52); font-weight: 400;
+  display: -webkit-box; -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical; overflow: hidden;
+}
+
+.card-bottom {
+  display: flex; align-items: center; justify-content: flex-end;
+  margin-top: 12px; flex-shrink: 0;
+}
 
 /* ── Table ───────────────────────────────────────────────── */
-
-.tbl {
-  width: 100%;
-  border-collapse: collapse;
-  table-layout: fixed;
-  font-family: 'Inter', system-ui, sans-serif;
-}
-
+.tbl { width: 100%; border-collapse: collapse; table-layout: fixed; }
 col.c-title  { width: auto; }
 col.c-genre  { width: 22%; }
 col.c-format { width: 13%; }
 col.c-stock  { width: 15%; }
 
-/* Header */
 .tbl thead th {
-  padding: 0 12px 10px 0;
-  font-size: 11px;
-  font-weight: 500;
-  letter-spacing: .09em;
-  text-transform: uppercase;
-  color: rgba(26,26,20,.48);
-  text-align: left;
-  border-bottom: 1px solid rgba(26,26,20,.26);
-  vertical-align: bottom;
+  padding: 0 12px 10px 0; font-size: 11px; font-weight: 500;
+  letter-spacing: .09em; text-transform: uppercase; color: rgba(26,26,20,.48);
+  text-align: left; border-bottom: 1px solid rgba(26,26,20,.26); vertical-align: bottom;
 }
 .tbl thead th:first-child { padding-left: 0; }
-.tbl thead th.c-stock     { text-align: right; padding-right: 0; }
+.tbl thead th.c-stock { text-align: right; padding-right: 0; }
 
-/* Rows */
-.tbl tbody tr {
-  cursor: pointer;
-  transition: background .1s;
-}
+.tbl tbody tr { cursor: pointer; transition: background .1s; }
 .tbl tbody tr:hover td { background: rgba(0,0,0,.05); }
+.tbl tbody tr:hover .rec-title,
+.tbl tbody tr:hover .rec-artist { color: #1a1a14; }
 
 .tbl tbody td {
   padding: 14px 12px 14px 0;
-  border-bottom: 1px solid rgba(26,26,20,.12);
-  vertical-align: middle;
+  border-bottom: 1px solid rgba(26,26,20,.12); vertical-align: middle;
 }
 .tbl tbody td:first-child { padding-left: 0; }
 .tbl tbody td:last-child  { padding-right: 0; }
 
-/* Content */
 .rec-title {
-  font-size: 15px;
-  font-weight: 500;
-  line-height: 1.25;
-  letter-spacing: -.01em;
+  font-size: 14px; font-weight: 400; line-height: 1.25;
+  letter-spacing: -.01em; transition: color .15s;
 }
 .rec-artist {
-  font-size: 12px;
-  font-weight: 400;
-  color: rgba(26,26,20,.48);
-  margin-top: 3px;
-  line-height: 1.4;
+  font-size: 12px; font-weight: 400; color: rgba(26,26,20,.48);
+  margin-top: 3px; line-height: 1.4; transition: color .15s;
 }
 
 .genre-tag {
-  display: inline-block;
-  font-size: 10px;
-  font-weight: 500;
-  letter-spacing: .06em;
-  text-transform: uppercase;
-  color: rgba(26,26,20,.48);
-  border: 1px solid rgba(26,26,20,.32);
-  padding: 3px 7px;
-  line-height: 1.4;
-  white-space: nowrap;
-  cursor: pointer;
-  transition: color .15s, border-color .15s;
+  display: inline-block; font-size: 10px; font-weight: 500; letter-spacing: .06em;
+  text-transform: uppercase; color: rgba(26,26,20,.48); border: 1px solid rgba(26,26,20,.32);
+  padding: 3px 7px; line-height: 1.4; white-space: nowrap; cursor: pointer;
+  transition: color .15s, border-color .15s; text-decoration: none;
 }
 .genre-tag:hover { color: #1a1a14; border-color: #1a1a14; }
 
 .rec-format {
-  font-size: 11px;
-  font-weight: 400;
-  letter-spacing: .05em;
-  text-transform: uppercase;
-  color: rgba(26,26,20,.48);
+  font-size: 11px; font-weight: 400; letter-spacing: .05em;
+  text-transform: uppercase; color: rgba(26,26,20,.48);
 }
 
 .rec-stock {
-  display: flex;
-  align-items: center;
-  justify-content: flex-end;
-  gap: 6px;
-  font-size: 11px;
-  font-weight: 500;
-  letter-spacing: .06em;
-  text-transform: uppercase;
+  display: flex; align-items: center; justify-content: flex-end;
+  gap: 6px; font-size: 11px; font-weight: 500;
+  letter-spacing: .06em; text-transform: uppercase;
 }
-.sdot {
-  width: 5px; height: 5px;
-  border-radius: 50%;
-  flex-shrink: 0;
-}
+.sdot { width: 5px; height: 5px; border-radius: 50%; flex-shrink: 0; }
 .sdot.a { background: #1a1a14; }
 .sdot.s { background: rgba(26,26,20,.28); }
 
-/* Sold-out dimming */
 .tbl tbody tr.sold .rec-title  { color: rgba(26,26,20,.48); }
 .tbl tbody tr.sold .rec-artist { color: rgba(26,26,20,.28); }
 .tbl tbody tr.sold .genre-tag  { color: rgba(26,26,20,.28); border-color: rgba(26,26,20,.16); }
@@ -155,33 +196,45 @@ col.c-stock  { width: 15%; }
 .tbl tbody tr.sold .rec-stock  { color: rgba(26,26,20,.28); }
 .tbl tbody tr.sold .sdot       { background: rgba(26,26,20,.28) !important; }
 
-/* ── Mobile ──────────────────────────────────────────────── */
-@media (max-width: 900px) {
-  col.c-format, col.c-stock { display: none; }
-
-  .tbl thead th.c-format,
-  .tbl thead th.c-stock,
-  .tbl tbody  td.c-format,
-  .tbl tbody  td.c-stock  { display: none; }
-
-  col.c-genre           { width: auto; }
-  .tbl thead th.c-genre { text-align: right; padding-right: 0; }
-  .tbl tbody  td.c-genre{ text-align: right; padding-right: 0; }
-}
-
 /* ── Skeleton ────────────────────────────────────────────── */
 .sk {
-  display: inline-block;
-  height: 9px;
-  border-radius: 2px;
-  background: linear-gradient(90deg,
-    rgba(0,0,0,.07) 25%, rgba(0,0,0,.13) 50%, rgba(0,0,0,.07) 75%);
-  background-size: 200% 100%;
-  animation: sh 1.4s infinite;
+  display: inline-block; height: 9px; border-radius: 2px;
+  background: linear-gradient(90deg, rgba(0,0,0,.07) 25%, rgba(0,0,0,.13) 50%, rgba(0,0,0,.07) 75%);
+  background-size: 200% 100%; animation: sh 1.4s infinite;
 }
-@keyframes sh {
-  0%   { background-position: 200% 0; }
-  100% { background-position: -200% 0; }
+@keyframes sh { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
+
+/* ── Responsive ──────────────────────────────────────────── */
+@media (max-width: 900px) {
+  col.c-format, col.c-stock { display: none; }
+  .tbl thead th.c-format, .tbl thead th.c-stock,
+  .tbl tbody td.c-format, .tbl tbody td.c-stock { display: none; }
+  col.c-genre { width: auto; }
+  .tbl thead th.c-genre { text-align: right; padding-right: 0; }
+  .tbl tbody  td.c-genre { text-align: right; padding-right: 0; }
+  .carousel-viewport { height: 230px; }
+  .card-title  { font-size: 19px; }
+  .card-artist { font-size: 10px; }
+  .card-desc   { font-size: 12px; }
+  .rec-title   { font-size: 14px; }
+  .rec-artist  { font-size: 11px; }
+}
+
+@media (max-width: 600px) {
+  .container    { padding: 94px 20px 80px; }
+  .header-inner { padding: 0 20px; }
+  .card-inner   { padding: 18px 0 16px; }
+  .carousel-nav { right: 0; top: 18px; }
+  .carousel-viewport { height: 260px; }
+  .card-top     { padding-right: 90px; }
+  .card-staff-pick { font-size: 8px; }
+  .card-artist     { font-size: 10px; }
+  .card-title      { font-size: 17px; }
+  .card-desc       { font-size: 12px; }
+  .card-tag        { font-size: 9px; }
+  col.c-format, col.c-stock { display: none; }
+  .tbl thead th.c-format, .tbl thead th.c-stock,
+  .tbl tbody td.c-format, .tbl tbody td.c-stock { display: none; }
 }
 
 </style>
@@ -198,12 +251,30 @@ col.c-stock  { width: 15%; }
 </header>
 
 <div class="container">
+
+  <!-- CAROUSEL -->
+  <section class="carousel-section">
+    <div class="carousel-viewport">
+      <div class="carousel-track" id="carouselTrack">
+        <!-- skeleton card shown while loading -->
+        <div class="carousel-card">
+          <div class="card-inner">
+            <div class="card-top">
+              <div class="sk" style="width:8%;margin-bottom:10px"></div>
+              <div class="sk" style="width:12%;margin-bottom:8px"></div>
+              <div class="sk" style="width:42%;margin-bottom:12px;height:22px"></div>
+              <div class="sk" style="width:70%"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- TABLE -->
   <table class="tbl">
     <colgroup>
-      <col class="c-title">
-      <col class="c-genre">
-      <col class="c-format">
-      <col class="c-stock">
+      <col class="c-title"><col class="c-genre"><col class="c-format"><col class="c-stock">
     </colgroup>
     <thead>
       <tr>
@@ -221,46 +292,109 @@ col.c-stock  { width: 15%; }
       <tr><td class="c-title"><div class="sk" style="width:50%;margin-bottom:8px"></div><br><div class="sk" style="width:28%"></div></td><td class="c-genre"><div class="sk" style="width:72%"></div></td><td class="c-format"><div class="sk" style="width:55%"></div></td><td class="c-stock"><div class="sk" style="width:68%;float:right"></div></td></tr>
     </tbody>
   </table>
+
 </div>
 
 <script src="script.js"></script>
 <script>
+
+function splitPipe(val) {
+  return String(val || '').split('||').map(s => s.trim()).filter(Boolean);
+}
+
+function buildCarousel(albums) {
+  const featured = albums.filter(a => String(a.featured).toLowerCase() === 'yes').slice(0, 5);
+  const cards = featured.length >= 1 ? featured : albums.slice(0, 5);
+  const track = document.getElementById('carouselTrack');
+  let current = 0;
+
+  track.innerHTML = ''; // clear skeleton
+
+  cards.forEach((album, i) => {
+    const tags     = splitPipe(album.genre).slice(0, 2);
+    const descText = album.description || '';
+    const albumUrl = `albums/album.html?id=${album.album_id}`;
+
+    const card = document.createElement('div');
+    card.className = 'carousel-card';
+    card.innerHTML = `
+      <div class="card-inner">
+        ${i === 0 ? `
+        <div class="carousel-nav">
+          <button class="carousel-btn" id="prevBtn" disabled>&#8249;</button>
+          <span class="carousel-counter" id="counter">1 / ${cards.length}</span>
+          <button class="carousel-btn" id="nextBtn" ${cards.length === 1 ? 'disabled' : ''}>&#8250;</button>
+        </div>` : ''}
+        <div class="card-top">
+          <div class="card-staff-pick">Staff Pick</div>
+          <div class="card-artist">${album.artist}</div>
+          <div class="card-title">${album.title}</div>
+          <div class="card-tags">
+            ${tags.map(t => `<a class="card-tag" href="genre.html?g=${encodeURIComponent(t.toLowerCase())}" onclick="event.stopPropagation()">${t}</a>`).join('')}
+          </div>
+          ${descText ? `<div class="card-desc">${descText}</div>` : ''}
+        </div>
+        <div class="card-bottom">
+          <a href="${albumUrl}" class="card-view-btn">View Record</a>
+        </div>
+      </div>`;
+    track.appendChild(card);
+  });
+
+  function goTo(index) {
+    current = index;
+    track.style.transform = `translateX(-${current * 100}%)`;
+    document.getElementById('counter').textContent = `${current + 1} / ${cards.length}`;
+    document.getElementById('prevBtn').disabled = current === 0;
+    document.getElementById('nextBtn').disabled = current === cards.length - 1;
+  }
+
+  requestAnimationFrame(() => {
+    document.getElementById('prevBtn')?.addEventListener('click', e => { e.stopPropagation(); if (current > 0) goTo(current - 1); });
+    document.getElementById('nextBtn')?.addEventListener('click', e => { e.stopPropagation(); if (current < cards.length - 1) goTo(current + 1); });
+  });
+}
+
+function buildTable(albums) {
+  const sorted = [...albums].sort((a, b) => a.artist.localeCompare(b.artist));
+  const tbody  = document.getElementById('catalogList');
+  tbody.innerHTML = sorted.map(item => {
+    const sold   = item.status !== 'available';
+    const genre  = splitPipe(item.genre)[0] || '';
+    const format = (item.format || 'LP').trim();
+    return `
+      <tr class="${sold ? 'sold' : ''}" onclick="location.href='albums/album.html?id=${item.album_id}'">
+        <td class="c-title">
+          <div class="rec-title">${item.title}</div>
+          <div class="rec-artist">${item.artist}</div>
+        </td>
+        <td class="c-genre">
+          <a class="genre-tag" href="genre.html?g=${encodeURIComponent(genre.toLowerCase())}"
+             onclick="event.stopPropagation()">${genre}</a>
+        </td>
+        <td class="c-format"><span class="rec-format">${format}</span></td>
+        <td class="c-stock">
+          <div class="rec-stock">
+            <span class="sdot ${sold ? 's' : 'a'}"></span>
+            <span>${sold ? 'Sold' : 'Avail'}</span>
+          </div>
+        </td>
+      </tr>`;
+  }).join('');
+}
+
 document.addEventListener('DOMContentLoaded', async () => {
-  const tbody = document.getElementById('catalogList');
   try {
     const catalog = await LR.api.catalog();
-    tbody.innerHTML = catalog.map(item => {
-      const sold   = item.status !== 'available';
-      const genre  = (item.genre  || '').split('||')[0].trim();
-      const format = (item.format || 'LP').trim();
-      return `
-        <tr class="${sold ? 'sold' : ''}"
-            onclick="location.href='albums/album.html?id=${item.album_id}'">
-          <td class="c-title">
-            <div class="rec-title">${item.title}</div>
-            <div class="rec-artist">${item.artist}</div>
-          </td>
-          <td class="c-genre">
-            <span class="genre-tag"
-              onclick="event.stopPropagation();location.href='genre.html?g=${encodeURIComponent(genre.toLowerCase())}'">
-              ${genre}
-            </span>
-          </td>
-          <td class="c-format">
-            <span class="rec-format">${format}</span>
-          </td>
-          <td class="c-stock">
-            <div class="rec-stock">
-              <span class="sdot ${sold ? 's' : 'a'}"></span>
-              <span>${sold ? 'Sold Out' : 'Available'}</span>
-            </div>
-          </td>
-        </tr>`;
-    }).join('');
+    buildCarousel(catalog);
+    buildTable(catalog);
   } catch(e) {
-    tbody.innerHTML = `<tr><td colspan="4" style="padding:40px 0;font-size:13px;color:rgba(26,26,20,.48)">Could not load catalog. Please refresh.</td></tr>`;
+    document.getElementById('carouselTrack').innerHTML = '';
+    document.getElementById('catalogList').innerHTML =
+      `<tr><td colspan="4" style="padding:40px 0;font-size:13px;color:rgba(26,26,20,.48)">Could not load catalog. Please refresh.</td></tr>`;
   }
 });
+
 </script>
 </body>
 </html>

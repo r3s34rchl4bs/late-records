@@ -7,7 +7,7 @@
  *   TURNSTILE_SECRET  — Cloudflare Turnstile secret key
  */
 
-const CACHE_TTL  = 300;           // 5 minutes
+const CACHE_TTL  = 120;           // 2 minutes
 const CACHE_KEY  = 'https://late-records-cache/catalog';
 const CORS_HEADERS = {
   'Access-Control-Allow-Origin':  '*',
@@ -112,7 +112,8 @@ async function handleOrder(request, env) {
   });
 
   const result = await appsRes.json();
-  return json(result);
+  // Normalize: Apps Script returns {success:true}, we expose {ok:true}
+  return json({ ok: result.success === true, ...result });
 }
 
 // ── Helpers ────────────────────────────────────────────────────────────────────
