@@ -5,131 +5,124 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Cart — LATE RECORDS</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
-<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Symbols+2&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="style.css">
 <style>
 
-.page-title { font-size: 28px; font-weight: 600; margin-bottom: 30px; }
+html, body {
+  font-family: 'Inter', system-ui, sans-serif;
+  background-color: #e2e2e2;
+  background-image: radial-gradient(circle, rgba(0,0,0,.08) 0.5px, transparent 0.5px);
+  background-size: 3px 3px;
+  color: #1a1a14;
+}
+.fixed-header {
+  background-color: #e2e2e2;
+  background-image: radial-gradient(circle, rgba(0,0,0,.08) 0.5px, transparent 0.5px);
+  background-size: 3px 3px;
+  border-bottom-color: rgba(26,26,20,.22);
+}
+.header-logo       { height: 44px; filter: none; }
+.header-logo:hover { opacity: .5; transition: opacity .15s; }
+.cart-link {
+  border: none; padding: 0; background: none;
+  font-family: 'Inter', system-ui, sans-serif;
+  font-size: 11px; font-weight: 500;
+  letter-spacing: .07em; text-transform: uppercase; color: #1a1a14;
+}
+.cart-link:hover { background: none; color: rgba(26,26,20,.5); }
+.fixed-footer { display: none; }
+.container    { padding-bottom: 80px; }
 
-/* ── Cart items ───────────────────────────────────────────── */
+.page-title {
+  font-size: 26px; font-weight: 600; margin-bottom: 32px;
+  letter-spacing: -.01em; color: #1a1a14;
+}
 
-.cart-list { display: flex; flex-direction: column; gap: 28px; }
+.cart-list { display: flex; flex-direction: column; }
 
 .cart-item {
   display: grid;
-  grid-template-columns: 160px 1fr;
-  gap: 22px;
-  border-bottom: 1px solid rgba(0,0,0,.08);
-  padding-bottom: 24px;
+  grid-template-columns: 120px 1fr;
+  gap: 20px;
+  border-bottom: 1px solid rgba(26,26,20,.12);
+  padding: 20px 0;
   position: relative;
   align-items: start;
 }
-
 .cart-item-img-link { display: block; }
-
-.cart-item-img {
-  width: 160px;
-  height: 160px;
-  object-fit: cover;
-  display: block;
-}
-
+.cart-item-img { width: 120px; height: 120px; object-fit: cover; display: block; }
 .cart-item-details { min-width: 0; position: relative; }
-
-.cart-item-title  { font-size: 18px; font-weight: 600; margin: 0; padding-right: 70px; word-break: break-word; }
-.cart-item-artist { font-size: 14px; color: #555; margin-top: 4px; padding-right: 70px; }
+.cart-item-title  { font-size: 16px; font-weight: 600; margin: 0; padding-right: 64px; word-break: break-word; color: #1a1a14; }
+.cart-item-artist { font-size: 12px; color: rgba(26,26,20,.5); margin-top: 3px; padding-right: 64px; }
 
 .remove-btn {
-  position: absolute;
-  top: 0; right: 0;
-  background: none;
-  border: 0;
-  font-size: 12px;
-  color: #666;
-  cursor: pointer;
-  text-decoration: underline;
+  position: absolute; top: 0; right: 0;
+  background: none; border: 0;
+  font-size: 11px; font-weight: 500; letter-spacing: .06em; text-transform: uppercase;
+  color: rgba(26,26,20,.48); cursor: pointer;
+  font-family: 'Inter', system-ui, sans-serif;
+  transition: color .15s;
 }
+.remove-btn:hover { color: #1a1a14; }
 
-.cart-item-meta {
-  display: flex;
-  align-items: center;
-  gap: 16px;
-  margin-top: 12px;
-  flex-wrap: wrap;
-}
+.cart-item-meta { display: flex; align-items: center; gap: 16px; margin-top: 14px; flex-wrap: wrap; }
+.cart-item-price { font-size: 14px; font-weight: 500; color: #1a1a14; }
 
-.cart-item-price { font-size: 14px; font-weight: 500; }
-
-.qty-group {
-  display: flex;
-  align-items: center;
-  border: 1px solid rgba(0,0,0,.15);
-}
-
+.qty-group { display: flex; align-items: center; border: 1px solid rgba(26,26,20,.26); }
 .qty-btn {
-  width: 28px;
-  height: 28px;
-  border: 0;
-  background: #fff;
-  cursor: pointer;
-  font-size: 16px;
-  line-height: 1;
+  width: 28px; height: 28px; border: 0; background: transparent;
+  cursor: pointer; font-size: 16px; line-height: 1; color: #1a1a14;
+  font-family: inherit; transition: background .1s;
 }
-
-.qty-num { width: 28px; text-align: center; font-size: 13px; }
+.qty-btn:hover { background: rgba(0,0,0,.07); }
+.qty-num { width: 28px; text-align: center; font-size: 13px; color: #1a1a14; }
 
 .stock-label {
-  position: absolute;
-  bottom: 0; right: 0;
-  font-size: 11px;
-  color: #999;
-  opacity: 0;
-  transition: opacity .3s;
+  position: absolute; bottom: 0; right: 0;
+  font-size: 11px; color: rgba(26,26,20,.48);
+  opacity: 0; transition: opacity .3s;
 }
 
-/* ── Summary ──────────────────────────────────────────────── */
-
-.cart-summary { margin-top: 40px; }
-
+.cart-summary { margin-top: 36px; }
 .summary-row {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-end;
+  display: flex; justify-content: space-between; align-items: flex-end;
+  border-top: 1px solid rgba(26,26,20,.22); padding-top: 20px;
 }
-
-.summary-label  { font-size: 15px; color: #555; margin: 0; }
-.shipping-note  { font-size: 12px; color: #aaa; font-style: italic; margin-top: 4px; }
-.summary-price  { font-size: 26px; font-weight: 600; margin: 0; }
+.summary-label { font-size: 13px; color: rgba(26,26,20,.5); margin: 0; }
+.shipping-note { font-size: 11px; color: rgba(26,26,20,.38); margin-top: 4px; }
+.summary-price { font-size: 24px; font-weight: 600; margin: 0; color: #1a1a14; }
 
 .checkout-btn {
-  margin-top: 18px;
-  padding: 14px 18px;
-  border: 1px solid #000;
-  background: #fff;
-  cursor: pointer;
-  width: 100%;
-  font-size: 14px;
-  font-family: inherit;
-  transition: all .15s;
+  margin-top: 16px; padding: 14px 18px;
+  border: 1px solid #1a1a14; background: #1a1a14; color: #e2e2e2;
+  cursor: pointer; width: 100%;
+  font-size: 11px; font-weight: 500; letter-spacing: .09em; text-transform: uppercase;
+  font-family: 'Inter', system-ui, sans-serif; transition: background .15s;
 }
+.checkout-btn:hover { background: rgba(26,26,20,.82); }
 
-.checkout-btn:hover { background: #000; color: #fff; }
-
-/* ── Responsive ───────────────────────────────────────────── */
+.modal-inner {
+  background-color: #e2e2e2;
+  background-image: radial-gradient(circle, rgba(0,0,0,.08) 0.5px, transparent 0.5px);
+  background-size: 3px 3px;
+  border: 1px solid rgba(26,26,20,.22); color: #1a1a14;
+}
+.modal-inner h2 { color: #1a1a14; font-size: 18px; }
+.modal-inner p  { color: rgba(26,26,20,.65); font-size: 13px; }
+.modal-close    { color: rgba(26,26,20,.48); }
+.modal-close:hover { color: #1a1a14; }
 
 @media (max-width: 600px) {
-  .cart-item { grid-template-columns: 90px 1fr; gap: 14px; }
-  .cart-item-img { width: 90px; height: 90px; }
-  .cart-item-title { font-size: 15px; }
-  .cart-item-artist { font-size: 12px; }
+  .cart-item { grid-template-columns: 88px 1fr; gap: 14px; }
+  .cart-item-img { width: 88px; height: 88px; }
+  .cart-item-title { font-size: 14px; }
 }
 
 </style>
 </head>
 <body>
 
-<!-- HEADER -->
 <header class="fixed-header">
   <div class="header-inner">
     <a href="index.html">
@@ -139,15 +132,10 @@
   </div>
 </header>
 
-<!-- MAIN -->
 <div class="container">
-
   <h1 class="page-title">Cart</h1>
-
-  <p id="emptyMsg" style="color:#888;font-size:14px;">Your cart is empty.</p>
-
+  <p id="emptyMsg" style="color:rgba(26,26,20,.48);font-size:13px;display:none;">Your cart is empty.</p>
   <div id="cartItems" class="cart-list"></div>
-
   <div class="cart-summary">
     <div class="summary-row">
       <div>
@@ -158,23 +146,8 @@
     </div>
     <button id="checkoutBtn" class="checkout-btn">Checkout</button>
   </div>
-
 </div>
 
-<!-- FOOTER -->
-<footer class="fixed-footer">
-  <div class="footer-inner">
-    <span id="datetime-footer"></span>
-    <div class="footer-links">
-      <a href="https://instagram.com/late.records.ph" target="_blank" rel="noopener">
-        Instagram<span class="external-arrow">↗</span>
-      </a>
-      <a href="#" id="guideBtn">Guide</a>
-    </div>
-  </div>
-</footer>
-
-<!-- GUIDE MODAL -->
 <div class="modal" id="guideModal">
   <div class="modal-inner">
     <button class="modal-close" id="guideClose">×</button>
@@ -191,21 +164,18 @@
 
 <script src="script.js"></script>
 <script>
-
 function renderCart() {
-  const items   = LR.cart.get();
+  const items     = LR.cart.get();
   const container = document.getElementById('cartItems');
   const emptyMsg  = document.getElementById('emptyMsg');
   const totalEl   = document.getElementById('cartTotal');
-
   if (!items.length) {
-    emptyMsg.style.display  = 'block';
-    container.innerHTML     = '';
-    totalEl.textContent     = '₱0';
+    emptyMsg.style.display = 'block';
+    container.innerHTML    = '';
+    totalEl.textContent    = '₱0';
     LR.ui.syncCartBadge();
     return;
   }
-
   emptyMsg.style.display = 'none';
   container.innerHTML = items.map(item => `
     <div class="cart-item" data-id="${item.id}">
@@ -228,19 +198,15 @@ function renderCart() {
       </div>
     </div>
   `).join('');
-
   totalEl.textContent = LR.ui.peso(LR.cart.subtotal());
   LR.ui.syncCartBadge();
 }
 
-// Cart interactions
 document.addEventListener('click', e => {
-  const id = e.target.dataset.remove;
+  const id    = e.target.dataset.remove;
   const plus  = e.target.dataset.plus;
   const minus = e.target.dataset.minus;
-
   if (id) { LR.cart.remove(id); renderCart(); return; }
-
   if (plus) {
     const item = LR.cart.get().find(i => i.id === plus);
     if (item && item.qty >= item.stock) {
@@ -248,11 +214,8 @@ document.addEventListener('click', e => {
       if (label) { label.style.opacity = '1'; setTimeout(() => label.style.opacity = '0', 2000); }
       return;
     }
-    LR.cart.updateQty(plus, 1);
-    renderCart();
-    return;
+    LR.cart.updateQty(plus, 1); renderCart(); return;
   }
-
   if (minus) {
     const item = LR.cart.get().find(i => i.id === minus);
     if (!item) return;
@@ -262,16 +225,9 @@ document.addEventListener('click', e => {
   }
 });
 
-// Checkout
 document.getElementById('checkoutBtn').addEventListener('click', () => {
   if (!LR.cart.count()) { alert('Your cart is empty.'); return; }
   window.location.href = 'checkout.html';
-});
-
-// Guide modal
-document.getElementById('guideBtn').addEventListener('click', e => {
-  e.preventDefault();
-  document.getElementById('guideModal').classList.add('is-open');
 });
 document.getElementById('guideClose').addEventListener('click', () => {
   document.getElementById('guideModal').classList.remove('is-open');
@@ -279,7 +235,6 @@ document.getElementById('guideClose').addEventListener('click', () => {
 document.getElementById('guideModal').addEventListener('click', e => {
   if (e.target === e.currentTarget) e.currentTarget.classList.remove('is-open');
 });
-
 renderCart();
 </script>
 </body>

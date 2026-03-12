@@ -6,228 +6,188 @@
 <title>LATE RECORDS</title>
 <meta name="description" content="Curated vinyl records. Rare, used, and hard to find.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="style.css">
 <style>
 
-/* ── Page-level color overrides ─────────────────────────────── */
-
-:root {
-  --bg:          #e2e2e2;
-  --text:        #1a1a14;
-  --text-mid:    rgba(26,26,20,.6);
-  --text-dim:    rgba(26,26,20,.35);
-  --rule:        rgba(26,26,20,.1);
-  --rule-mid:    rgba(26,26,20,.18);
-  --rule-strong: rgba(26,26,20,.28);
-}
+/* ── Page overrides ──────────────────────────────────────── */
 
 html, body {
+  font-family: 'Inter', system-ui, sans-serif;
   background-color: #e2e2e2;
   background-image: radial-gradient(circle, rgba(0,0,0,.08) 0.5px, transparent 0.5px);
   background-size: 3px 3px;
-  color: var(--text);
+  color: #1a1a14;
 }
 
 .fixed-header {
   background-color: #e2e2e2;
   background-image: radial-gradient(circle, rgba(0,0,0,.08) 0.5px, transparent 0.5px);
   background-size: 3px 3px;
+  border-bottom-color: rgba(26,26,20,.22);
 }
 
-/* Logo */
-.header-logo       { filter: none; opacity: 1; }
-.header-logo:hover { opacity: .5; }
+.header-logo       { height: 44px; filter: none; }
+.header-logo:hover { opacity: .5; transition: opacity .15s; }
 
-/* Cart — no border/box */
 .cart-link {
-  color: var(--text);
   border: none;
   padding: 0;
+  background: none;
+  font-family: 'Inter', system-ui, sans-serif;
   font-size: 11px;
+  font-weight: 500;
+  letter-spacing: .07em;
+  text-transform: uppercase;
+  color: #1a1a14;
+}
+.cart-link:hover { background: none; color: rgba(26,26,20,.5); }
+
+.fixed-footer { display: none; }
+.container    { padding-bottom: 80px; }
+
+/* ── Table ───────────────────────────────────────────────── */
+
+.tbl {
+  width: 100%;
+  border-collapse: collapse;
+  table-layout: fixed;
+  font-family: 'Inter', system-ui, sans-serif;
+}
+
+col.c-title  { width: auto; }
+col.c-genre  { width: 22%; }
+col.c-format { width: 13%; }
+col.c-stock  { width: 15%; }
+
+/* Header */
+.tbl thead th {
+  padding: 0 12px 10px 0;
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: .09em;
+  text-transform: uppercase;
+  color: rgba(26,26,20,.48);
+  text-align: left;
+  border-bottom: 1px solid rgba(26,26,20,.26);
+  vertical-align: bottom;
+}
+.tbl thead th:first-child { padding-left: 0; }
+.tbl thead th.c-stock     { text-align: right; padding-right: 0; }
+
+/* Rows */
+.tbl tbody tr {
+  cursor: pointer;
+  transition: background .1s;
+}
+.tbl tbody tr:hover td { background: rgba(0,0,0,.05); }
+
+.tbl tbody td {
+  padding: 14px 12px 14px 0;
+  border-bottom: 1px solid rgba(26,26,20,.12);
+  vertical-align: middle;
+}
+.tbl tbody td:first-child { padding-left: 0; }
+.tbl tbody td:last-child  { padding-right: 0; }
+
+/* Content */
+.rec-title {
+  font-size: 15px;
+  font-weight: 500;
+  line-height: 1.25;
+  letter-spacing: -.01em;
+}
+.rec-artist {
+  font-size: 12px;
+  font-weight: 400;
+  color: rgba(26,26,20,.48);
+  margin-top: 3px;
+  line-height: 1.4;
+}
+
+.genre-tag {
+  display: inline-block;
+  font-size: 10px;
+  font-weight: 500;
   letter-spacing: .06em;
   text-transform: uppercase;
-  font-weight: 600;
+  color: rgba(26,26,20,.48);
+  border: 1px solid rgba(26,26,20,.32);
+  padding: 3px 7px;
+  line-height: 1.4;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: color .15s, border-color .15s;
 }
-.cart-link:hover { background: none; color: var(--text-mid); }
+.genre-tag:hover { color: #1a1a14; border-color: #1a1a14; }
 
-/* Remove footer bar entirely */
-.fixed-footer { display: none; }
-
-/* ── Catalog table ──────────────────────────────────────────── */
-
-/* Mobile: 1 col — title only */
-.catalog-header {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 0;
-  padding: 0 0 10px;
-  border-bottom: 1px solid var(--rule-strong);
-  margin-bottom: 0;
-}
-
-.catalog-header-col {
-  font-size: 10px;
-  letter-spacing: .12em;
+.rec-format {
+  font-size: 11px;
+  font-weight: 400;
+  letter-spacing: .05em;
   text-transform: uppercase;
-  color: var(--text-mid);
-  font-weight: 600;
+  color: rgba(26,26,20,.48);
 }
 
-.catalog-header-col.right { text-align: right; }
-.col-format    { display: none; }
-.col-stock-hdr { display: none; }
-.col-genre-hdr { display: none; }
-
-/* Desktop: 4 cols */
-@media (min-width: 901px) {
-  .catalog-header { grid-template-columns: 1fr 140px 120px 80px; }
-  .col-format     { display: block; }
-  .col-stock-hdr  { display: block; text-align: right; }
-  .col-genre-hdr  { display: block; text-align: left; }
-}
-
-/* Genre as clickable link — stop propagation so row click still works */
-a.row-genre {
-  text-decoration: none;
-  transition: color .15s;
-  cursor: pointer;
-}
-a.row-genre:hover { color: var(--text); text-decoration: underline; }
-
-.catalog-row {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 0;
-  padding: 18px 0;
-  border-bottom: 1px solid var(--rule);
-  text-decoration: none;
-  color: var(--text);
-  transition: background .15s;
-  cursor: pointer;
+.rec-stock {
+  display: flex;
   align-items: center;
-  margin: 0 calc(-1 * var(--pad-h));
-  padding-left: var(--pad-h);
-  padding-right: var(--pad-h);
-}
-
-.catalog-row:hover { background: rgba(0,0,0,.06); }
-.catalog-row.sold  { opacity: .4; }
-
-.row-title-block { min-width: 0; }
-
-.row-title {
-  font-size: 15px;
-  font-weight: 700;
-  line-height: 1.2;
-  letter-spacing: -.01em;
-  word-break: break-word;
-}
-
-.row-artist {
+  justify-content: flex-end;
+  gap: 6px;
   font-size: 11px;
-  color: var(--text-mid);
-  margin-top: 3px;
-  font-weight: 600;
-  letter-spacing: .01em;
-}
-
-/* Genre: hidden on mobile, shown in column on desktop */
-.row-genre {
-  font-size: 11px;
-  letter-spacing: .08em;
+  font-weight: 500;
+  letter-spacing: .06em;
   text-transform: uppercase;
-  color: var(--text-mid);
-  font-weight: 600;
-  align-self: center;
-  display: none;
 }
-
-/* Format + stock: hidden on mobile */
-.row-format { display: none; }
-.row-stock  { display: none; }
-
-@media (min-width: 901px) {
-  .catalog-row {
-    grid-template-columns: 1fr 140px 120px 80px;
-    padding: 16px var(--pad-h);
-  }
-  .row-genre  { display: block; text-align: left; }
-  .row-format {
-    display: block;
-    font-size: 11px;
-    letter-spacing: .06em;
-    text-transform: uppercase;
-    color: var(--text-mid);
-    font-weight: 600;
-    align-self: center;
-  }
-  .row-stock {
-    display: flex;
-    font-size: 11px;
-    letter-spacing: .08em;
-    text-transform: uppercase;
-    font-weight: 700;
-    align-self: center;
-    text-align: right;
-    align-items: center;
-    justify-content: flex-end;
-    gap: 6px;
-  }
-}
-
-.stock-dot {
-  width: 6px;
-  height: 6px;
+.sdot {
+  width: 5px; height: 5px;
   border-radius: 50%;
-  display: inline-block;
   flex-shrink: 0;
 }
+.sdot.a { background: #1a1a14; }
+.sdot.s { background: rgba(26,26,20,.28); }
 
-.stock-dot.avail { background: var(--text); }
-.stock-dot.sold  { background: var(--text-dim); }
+/* Sold-out dimming */
+.tbl tbody tr.sold .rec-title  { color: rgba(26,26,20,.48); }
+.tbl tbody tr.sold .rec-artist { color: rgba(26,26,20,.28); }
+.tbl tbody tr.sold .genre-tag  { color: rgba(26,26,20,.28); border-color: rgba(26,26,20,.16); }
+.tbl tbody tr.sold .rec-format { color: rgba(26,26,20,.28); }
+.tbl tbody tr.sold .rec-stock  { color: rgba(26,26,20,.28); }
+.tbl tbody tr.sold .sdot       { background: rgba(26,26,20,.28) !important; }
 
-/* ── Skeleton rows ──────────────────────────────────────────── */
+/* ── Mobile ──────────────────────────────────────────────── */
+@media (max-width: 900px) {
+  col.c-format, col.c-stock { display: none; }
 
-.sk-row {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 0;
-  padding: 18px var(--pad-h);
-  border-bottom: 1px solid var(--rule);
-  margin: 0 calc(-1 * var(--pad-h));
-  align-items: center;
+  .tbl thead th.c-format,
+  .tbl thead th.c-stock,
+  .tbl tbody  td.c-format,
+  .tbl tbody  td.c-stock  { display: none; }
+
+  col.c-genre           { width: auto; }
+  .tbl thead th.c-genre { text-align: right; padding-right: 0; }
+  .tbl tbody  td.c-genre{ text-align: right; padding-right: 0; }
 }
 
-@media (min-width: 901px) {
-  .sk-row { grid-template-columns: 1fr 140px 120px 80px; }
-}
-
-.sk-line {
-  height: 11px;
+/* ── Skeleton ────────────────────────────────────────────── */
+.sk {
+  display: inline-block;
+  height: 9px;
   border-radius: 2px;
-  background: linear-gradient(90deg, rgba(0,0,0,.06) 25%, rgba(0,0,0,.11) 50%, rgba(0,0,0,.06) 75%);
+  background: linear-gradient(90deg,
+    rgba(0,0,0,.07) 25%, rgba(0,0,0,.13) 50%, rgba(0,0,0,.07) 75%);
   background-size: 200% 100%;
-  animation: shimmer 1.6s infinite;
+  animation: sh 1.4s infinite;
 }
-
-@keyframes shimmer {
+@keyframes sh {
   0%   { background-position: 200% 0; }
   100% { background-position: -200% 0; }
-}
-
-.shop-heading {
-  display: flex;
-  align-items: baseline;
-  justify-content: space-between;
-  margin-bottom: 20px;
 }
 
 </style>
 </head>
 <body>
 
-<!-- HEADER -->
 <header class="fixed-header">
   <div class="header-inner">
     <a href="index.html">
@@ -237,67 +197,68 @@ a.row-genre:hover { color: var(--text); text-decoration: underline; }
   </div>
 </header>
 
-<!-- MAIN -->
 <div class="container">
-
-  <div class="shop-heading">
-    <div class="catalog-header" style="flex:1;margin-bottom:0;padding-bottom:0;border-bottom:none;">
-      <span class="catalog-header-col">Title / Artist</span>
-      <span class="catalog-header-col col-format" style="display:none;">Format</span>
-      <span class="catalog-header-col col-genre-hdr">Genre</span>
-      <span class="catalog-header-col col-stock-hdr right">Stock</span>
-    </div>
-  </div>
-  <div style="border-bottom:1px solid var(--rule-strong);margin:0 calc(-1 * var(--pad-h)) 0;"></div>
-
-  <div id="catalogList">
-    <div class="sk-row"><div><div class="sk-line" style="width:55%;margin-bottom:8px"></div><div class="sk-line" style="width:30%"></div></div><div class="sk-line" style="width:60%"></div><div class="sk-line" style="width:70%"></div></div>
-    <div class="sk-row"><div><div class="sk-line" style="width:70%;margin-bottom:8px"></div><div class="sk-line" style="width:40%"></div></div><div class="sk-line" style="width:50%"></div><div class="sk-line" style="width:60%"></div></div>
-    <div class="sk-row"><div><div class="sk-line" style="width:45%;margin-bottom:8px"></div><div class="sk-line" style="width:25%"></div></div><div class="sk-line" style="width:55%"></div><div class="sk-line" style="width:65%"></div></div>
-    <div class="sk-row"><div><div class="sk-line" style="width:60%;margin-bottom:8px"></div><div class="sk-line" style="width:35%"></div></div><div class="sk-line" style="width:45%"></div><div class="sk-line" style="width:70%"></div></div>
-    <div class="sk-row"><div><div class="sk-line" style="width:50%;margin-bottom:8px"></div><div class="sk-line" style="width:28%"></div></div><div class="sk-line" style="width:58%"></div><div class="sk-line" style="width:62%"></div></div>
-  </div>
-
+  <table class="tbl">
+    <colgroup>
+      <col class="c-title">
+      <col class="c-genre">
+      <col class="c-format">
+      <col class="c-stock">
+    </colgroup>
+    <thead>
+      <tr>
+        <th class="c-title">Title / Artist</th>
+        <th class="c-genre">Genre</th>
+        <th class="c-format">Format</th>
+        <th class="c-stock">Stock</th>
+      </tr>
+    </thead>
+    <tbody id="catalogList">
+      <tr><td class="c-title"><div class="sk" style="width:55%;margin-bottom:8px"></div><br><div class="sk" style="width:30%"></div></td><td class="c-genre"><div class="sk" style="width:70%"></div></td><td class="c-format"><div class="sk" style="width:55%"></div></td><td class="c-stock"><div class="sk" style="width:68%;float:right"></div></td></tr>
+      <tr><td class="c-title"><div class="sk" style="width:68%;margin-bottom:8px"></div><br><div class="sk" style="width:38%"></div></td><td class="c-genre"><div class="sk" style="width:60%"></div></td><td class="c-format"><div class="sk" style="width:55%"></div></td><td class="c-stock"><div class="sk" style="width:68%;float:right"></div></td></tr>
+      <tr><td class="c-title"><div class="sk" style="width:44%;margin-bottom:8px"></div><br><div class="sk" style="width:24%"></div></td><td class="c-genre"><div class="sk" style="width:78%"></div></td><td class="c-format"><div class="sk" style="width:55%"></div></td><td class="c-stock"><div class="sk" style="width:68%;float:right"></div></td></tr>
+      <tr><td class="c-title"><div class="sk" style="width:60%;margin-bottom:8px"></div><br><div class="sk" style="width:34%"></div></td><td class="c-genre"><div class="sk" style="width:63%"></div></td><td class="c-format"><div class="sk" style="width:55%"></div></td><td class="c-stock"><div class="sk" style="width:68%;float:right"></div></td></tr>
+      <tr><td class="c-title"><div class="sk" style="width:50%;margin-bottom:8px"></div><br><div class="sk" style="width:28%"></div></td><td class="c-genre"><div class="sk" style="width:72%"></div></td><td class="c-format"><div class="sk" style="width:55%"></div></td><td class="c-stock"><div class="sk" style="width:68%;float:right"></div></td></tr>
+    </tbody>
+  </table>
 </div>
 
 <script src="script.js"></script>
 <script>
 document.addEventListener('DOMContentLoaded', async () => {
-  const list = document.getElementById('catalogList');
-
-  const formatCols = document.querySelectorAll('.col-format');
-  function updateHeaderCols() {
-    const isDesktop = window.innerWidth >= 901;
-    formatCols.forEach(el => el.style.display = isDesktop ? 'block' : 'none');
-  }
-  updateHeaderCols();
-  window.addEventListener('resize', updateHeaderCols);
-
+  const tbody = document.getElementById('catalogList');
   try {
     const catalog = await LR.api.catalog();
-
-    list.innerHTML = catalog.map(item => {
+    tbody.innerHTML = catalog.map(item => {
       const sold   = item.status !== 'available';
-      const genre  = (item.genre || '').split('||')[0].trim();
-      const format = item.format || 'LP';
+      const genre  = (item.genre  || '').split('||')[0].trim();
+      const format = (item.format || 'LP').trim();
       return `
-        <a href="albums/album.html?id=${item.album_id}" class="catalog-row${sold ? ' sold' : ''}">
-          <div class="row-title-block">
-            <div class="row-title">${item.title}</div>
-            <div class="row-artist">${item.artist}</div>
-          </div>
-          <div class="row-format">${format}</div>
-          <a class="row-genre" href="genre.html?g=${encodeURIComponent(genre.toLowerCase())}" onclick="event.stopPropagation()">${genre}</a>
-          <div class="row-stock">
-            <span class="stock-dot ${sold ? 'sold' : 'avail'}"></span>
-            <span>${sold ? 'Sold' : 'Avail'}</span>
-          </div>
-        </a>
-      `;
+        <tr class="${sold ? 'sold' : ''}"
+            onclick="location.href='albums/album.html?id=${item.album_id}'">
+          <td class="c-title">
+            <div class="rec-title">${item.title}</div>
+            <div class="rec-artist">${item.artist}</div>
+          </td>
+          <td class="c-genre">
+            <span class="genre-tag"
+              onclick="event.stopPropagation();location.href='genre.html?g=${encodeURIComponent(genre.toLowerCase())}'">
+              ${genre}
+            </span>
+          </td>
+          <td class="c-format">
+            <span class="rec-format">${format}</span>
+          </td>
+          <td class="c-stock">
+            <div class="rec-stock">
+              <span class="sdot ${sold ? 's' : 'a'}"></span>
+              <span>${sold ? 'Sold Out' : 'Available'}</span>
+            </div>
+          </td>
+        </tr>`;
     }).join('');
-
-  } catch (e) {
-    list.innerHTML = '<p style="color:var(--text-dim);font-size:13px;padding:40px 0;">Could not load catalog. Please refresh.</p>';
+  } catch(e) {
+    tbody.innerHTML = `<tr><td colspan="4" style="padding:40px 0;font-size:13px;color:rgba(26,26,20,.48)">Could not load catalog. Please refresh.</td></tr>`;
   }
 });
 </script>

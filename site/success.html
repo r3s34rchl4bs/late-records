@@ -5,79 +5,94 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Order Received — LATE RECORDS</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="style.css">
 <style>
 
-.success-page .cart-link { display: none; }
+html, body {
+  font-family: 'Inter', system-ui, sans-serif;
+  background-color: #e2e2e2;
+  background-image: radial-gradient(circle, rgba(0,0,0,.08) 0.5px, transparent 0.5px);
+  background-size: 3px 3px;
+  color: #1a1a14;
+}
+.fixed-header {
+  background-color: #e2e2e2;
+  background-image: radial-gradient(circle, rgba(0,0,0,.08) 0.5px, transparent 0.5px);
+  background-size: 3px 3px;
+  border-bottom-color: rgba(26,26,20,.22);
+}
+.header-logo       { height: 44px; filter: none; }
+.header-logo:hover { opacity: .5; transition: opacity .15s; }
+.cart-link { display: none; }
+.fixed-footer { display: none; }
+.container { padding-bottom: 80px; }
 
-.page-title { font-size: 32px; font-weight: 600; margin-bottom: 10px; }
-
-.sub-headline {
-  font-size: 17px;
-  color: #555;
-  max-width: 560px;
-  line-height: 1.7;
-  margin-bottom: 48px;
+.page-title {
+  font-size: 26px; font-weight: 600; margin-bottom: 10px;
+  letter-spacing: -.01em; color: #1a1a14;
 }
 
-/* ── Payment section ──────────────────────────────────────── */
+.sub-headline {
+  font-size: 15px;
+  color: rgba(26,26,20,.6);
+  max-width: 520px;
+  line-height: 1.75;
+  margin-bottom: 44px;
+}
 
 .payment-section {
   display: flex;
   align-items: center;
-  gap: 60px;
-  max-width: 680px;
-  border-top: 1px solid rgba(0,0,0,.08);
-  border-bottom: 1px solid rgba(0,0,0,.08);
-  padding: 36px 0;
+  gap: 48px;
+  max-width: 640px;
+  border-top: 1px solid rgba(26,26,20,.12);
+  border-bottom: 1px solid rgba(26,26,20,.12);
+  padding: 32px 0;
 }
 
-.qr-code { width: 260px; height: auto; display: block; flex-shrink: 0; }
+.qr-code { width: 200px; height: auto; display: block; flex-shrink: 0; }
 
-.payment-label  { font-size: 20px; font-weight: 600; margin-bottom: 6px; }
-.payment-wallets{ font-size: 16px; color: #555; line-height: 1.6; }
-
-/* ── Notice ───────────────────────────────────────────────── */
+.payment-label  { font-size: 18px; font-weight: 600; margin-bottom: 6px; color: #1a1a14; }
+.payment-wallets{ font-size: 14px; color: rgba(26,26,20,.6); line-height: 1.7; }
 
 .notice {
-  margin-top: 36px;
-  max-width: 600px;
-  font-size: 16px;
+  margin-top: 32px;
+  max-width: 580px;
+  font-size: 14px;
   line-height: 1.8;
-  color: #444;
-  border-left: 2px solid #000;
+  color: rgba(26,26,20,.65);
+  border-left: 2px solid rgba(26,26,20,.4);
   padding-left: 16px;
 }
 
 .return-link {
   display: inline-block;
-  margin-top: 40px;
-  border: 1px solid #000;
-  padding: 10px 20px;
+  margin-top: 36px;
+  border: 1px solid #1a1a14;
+  background: #1a1a14;
+  color: #e2e2e2;
+  padding: 11px 22px;
   text-decoration: none;
-  color: #000;
-  font-size: 14px;
-  transition: all .15s;
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: .09em;
+  text-transform: uppercase;
+  font-family: 'Inter', system-ui, sans-serif;
+  transition: background .15s;
 }
+.return-link:hover { background: rgba(26,26,20,.82); color: #e2e2e2; }
 
-.return-link:hover { background: #000; color: #fff; }
-
-/* ── Responsive ───────────────────────────────────────────── */
-
-@media (max-width: 700px) {
-  .payment-section { gap: 20px; }
-  .qr-code { width: 140px; }
-  .payment-label   { font-size: 18px; }
-  .payment-wallets { font-size: 14px; }
-  .return-link { margin-bottom: 80px; }
+@media (max-width: 600px) {
+  .payment-section { gap: 22px; flex-direction: column; align-items: flex-start; }
+  .qr-code { width: 160px; }
+  .return-link { margin-bottom: 40px; }
 }
 
 </style>
 </head>
-<body class="success-page">
+<body>
 
-<!-- HEADER -->
 <header class="fixed-header">
   <div class="header-inner">
     <a href="index.html">
@@ -87,9 +102,7 @@
   </div>
 </header>
 
-<!-- MAIN -->
 <div class="container">
-
   <h1 class="page-title">Order Received</h1>
 
   <p class="sub-headline" id="thankYouText">
@@ -109,32 +122,21 @@
   </p>
 
   <a href="index.html" class="return-link">Return to Shop</a>
-
 </div>
-
-<!-- FOOTER -->
-<footer class="fixed-footer">
-  <div class="footer-inner">
-    <span id="datetime-footer"></span>
-  </div>
-</footer>
 
 <script src="script.js"></script>
 <script>
-const buyer = localStorage.getItem('lr_buyer');
+const buyer      = localStorage.getItem('lr_buyer');
 const orderTotal = localStorage.getItem('lr_order_total');
 
 if (buyer) {
   document.getElementById('thankYouText').innerHTML =
     `Thank you for your order, <strong>${buyer}</strong>. To complete your purchase, please send your payment using the QR code below.`;
 }
-
 if (orderTotal) {
   document.getElementById('paymentNotice').innerHTML =
     `Please send a payment of <strong>${orderTotal}</strong> within <strong>24 hours</strong>. Unpaid orders may be automatically cancelled to release the record for other buyers.`;
 }
-
-// Clean up localStorage
 localStorage.removeItem('lr_buyer');
 localStorage.removeItem('lr_order_total');
 </script>

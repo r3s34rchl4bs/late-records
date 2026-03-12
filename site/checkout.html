@@ -5,128 +5,132 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Checkout — LATE RECORDS</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="style.css">
-
 <style>
 
-.checkout-page .cart-link { display: none; }
+html, body {
+  font-family: 'Inter', system-ui, sans-serif;
+  background-color: #e2e2e2;
+  background-image: radial-gradient(circle, rgba(0,0,0,.08) 0.5px, transparent 0.5px);
+  background-size: 3px 3px;
+  color: #1a1a14;
+}
+.fixed-header {
+  background-color: #e2e2e2;
+  background-image: radial-gradient(circle, rgba(0,0,0,.08) 0.5px, transparent 0.5px);
+  background-size: 3px 3px;
+  border-bottom-color: rgba(26,26,20,.22);
+}
+.header-logo       { height: 44px; filter: none; }
+.header-logo:hover { opacity: .5; transition: opacity .15s; }
+.cart-link { display: none; }
+.fixed-footer { display: none; }
+.container { padding-bottom: 80px; }
 
-.page-title { font-size: 32px; font-weight: 600; margin: 0 0 30px; }
+/* Form field overrides */
+.form-group label {
+  font-size: 11px; font-weight: 500;
+  letter-spacing: .07em; text-transform: uppercase;
+  color: rgba(26,26,20,.5);
+}
+.form-group input {
+  border: none;
+  border-bottom: 1px solid rgba(26,26,20,.26);
+  background: transparent;
+  color: #1a1a14;
+  font-family: 'Inter', system-ui, sans-serif;
+  font-size: 14px; padding: 9px 0;
+}
+.form-group input::placeholder { color: rgba(26,26,20,.3); }
+.form-group input:focus { border-bottom-color: #1a1a14; outline: none; }
 
-/* ── Two-column grid ──────────────────────────────────────── */
-
-.checkout-grid {
-  display: grid;
-  grid-template-columns: 1fr 400px;
-  column-gap: 60px;
-  align-items: start;
-  position: relative;
+.page-title {
+  font-size: 26px; font-weight: 600; margin-bottom: 32px;
+  letter-spacing: -.01em; color: #1a1a14;
 }
 
+.section-label {
+  font-size: 11px; font-weight: 500; letter-spacing: .09em;
+  text-transform: uppercase; color: rgba(26,26,20,.5); margin-bottom: 20px;
+}
+
+/* Two-column layout */
+.checkout-grid {
+  display: grid;
+  grid-template-columns: 1fr 380px;
+  column-gap: 60px;
+  align-items: start;
+}
 .checkout-grid::after {
   content: '';
   position: absolute;
   top: 0; bottom: 0;
-  right: 400px;
+  right: 380px;
   width: 1px;
-  background: rgba(0,0,0,.08);
+  background: rgba(26,26,20,.1);
 }
-
-/* ── Form ─────────────────────────────────────────────────── */
+.checkout-grid { position: relative; }
 
 .payment-note {
-  border-left: 2px solid #000;
+  border-left: 2px solid rgba(26,26,20,.4);
   padding-left: 14px;
   margin-top: 10px;
-  font-size: 14px;
-  line-height: 1.65;
-  color: #444;
+  font-size: 13px;
+  line-height: 1.7;
+  color: rgba(26,26,20,.65);
 }
 
-/* ── Order summary ────────────────────────────────────────── */
-
+/* Order summary */
 .order-summary { padding-left: 30px; }
 
 .order-item {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-  gap: 16px;
-  margin-bottom: 14px;
+  display: flex; justify-content: space-between;
+  align-items: flex-start; gap: 16px; margin-bottom: 14px;
 }
+.order-item-left  { flex: 1; min-width: 0; }
+.order-item-title { font-size: 12px; font-weight: 600; line-height: 1.35; color: #1a1a14; word-break: break-word; }
+.order-item-meta  { font-size: 11px; color: rgba(26,26,20,.5); margin-top: 2px; }
+.order-item-price { font-size: 14px; font-weight: 500; white-space: nowrap; flex-shrink: 0; color: #1a1a14; }
 
-.order-item-left { flex: 1; min-width: 0; }
-
-.order-item-title {
-  font-size: 12px;
-  font-weight: 600;
-  line-height: 1.35;
-  color: #111;
-  word-break: break-word;
-}
-
-.order-item-meta {
-  font-size: 11px;
-  color: #888;
-  margin-top: 2px;
-  font-weight: 400;
-}
-
-.order-item-price {
-  font-size: 14px;
-  font-weight: 500;
-  white-space: nowrap;
-  flex-shrink: 0;
-}
-
-.order-divider { border-top: 1px solid rgba(0,0,0,.12); margin: 14px 0; }
-
-.order-total {
-  display: flex;
-  justify-content: space-between;
-  font-weight: 600;
-  font-size: 18px;
-}
+.order-divider { border-top: 1px solid rgba(26,26,20,.12); margin: 14px 0; }
+.order-total   { display: flex; justify-content: space-between; font-weight: 600; font-size: 18px; color: #1a1a14; }
 
 .complete-btn {
-  margin-top: 18px;
-  padding: 12px 18px;
-  border: 1px solid #000;
-  background: #fff;
-  cursor: pointer;
-  font-family: inherit;
-  font-size: 14px;
-  width: 100%;
-  transition: all .15s;
+  margin-top: 18px; padding: 14px 18px;
+  border: 1px solid #1a1a14; background: #1a1a14; color: #e2e2e2;
+  cursor: pointer; font-family: 'Inter', system-ui, sans-serif;
+  font-size: 11px; font-weight: 500; letter-spacing: .09em; text-transform: uppercase;
+  width: 100%; transition: background .15s;
 }
-
-.complete-btn:hover    { background: #000; color: #fff; }
+.complete-btn:hover    { background: rgba(26,26,20,.82); }
 .complete-btn:disabled { opacity: .5; cursor: not-allowed; }
-.complete-btn:disabled:hover { background: #fff; color: #000; }
+.complete-btn:disabled:hover { background: #1a1a14; }
 
-/* ── Shipping modal ───────────────────────────────────────── */
-
-.cf-turnstile { margin-top: 16px; }
-
-/* ── Responsive ───────────────────────────────────────────── */
+.modal-inner {
+  background-color: #e2e2e2;
+  background-image: radial-gradient(circle, rgba(0,0,0,.08) 0.5px, transparent 0.5px);
+  background-size: 3px 3px;
+  border: 1px solid rgba(26,26,20,.22); color: #1a1a14;
+}
+.modal-inner h2 { color: #1a1a14; font-size: 18px; }
+.modal-inner p  { color: rgba(26,26,20,.65); font-size: 13px; }
+.modal-close    { color: rgba(26,26,20,.48); }
+.modal-close:hover { color: #1a1a14; }
 
 @media (max-width: 900px) {
   .checkout-grid { grid-template-columns: 1fr; gap: 40px; }
   .checkout-grid::after { display: none; }
-  .order-summary { padding-left: 0; order: 2; }
-  #checkoutForm  { order: 1; }
+  .order-summary { padding-left: 0; }
 }
-
 @media (max-width: 600px) {
-  .page-title { font-size: 26px; }
+  .page-title { font-size: 22px; }
 }
 
 </style>
 </head>
-<body class="checkout-page">
+<body>
 
-<!-- HEADER -->
 <header class="fixed-header">
   <div class="header-inner">
     <a href="index.html">
@@ -136,17 +140,13 @@
   </div>
 </header>
 
-<!-- MAIN -->
 <div class="container">
-
   <h1 class="page-title">Checkout</h1>
 
   <div class="checkout-grid">
 
-    <!-- FORM -->
     <form id="checkoutForm">
       <div class="section-label">Shipping Details</div>
-
       <div class="form-group">
         <label>Name</label>
         <input type="text" id="name" required placeholder="Full name">
@@ -163,16 +163,13 @@
         <label>Shipping Address</label>
         <input type="text" id="address" required placeholder="Street address, city, province">
       </div>
-
       <div class="payment-note">
         <strong>E-Wallet / QR PH</strong><br><br>
         Payments accepted via <strong>GoTyme, GCash, or Maya</strong>.<br>
         Payment instructions and QR code will appear on the next page.
       </div>
-
     </form>
 
-    <!-- ORDER SUMMARY -->
     <div class="order-summary">
       <div class="section-label">Order Summary</div>
       <div id="orderItems"></div>
@@ -192,36 +189,14 @@
   </div>
 </div>
 
-<!-- FOOTER -->
-<footer class="fixed-footer">
-  <div class="footer-inner">
-    <span id="datetime-footer"></span>
-  </div>
-</footer>
-
-<!-- SHIPPING INFO MODAL -->
-<div class="modal" id="shippingModal">
-  <div class="modal-inner">
-    <button class="modal-close" id="shippingClose">×</button>
-    <h2>Shipping Info</h2>
-    <p>Orders are prepared and shipped within 1–2 business days.</p>
-    <p>Shipping rates are based on quantity and calculated before checkout.</p>
-    <p>A tracking number will be provided once dispatched.</p>
-    <p>Each record is carefully packed in sturdy mailers.</p>
-  </div>
-</div>
-
 <script src="script.js"></script>
 <script>
-
 document.addEventListener('DOMContentLoaded', () => {
-
   const cart     = LR.cart.get();
   const shipping = LR.cart.shipping();
   const subtotal = LR.cart.subtotal();
   const total    = subtotal + shipping;
 
-  // Render order items
   const itemsEl = document.getElementById('orderItems');
   cart.forEach(item => {
     const div = document.createElement('div');
@@ -239,22 +214,10 @@ document.addEventListener('DOMContentLoaded', () => {
   document.getElementById('shippingFee').textContent = LR.ui.peso(shipping);
   document.getElementById('orderTotal').textContent  = LR.ui.peso(total);
 
-  // Shipping modal
-  document.getElementById('shippingClose').addEventListener('click', () => {
-    document.getElementById('shippingModal').classList.remove('is-open');
-  });
-  document.getElementById('shippingModal').addEventListener('click', e => {
-    if (e.target === e.currentTarget) e.currentTarget.classList.remove('is-open');
-  });
-
-  // Submit order
   document.getElementById('completeBtn').addEventListener('click', async () => {
     const form = document.getElementById('checkoutForm');
-
     if (!form.checkValidity()) { form.reportValidity(); return; }
     if (!cart.length)          { alert('Your cart is empty.'); return; }
-
-    // Get Turnstile token
 
     const btn = document.getElementById('completeBtn');
     btn.disabled    = true;
@@ -262,23 +225,20 @@ document.addEventListener('DOMContentLoaded', () => {
 
     try {
       const result = await LR.api.order({
-        name:           document.getElementById('name').value.trim(),
-        email:          document.getElementById('email').value.trim(),
-        phone:          document.getElementById('phone').value.trim(),
-        address:        document.getElementById('address').value.trim(),
-        subtotal,
-        shipping,
-        total,
+        name:     document.getElementById('name').value.trim(),
+        email:    document.getElementById('email').value.trim(),
+        phone:    document.getElementById('phone').value.trim(),
+        address:  document.getElementById('address').value.trim(),
+        subtotal, shipping, total,
         items: cart.map(i => ({ album_id: i.id, quantity: i.qty }))
       });
 
-      if (!result.ok && !result.success) throw new Error(result.error || result.message || 'Order failed');
+      if (!result.ok && !result.success) throw new Error(result.error || 'Order failed');
 
       localStorage.setItem('lr_buyer',       document.getElementById('name').value.trim());
       localStorage.setItem('lr_order_total', LR.ui.peso(total));
       LR.cart.clear();
       window.location.href = 'success.html';
-
     } catch (err) {
       console.error(err);
       alert('There was a problem processing your order. Please try again.');
@@ -286,9 +246,7 @@ document.addEventListener('DOMContentLoaded', () => {
       btn.textContent = 'Complete Order';
     }
   });
-
 });
-
 </script>
 </body>
 </html>

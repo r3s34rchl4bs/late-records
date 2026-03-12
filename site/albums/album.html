@@ -6,279 +6,173 @@
 <title>LATE RECORDS</title>
 <meta name="description" content="Curated vinyl records.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="../style.css">
 <style>
 
-/* ── Color + pattern overrides ──────────────────────────────── */
-
-:root {
-  --bg:          #e2e2e2;
-  --text:        #1a1a14;
-  --text-mid:    rgba(26,26,20,.6);
-  --text-dim:    rgba(26,26,20,.35);
-  --rule:        rgba(26,26,20,.1);
-  --rule-mid:    rgba(26,26,20,.18);
-  --rule-strong: rgba(26,26,20,.28);
-}
-
 html, body {
+  font-family: 'Inter', system-ui, sans-serif;
   background-color: #e2e2e2;
   background-image: radial-gradient(circle, rgba(0,0,0,.08) 0.5px, transparent 0.5px);
   background-size: 3px 3px;
-  color: var(--text);
+  color: #1a1a14;
 }
-
 .fixed-header {
   background-color: #e2e2e2;
   background-image: radial-gradient(circle, rgba(0,0,0,.08) 0.5px, transparent 0.5px);
   background-size: 3px 3px;
+  border-bottom-color: rgba(26,26,20,.22);
 }
-
-/* No footer */
-.fixed-footer { display: none; }
-
-.header-logo       { filter: none; opacity: 1; }
-.header-logo:hover { opacity: .5; }
-
-/* Cart — no border/box */
+.header-logo       { height: 44px; filter: none; }
+.header-logo:hover { opacity: .5; transition: opacity .15s; }
 .cart-link {
-  color: var(--text);
-  border: none;
-  padding: 0;
-  font-size: 11px;
-  letter-spacing: .06em;
-  text-transform: uppercase;
-  font-weight: 600;
+  border: none; padding: 0; background: none;
+  font-family: 'Inter', system-ui, sans-serif;
+  font-size: 11px; font-weight: 500;
+  letter-spacing: .07em; text-transform: uppercase; color: #1a1a14;
 }
-.cart-link:hover { background: none; color: var(--text-mid); }
+.cart-link:hover { background: none; color: rgba(26,26,20,.5); }
+.fixed-footer { display: none; }
+.container { padding-bottom: 80px; }
 
 /* Buttons */
 .btn {
-  font-family: inherit;
-  font-size: 11px;
-  letter-spacing: .1em;
-  text-transform: uppercase;
+  font-family: 'Inter', system-ui, sans-serif;
+  font-size: 11px; font-weight: 500;
+  letter-spacing: .09em; text-transform: uppercase;
   padding: 11px 20px;
-  border: 1px solid var(--rule-strong);
-  background: transparent;
-  color: var(--text);
-  cursor: pointer;
-  transition: all .2s;
-  font-weight: 600;
+  border: 1px solid rgba(26,26,20,.32);
+  background: transparent; color: #1a1a14;
+  cursor: pointer; transition: all .15s;
 }
-.btn:hover       { background: var(--text); color: #e2e2e2; }
-.btn-solid       { background: var(--text); color: #e2e2e2; border-color: var(--text); }
-.btn-solid:hover { background: rgba(26,26,20,.8); }
+.btn:hover       { background: #1a1a14; color: #e2e2e2; border-color: #1a1a14; }
+.btn-solid       { background: #1a1a14; color: #e2e2e2; border-color: #1a1a14; }
+.btn-solid:hover { background: rgba(26,26,20,.82); }
 .btn:disabled    { opacity: .35; cursor: not-allowed; }
-.btn:disabled:hover { background: transparent; color: var(--text); }
+.btn:disabled:hover { background: transparent; color: #1a1a14; }
 
-/* ── Album page layout ────────────────────────────────────── */
-
+/* Album layout */
 .album-page {
   display: flex;
   gap: 40px;
   align-items: flex-start;
 }
-
 .album-image-wrap {
-  width: 58%;
+  width: 52%;
   flex-shrink: 0;
   position: sticky;
-  top: calc(var(--header-h, 60px) + 20px);
+  top: calc(74px + 20px);
 }
-
 .album-image {
-  width: 100%;
-  aspect-ratio: 1 / 1;
-  object-fit: cover;
-  display: block;
+  width: 100%; aspect-ratio: 1/1;
+  object-fit: cover; display: block;
 }
-
 .album-details {
   flex: 1;
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
+  display: flex; flex-direction: column; gap: 20px;
   min-width: 0;
 }
 
-.album-title  { font-size: 32px; font-weight: 700; line-height: 1.12; margin: 0; color: var(--text); }
-.album-artist { font-size: 18px; font-weight: 400; color: var(--text-mid); margin: 0; }
-.album-price  { font-size: 20px; font-weight: 600; color: var(--text); }
+.album-title  { font-size: 28px; font-weight: 600; line-height: 1.12; margin: 0; color: #1a1a14; letter-spacing: -.02em; }
+.album-artist { font-size: 16px; font-weight: 400; color: rgba(26,26,20,.55); margin: 0; }
+.album-price  { font-size: 18px; font-weight: 600; color: #1a1a14; }
 
-/* ── Button row ───────────────────────────────────────────── */
-
-.button-row {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  flex-wrap: wrap;
-}
+.button-row { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
 
 .cart-confirm {
-  font-size: 10px;
-  letter-spacing: .1em;
-  text-transform: uppercase;
-  color: var(--text-mid);
-  opacity: 0;
-  transition: opacity .2s;
-  font-weight: 600;
+  font-size: 10px; letter-spacing: .1em; text-transform: uppercase;
+  color: rgba(26,26,20,.5); opacity: 0; transition: opacity .2s; font-weight: 500;
 }
 .cart-confirm.show { opacity: 1; }
 
-/* ── Description toggle ───────────────────────────────────── */
-
+/* Description */
 .description {
-  font-size: 15px;
-  line-height: 1.65;
-  font-weight: 300;
-  margin: 0;
-  overflow: hidden;
-  color: var(--text-mid);
+  font-size: 14px; line-height: 1.7; font-weight: 400;
+  margin: 0; overflow: hidden; color: rgba(26,26,20,.65);
 }
-
 .description.is-collapsed { max-height: 6.4em; }
-
 .description-toggle {
-  background: none;
-  border: 0;
-  padding: 0;
-  font-size: 11px;
-  letter-spacing: .08em;
-  text-transform: uppercase;
-  color: var(--text);
-  cursor: pointer;
-  text-decoration: underline;
-  font-weight: 600;
+  background: none; border: 0; padding: 0;
+  font-size: 11px; letter-spacing: .08em; text-transform: uppercase;
+  color: #1a1a14; cursor: pointer; text-decoration: underline;
+  font-weight: 500; font-family: 'Inter', system-ui, sans-serif;
 }
 
-/* ── Audio player ─────────────────────────────────────────── */
-
+/* Audio player */
 .audio-block { display: none; flex-direction: column; gap: 8px; }
 .audio-block.is-visible { display: flex; }
-
 .audio-shell {
-  border: 1px solid var(--rule-strong);
+  border: 1px solid rgba(26,26,20,.22);
   padding: 12px;
   background: rgba(0,0,0,.03);
 }
-
 .audio-top {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 12px;
-  margin-bottom: 10px;
+  display: flex; align-items: center;
+  justify-content: space-between; gap: 12px; margin-bottom: 10px;
 }
-
 .audio-label {
-  font-size: 10px;
-  letter-spacing: .1em;
-  text-transform: uppercase;
-  color: var(--text-mid);
-  font-weight: 600;
+  font-size: 10px; letter-spacing: .1em; text-transform: uppercase;
+  color: rgba(26,26,20,.5); font-weight: 500;
 }
-
 .audio-nav { display: flex; align-items: center; gap: 8px; }
-
 .audio-arrow {
-  background: none;
-  border: 1px solid var(--rule-strong);
-  padding: 4px 10px;
-  font-size: 20px;
-  line-height: 1;
-  cursor: pointer;
-  color: var(--text);
-  transition: all .15s;
+  background: none; border: 1px solid rgba(26,26,20,.26);
+  padding: 4px 10px; font-size: 20px; line-height: 1;
+  cursor: pointer; color: #1a1a14; transition: all .15s;
 }
-.audio-arrow:hover        { background: var(--text); color: #e2e2e2; }
-.audio-arrow:disabled     { opacity: .3; cursor: not-allowed; }
-.audio-arrow:disabled:hover { background: none; color: var(--text); }
-
+.audio-arrow:hover         { background: #1a1a14; color: #e2e2e2; }
+.audio-arrow:disabled      { opacity: .3; cursor: not-allowed; }
+.audio-arrow:disabled:hover{ background: none; color: #1a1a14; }
 audio { width: 100%; }
 
-/* ── Tracklist ────────────────────────────────────────────── */
-
+/* Tracklist */
 .tracklist-block { display: flex; flex-direction: column; gap: 10px; }
-
 .block-heading {
-  font-size: 10px;
-  letter-spacing: .1em;
-  text-transform: uppercase;
-  color: var(--text-mid);
-  font-weight: 600;
+  font-size: 10px; letter-spacing: .1em; text-transform: uppercase;
+  color: rgba(26,26,20,.5); font-weight: 500;
 }
-
 .tracklist { list-style: none; padding: 0; margin: 0; }
-
-@media (min-width: 901px) {
-  .tracklist { column-count: 2; column-gap: 22px; }
-}
-
+@media (min-width: 901px) { .tracklist { column-count: 2; column-gap: 22px; } }
 .tracklist li {
-  font-size: 14px;
-  line-height: 1.5;
-  padding: 6px 0;
-  border-bottom: 1px solid var(--rule);
-  font-weight: 400;
-  color: var(--text-mid);
-  break-inside: avoid;
+  font-size: 13px; line-height: 1.5; padding: 6px 0;
+  border-bottom: 1px solid rgba(26,26,20,.1);
+  font-weight: 400; color: rgba(26,26,20,.65); break-inside: avoid;
 }
 
-/* ── Related ──────────────────────────────────────────────── */
-
-.related-section { margin-top: 48px; }
-
+/* Related */
+.related-section { margin-top: 52px; padding-top: 32px; border-top: 1px solid rgba(26,26,20,.12); }
 .related-title {
-  font-size: 10px;
-  letter-spacing: .1em;
-  text-transform: uppercase;
-  color: var(--text-mid);
-  margin: 0 0 16px;
-  font-weight: 600;
+  font-size: 10px; letter-spacing: .1em; text-transform: uppercase;
+  color: rgba(26,26,20,.5); margin: 0 0 16px; font-weight: 500;
 }
-
 .related-grid {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 24px;
+  display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px;
 }
-
-.related-card { display: block; text-decoration: none; color: var(--text); }
-
+.related-card { display: block; text-decoration: none; color: #1a1a14; }
 .related-cover {
-  width: 100%;
-  aspect-ratio: 1 / 1;
-  object-fit: cover;
-  display: block;
-  transition: opacity .2s;
+  width: 100%; aspect-ratio: 1/1; object-fit: cover;
+  display: block; transition: opacity .2s;
 }
-.related-card:hover .related-cover { opacity: .75; }
-
+.related-card:hover .related-cover { opacity: .72; }
 .related-info  { margin-top: 8px; }
-.related-name  { font-size: 13px; font-weight: 600; line-height: 1.25; margin: 0; word-break: break-word; color: var(--text); }
-.related-artist{ font-size: 11px; color: var(--text-mid); margin-top: 2px; }
+.related-name  { font-size: 12px; font-weight: 600; line-height: 1.25; margin: 0; word-break: break-word; }
+.related-artist{ font-size: 11px; color: rgba(26,26,20,.5); margin-top: 2px; }
 
-/* ── Responsive ───────────────────────────────────────────── */
-
+/* Responsive */
 @media (max-width: 900px) {
-  .album-page { flex-direction: column; gap: 24px; }
+  .album-page { flex-direction: column; gap: 22px; }
   .album-image-wrap { width: 100%; position: static; }
-  .related-grid { grid-template-columns: repeat(2, 1fr); gap: 18px; }
+  .related-grid { grid-template-columns: repeat(2, 1fr); gap: 14px; }
 }
-
 @media (max-width: 600px) {
-  .album-title  { font-size: 26px; }
-  .album-artist { font-size: 16px; }
-  .related-grid { gap: 14px; }
+  .album-title  { font-size: 22px; }
+  .album-artist { font-size: 14px; }
 }
 
 </style>
 </head>
 <body>
 
-<!-- HEADER -->
 <header class="fixed-header">
   <div class="header-inner">
     <a href="../index.html">
@@ -288,21 +182,20 @@ audio { width: 100%; }
   </div>
 </header>
 
-<!-- MAIN -->
 <div class="container" id="mainContainer"></div>
 
 <script src="../script.js"></script>
 <script>
 
-const ALBUM_ID  = new URLSearchParams(location.search).get('id') || '';
+const ALBUM_ID   = new URLSearchParams(location.search).get('id') || '';
 const AUDIO_BASE = '../audio/';
 
 function renderNotFound() {
   document.getElementById('mainContainer').innerHTML = `
     <div style="padding:80px 0;text-align:center;">
-      <h2 style="font-size:24px;margin:0 0 12px;color:var(--text);">Album not found</h2>
-      <p style="color:var(--text-mid);margin:0 0 24px;">We couldn't find that record.</p>
-      <a href="../index.html" style="font-size:11px;text-transform:uppercase;letter-spacing:.08em;text-decoration:underline;color:var(--text);">← Back to shop</a>
+      <h2 style="font-size:22px;margin:0 0 12px;color:#1a1a14;">Album not found</h2>
+      <p style="color:rgba(26,26,20,.5);margin:0 0 24px;font-size:13px;">We couldn't find that record.</p>
+      <a href="../index.html" style="font-size:11px;text-transform:uppercase;letter-spacing:.08em;text-decoration:underline;color:#1a1a14;">← Back to shop</a>
     </div>
   `;
 }
@@ -311,8 +204,8 @@ function scoreRelated(cur, cand) {
   let s = 0;
   const cg = LR.ui.splitPipe(cur.genre);
   const cc = LR.ui.splitPipe(cur.context);
-  LR.ui.splitPipe(cand.genre).forEach(t   => { if (cg.includes(t)) s += 3; });
-  LR.ui.splitPipe(cand.context).forEach(t => { if (cc.includes(t)) s += 2; });
+  LR.ui.splitPipe(cand.genre).forEach(t    => { if (cg.includes(t)) s += 3; });
+  LR.ui.splitPipe(cand.context).forEach(t  => { if (cc.includes(t)) s += 2; });
   return s;
 }
 
@@ -329,46 +222,33 @@ function renderAlbum(item, all) {
 
   document.getElementById('mainContainer').innerHTML = `
     <div class="album-page">
-
       <div class="album-image-wrap">
-        <img
-          src="../images/${item.album_id}.jpg"
-          class="album-image"
-          id="albumImg"
-          alt="${item.title}"
-        >
+        <img src="../images/${item.album_id}.jpg" class="album-image" id="albumImg" alt="${item.title}">
       </div>
-
       <div class="album-details">
-
         <div>
           <h1 class="album-title">${item.title}</h1>
           <p class="album-artist">by ${item.artist}</p>
         </div>
-
         <div>
-          <p class="album-price" id="albumPrice">${sold ? '<span style="color:var(--text-dim);text-decoration:line-through;">' + LR.ui.peso(item.price) + '</span>' : LR.ui.peso(item.price)}</p>
+          <p class="album-price">${sold
+            ? `<span style="color:rgba(26,26,20,.3);text-decoration:line-through;">${LR.ui.peso(item.price)}</span>`
+            : LR.ui.peso(item.price)}</p>
           <div class="button-row" style="margin-top:10px;">
-            <button
-              class="btn btn-solid"
-              id="addToCartBtn"
-              data-id="${item.album_id}"
-              data-title="${item.title}"
-              data-artist="${item.artist}"
-              data-price="${item.price}"
-              data-stock="${item.stock}"
-              ${sold ? 'disabled' : ''}
-            >${sold ? 'Sold Out' : 'Add to Cart'}</button>
+            <button class="btn btn-solid" id="addToCartBtn"
+              data-id="${item.album_id}" data-title="${item.title}"
+              data-artist="${item.artist}" data-price="${item.price}"
+              data-stock="${item.stock}" ${sold ? 'disabled' : ''}>
+              ${sold ? 'Sold Out' : 'Add to Cart'}
+            </button>
             <span class="cart-confirm" id="cartConfirm">✓ Added</span>
           </div>
         </div>
-
         ${item.description ? `
         <div class="description-block">
           <p class="description" id="albumDesc">${item.description}</p>
           <button class="description-toggle" id="descToggle" style="display:none;">+ Read more</button>
         </div>` : ''}
-
         <div class="audio-block" id="audioBlock">
           <p class="block-heading">Audio</p>
           <div class="audio-shell">
@@ -382,16 +262,13 @@ function renderAlbum(item, all) {
             <audio id="albumAudio" controls preload="none"></audio>
           </div>
         </div>
-
         ${tracks.length ? `
         <div class="tracklist-block">
           <p class="block-heading">Tracklist</p>
           <ul class="tracklist">${tracks.map(t => `<li>${t}</li>`).join('')}</ul>
         </div>` : ''}
-
       </div>
     </div>
-
     ${related.length ? `
     <section class="related-section">
       <h3 class="related-title">Recommended</h3>
@@ -422,7 +299,7 @@ function setupDescToggle() {
     if (desc.scrollHeight > 175) {
       desc.classList.add('is-collapsed');
       toggle.style.display = 'inline-block';
-      toggle.textContent = '+ Read more';
+      toggle.textContent   = '+ Read more';
     }
   });
   toggle.addEventListener('click', () => {
@@ -432,18 +309,16 @@ function setupDescToggle() {
 }
 
 function setupAudio(albumId) {
-  const block  = document.getElementById('audioBlock');
-  const audio  = document.getElementById('albumAudio');
-  const label  = document.getElementById('audioLabel');
-  const prev   = document.getElementById('audioPrev');
-  const next   = document.getElementById('audioNext');
+  const block = document.getElementById('audioBlock');
+  const audio = document.getElementById('albumAudio');
+  const label = document.getElementById('audioLabel');
+  const prev  = document.getElementById('audioPrev');
+  const next  = document.getElementById('audioNext');
   if (!block || !audio) return;
-  const valid = [];
-  let cur = 0;
+  const valid = []; let cur = 0;
   function probe(i) {
     const url = `${AUDIO_BASE}${albumId}/${albumId}-sample-${i}.mp3`;
-    const a   = new Audio();
-    a.preload = 'metadata';
+    const a   = new Audio(); a.preload = 'metadata';
     a.addEventListener('loadedmetadata', () => { valid.push(url); probe(i + 1); }, { once: true });
     a.addEventListener('error', () => {
       if (valid.length) { block.classList.add('is-visible'); setTrack(0); }
@@ -451,8 +326,7 @@ function setupAudio(albumId) {
     a.src = url;
   }
   function setTrack(i) {
-    cur = i;
-    audio.src = valid[i];
+    cur = i; audio.src = valid[i];
     label.textContent = `Sample ${i + 1}`;
     prev.disabled = i === 0;
     next.disabled = i === valid.length - 1;
@@ -468,11 +342,8 @@ function setupAddToCart(item) {
   if (!btn) return;
   btn.addEventListener('click', () => {
     const result = LR.cart.add({
-      id:     item.album_id,
-      title:  item.title,
-      artist: item.artist,
-      price:  item.price,
-      stock:  item.stock
+      id: item.album_id, title: item.title,
+      artist: item.artist, price: item.price, stock: item.stock
     });
     confirm.textContent = result === 'exists' ? 'Already in cart' : '✓ Added';
     confirm.classList.add('show');
