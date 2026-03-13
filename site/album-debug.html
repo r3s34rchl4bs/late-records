@@ -6,7 +6,7 @@
 <title>LATE RECORDS</title>
 <meta name="description" content="Curated vinyl records.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Share+Tech+Mono&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="style.css">
 <style>
 
@@ -50,6 +50,32 @@ html, body {
 .btn-solid:hover { background: rgba(26,26,20,.82); }
 .btn:disabled    { opacity: .35; cursor: not-allowed; }
 .btn:disabled:hover { background: transparent; color: #1a1a14; }
+
+/* Price block — terminal/receipt style */
+.price-block {
+  border-top: 1px dashed rgba(26,26,20,.3);
+  padding-top: 12px;
+}
+.price-label {
+  font-size: 9px; font-weight: 500; letter-spacing: .12em;
+  text-transform: uppercase; color: rgba(26,26,20,.4);
+  margin-bottom: 4px; font-family: 'Inter', system-ui, sans-serif;
+}
+.album-price {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 22px; color: #1a1a14; letter-spacing: .02em;
+  margin-bottom: 12px;
+}
+.add-to-cart-btn {
+  font-family: 'Inter', system-ui, sans-serif;
+  font-size: 11px; font-weight: 500; letter-spacing: .09em;
+  text-transform: uppercase; padding: 10px 20px;
+  border: 1px solid #1a1a14; background: #1a1a14;
+  color: #e2e2e2; cursor: pointer; transition: background .15s;
+  width: 100%;
+}
+.add-to-cart-btn:hover    { background: rgba(26,26,20,.82); }
+.add-to-cart-btn:disabled { opacity: .35; cursor: not-allowed; }
 
 /* Album layout */
 .album-page {
@@ -268,19 +294,18 @@ function renderAlbum(item, all) {
           <h1 class="album-title">${item.title}</h1>
           <p class="album-artist">by ${item.artist}</p>
         </div>
-        <div>
-          <p class="album-price">${sold
+        <div class="price-block">
+          <div class="price-label">Price</div>
+          <div class="album-price">${sold
             ? `<span style="color:rgba(26,26,20,.3);text-decoration:line-through;">${LR.ui.peso(item.price)}</span>`
-            : LR.ui.peso(item.price)}</p>
-          <div class="button-row" style="margin-top:10px;">
-            <button class="btn btn-solid" id="addToCartBtn"
-              data-id="${item.album_id}" data-title="${item.title}"
-              data-artist="${item.artist}" data-price="${item.price}"
-              data-stock="${item.stock}" ${sold ? 'disabled' : ''}>
-              ${sold ? 'Sold Out' : 'Add to Cart'}
-            </button>
-            <span class="cart-confirm" id="cartConfirm">✓ Added</span>
-          </div>
+            : LR.ui.peso(item.price)}</div>
+          <button class="add-to-cart-btn" id="addToCartBtn"
+            data-id="${item.album_id}" data-title="${item.title}"
+            data-artist="${item.artist}" data-price="${item.price}"
+            data-stock="${item.stock}" ${sold ? 'disabled' : ''}>
+            ${sold ? 'Sold Out' : 'Add to Cart'}
+          </button>
+          <span class="cart-confirm" id="cartConfirm" style="display:block;margin-top:8px;">✓ Added</span>
         </div>
         ${item.description ? `
         <div class="description-block">
