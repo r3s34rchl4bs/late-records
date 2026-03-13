@@ -20,8 +20,10 @@
     'box-sizing:border-box'
   ].join(';');
   bar.innerHTML =
-    '<span>&#9672; PUBLIC TEST BUILD &mdash; LATE RECORDS IS UNDER CONSTRUCTION</span>' +
-    '<span style="opacity:.45;letter-spacing:.08em;">PRE-LAUNCH</span>';
+    '<div style="max-width:1200px;margin:0 auto;padding:0 30px;display:flex;align-items:center;justify-content:space-between;width:100%;box-sizing:border-box;">' +
+    '<span>&#9672; PUBLIC TEST BUILD &mdash; SITE UNDER CONSTRUCTION</span>' +
+    '<span style="opacity:.45;letter-spacing:.08em;">PRE-LAUNCH</span>' +
+    '</div>';
   document.body.insertBefore(bar, document.body.firstChild);
 
   /* ── Push all content down by bar height ── */
@@ -41,7 +43,7 @@
   wash.style.cssText = [
     'position:fixed',
     'top:0','left:0','width:100%','height:100%',
-    'background:rgba(180,180,174,.07)',
+    'background:rgba(180,180,174,.13)',
     'pointer-events:none',
     'z-index:9998'
   ].join(';');
@@ -60,7 +62,33 @@
   document.body.appendChild(dots);
 
   /* ── Success page test mode notice ── */
+  if (window.location.pathname.indexOf('checkout') !== -1) {
+    function injectCheckoutNotice() {
+      var target = document.querySelector('.container') || document.body;
+      var notice = document.createElement('div');
+      notice.style.cssText = [
+        'font-family:\'Inter\',system-ui,sans-serif',
+        'font-size:10px',
+        'font-weight:500',
+        'letter-spacing:.1em',
+        'text-transform:uppercase',
+        'color:rgba(26,26,20,.45)',
+        'margin-bottom:20px'
+      ].join(';');
+      notice.textContent = '◈ [PRE-LAUNCH] Checkout enabled for testing purposes';
+      target.insertBefore(notice, target.firstChild);
+    }
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', injectCheckoutNotice);
+    } else {
+      setTimeout(injectCheckoutNotice, 300);
+    }
+  }
+
   if (window.location.pathname.indexOf('success') !== -1) {
+
+
+
     function injectNotice() {
       var target = document.querySelector('.container') || document.body;
       var notice = document.createElement('div');
