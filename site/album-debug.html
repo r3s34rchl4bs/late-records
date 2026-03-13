@@ -367,7 +367,13 @@ function setupAddToCart(item) {
 
 (async () => {
   // DEBUG — render hardcoded album, skip API
-  renderAlbum(DEBUG_ALBUM, []);
+  const DEBUG_RELATED = [
+    { album_id: 'selected-ambient-works-85-92-by-aphex-twin', title: 'Selected Ambient Works 85-92', artist: 'Aphex Twin', genre: 'Ambient||Electronic', context: 'Electronic' },
+    { album_id: 'self-titled-by-guilherme-coutinho-e-o-grupo-stalo', title: 'Self-Titled', artist: 'Guilherme Coutinho e o Grupo Stalo', genre: 'Jazz||Brazilian', context: 'Jazz' },
+    { album_id: 'introduction-by-witch', title: 'Introduction', artist: 'Witch', genre: 'Zamrock||Rock', context: 'Rock' },
+    { album_id: 'my-favorite-things-by-john-coltrane', title: 'My Favorite Things', artist: 'John Coltrane', genre: 'Jazz', context: 'Jazz' }
+  ];
+  renderAlbum(DEBUG_ALBUM, DEBUG_RELATED);
 })();
 
 </script>
