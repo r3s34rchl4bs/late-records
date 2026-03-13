@@ -104,6 +104,15 @@ async function handleOrder(request, env) {
     return json({ error: 'Invalid JSON' }, 400);
   }
 
+  // ── Validate required fields ─────────────────────────────────────────────
+  const required = ['name', 'email', 'phone', 'address', 'items'];
+  for (const field of required) {
+    if (!body[field]) return json({ error: `Missing required field: ${field}` }, 400);
+  }
+  if (!Array.isArray(body.items) || body.items.length === 0) {
+    return json({ error: 'Order must contain at least one item' }, 400);
+  }
+
   // ── Forward to Apps Script ────────────────────────────────────────────────
   const appsRes = await fetch(env.APPS_SCRIPT_URL, {
     method:  'POST',

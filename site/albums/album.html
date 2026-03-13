@@ -223,7 +223,7 @@ function renderAlbum(item, all) {
   document.getElementById('mainContainer').innerHTML = `
     <div class="album-page">
       <div class="album-image-wrap">
-        <img src="../images/${item.album_id}.jpg" class="album-image" id="albumImg" alt="${item.title}">
+        <img src="../images/${item.album_id}.jpg" class="album-image" id="albumImg" alt="${item.title}" onerror="this.style.background='rgba(26,26,20,.06)';this.removeAttribute('src')">
       </div>
       <div class="album-details">
         <div>
@@ -275,7 +275,7 @@ function renderAlbum(item, all) {
       <div class="related-grid">
         ${related.map(({ i }) => `
           <a class="related-card" href="album.html?id=${i.album_id}">
-            <img src="../images/${i.album_id}.jpg" class="related-cover" alt="${i.title}" loading="lazy">
+            <img src="../images/${i.album_id}.jpg" class="related-cover" alt="${i.title}" loading="lazy" onerror="this.style.opacity='0'">
             <div class="related-info">
               <p class="related-name">${i.title}</p>
               <p class="related-artist">${i.artist}</p>

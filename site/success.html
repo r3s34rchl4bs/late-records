@@ -129,6 +129,11 @@ html, body {
 const buyer      = localStorage.getItem('lr_buyer');
 const orderTotal = localStorage.getItem('lr_order_total');
 
+// Redirect if someone lands here without a real order
+if (!buyer && !orderTotal) {
+  window.location.href = 'index.html';
+}
+
 if (buyer) {
   document.getElementById('thankYouText').innerHTML =
     `Thank you for your order, <strong>${buyer}</strong>. To complete your purchase, please send your payment using the QR code below.`;

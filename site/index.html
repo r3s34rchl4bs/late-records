@@ -292,10 +292,6 @@ col.c-stock  { width: 8%; }
 <script src="script.js"></script>
 <script>
 
-function splitPipe(val) {
-  return String(val||'').split('||').map(s=>s.trim()).filter(Boolean);
-}
-
 function buildCarousel(albums) {
   const featured = albums.filter(a => String(a.featured).toLowerCase() === 'yes').slice(0, 5);
   const cards = featured.length >= 1 ? featured : albums.slice(0, 5);
@@ -307,7 +303,7 @@ function buildCarousel(albums) {
 
   // Build all cards
   cards.forEach((album) => {
-    const tags     = splitPipe(album.genre).slice(0, 2);
+    const tags     = LR.ui.splitPipe(album.genre).slice(0, 2);
     const albumUrl = `albums/album.html?id=${album.album_id}`;
     const card     = document.createElement('div');
     card.className = 'carousel-card';
@@ -349,7 +345,7 @@ function buildTable(albums) {
   const tbody = document.getElementById('catalogList');
   tbody.innerHTML = sorted.map(item => {
     const sold   = item.status !== 'available';
-    const genre  = splitPipe(item.genre)[0] || '';
+    const genre  = LR.ui.splitPipe(item.genre)[0] || '';
     const format = (item.format||'LP').trim();
     return `<tr class="${sold?'sold':''}" onclick="location.href='albums/album.html?id=${item.album_id}'">
       <td class="c-title"><div class="rec-title">${item.title}</div><div class="rec-artist">${item.artist}</div></td>
