@@ -20,10 +20,11 @@
     'box-sizing:border-box'
   ].join(';');
   bar.innerHTML =
-    '<div style="max-width:1200px;margin:0 auto;padding:0 30px;display:flex;align-items:center;justify-content:space-between;width:100%;box-sizing:border-box;">' +
-    '<span>&#9672; PUBLIC TEST BUILD &mdash; SITE UNDER CONSTRUCTION</span>' +
-    '<span style="opacity:.45;letter-spacing:.08em;">PRE-LAUNCH</span>' +
+   '<div style="max-width:1200px;margin:0 auto;padding:0 clamp(20px,2.5vw,30px);display:flex;align-items:center;justify-content:space-between;width:100%;box-sizing:border-box;">' +
+    '<span style="font-size:9px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">&#9672; PUBLIC TEST BUILD &mdash; SITE UNDER CONSTRUCTION</span>' +
+    '<span style="font-size:9px;opacity:.45;letter-spacing:.08em;margin-left:12px;flex-shrink:0;">PRE-LAUNCH</span>' +
     '</div>';
+
   document.body.insertBefore(bar, document.body.firstChild);
 
   /* ── Push all content down by bar height ── */
