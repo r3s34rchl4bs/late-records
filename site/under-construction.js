@@ -120,7 +120,7 @@
     'cursor:pointer','z-index:9999',
     'user-select:none'
   ].join(';');
-  widgetBtn.textContent = '[ FEEDBACK ]';
+  widgetBtn.textContent = '[ REPORT ISSUE ]';
   document.body.appendChild(widgetBtn);
 
   var widgetBox = document.createElement('div');
@@ -134,7 +134,7 @@
   ].join(';');
   widgetBox.innerHTML =
     '<div style="background:#1a1a14;color:#e2e2e2;font-size:9px;font-weight:500;letter-spacing:.12em;text-transform:uppercase;padding:8px 12px;display:flex;justify-content:space-between;align-items:center;">' +
-    '<span>&#9672; Send Feedback</span>' +
+    '<span>&#9672; Report Issue</span>' +
     '<span id="lr-widget-close" style="cursor:pointer;opacity:.6;font-size:12px;">&#x2715;</span>' +
     '</div>' +
     '<div style="padding:12px;">' +
