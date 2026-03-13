@@ -374,6 +374,29 @@ function setupAddToCart(item) {
     { album_id: 'my-favorite-things-by-john-coltrane', title: 'My Favorite Things', artist: 'John Coltrane', genre: 'Jazz', context: 'Jazz' }
   ];
   renderAlbum(DEBUG_ALBUM, DEBUG_RELATED);
+
+  // MOCK: force audio player visible with fake tracks
+  setTimeout(() => {
+    const block = document.getElementById('audioBlock');
+    const audio = document.getElementById('albumAudio');
+    const label = document.getElementById('audioLabel');
+    const prev  = document.getElementById('audioPrev');
+    const next  = document.getElementById('audioNext');
+    if (!block) return;
+    block.classList.add('is-visible');
+    label.textContent = 'Sample 1';
+    prev.disabled = true;
+    next.disabled = false;
+    // Wire up mock nav
+    let cur = 0;
+    const total = 3;
+    next.addEventListener('click', () => {
+      if (cur < total - 1) { cur++; label.textContent = `Sample ${cur + 1}`; prev.disabled = false; next.disabled = cur === total - 1; }
+    });
+    prev.addEventListener('click', () => {
+      if (cur > 0) { cur--; label.textContent = `Sample ${cur + 1}`; next.disabled = false; prev.disabled = cur === 0; }
+    });
+  }, 100);
 })();
 
 </script>
