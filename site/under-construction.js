@@ -41,7 +41,7 @@
   wash.style.cssText = [
     'position:fixed',
     'top:0','left:0','width:100%','height:100%',
-    'background:rgba(180,180,174,.13)',
+    'background:rgba(180,180,174,0)',
     'pointer-events:none',
     'z-index:9998'
   ].join(';');
