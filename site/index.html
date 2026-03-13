@@ -55,7 +55,7 @@ button { cursor: pointer; font-family: inherit; }
 .section-divider {
   border: none;
   border-top: 1px solid rgba(26,26,20,.1);
-  margin: 32px 0;
+  margin: 20px 0;
 }
 
 .carousel-viewport {
@@ -73,15 +73,15 @@ button { cursor: pointer; font-family: inherit; }
 }
 
 .card-inner {
-  width: 100%; padding: 22px 0 17px; height: 100%;
+  width: 100%; padding: 22px 0 10px; height: 100%;
   display: flex; flex-direction: column; justify-content: space-between;
   position: relative;
 }
 
-/* Nav is always in DOM, positioned on every card */
+/* Nav sits at top-right corner of the viewport box */
 .carousel-nav {
-  position: absolute; top: 22px; right: 0;
-  display: flex; align-items: center; gap: 5px; z-index: 2;
+  position: absolute; top: 0; right: 0;
+  display: flex; align-items: center; gap: 5px; z-index: 10;
 }
 .carousel-btn {
   width: 34px; height: 34px;
@@ -256,6 +256,11 @@ col.c-stock  { width: 8%; }
           </div>
         </div>
       </div>
+      <!-- Nav always visible, even before JS loads -->
+      <div class="carousel-nav" id="carouselNav">
+        <button class="carousel-btn" id="prevBtn">&#8249;</button>
+        <button class="carousel-btn" id="nextBtn">&#8250;</button>
+      </div>
     </div>
   </section>
 
@@ -300,14 +305,6 @@ function buildCarousel(albums) {
   // Clear skeleton
   track.innerHTML = '';
 
-  // Build a single shared nav bar
-  const nav = document.createElement('div');
-  nav.className = 'carousel-nav';
-  nav.style.cssText = 'position:absolute;top:22px;right:0;display:flex;align-items:center;gap:5px;z-index:10;';
-  nav.innerHTML = `
-    <button class="carousel-btn" id="prevBtn">‹</button>
-    <button class="carousel-btn" id="nextBtn">›</button>`;
-
   // Build all cards
   cards.forEach((album) => {
     const tags     = splitPipe(album.genre).slice(0, 2);
@@ -333,12 +330,8 @@ function buildCarousel(albums) {
     track.appendChild(card);
   });
 
-  // Attach nav to the carousel viewport (not inside a card) so it stays fixed while cards slide
-  track.parentElement.style.position = 'relative';
-  track.parentElement.appendChild(nav);
-
+  // Nav is already in the HTML — just wire up the buttons
   function goTo(index) {
-    // Wrap around: loop from last → first and first → last
     if (index < 0) index = cards.length - 1;
     if (index >= cards.length) index = 0;
     current = index;
