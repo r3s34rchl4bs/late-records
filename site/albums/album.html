@@ -92,19 +92,19 @@ html, body {
 }
 .description.is-collapsed { max-height: 6.4em; }
 .description-toggle {
-  background: none; border: 0; padding: 0;
-  font-size: 11px; letter-spacing: .08em; text-transform: uppercase;
-  color: #1a1a14; cursor: pointer; text-decoration: underline;
-  font-weight: 500; font-family: 'Inter', system-ui, sans-serif;
+  background: #1a1a14; border: 0;
+  width: 20px; height: 20px;
+  display: inline-flex; align-items: center; justify-content: center;
+  font-size: 14px; color: #e2e2e2; cursor: pointer;
+  font-family: 'Inter', system-ui, sans-serif; font-weight: 400;
+  margin-top: 8px;
 }
 
 /* Audio player */
 .audio-block { display: none; flex-direction: column; gap: 8px; }
 .audio-block.is-visible { display: flex; }
 .audio-shell {
-  border: 1px solid rgba(26,26,20,.22);
-  padding: 12px;
-  background: rgba(0,0,0,.03);
+  padding: 0;
 }
 .audio-top {
   display: flex; align-items: center;
@@ -250,7 +250,7 @@ function renderAlbum(item, all) {
           <button class="description-toggle" id="descToggle" style="display:none;">+ Read more</button>
         </div>` : ''}
         <div class="audio-block" id="audioBlock">
-          <p class="block-heading">Audio</p>
+          
           <div class="audio-shell">
             <div class="audio-top">
               <span class="audio-label" id="audioLabel">Sample 1</span>
@@ -299,12 +299,12 @@ function setupDescToggle() {
     if (desc.scrollHeight > 175) {
       desc.classList.add('is-collapsed');
       toggle.style.display = 'inline-block';
-      toggle.textContent   = '+ Read more';
+      toggle.textContent   = '+';
     }
   });
   toggle.addEventListener('click', () => {
     const c = desc.classList.toggle('is-collapsed');
-    toggle.textContent = c ? '+ Read more' : '− Read less';
+    toggle.textContent = c ? '+' : '−';
   });
 }
 
