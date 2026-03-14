@@ -396,9 +396,9 @@ function buildCarousel(albums) {
 
 function rowHTML(item, query, isSuggestion) {
   const sold    = item.status !== 'available';
-  const genres  = LR.ui.splitPipe(item.genre);
-  const genre   = isSuggestion && query
-    ? (genres.find(g => g.toLowerCase().split(/[\s\/]+/).some(w => query.toLowerCase().includes(w))) || genres[0] || '')
+  const genres = LR.ui.splitPipe(item.genre);
+  const genre  = isSuggestion && item._matchedGenre
+    ? item._matchedGenre
     : (genres[0] || '');
   const format = (item.format || 'LP').trim();
   const title  = query ? highlight(item.title, query) : item.title;
