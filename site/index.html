@@ -184,8 +184,58 @@ col.c-stock  { width: 8%; }
 .tbl tbody tr.sold .rec-stock  { color: rgba(26,26,20,.28); }
 .tbl tbody tr.sold .sdot       { background: rgba(26,26,20,.28) !important; }
 
+/* ── Search ──────────────────────────────────────────────── */
+.search-row {
+  display: flex; align-items: center;
+  border-bottom: 1px solid rgba(26,26,20,.26);
+  margin-bottom: 24px;
+}
+.search-input {
+  flex: 1; border: none; background: transparent;
+  font-family: 'Inter', system-ui, sans-serif;
+  font-size: 13px; font-weight: 400; color: #1a1a14;
+  padding: 12px 0; outline: none; letter-spacing: .01em;
+}
+.search-input::placeholder { color: rgba(26,26,20,.32); }
+.search-clear {
+  border: none; background: none; padding: 0 0 0 8px;
+  font-size: 16px; color: rgba(26,26,20,.32); cursor: pointer;
+  line-height: 1; display: none; transition: color .1s;
+}
+.search-clear:hover { color: #1a1a14; }
+.search-count {
+  font-size: 10px; font-weight: 500; letter-spacing: .08em;
+  text-transform: uppercase; color: rgba(26,26,20,.35);
+  padding-left: 14px; white-space: nowrap; flex-shrink: 0;
+}
+.suggestions-header {
+  display: none;
+  padding: 28px 0 16px;
+  font-size: 11px; font-weight: 500; letter-spacing: .09em;
+  text-transform: uppercase; color: rgba(26,26,20,.4);
+}
+.suggestions-header span { color: #1a1a14; }
+.suggestions-header.is-loading::after {
+  content: ''; animation: ellipsis 1.2s steps(4, end) infinite;
+}
+@keyframes ellipsis {
+  0%   { content: ''; }  25%  { content: '.'; }
+  50%  { content: '..'; } 75% { content: '...'; }
+}
+.no-results-empty {
+  padding: 40px 0;
+  font-size: 13px; color: rgba(26,26,20,.38); letter-spacing: .01em;
+  display: none;
+}
+.rec-title mark, .rec-artist mark {
+  background: rgba(26,26,20,.12); color: #1a1a14; padding: 0 1px; border-radius: 1px;
+}
+.tbl tbody tr.is-suggestion td:first-child {
+  border-left: 2px solid rgba(26,26,20,.14); padding-left: 10px;
+}
+@media (max-width: 600px) { .search-count { display: none; } }
+
 .sk {
-  display: inline-block; height: 9px; border-radius: 2px;
   background: linear-gradient(90deg, rgba(0,0,0,.07) 25%, rgba(0,0,0,.13) 50%, rgba(0,0,0,.07) 75%);
   background-size: 200% 100%; animation: sh 1.4s infinite;
 }
@@ -266,7 +316,18 @@ col.c-stock  { width: 8%; }
 
   <hr class="section-divider">
 
-  <table class="tbl">
+  <div class="search-row">
+    <input class="search-input" id="searchInput" type="search"
+      autocomplete="off" spellcheck="false"
+      placeholder="Search by title, artist, genre, format…">
+    <button class="search-clear" id="searchClear" aria-label="Clear search">&#215;</button>
+    <span class="search-count" id="searchCount"></span>
+  </div>
+
+  <div class="suggestions-header" id="suggestionsHeader"></div>
+  <div class="no-results-empty" id="noResultsEmpty">Nothing found.</div>
+
+  <table class="tbl" id="catalogTable">
     <colgroup>
       <col class="c-title"><col class="c-genre"><col class="c-format"><col class="c-stock">
     </colgroup>
@@ -297,11 +358,7 @@ function buildCarousel(albums) {
   const cards = featured.length >= 1 ? featured : albums.slice(0, 5);
   const track = document.getElementById('carouselTrack');
   let current = 0;
-
-  // Clear skeleton
   track.innerHTML = '';
-
-  // Build all cards
   cards.forEach((album) => {
     const tags     = LR.ui.splitPipe(album.genre).slice(0, 2);
     const albumUrl = `albums/album.html?id=${album.album_id}`;
@@ -325,38 +382,129 @@ function buildCarousel(albums) {
       </div>`;
     track.appendChild(card);
   });
-
-  // Nav is already in the HTML — just wire up the buttons
   function goTo(index) {
     if (index < 0) index = cards.length - 1;
     if (index >= cards.length) index = 0;
     current = index;
     track.style.transform = `translateX(-${current * 100}%)`;
   }
-
   goTo(0);
-
   document.getElementById('prevBtn').addEventListener('click', (e) => { e.stopPropagation(); goTo(current - 1); });
   document.getElementById('nextBtn').addEventListener('click', (e) => { e.stopPropagation(); goTo(current + 1); });
 }
 
+function rowHTML(item, query, isSuggestion) {
+  const sold   = item.status !== 'available';
+  const genre  = LR.ui.splitPipe(item.genre)[0] || '';
+  const format = (item.format || 'LP').trim();
+  const title  = query ? highlight(item.title, query) : item.title;
+  const artist = query ? highlight(item.artist, query) : item.artist;
+  return `<tr class="${sold ? 'sold' : ''}${isSuggestion ? ' is-suggestion' : ''}"
+    onclick="location.href='albums/album.html?id=${item.album_id}'">
+    <td class="c-title"><div class="rec-title">${title}</div><div class="rec-artist">${artist}</div></td>
+    <td class="c-genre"><span class="genre-tag"
+      onclick="event.stopPropagation();location.href='genre.html?g=${encodeURIComponent(genre.toLowerCase())}'">${genre}</span></td>
+    <td class="c-format"><span class="rec-format">${format}</span></td>
+    <td class="c-stock"><div class="rec-stock"><span class="sdot ${sold ? 's' : 'a'}"></span><span>${sold ? 'Sold' : 'Avail'}</span></div></td>
+  </tr>`;
+}
+
+function highlight(text, query) {
+  if (!query) return text;
+  const esc = query.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  return text.replace(new RegExp(`(${esc})`, 'gi'), '<mark>$1</mark>');
+}
+
+let _catalog = [];
+let _suggestTimer = null;
+
 function buildTable(albums) {
-  const sorted = [...albums].sort((a, b) => a.artist.localeCompare(b.artist));
+  _catalog = [...albums].sort((a, b) => a.artist.localeCompare(b.artist));
+  renderTable('');
+}
+
+function renderTable(rawQuery) {
+  const q      = rawQuery.trim().toLowerCase();
+  const tbody  = document.getElementById('catalogList');
+  const hdr    = document.getElementById('suggestionsHeader');
+  const empty  = document.getElementById('noResultsEmpty');
+  const count  = document.getElementById('searchCount');
+  const tbl    = document.getElementById('catalogTable');
+  hdr.style.display = 'none';
+  hdr.className = 'suggestions-header';
+  empty.style.display = 'none';
+  tbl.style.display = '';
+  if (_suggestTimer) { clearTimeout(_suggestTimer); _suggestTimer = null; }
+  if (!q) {
+    tbody.innerHTML = _catalog.map(item => rowHTML(item, '', false)).join('');
+    count.textContent = '';
+    return;
+  }
+  const matches = _catalog.filter(item =>
+    [item.title, item.artist, item.genre, item.format].join(' ').toLowerCase().includes(q)
+  );
+  if (matches.length) {
+    tbody.innerHTML = matches.map(item => rowHTML(item, rawQuery.trim(), false)).join('');
+    count.textContent = `${matches.length} result${matches.length !== 1 ? 's' : ''}`;
+    return;
+  }
+  count.textContent = '';
+  hdr.style.display = 'block';
+  hdr.className = 'suggestions-header is-loading';
+  hdr.innerHTML = `No results for <span>"${rawQuery.trim()}"</span> — looking for suggestions`;
+  tbody.innerHTML = '';
+  _suggestTimer = setTimeout(() => fetchSuggestions(rawQuery.trim()), 500);
+}
+
+async function fetchSuggestions(query) {
+  const hdr   = document.getElementById('suggestionsHeader');
+  const empty = document.getElementById('noResultsEmpty');
   const tbody = document.getElementById('catalogList');
-  tbody.innerHTML = sorted.map(item => {
-    const sold   = item.status !== 'available';
-    const genre  = LR.ui.splitPipe(item.genre)[0] || '';
-    const format = (item.format||'LP').trim();
-    return `<tr class="${sold?'sold':''}" onclick="location.href='albums/album.html?id=${item.album_id}'">
-      <td class="c-title"><div class="rec-title">${item.title}</div><div class="rec-artist">${item.artist}</div></td>
-      <td class="c-genre"><span class="genre-tag" onclick="event.stopPropagation();location.href='genre.html?g=${encodeURIComponent(genre.toLowerCase())}'">${genre}</span></td>
-      <td class="c-format"><span class="rec-format">${format}</span></td>
-      <td class="c-stock"><div class="rec-stock"><span class="sdot ${sold?'s':'a'}"></span><span>${sold?'Sold':'Avail'}</span></div></td>
-    </tr>`;
-  }).join('');
+  const tbl   = document.getElementById('catalogTable');
+  try {
+    const res = await fetch(`https://late-records.shop/api/suggest?q=${encodeURIComponent(query)}`);
+    const suggestions = await res.json();
+    if (!suggestions.length) {
+      tbl.style.display = 'none';
+      hdr.style.display = 'none';
+      empty.style.display = 'block';
+      return;
+    }
+    hdr.className = 'suggestions-header';
+    hdr.innerHTML = `No results for <span>"${query}"</span> — you might like:`;
+    tbody.innerHTML = suggestions.map(item => rowHTML(item, '', true)).join('');
+  } catch {
+    tbl.style.display = 'none';
+    hdr.style.display = 'none';
+    empty.style.display = 'block';
+  }
 }
 
 document.addEventListener('DOMContentLoaded', async () => {
+  const input = document.getElementById('searchInput');
+  const clear = document.getElementById('searchClear');
+
+  input.addEventListener('input', () => {
+    const v = input.value;
+    clear.style.display = v ? 'block' : 'none';
+    renderTable(v);
+  });
+
+  clear.addEventListener('click', () => {
+    input.value = '';
+    clear.style.display = 'none';
+    renderTable('');
+    input.focus();
+  });
+
+  document.addEventListener('click', e => {
+    if (!e.target.closest('.search-row') && !e.target.closest('#catalogTable') && !e.target.closest('#suggestionsHeader')) {
+      input.value = '';
+      clear.style.display = 'none';
+      renderTable('');
+    }
+  });
+
   try {
     const catalog = await LR.api.catalog();
     buildCarousel(catalog);
@@ -367,6 +515,7 @@ document.addEventListener('DOMContentLoaded', async () => {
       `<tr><td colspan="4" style="padding:40px 0;font-size:13px;color:rgba(26,26,20,.48)">Could not load catalog. Please refresh.</td></tr>`;
   }
 });
+  
 
 </script>
 <script src="under-construction.js"></script>
