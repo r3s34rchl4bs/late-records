@@ -217,7 +217,7 @@ export default {
       try {
         const catalog = await fetchCatalog(env);
         let results = await musicBrainzSuggest(q, catalog);
-        if (!results.length && env.GEMINI_API_KEY) {
+        if (results.length < 4 && env.GEMINI_API_KEY) {
           results = await geminiSuggest(q, catalog, env.GEMINI_API_KEY);
         }
         return json(results, 200, origin);
