@@ -59,6 +59,17 @@ html, body {
 
 .album-title  { font-size: 28px; font-weight: 600; line-height: 1.12; margin: 0; color: #1a1a14; letter-spacing: -.02em; }
 .album-artist { font-size: 16px; font-weight: 400; color: rgba(26,26,20,.55); margin: 0; }
+.album-genre-tags { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-top: 10px; }
+.album-format-label { font-size: 11px; font-weight: 500; letter-spacing: .08em; text-transform: uppercase; color: rgba(26,26,20,.45); }
+.album-meta-divider { width: 1px; height: 10px; background: rgba(26,26,20,.2); flex-shrink: 0; }
+.album-genre-tag {
+  font-size: 10px; font-weight: 500; letter-spacing: .07em;
+  text-transform: uppercase; border: 1px solid rgba(26,26,20,.24);
+  padding: 3px 8px; color: rgba(26,26,20,.45);
+  cursor: pointer; transition: color 0.1s linear, background 0.1s linear;
+  text-decoration: none; display: inline-block;
+}
+.album-genre-tag:hover { background: #1a1a14; color: #e2e2e2; border-color: #1a1a14; }
 
 /* Price block — terminal/receipt style */
 .price-block {
@@ -262,6 +273,13 @@ function renderAlbum(item, all) {
         <div>
           <h1 class="album-title">${item.title}</h1>
           <p class="album-artist">by ${item.artist}</p>
+          <div class="album-genre-tags">
+            <span class="album-format-label">${(item.format || 'LP').trim()}</span>
+            <span class="album-meta-divider"></span>
+            ${LR.ui.splitPipe(item.genre).slice(0, 2).map(g =>
+              `<a class="album-genre-tag" href="../genre.html?g=${encodeURIComponent(g.toLowerCase())}">${g}</a>`
+            ).join('')}
+          </div>
         </div>
         <div class="price-block">
           <div class="price-label">Price</div>
