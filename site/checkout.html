@@ -230,20 +230,15 @@ document.addEventListener('DOMContentLoaded', () => {
         phone:    document.getElementById('phone').value.trim(),
         address:  document.getElementById('address').value.trim(),
         subtotal, shipping, total,
-        items: cart.map(i => ({ album_id: i.id, title: i.title, price: i.price, quantity: i.qty }))
+        items: cart.map(i => ({ album_id: i.id, quantity: i.qty }))
       });
 
       if (!result.ok && !result.success) throw new Error(result.error || 'Order failed');
 
+      localStorage.setItem('lr_buyer',       document.getElementById('name').value.trim());
+      localStorage.setItem('lr_order_total', LR.ui.peso(total));
       LR.cart.clear();
-
-      if (result.checkout_url) {
-        window.location.href = result.checkout_url;
-      } else {
-        localStorage.setItem('lr_buyer',       document.getElementById('name').value.trim());
-        localStorage.setItem('lr_order_total', LR.ui.peso(total));
-        window.location.href = 'success.html';
-      }
+      window.location.href = 'success.html';
     } catch (err) {
       console.error(err);
       alert('There was a problem processing your order. Please try again.');
