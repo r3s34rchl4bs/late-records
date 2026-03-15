@@ -108,55 +108,6 @@
     }
   }
 
-  /* ── Feedback widget ── */
-  var widgetBtn = document.createElement('div');
-  widgetBtn.style.cssText = [
-    'position:fixed','bottom:24px','right:24px',
-    'background:#1a1a14','color:#e2e2e2',
-    'font-family:\'Inter\',system-ui,sans-serif',
-    'font-size:9px','font-weight:500','letter-spacing:.12em',
-    'text-transform:uppercase','padding:8px 12px',
-    'border:1px solid rgba(226,226,226,.2)',
-    'cursor:pointer','z-index:9999',
-    'user-select:none'
-  ].join(';');
-  widgetBtn.textContent = '[ REPORT ISSUE ]';
-  document.body.appendChild(widgetBtn);
-
-  var widgetBox = document.createElement('div');
-  widgetBox.style.cssText = [
-    'position:fixed','bottom:64px','right:24px',
-    'width:260px','background:#e2e2e2',
-    'border:1px solid #1a1a14',
-    'font-family:\'Inter\',system-ui,sans-serif',
-    'z-index:9999','display:none',
-    'box-sizing:border-box'
-  ].join(';');
-  widgetBox.innerHTML =
-    '<div style="background:#1a1a14;color:#e2e2e2;font-size:9px;font-weight:500;letter-spacing:.12em;text-transform:uppercase;padding:8px 12px;display:flex;justify-content:space-between;align-items:center;">' +
-    '<span>&#9672; Report Issue</span>' +
-    '<span id="lr-widget-close" style="cursor:pointer;opacity:.6;font-size:12px;">&#x2715;</span>' +
-    '</div>' +
-    '<div style="padding:12px;">' +
-    '<div style="font-size:9px;letter-spacing:.1em;text-transform:uppercase;color:rgba(26,26,20,.45);margin-bottom:4px;">Message</div>' +
-    '<textarea id="lr-feedback-msg" style="width:100%;height:80px;resize:none;border:1px solid rgba(26,26,20,.3);background:#e2e2e2;font-family:\'Inter\',system-ui,sans-serif;font-size:11px;padding:8px;box-sizing:border-box;color:#1a1a14;outline:none;" placeholder="Tell us what you found..."></textarea>' +
-    '<button id="lr-feedback-send" style="margin-top:8px;width:100%;background:#1a1a14;color:#e2e2e2;border:none;font-family:\'Inter\',system-ui,sans-serif;font-size:9px;font-weight:500;letter-spacing:.12em;text-transform:uppercase;padding:8px;cursor:pointer;">SEND &#8594;</button>' +
-    '</div>';
-  document.body.appendChild(widgetBox);
-
-  widgetBtn.addEventListener('click', function() {
-    widgetBox.style.display = widgetBox.style.display === 'none' ? 'block' : 'none';
-  });
-  document.getElementById('lr-widget-close').addEventListener('click', function() {
-    widgetBox.style.display = 'none';
-  });
-  document.getElementById('lr-feedback-send').addEventListener('click', function() {
-    var msg = document.getElementById('lr-feedback-msg').value.trim();
-    if (!msg) return;
-    var subject = encodeURIComponent('[Late Records Feedback] ' + window.location.pathname);
-    var body = encodeURIComponent(msg);
-    window.location.href = 'mailto:info.late.records@gmail.com?subject=' + subject + '&body=' + body;
-    widgetBox.style.display = 'none';
-  });
+  
 
 })();
