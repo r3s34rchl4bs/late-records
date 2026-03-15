@@ -80,17 +80,26 @@ img { display: block; max-width: 100%; }
   display: block;
 }
 
-.genre-nav-row {
-  display: flex;
-  align-items: flex-start;
-  gap: 6px;
-  min-width: 0;
+.genre-nav-block {
+  position: relative;
 }
 
-.genre-pills-wrap {
-  flex: 1;
-  min-width: 0;
+.genre-pills-shell {
+  position: relative;
   overflow: hidden;
+  transition: max-height .18s ease;
+  padding-right: 26px;
+}
+
+.genre-pills-shell.is-collapsed::after {
+  content: '';
+  position: absolute;
+  right: 24px;
+  bottom: 0;
+  width: 56px;
+  height: 18px;
+  background: linear-gradient(90deg, rgba(226,226,226,0) 0%, rgba(226,226,226,.92) 48%, rgba(226,226,226,1) 100%);
+  pointer-events: none;
 }
 
 .genre-pills {
@@ -98,12 +107,6 @@ img { display: block; max-width: 100%; }
   flex-wrap: wrap;
   gap: 6px;
   align-items: center;
-  max-height: 24px;
-  overflow: hidden;
-}
-
-.genre-pills.is-expanded {
-  max-height: none;
 }
 
 .genre-pill {
@@ -119,7 +122,6 @@ img { display: block; max-width: 100%; }
   text-decoration: none;
   display: inline-block;
   line-height: 1.4;
-  flex-shrink: 0;
 }
 .genre-pill:hover { color: #1a1a14; border-color: #1a1a14; }
 .genre-pill.active {
@@ -129,11 +131,14 @@ img { display: block; max-width: 100%; }
 }
 
 .genre-nav-toggle {
+  position: absolute;
+  right: 0;
+  bottom: 0;
   background: rgba(26,26,20,.18);
   border: 0;
   width: 18px;
   height: 18px;
-  display: inline-flex;
+  display: none;
   align-items: center;
   justify-content: center;
   font-size: 13px;
@@ -142,7 +147,11 @@ img { display: block; max-width: 100%; }
   font-family: 'Inter', system-ui, sans-serif;
   font-weight: 400;
   line-height: 1;
-  flex-shrink: 0;
+  z-index: 2;
+}
+
+.genre-nav-toggle.is-visible {
+  display: inline-flex;
 }
 
 /* ── Divider ─────────────────────────────────────────────── */
@@ -459,11 +468,11 @@ col.c-stock  { width: 8%; }
 <div class="container">
 
   <span class="genre-nav-label">Browse</span>
-  <div class="genre-nav-row">
-    <div class="genre-pills-wrap">
+  <div class="genre-nav-block">
+    <div class="genre-pills-shell is-collapsed" id="genreNavShell">
       <div class="genre-pills" id="genreNav"></div>
     </div>
-    <button class="genre-nav-toggle" id="genreNavToggle" type="button" aria-expanded="true">−</button>
+    <button class="genre-nav-toggle" id="genreNavToggle" type="button" aria-expanded="false">+</button>
   </div>
 
   <hr class="section-divider">
@@ -552,21 +561,52 @@ col.c-stock  { width: 8%; }
 const params      = new URLSearchParams(window.location.search);
 const activeGenre = (params.get('g') || '').toLowerCase();
 
-document.addEventListener('DOMContentLoaded', () => {
-  const toggle = document.getElementById('genreNavToggle');
-  const pills  = document.getElementById('genreNav');
+function setupGenreCollapse() {
+  const shell   = document.getElementById('genreNavShell');
+  const pills   = document.getElementById('genreNav');
+  const toggle  = document.getElementById('genreNavToggle');
+  const divider = document.querySelector('.section-divider');
 
-  if (toggle && pills) {
-    toggle.textContent = '+';
-    toggle.setAttribute('aria-expanded', 'false');
+  if (!shell || !pills || !toggle || !divider) return;
 
-    toggle.addEventListener('click', () => {
-      const expanded = pills.classList.toggle('is-expanded');
-      toggle.textContent = expanded ? '−' : '+';
-      toggle.setAttribute('aria-expanded', expanded ? 'true' : 'false');
-    });
+  let expanded = false;
+
+  function applyState() {
+    const available = Math.max(24, Math.floor(divider.offsetTop - shell.offsetTop - 8));
+    const hasOverflow = pills.scrollHeight > available + 2;
+
+    if (!hasOverflow) {
+      shell.style.maxHeight = '';
+      shell.classList.remove('is-collapsed');
+      shell.classList.add('is-expanded');
+      toggle.classList.remove('is-visible');
+      toggle.setAttribute('aria-expanded', 'true');
+      return;
+    }
+
+    toggle.classList.add('is-visible');
+
+    if (expanded) {
+      shell.style.maxHeight = pills.scrollHeight + 'px';
+      shell.classList.remove('is-collapsed');
+      toggle.textContent = '−';
+      toggle.setAttribute('aria-expanded', 'true');
+    } else {
+      shell.style.maxHeight = available + 'px';
+      shell.classList.add('is-collapsed');
+      toggle.textContent = '+';
+      toggle.setAttribute('aria-expanded', 'false');
+    }
   }
-});
+
+  toggle.addEventListener('click', () => {
+    expanded = !expanded;
+    applyState();
+  });
+
+  window.addEventListener('resize', applyState);
+  requestAnimationFrame(applyState);
+}
 
 document.addEventListener('DOMContentLoaded', async () => {
   try {
@@ -584,6 +624,8 @@ document.addEventListener('DOMContentLoaded', async () => {
       pill.textContent = g.replace(/\b\w/g, c => c.toUpperCase());
       nav.appendChild(pill);
     });
+
+    setupGenreCollapse();
 
     if (activeGenre) {
       document.title = `${activeGenre.replace(/\b\w/g, c => c.toUpperCase())} — LATE RECORDS`;
