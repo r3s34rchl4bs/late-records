@@ -82,6 +82,7 @@ img { display: block; max-width: 100%; }
 
 .genre-nav-block {
   position: relative;
+  margin-bottom: 10px;
 }
 
 .genre-pills-shell {
@@ -156,9 +157,7 @@ img { display: block; max-width: 100%; }
 
 /* ── Divider ─────────────────────────────────────────────── */
 .section-divider {
-  border: none;
-  border-top: 1px solid rgba(26,26,20,.1);
-  margin: 24px 0;
+  display: none;
 }
 
 /* ── Table ───────────────────────────────────────────────── */
@@ -475,8 +474,6 @@ col.c-stock  { width: 8%; }
     <button class="genre-nav-toggle" id="genreNavToggle" type="button" aria-expanded="false">+</button>
   </div>
 
-  <hr class="section-divider">
-
   <table class="tbl">
     <colgroup>
       <col class="c-title">
@@ -565,15 +562,18 @@ function setupGenreCollapse() {
   const shell  = document.getElementById('genreNavShell');
   const pills  = document.getElementById('genreNav');
   const toggle = document.getElementById('genreNavToggle');
+  const table  = document.querySelector('.tbl');
 
-  if (!shell || !pills || !toggle) return;
+  if (!shell || !pills || !toggle || !table) return;
 
-  const COLLAPSED_HEIGHT = 96;
   let expanded = false;
 
   function applyState() {
+    const tableTop = table.offsetTop;
+    const shellTop = shell.offsetTop;
+    const available = Math.max(48, Math.floor(tableTop - shellTop - 10));
     const fullHeight = pills.scrollHeight;
-    const hasOverflow = fullHeight > COLLAPSED_HEIGHT + 2;
+    const hasOverflow = fullHeight > available + 2;
 
     if (!hasOverflow) {
       shell.style.maxHeight = 'none';
@@ -592,7 +592,7 @@ function setupGenreCollapse() {
       toggle.textContent = '−';
       toggle.setAttribute('aria-expanded', 'true');
     } else {
-      shell.style.maxHeight = COLLAPSED_HEIGHT + 'px';
+      shell.style.maxHeight = available + 'px';
       shell.classList.add('is-collapsed');
       toggle.textContent = '+';
       toggle.setAttribute('aria-expanded', 'false');
