@@ -82,8 +82,7 @@ img { display: block; max-width: 100%; }
 
 .genre-nav-row {
   display: flex;
-  flex-wrap: nowrap;
-  align-items: center;
+  align-items: flex-start;
   gap: 6px;
   min-width: 0;
 }
@@ -99,10 +98,12 @@ img { display: block; max-width: 100%; }
   flex-wrap: wrap;
   gap: 6px;
   align-items: center;
+  max-height: 24px;
+  overflow: hidden;
 }
 
-.genre-pills.is-collapsed {
-  display: none;
+.genre-pills.is-expanded {
+  max-height: none;
 }
 
 .genre-pill {
@@ -556,10 +557,13 @@ document.addEventListener('DOMContentLoaded', () => {
   const pills  = document.getElementById('genreNav');
 
   if (toggle && pills) {
+    toggle.textContent = '+';
+    toggle.setAttribute('aria-expanded', 'false');
+
     toggle.addEventListener('click', () => {
-      const collapsed = pills.classList.toggle('is-collapsed');
-      toggle.textContent = collapsed ? '+' : '−';
-      toggle.setAttribute('aria-expanded', collapsed ? 'false' : 'true');
+      const expanded = pills.classList.toggle('is-expanded');
+      toggle.textContent = expanded ? '−' : '+';
+      toggle.setAttribute('aria-expanded', expanded ? 'true' : 'false');
     });
   }
 });
