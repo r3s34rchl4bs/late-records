@@ -54,11 +54,11 @@ button { cursor: pointer; font-family: inherit; }
 
 .section-divider {
   border: none;
-  margin: 20px 0;
+  margin: 12px 0;
 }
 
 .carousel-viewport {
-  height: 220px; overflow: hidden; position: relative;
+  height: 235px; overflow: hidden; position: relative;
   border-bottom: 1px solid rgba(26,26,20,.22);
 }
 .carousel-track {
@@ -72,7 +72,7 @@ button { cursor: pointer; font-family: inherit; }
 }
 
 .card-inner {
-  width: 100%; padding: 22px 0 10px; height: 100%;
+  width: 100%; padding: 22px 0 18px; height: 100%;
   display: flex; flex-direction: column; justify-content: space-between;
   position: relative;
 }
@@ -102,11 +102,12 @@ button { cursor: pointer; font-family: inherit; }
 }
 .card-title {
   font-size: 42px; font-weight: 500; line-height: 1.05;
-  letter-spacing: -.035em; margin-bottom: 16px; word-break: break-word;
+  letter-spacing: -.035em; margin-bottom: 12px; word-break: break-word;
   color: rgba(26,26,20,.88); transition: color 0.1s linear;
+  display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
 }
 .card-meta {
-  display: flex; align-items: center; gap: 10px; flex-wrap: wrap;
+  display: flex; align-items: center; gap: 6px; flex-wrap: wrap;
 }
 .card-format {
   font-size: 11px; font-weight: 500; letter-spacing: .08em;
@@ -115,7 +116,7 @@ button { cursor: pointer; font-family: inherit; }
 .card-meta-divider {
   width: 1px; height: 10px; background: rgba(26,26,20,.2); flex-shrink: 0;
 }
-.card-tags { display: flex; gap: 5px; flex-wrap: wrap; align-items: center; }
+.card-tags { display: flex; gap: 4px; flex-wrap: wrap; align-items: center; }
 .card-tag {
   font-size: 10px; font-weight: 500; letter-spacing: .07em;
   text-transform: uppercase; border: 1px solid rgba(26,26,20,.24);
@@ -160,7 +161,7 @@ col.c-stock  { width: 8%; }
 .tbl tbody td:first-child { padding-left: 0; }
 .tbl tbody td:last-child  { padding-right: 0; }
 .tbl tbody td.c-stock { padding-top: 8px; padding-bottom: 8px; padding-right: 0; }
-.tbl thead th.c-stock { padding-bottom: 8px; padding-right: 0; }
+.tbl thead th.c-stock { padding-bottom: 10px; padding-right: 0; }
 
 .rec-title { font-size: 15px; font-weight: 500; line-height: 1.25; letter-spacing: -.01em; transition: color 0.1s linear; }
 .rec-artist { font-size: 12px; font-weight: 400; color: rgba(26,26,20,.48); margin-top: 3px; line-height: 1.4; transition: color 0.1s linear; }
@@ -258,7 +259,7 @@ col.c-stock  { width: 8%; }
   col.c-genre { width: auto; }
   .tbl thead th.c-genre { text-align: right; padding-right: 0; }
   .tbl tbody  td.c-genre { text-align: right; padding-right: 0; }
-  .carousel-viewport { height: 210px; }
+  .carousel-viewport { height: 235px; }
   .card-title  { font-size: 32px; }
   .card-artist { font-size: 11px; }
   .rec-title   { font-size: 14px; }
@@ -268,18 +269,32 @@ col.c-stock  { width: 8%; }
 @media (max-width: 600px) {
   .container    { padding: 84px 20px 80px; }
   .header-inner { padding: 0 20px; }
-  .card-inner   { padding: 10px 0 14px; }
-  .carousel-nav { right: 0; top: 18px; }
-  .carousel-viewport { height: 190px; }
+  .card-inner   { padding: 10px 0 4px; }
+  .carousel-nav { right: 0; top: 0; }
+  .carousel-viewport { height: 155px; }
   .card-top     { padding-right: 90px; }
-  .card-staff-pick { font-size: 8px; }
-  .card-artist     { font-size: 10px; }
-  .card-title      { font-size: 20px; letter-spacing: -.02em; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
+  .card-staff-pick { font-size: 8px; margin-bottom: 10px; }
+  .card-artist     {
+    font-size: 10px;
+    display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
+    margin-bottom: 8px;
+  }
+  .card-title      {
+    font-size: 20px; letter-spacing: -.02em;
+    display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
+    margin-bottom: 6px;
+  }
   .card-format     { font-size: 9px; }
-  .card-tag        { font-size: 9px; }
+  .card-tag        { font-size: 9px; padding: 2px 6px; }
+  .card-meta       { gap: 6px; }
+  .card-tags       { gap: 4px; }
+  .carousel-btn    { height: 30px; }
   .tbl thead th { top: 74px; font-size: 10px; }
   .rec-title    { font-size: 13px; }
-  .rec-artist   { font-size: 11px; }
+  .rec-artist   {
+    font-size: 11px;
+    display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
+  }
   .genre-tag    { font-size: 9px; padding: 2px 5px; }
   col.c-format, col.c-stock { display: none; }
   .tbl thead th.c-format, .tbl thead th.c-stock,
@@ -315,7 +330,6 @@ col.c-stock  { width: 8%; }
           </div>
         </div>
       </div>
-      <!-- Nav always visible, even before JS loads -->
       <div class="carousel-nav" id="carouselNav">
         <button class="carousel-btn" id="prevBtn">&#8249;</button>
         <button class="carousel-btn" id="nextBtn">&#8250;</button>
