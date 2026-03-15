@@ -11,9 +11,7 @@
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
 :root {
-  --ticker-height: 30px;
   --header-height: 74px;
-  --header-stack-height: calc(var(--ticker-height) + var(--header-height));
   --site-bg: #e2e2e2;
   --site-bg-image: radial-gradient(circle, rgba(0,0,0,.08) 0.5px, transparent 0.5px);
   --site-bg-size: 3px 3px;
@@ -34,7 +32,7 @@ img { display: block; max-width: 100%; }
 /* ── Header ──────────────────────────────────────────────── */
 .fixed-header {
   position: fixed;
-  top: var(--ticker-height);
+  top: 0;
   left: 0;
   width: 100%;
   background-color: var(--site-bg);
