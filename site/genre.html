@@ -567,16 +567,35 @@ function setupGenreCollapse() {
 
   let expanded = false;
 
-  function getCollapsedHeight() {
-    return window.innerWidth <= 600 ? 150 : 120;
+  function getCollapsedRows() {
+    return window.innerWidth <= 600 ? 5 : 6;
+  }
+
+  function getRowMetrics() {
+    const items = [...pills.children];
+    if (!items.length) return [];
+
+    const rows = [];
+    items.forEach((item) => {
+      const top = item.offsetTop;
+      const bottom = top + item.offsetHeight;
+      const last = rows[rows.length - 1];
+
+      if (!last || Math.abs(last.top - top) > 1) {
+        rows.push({ top, bottom });
+      } else {
+        last.bottom = Math.max(last.bottom, bottom);
+      }
+    });
+
+    return rows;
   }
 
   function applyState() {
-    const collapsedHeight = getCollapsedHeight();
-    const fullHeight = pills.scrollHeight;
-    const hasOverflow = fullHeight > collapsedHeight + 2;
+    const rows = getRowMetrics();
+    const collapsedRows = getCollapsedRows();
 
-    if (!hasOverflow) {
+    if (rows.length <= collapsedRows) {
       shell.style.maxHeight = 'none';
       shell.classList.remove('is-collapsed');
       toggle.classList.remove('is-visible');
@@ -584,6 +603,9 @@ function setupGenreCollapse() {
       toggle.setAttribute('aria-expanded', 'true');
       return;
     }
+
+    const collapsedHeight = rows[collapsedRows - 1].bottom;
+    const fullHeight = pills.scrollHeight;
 
     toggle.classList.add('is-visible');
 
@@ -608,7 +630,12 @@ function setupGenreCollapse() {
   });
 
   window.addEventListener('resize', applyState);
-  requestAnimationFrame(() => requestAnimationFrame(applyState));
+
+  if (document.fonts && document.fonts.ready) {
+    document.fonts.ready.then(() => requestAnimationFrame(applyState));
+  } else {
+    requestAnimationFrame(() => requestAnimationFrame(applyState));
+  }
 }
 
 document.addEventListener('DOMContentLoaded', async () => {
