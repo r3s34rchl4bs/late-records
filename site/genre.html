@@ -10,11 +10,20 @@
 
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
+:root {
+  --ticker-height: 30px;
+  --header-height: 74px;
+  --header-stack-height: calc(var(--ticker-height) + var(--header-height));
+  --site-bg: #e2e2e2;
+  --site-bg-image: radial-gradient(circle, rgba(0,0,0,.08) 0.5px, transparent 0.5px);
+  --site-bg-size: 3px 3px;
+}
+
 html, body {
   font-family: 'Inter', system-ui, sans-serif;
-  background-color: #e2e2e2;
-  background-image: radial-gradient(circle, rgba(0,0,0,.08) 0.5px, transparent 0.5px);
-  background-size: 3px 3px;
+  background-color: var(--site-bg);
+  background-image: var(--site-bg-image);
+  background-size: var(--site-bg-size);
   color: #1a1a14;
   -webkit-font-smoothing: antialiased;
 }
@@ -25,13 +34,15 @@ img { display: block; max-width: 100%; }
 /* ── Header ──────────────────────────────────────────────── */
 .fixed-header {
   position: fixed;
-  top: 0; left: 0; width: 100%;
-  background-color: #e2e2e2;
-  background-image: radial-gradient(circle, rgba(0,0,0,.08) 0.5px, transparent 0.5px);
-  background-size: 3px 3px;
+  top: var(--ticker-height);
+  left: 0;
+  width: 100%;
+  background-color: var(--site-bg);
+  background-image: var(--site-bg-image);
+  background-size: var(--site-bg-size);
   z-index: 1000;
   border-bottom: 1px solid rgba(26,26,20,.22);
-  height: 74px;
+  height: var(--header-height);
 }
 .header-inner {
   max-width: 1200px;
@@ -57,7 +68,7 @@ img { display: block; max-width: 100%; }
 .container {
   max-width: 1200px;
   margin: 0 auto;
-  padding: 104px 30px 104px;
+  padding: calc(var(--header-stack-height) + 30px) 30px 104px;
 }
 
 /* ── Genre nav ───────────────────────────────────────────── */
@@ -119,11 +130,11 @@ col.c-stock  { width: 8%; }
 
 .tbl thead th {
   position: sticky;
-  top: 104px;
+  top: var(--header-stack-height);
   z-index: 30;
-  background-color: #e2e2e2;
-  background-image: radial-gradient(circle, rgba(0,0,0,.08) 0.5px, transparent 0.5px);
-  background-size: 3px 3px;
+  background-color: var(--site-bg);
+  background-image: var(--site-bg-image);
+  background-size: var(--site-bg-size);
   box-shadow: 0 -1px 0 rgba(26,26,20,.22), 0 1px 0 rgba(26,26,20,.26);
   padding: 10px 12px 10px 0;
   font-size: 11px;
@@ -133,7 +144,6 @@ col.c-stock  { width: 8%; }
   color: rgba(26,26,20,.48);
   text-align: left;
   vertical-align: bottom;
-}ical-align: bottom;
 }
 .tbl thead th:first-child { padding-left: 0; }
 .tbl thead th.c-stock {
@@ -240,7 +250,7 @@ col.c-stock  { width: 8%; }
 }
 
 @media (max-width: 600px) {
-  .container { padding: 94px 20px 98px; }
+  .container { padding: calc(var(--header-stack-height) + 20px) 20px 98px; }
   .header-inner { padding: 0 20px; }
 
   col.c-stock { display: none; }
@@ -253,7 +263,7 @@ col.c-stock  { width: 8%; }
   }
 
   .tbl thead th {
-    top: 73px;
+    top: var(--header-stack-height);
     font-size: 10px;
   }
 
@@ -523,10 +533,11 @@ document.addEventListener('DOMContentLoaded', async () => {
       document.title = `${activeGenre.replace(/\b\w/g, c => c.toUpperCase())} — LATE RECORDS`;
     }
 
-    const tbody = document.getElementById('genreList');
     const filtered = catalog
       .filter(a => LR.ui.splitPipe(a.genre).some(g => g.toLowerCase() === activeGenre))
       .sort((a, b) => a.artist.localeCompare(b.artist));
+
+    const tbody = document.getElementById('genreList');
 
     if (!filtered.length) {
       tbody.innerHTML = `<tr><td colspan="3" class="empty-state">No records found for this genre.</td></tr>`;
