@@ -46,7 +46,7 @@ img { display: block; max-width: 100%; }
 
 /* ── Container ───────────────────────────────────────────── */
 .container {
-  max-width: 1200px; margin: 0 auto; padding: 104px 30px 80px;
+  max-width: 1200px; margin: 0 auto; padding: 104px 30px 104px;
 }
 
 /* ── Genre nav ───────────────────────────────────────────── */
@@ -160,7 +160,7 @@ col.c-stock  { width: 8%; }
 }
 
 @media (max-width: 600px) {
-  .container    { padding: 94px 20px 80px; }
+  .container    { padding: 94px 20px 98px; }
   .header-inner { padding: 0 20px; }
   col.c-stock { display: none; }
   .tbl thead th.c-stock, .tbl tbody td.c-stock { display: none; }
@@ -170,19 +170,44 @@ col.c-stock  { width: 8%; }
   .rec-title    { font-size: 13px; }
   .tbl thead th { font-size: 10px; }
   .genre-pill   { font-size: 9px; padding: 2px 6px; }
+
+  .guide-footer {
+    padding: 0 16px;
+  }
 }
 
-/* ── Guide button + modal ────────────────────────────────── */
+/* ── Guide footer + modal ────────────────────────────────── */
+.guide-footer {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 34px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  padding: 0 20px;
+  background: rgba(226,226,226,.92);
+  border-top: 1px solid rgba(26,26,20,.14);
+  backdrop-filter: blur(2px);
+  -webkit-backdrop-filter: blur(2px);
+  z-index: 9998;
+}
+
 .guide-btn {
-  position: fixed; bottom: 24px; right: 24px;
   background: transparent;
   color: rgba(26,26,20,.58);
   font-family: 'Inter', system-ui, sans-serif;
-  font-size: 9px; font-weight: 500; letter-spacing: .14em;
-  text-transform: uppercase; padding: 8px 12px;
+  font-size: 9px;
+  font-weight: 500;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  padding: 0;
   border: none;
-  cursor: pointer; z-index: 9999; user-select: none;
-  display: flex; align-items: center;
+  cursor: pointer;
+  user-select: none;
+  display: inline-flex;
+  align-items: center;
   border-radius: 0;
   opacity: .72;
   transition: opacity .12s linear, color .12s linear;
@@ -192,11 +217,23 @@ col.c-stock  { width: 8%; }
   color: rgba(26,26,20,.82);
 }
 .guide-btn-inner {
-  display: flex; align-items: center; gap: 6px;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+.guide-btn-bracket {
+  display: inline-block;
+  line-height: 1;
 }
 .guide-btn svg {
-  width: 13px; height: 13px;
-  fill: none; stroke: currentColor; stroke-width: 1.15;
+  width: 12px;
+  height: 12px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.1;
+  stroke-linecap: square;
+  stroke-linejoin: miter;
+  shape-rendering: crispEdges;
   flex-shrink: 0;
 }
 
@@ -319,18 +356,22 @@ col.c-stock  { width: 8%; }
 
 </div>
 
-<!-- Guide button -->
-<button class="guide-btn" id="guideBtn" type="button">
-  <span class="guide-btn-inner">
-    [
-    <svg viewBox="0 0 14 14" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-      <line x1="2" y1="3.5" x2="12" y2="3.5"/>
-      <line x1="2" y1="7" x2="12" y2="7"/>
-      <line x1="2" y1="10.5" x2="12" y2="10.5"/>
-    </svg>
-    Guide ]
-  </span>
-</button>
+<!-- Guide footer -->
+<div class="guide-footer">
+  <button class="guide-btn" id="guideBtn" type="button">
+    <span class="guide-btn-inner">
+      <span class="guide-btn-bracket">[</span>
+      <svg viewBox="0 0 14 14" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+        <rect x="2.25" y="2.25" width="9.5" height="9.5"/>
+        <line x1="4.25" y1="4.75" x2="9.75" y2="4.75"/>
+        <line x1="4.25" y1="7" x2="9.75" y2="7"/>
+        <line x1="4.25" y1="9.25" x2="8.25" y2="9.25"/>
+      </svg>
+      <span>Guide</span>
+      <span class="guide-btn-bracket">]</span>
+    </span>
+  </button>
+</div>
 
 <!-- Guide modal -->
 <div class="guide-modal" id="guideModal">
@@ -377,7 +418,6 @@ col.c-stock  { width: 8%; }
 
 <script src="script.js"></script>
 <script>
-
 const params      = new URLSearchParams(window.location.search);
 const activeGenre = (params.get('g') || '').toLowerCase();
 
@@ -385,12 +425,10 @@ document.addEventListener('DOMContentLoaded', async () => {
   try {
     const catalog = await LR.api.catalog();
 
-    // Build all unique genres from real catalog
     const allGenres = [...new Set(
       catalog.flatMap(a => LR.ui.splitPipe(a.genre).map(g => g.toLowerCase()))
     )].sort();
 
-    // Render pills
     const nav = document.getElementById('genreNav');
     allGenres.forEach(g => {
       const pill = document.createElement('a');
@@ -400,12 +438,10 @@ document.addEventListener('DOMContentLoaded', async () => {
       nav.appendChild(pill);
     });
 
-    // Page title
     if (activeGenre) {
       document.title = `${activeGenre.replace(/\b\w/g, c => c.toUpperCase())} — LATE RECORDS`;
     }
 
-    // Filter & sort
     const filtered = catalog
       .filter(a => LR.ui.splitPipe(a.genre).some(g => g.toLowerCase() === activeGenre))
       .sort((a, b) => a.artist.localeCompare(b.artist));
@@ -417,9 +453,9 @@ document.addEventListener('DOMContentLoaded', async () => {
     } else {
       tbody.innerHTML = filtered.map(item => {
         const sold   = item.status !== 'available';
-        const format = (item.format||'LP').trim();
+        const format = (item.format || 'LP').trim();
         return `
-          <tr class="${sold?'sold':''}" onclick="location.href='albums/album.html?id=${item.album_id}'">
+          <tr class="${sold ? 'sold' : ''}" onclick="location.href='albums/album.html?id=${item.album_id}'">
             <td class="c-title">
               <div class="rec-title">${item.title}</div>
               <div class="rec-artist">${item.artist}</div>
@@ -427,22 +463,20 @@ document.addEventListener('DOMContentLoaded', async () => {
             <td class="c-format"><span class="rec-format">${format}</span></td>
             <td class="c-stock">
               <div class="rec-stock">
-                <span class="sdot ${sold?'s':'a'}"></span>
-                <span>${sold?'Sold':'Avail'}</span>
+                <span class="sdot ${sold ? 's' : 'a'}"></span>
+                <span>${sold ? 'Sold' : 'Avail'}</span>
               </div>
             </td>
           </tr>`;
       }).join('');
     }
 
-  } catch(e) {
+  } catch (e) {
     document.getElementById('genreList').innerHTML =
       `<tr><td colspan="3" style="padding:40px 0;font-size:13px;color:rgba(26,26,20,.48)">Could not load catalog. Please refresh.</td></tr>`;
   }
 });
 
-</script>
-<script>
 document.addEventListener('DOMContentLoaded', () => {
   const guideBtn = document.getElementById('guideBtn');
   const guideModal = document.getElementById('guideModal');
