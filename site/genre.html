@@ -219,21 +219,16 @@ col.c-stock  { width: 8%; }
 .guide-btn-inner {
   display: inline-flex;
   align-items: center;
-  gap: 4px;
-}
-.guide-btn-bracket {
-  display: inline-block;
-  line-height: 1;
+  gap: 6px;
 }
 .guide-btn svg {
-  width: 12px;
-  height: 12px;
+  width: 14px;
+  height: 14px;
   fill: none;
   stroke: currentColor;
-  stroke-width: 1.1;
-  stroke-linecap: square;
-  stroke-linejoin: miter;
-  shape-rendering: crispEdges;
+  stroke-width: 1.25;
+  stroke-linecap: round;
+  stroke-linejoin: round;
   flex-shrink: 0;
 }
 
@@ -272,15 +267,6 @@ col.c-stock  { width: 8%; }
   letter-spacing: -.04em;
   color: rgba(26,26,20,.88);
   line-height: 1;
-}
-
-.guide-subheading {
-  margin-top: 6px;
-  font-size: 10px;
-  font-weight: 500;
-  letter-spacing: .18em;
-  text-transform: uppercase;
-  color: rgba(26,26,20,.34);
 }
 
 .guide-row {
@@ -360,15 +346,11 @@ col.c-stock  { width: 8%; }
 <div class="guide-footer">
   <button class="guide-btn" id="guideBtn" type="button">
     <span class="guide-btn-inner">
-      <span class="guide-btn-bracket">[</span>
-      <svg viewBox="0 0 14 14" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-        <rect x="2.25" y="2.25" width="9.5" height="9.5"/>
-        <line x1="4.25" y1="4.75" x2="9.75" y2="4.75"/>
-        <line x1="4.25" y1="7" x2="9.75" y2="7"/>
-        <line x1="4.25" y1="9.25" x2="8.25" y2="9.25"/>
+      <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+        <path d="M7 3.75h7l3 3v13.5H7z"/>
+        <path d="M14 3.75v3h3"/>
       </svg>
       <span>Guide</span>
-      <span class="guide-btn-bracket">]</span>
     </span>
   </button>
 </div>
@@ -378,8 +360,7 @@ col.c-stock  { width: 8%; }
   <div class="guide-modal-inner">
     <div class="guide-modal-body">
       <div class="guide-heading-wrap">
-        <div class="guide-heading">Format Guide</div>
-        <div class="guide-subheading">Standard types</div>
+        <div class="guide-heading">Standard types</div>
       </div>
 
       <div class="guide-row">
