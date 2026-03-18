@@ -119,9 +119,11 @@ html, body {
   right: 0;
 }
 
-/* Custom Audio Player */
-.audio-block { display: none; flex-direction: column; gap: 0; }
+/* Audio player */
+.audio-block { display: none; flex-direction: column; }
 .audio-block.is-visible { display: flex; }
+
+/* rest untouched */
 
 </style>
 </head>
@@ -130,7 +132,7 @@ html, body {
 <header class="fixed-header">
   <div class="header-inner">
     <a href="../index.html">
-      <img src="../images/late-records-logo.png" class="header-logo" alt="LATE RECORDS">
+      <img src="../images/late-records-logo.png" class="header-logo">
     </a>
     <a href="../cart.html" class="cart-link">Cart (<span class="cart-count">0</span>)</a>
   </div>
@@ -144,12 +146,7 @@ html, body {
 const ALBUM_ID   = new URLSearchParams(location.search).get('id') || '';
 const AUDIO_BASE = '../audio/';
 
-/* ==== ALL YOUR ORIGINAL FUNCTIONS HERE (UNCHANGED) ==== */
-/* renderNotFound, scoreRelated, renderAlbum, setupDescToggle, setupAddToCart — KEEP EXACTLY */
-
-/* ==== ONLY AUDIO LOGIC UPDATED ==== */
-
-function setupAudio(albumId, item) {
+function setupAudio(albumId) {
   const block    = document.getElementById('audioBlock');
   const audio    = document.getElementById('albumAudio');
   const label    = document.getElementById('audioLabel');
@@ -166,11 +163,14 @@ function setupAudio(albumId, item) {
   let cur = 0;
   let hasAudio = false;
 
-  function slugify(str) {
-    return str.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
-  }
+  const PLAY_ICON  = '<polygon points="2,1 9,5 2,9"/>';
+  const PAUSE_ICON = '<rect x="1.5" y="1" width="3" height="8"/><rect x="5.5" y="1" width="3" height="8"/>';
 
-  const folder = `${slugify(item.title)}-by-${slugify(item.artist)}`;
+  function fmt(s) {
+    const m = Math.floor(s / 60);
+    const sec = Math.floor(s % 60);
+    return `${m}:${String(sec).padStart(2,'0')}`;
+  }
 
   function setTrack(i) {
     cur = i;
@@ -183,16 +183,16 @@ function setupAudio(albumId, item) {
     if (!hasAudio) return;
     if (audio.paused) {
       audio.play();
+      playIcon.innerHTML = PAUSE_ICON;
     } else {
       audio.pause();
+      playIcon.innerHTML = PLAY_ICON;
     }
   });
 
   function probe(i) {
-    const url = `${AUDIO_BASE}${folder}/sample${i}.mp3`;
-
+    const url = `${AUDIO_BASE}${albumId}/${albumId}-sample-${i}.mp3`;
     const a = new Audio();
-    a.preload = 'metadata';
 
     a.addEventListener('loadedmetadata', () => {
       valid.push(url);
@@ -219,12 +219,6 @@ function setupAudio(albumId, item) {
   probe(1);
 }
 
-/* IMPORTANT: update this call inside renderAlbum */
-/// setupAudio(item.album_id);
-/// TO:
-/// setupAudio(item.album_id, item);
-
 </script>
-
 </body>
 </html>
