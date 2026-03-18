@@ -369,7 +369,7 @@ function renderAlbum(item, all) {
       <div class="related-grid">
         ${related.map(({ i }) => `
           <a class="related-card" href="album.html?id=${i.album_id}">
-            <img src="../images/${i.album_id}.jpg" class="related-cover" alt="${i.title}" loading="lazy"
+            <img src="/images/${i.album_id}.jpg" class="related-cover" alt="${i.title}" loading="lazy"
               onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">
             <div class="related-placeholder" style="display:none;">
               <div class="album-placeholder-inner">
