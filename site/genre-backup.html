@@ -646,46 +646,16 @@ document.addEventListener('DOMContentLoaded', async () => {
       catalog.flatMap(a => LR.ui.splitPipe(a.genre).map(g => g.toLowerCase()))
     )].sort();
 
-    const WINDOW_SIZE = 20;
-    const activeIdx = allGenres.indexOf(activeGenre);
-
-    function getWindowedGenres() {
-      if (activeIdx === -1) return allGenres;
-      const half = Math.floor(WINDOW_SIZE / 2);
-      let start = activeIdx - half;
-      let end = activeIdx + half;
-      if (start < 0) { end += Math.abs(start); start = 0; }
-      if (end > allGenres.length) { start -= (end - allGenres.length); end = allGenres.length; }
-      start = Math.max(0, start);
-      return allGenres.slice(start, end);
-    }
-
-    function buildPills(genres) {
-      const nav = document.getElementById('genreNav');
-      nav.innerHTML = '';
-      genres.forEach(g => {
-        const pill = document.createElement('a');
-        pill.className = 'genre-pill' + (g === activeGenre ? ' active' : '');
-        pill.href = `genre.html?g=${encodeURIComponent(g)}`;
-        pill.textContent = g.replace(/\b\w/g, c => c.toUpperCase());
-        nav.appendChild(pill);
-      });
-    }
-
-    buildPills(getWindowedGenres());
-    setupGenreCollapse();
-
-    const toggle = document.getElementById('genreNavToggle');
-    const originalToggleClick = toggle.onclick;
-    let isExpanded = false;
-    toggle.addEventListener('click', () => {
-      isExpanded = !isExpanded;
-      if (isExpanded) {
-        buildPills(allGenres);
-      } else {
-        buildPills(getWindowedGenres());
-      }
+    const nav = document.getElementById('genreNav');
+    allGenres.forEach(g => {
+      const pill = document.createElement('a');
+      pill.className = 'genre-pill' + (g === activeGenre ? ' active' : '');
+      pill.href = `genre.html?g=${encodeURIComponent(g)}`;
+      pill.textContent = g.replace(/\b\w/g, c => c.toUpperCase());
+      nav.appendChild(pill);
     });
+
+    setupGenreCollapse();
 
     if (activeGenre) {
       document.title = `${activeGenre.replace(/\b\w/g, c => c.toUpperCase())} — LATE RECORDS`;
