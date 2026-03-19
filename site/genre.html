@@ -303,10 +303,66 @@ document.addEventListener('DOMContentLoaded', async () => {
     const toggle = document.getElementById('genreNavToggle');
 
     let isExpanded = false;
+    let windowedGenres = allGenres;
 
-    function buildPills() {
+    function getMaxRows() {
+      return window.innerWidth <= 600 ? 8 : 6;
+    }
+
+    function getRowsForGenres(genreList) {
       pills.innerHTML = '';
-      allGenres.forEach(g => {
+      genreList.forEach(g => {
+        const pill = document.createElement('a');
+        pill.className = 'genre-pill' + (g === activeGenre ? ' active' : '');
+        pill.href = `genre.html?g=${encodeURIComponent(g)}`;
+        pill.textContent = g.replace(/\b\w/g, c => c.toUpperCase());
+        pills.appendChild(pill);
+      });
+
+      const items = [...pills.children];
+      if (!items.length) return [];
+      const rows = [];
+      items.forEach((item, idx) => {
+        const top    = item.offsetTop;
+        const bottom = top + item.offsetHeight;
+        const last   = rows[rows.length - 1];
+        if (!last || Math.abs(last.top - top) > 1) {
+          rows.push({ top, bottom, startIdx: idx, endIdx: idx });
+        } else {
+          last.bottom  = Math.max(last.bottom, bottom);
+          last.endIdx  = idx;
+        }
+      });
+      return rows;
+    }
+
+    function computeWindowedGenres() {
+      const maxRows   = getMaxRows();
+      const rows      = getRowsForGenres(allGenres);
+      const activeIdx = allGenres.indexOf(activeGenre);
+
+      if (rows.length <= maxRows) return allGenres;
+
+      const activeRow = rows.findIndex(r => activeIdx >= r.startIdx && activeIdx <= r.endIdx);
+      if (activeRow === -1) return allGenres.slice(0, rows[maxRows - 1].endIdx + 1);
+
+      const half      = Math.floor(maxRows / 2);
+      let startRow    = activeRow - half;
+      let endRow      = activeRow + (maxRows - half - 1);
+
+      if (startRow < 0) { endRow += Math.abs(startRow); startRow = 0; }
+      if (endRow >= rows.length) { startRow -= (endRow - rows.length + 1); endRow = rows.length - 1; }
+      startRow = Math.max(0, startRow);
+      endRow   = Math.min(rows.length - 1, endRow);
+
+      const startGenreIdx = rows[startRow].startIdx;
+      const endGenreIdx   = rows[endRow].endIdx;
+      return allGenres.slice(startGenreIdx, endGenreIdx + 1);
+    }
+
+    function buildPills(genreList) {
+      pills.innerHTML = '';
+      genreList.forEach(g => {
         const pill = document.createElement('a');
         pill.className = 'genre-pill' + (g === activeGenre ? ' active' : '');
         pill.href = `genre.html?g=${encodeURIComponent(g)}`;
@@ -315,77 +371,42 @@ document.addEventListener('DOMContentLoaded', async () => {
       });
     }
 
-    function getMaxRows() {
-      return window.innerWidth <= 600 ? 8 : 6;
-    }
-
-    function getRowData() {
-      const items = [...pills.children];
-      if (!items.length) return [];
-      const rows = [];
-      items.forEach(item => {
-        const top    = item.offsetTop;
-        const bottom = top + item.offsetHeight;
-        const last   = rows[rows.length - 1];
-        if (!last || Math.abs(last.top - top) > 1) {
-          rows.push({ top, bottom });
-        } else {
-          last.bottom = Math.max(last.bottom, bottom);
-        }
-      });
-      return rows;
-    }
-
-    function scrollToActive(collapsedHeight) {
-      const activePill = pills.querySelector('.genre-pill.active');
-      if (!activePill) return;
-      const activeTop    = activePill.offsetTop;
-      const activeBottom = activeTop + activePill.offsetHeight;
-      if (activeTop < shell.scrollTop) {
-        shell.scrollTop = Math.max(0, activeTop - 6);
-      } else if (activeBottom > shell.scrollTop + collapsedHeight) {
-        shell.scrollTop = activeBottom - collapsedHeight + 6;
-      }
+    function getCollapsedHeight(genreList) {
+      const rows = getRowsForGenres(genreList);
+      const maxRows = getMaxRows();
+      if (rows.length <= maxRows) return null;
+      return rows[maxRows - 1].bottom;
     }
 
     function applyState() {
-      const rows = getRowData();
-      const maxRows = getMaxRows();
-      const fullHeight = pills.scrollHeight;
-
-      if (rows.length <= maxRows) {
-        shell.style.maxHeight = fullHeight + 'px';
-        shell.style.overflow  = 'hidden';
-        toggle.classList.remove('is-visible');
-        toggle.setAttribute('aria-expanded', 'true');
-        return;
-      }
-
-      const collapsedHeight = rows[maxRows - 1].bottom;
-      toggle.classList.add('is-visible');
-
       if (isExpanded) {
-        shell.style.maxHeight = fullHeight + 'px';
-        shell.style.overflow  = 'hidden';
-        shell.scrollTop = 0;
+        buildPills(allGenres);
+        shell.style.maxHeight = pills.scrollHeight + 'px';
+        toggle.classList.add('is-visible');
         toggle.textContent = '−';
         toggle.setAttribute('aria-expanded', 'true');
       } else {
-        shell.style.maxHeight = collapsedHeight + 'px';
-        shell.style.overflow  = 'hidden';
-        scrollToActive(collapsedHeight);
-        toggle.textContent = '+';
-        toggle.setAttribute('aria-expanded', 'false');
+        windowedGenres = computeWindowedGenres();
+        buildPills(windowedGenres);
+        const hasMore = allGenres.length > windowedGenres.length;
+        if (!hasMore) {
+          shell.style.maxHeight = pills.scrollHeight + 'px';
+          toggle.classList.remove('is-visible');
+          toggle.setAttribute('aria-expanded', 'true');
+        } else {
+          shell.style.maxHeight = pills.scrollHeight + 'px';
+          toggle.classList.add('is-visible');
+          toggle.textContent = '+';
+          toggle.setAttribute('aria-expanded', 'false');
+        }
       }
     }
-
-    buildPills();
 
     toggle.addEventListener('click', (e) => {
       e.preventDefault();
       e.stopPropagation();
       isExpanded = !isExpanded;
-      requestAnimationFrame(applyState);
+      applyState();
     });
 
     window.addEventListener('resize', () => requestAnimationFrame(applyState));
