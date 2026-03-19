@@ -123,7 +123,7 @@ button { cursor: pointer; font-family: inherit; }
 .container {
   max-width: var(--max-w);
   margin: 0 auto;
-  padding: calc(var(--header-h) + 10px) var(--pad-h) calc(var(--footer-h) + 60px);
+  padding: calc(var(--header-h) + 30px) var(--pad-h) calc(var(--footer-h) + 60px);
 }
 
 /* ── Buttons ──────────────────────────────────────────────── */
