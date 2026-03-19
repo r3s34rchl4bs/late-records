@@ -29,7 +29,6 @@ html, body {
 a { color: inherit; text-decoration: none; }
 img { display: block; max-width: 100%; }
 
-/* ── Header ──────────────────────────────────────────────── */
 .fixed-header {
   position: fixed;
   top: 0;
@@ -62,14 +61,12 @@ img { display: block; max-width: 100%; }
 }
 .cart-link:hover { color: rgba(26,26,20,.5); }
 
-/* ── Container ───────────────────────────────────────────── */
 .container {
   max-width: 1200px;
   margin: 0 auto;
   padding: 84px 30px 104px;
 }
 
-/* ── Genre nav ───────────────────────────────────────────── */
 .genre-nav-label {
   font-size: 11px;
   font-weight: 500;
@@ -150,17 +147,12 @@ img { display: block; max-width: 100%; }
   line-height: 1;
   z-index: 2;
 }
-
 .genre-nav-toggle.is-visible {
   display: inline-flex;
 }
 
-/* ── Divider ─────────────────────────────────────────────── */
-.section-divider {
-  display: none;
-}
+.section-divider { display: none; }
 
-/* ── Table ───────────────────────────────────────────────── */
 .tbl {
   width: 100%;
   border-collapse: collapse;
@@ -189,15 +181,9 @@ col.c-stock  { width: 8%; }
   vertical-align: bottom;
 }
 .tbl thead th:first-child { padding-left: 0; }
-.tbl thead th.c-stock {
-  text-align: right;
-  padding-right: 0;
-}
+.tbl thead th.c-stock { text-align: right; padding-right: 0; }
 
-.tbl tbody tr {
-  cursor: pointer;
-  transition: color 0.1s linear;
-}
+.tbl tbody tr { cursor: pointer; transition: color 0.1s linear; }
 .tbl tbody tr:hover .rec-title,
 .tbl tbody tr:hover .rec-artist { color: #1a1a14; }
 
@@ -208,11 +194,7 @@ col.c-stock  { width: 8%; }
 }
 .tbl tbody td:first-child { padding-left: 0; }
 .tbl tbody td:last-child  { padding-right: 0; }
-.tbl tbody td.c-stock {
-  padding-top: 8px;
-  padding-bottom: 8px;
-  padding-right: 0;
-}
+.tbl tbody td.c-stock { padding-top: 8px; padding-bottom: 8px; padding-right: 0; }
 
 .rec-title {
   font-size: 14px;
@@ -250,14 +232,12 @@ col.c-stock  { width: 8%; }
 .sdot.a { background: #1a1a14; }
 .sdot.s { background: rgba(26,26,20,.28); }
 
-/* sold-out dimming */
 .tbl tbody tr.sold .rec-title  { color: rgba(26,26,20,.4); }
 .tbl tbody tr.sold .rec-artist { color: rgba(26,26,20,.28); }
 .tbl tbody tr.sold .rec-format { color: rgba(26,26,20,.28); }
 .tbl tbody tr.sold .rec-stock  { color: rgba(26,26,20,.28); }
 .tbl tbody tr.sold .sdot       { background: rgba(26,26,20,.28) !important; }
 
-/* ── Empty state ─────────────────────────────────────────── */
 .empty-state {
   padding: 60px 0;
   font-size: 13px;
@@ -265,7 +245,6 @@ col.c-stock  { width: 8%; }
   letter-spacing: .02em;
 }
 
-/* ── Skeleton ────────────────────────────────────────────── */
 .sk {
   display: inline-block;
   height: 9px;
@@ -279,49 +258,30 @@ col.c-stock  { width: 8%; }
   100% { background-position: -200% 0; }
 }
 
-/* ── Responsive ──────────────────────────────────────────── */
 @media (max-width: 900px) {
   col.c-stock { display: none; }
   .tbl thead th.c-stock, .tbl tbody td.c-stock { display: none; }
   col.c-format { width: 22%; }
-  .tbl thead th.c-format,
-  .tbl tbody td.c-format {
-    text-align: right;
-    padding-right: 0;
-  }
+  .tbl thead th.c-format, .tbl tbody td.c-format { text-align: right; padding-right: 0; }
   .rec-title { font-size: 13px; }
 }
 
 @media (max-width: 600px) {
   .container { padding: 84px 20px 98px; }
   .header-inner { padding: 0 20px; }
-
   col.c-stock { display: none; }
   .tbl thead th.c-stock, .tbl tbody td.c-stock { display: none; }
   col.c-format { width: 22%; }
-  .tbl thead th.c-format,
-  .tbl tbody td.c-format {
-    text-align: right;
-    padding-right: 0;
-  }
-
-  .tbl thead th {
-    top: 74px;
-    font-size: 10px;
-  }
-
+  .tbl thead th.c-format, .tbl tbody td.c-format { text-align: right; padding-right: 0; }
+  .tbl thead th { top: 74px; font-size: 10px; }
   .rec-title { font-size: 13px; }
   .genre-pill { font-size: 9px; padding: 2px 6px; }
-
   .guide-footer-inner { padding: 0 20px; }
 }
 
-/* ── Guide footer + modal ────────────────────────────────── */
 .guide-footer {
   position: fixed;
-  left: 0;
-  right: 0;
-  bottom: 0;
+  left: 0; right: 0; bottom: 0;
   height: 34px;
   background: rgba(226,226,226,.92);
   border-top: 1px solid rgba(26,26,20,.14);
@@ -329,7 +289,6 @@ col.c-stock  { width: 8%; }
   -webkit-backdrop-filter: blur(2px);
   z-index: 9998;
 }
-
 .guide-footer-inner {
   max-width: 1200px;
   height: 100%;
@@ -339,7 +298,6 @@ col.c-stock  { width: 8%; }
   align-items: center;
   justify-content: flex-end;
 }
-
 .guide-btn {
   background: transparent;
   color: rgba(26,26,20,.58);
@@ -358,23 +316,12 @@ col.c-stock  { width: 8%; }
   opacity: .72;
   transition: opacity .12s linear, color .12s linear;
 }
-.guide-btn:hover {
-  opacity: 1;
-  color: rgba(26,26,20,.82);
-}
-.guide-btn-inner {
-  display: inline-flex;
-  align-items: center;
-  gap: 4px;
-}
+.guide-btn:hover { opacity: 1; color: rgba(26,26,20,.82); }
+.guide-btn-inner { display: inline-flex; align-items: center; gap: 4px; }
 .guide-btn svg {
-  width: 14px;
-  height: 14px;
-  fill: none;
-  stroke: currentColor;
-  stroke-width: 1.25;
-  stroke-linecap: round;
-  stroke-linejoin: round;
+  width: 14px; height: 14px;
+  fill: none; stroke: currentColor;
+  stroke-width: 1.25; stroke-linecap: round; stroke-linejoin: round;
   flex-shrink: 0;
 }
 
@@ -391,7 +338,6 @@ col.c-stock  { width: 8%; }
   padding: 20px;
 }
 .guide-modal.is-open { display: flex; }
-
 .guide-modal-inner {
   background: rgba(233,233,233,.97);
   border: 1px solid rgba(26,26,20,.35);
@@ -401,25 +347,9 @@ col.c-stock  { width: 8%; }
   position: relative;
   box-shadow: 0 14px 36px rgba(26,26,20,.08);
 }
-
-.guide-modal-body {
-  padding: 16px 20px 16px;
-}
-
-.guide-heading-wrap {
-  margin-bottom: 18px;
-  padding-bottom: 12px;
-  border-bottom: 1px solid rgba(26,26,20,.12);
-}
-
-.guide-subheading {
-  font-size: 10px;
-  font-weight: 500;
-  letter-spacing: .18em;
-  text-transform: uppercase;
-  color: rgba(26,26,20,.34);
-}
-
+.guide-modal-body { padding: 16px 20px 16px; }
+.guide-heading-wrap { margin-bottom: 18px; padding-bottom: 12px; border-bottom: 1px solid rgba(26,26,20,.12); }
+.guide-subheading { font-size: 10px; font-weight: 500; letter-spacing: .18em; text-transform: uppercase; color: rgba(26,26,20,.34); }
 .guide-row {
   display: grid;
   grid-template-columns: 56px 1fr 22px;
@@ -429,28 +359,9 @@ col.c-stock  { width: 8%; }
   border-bottom: 1px solid rgba(26,26,20,.1);
 }
 .guide-row:last-child { border-bottom: none; }
-
-.guide-format {
-  font-size: 11px;
-  font-weight: 600;
-  letter-spacing: .08em;
-  color: rgba(26,26,20,.85);
-}
-
-.guide-desc {
-  font-size: 12px;
-  font-weight: 400;
-  color: rgba(26,26,20,.56);
-  line-height: 1.45;
-}
-
-.guide-index {
-  text-align: right;
-  font-size: 9px;
-  letter-spacing: .18em;
-  text-transform: uppercase;
-  color: rgba(26,26,20,.22);
-}
+.guide-format { font-size: 11px; font-weight: 600; letter-spacing: .08em; color: rgba(26,26,20,.85); }
+.guide-desc { font-size: 12px; font-weight: 400; color: rgba(26,26,20,.56); line-height: 1.45; }
+.guide-index { text-align: right; font-size: 9px; letter-spacing: .18em; text-transform: uppercase; color: rgba(26,26,20,.22); }
 </style>
 </head>
 <body>
@@ -496,7 +407,6 @@ col.c-stock  { width: 8%; }
 
 </div>
 
-<!-- Guide footer -->
 <div class="guide-footer">
   <div class="guide-footer-inner">
     <button class="guide-btn" id="guideBtn" type="button">
@@ -511,14 +421,12 @@ col.c-stock  { width: 8%; }
   </div>
 </div>
 
-<!-- Guide modal -->
 <div class="guide-modal" id="guideModal">
   <div class="guide-modal-inner">
     <div class="guide-modal-body">
       <div class="guide-heading-wrap">
         <div class="guide-subheading">Standard types</div>
       </div>
-
       <div class="guide-row">
         <span class="guide-format">LP</span>
         <span class="guide-desc">Full-length album, usually 12"</span>
@@ -558,95 +466,6 @@ col.c-stock  { width: 8%; }
 const params      = new URLSearchParams(window.location.search);
 const activeGenre = (params.get('g') || '').toLowerCase();
 
-function setupGenreCollapse(getWindowedGenres, allGenres, activeGenre) {
-  const shell  = document.getElementById('genreNavShell');
-  const pills  = document.getElementById('genreNav');
-  const toggle = document.getElementById('genreNavToggle');
-  if (!shell || !pills || !toggle) return;
-
-  let isExpanded = false;
-
-  function getCollapsedRows() {
-    return window.innerWidth <= 600 ? 5 : 6;
-  }
-
-  function getRowMetrics() {
-    const items = [...pills.children];
-    if (!items.length) return [];
-    const rows = [];
-    items.forEach(item => {
-      const top = item.offsetTop;
-      const bottom = top + item.offsetHeight;
-      const last = rows[rows.length - 1];
-      if (!last || Math.abs(last.top - top) > 1) {
-        rows.push({ top, bottom });
-      } else {
-        last.bottom = Math.max(last.bottom, bottom);
-      }
-    });
-    return rows;
-  }
-
-  function buildPills(genres) {
-    pills.innerHTML = '';
-    genres.forEach(g => {
-      const pill = document.createElement('a');
-      pill.className = 'genre-pill' + (g === activeGenre ? ' active' : '');
-      pill.href = `genre.html?g=${encodeURIComponent(g)}`;
-      pill.textContent = g.replace(/\b\w/g, c => c.toUpperCase());
-      pills.appendChild(pill);
-    });
-  }
-
-  function applyState() {
-    const rows = getRowMetrics();
-    const collapsedRows = getCollapsedRows();
-
-    if (rows.length <= collapsedRows) {
-      shell.style.maxHeight = 'none';
-      shell.classList.remove('is-collapsed');
-      toggle.classList.remove('is-visible');
-      toggle.textContent = '+';
-      toggle.setAttribute('aria-expanded', 'true');
-      return;
-    }
-
-    const collapsedHeight = rows[collapsedRows - 1].bottom;
-    const fullHeight = pills.scrollHeight;
-    toggle.classList.add('is-visible');
-
-    if (isExpanded) {
-      shell.style.maxHeight = fullHeight + 'px';
-      shell.classList.remove('is-collapsed');
-      toggle.textContent = '−';
-      toggle.setAttribute('aria-expanded', 'true');
-    } else {
-      shell.style.maxHeight = collapsedHeight + 'px';
-      shell.classList.add('is-collapsed');
-      toggle.textContent = '+';
-      toggle.setAttribute('aria-expanded', 'false');
-    }
-  }
-
-  buildPills(getWindowedGenres());
-
-  toggle.addEventListener('click', (e) => {
-    e.preventDefault();
-    e.stopPropagation();
-    isExpanded = !isExpanded;
-    buildPills(isExpanded ? allGenres : getWindowedGenres());
-    requestAnimationFrame(applyState);
-  });
-
-  window.addEventListener('resize', applyState);
-
-  if (document.fonts && document.fonts.ready) {
-    document.fonts.ready.then(() => requestAnimationFrame(applyState));
-  } else {
-    requestAnimationFrame(() => requestAnimationFrame(applyState));
-  }
-}
-
 document.addEventListener('DOMContentLoaded', async () => {
   try {
     const catalog = await LR.api.catalog();
@@ -662,15 +481,100 @@ document.addEventListener('DOMContentLoaded', async () => {
       if (activeIdx === -1) return allGenres;
       const half = Math.floor(WINDOW_SIZE / 2);
       let start = activeIdx - half;
-      let end = activeIdx + half;
+      let end   = activeIdx + half;
       if (start < 0) { end += Math.abs(start); start = 0; }
       if (end > allGenres.length) { start -= (end - allGenres.length); end = allGenres.length; }
       start = Math.max(0, start);
       return allGenres.slice(start, end);
     }
 
-    setupGenreCollapse(getWindowedGenres, allGenres, activeGenre);
+    const shell  = document.getElementById('genreNavShell');
+    const pills  = document.getElementById('genreNav');
+    const toggle = document.getElementById('genreNavToggle');
 
+    let isExpanded = false;
+    const windowed = getWindowedGenres();
+    const hasHidden = allGenres.length > windowed.length;
+
+    function buildPills(genres) {
+      pills.innerHTML = '';
+      genres.forEach(g => {
+        const pill = document.createElement('a');
+        pill.className = 'genre-pill' + (g === activeGenre ? ' active' : '');
+        pill.href = `genre.html?g=${encodeURIComponent(g)}`;
+        pill.textContent = g.replace(/\b\w/g, c => c.toUpperCase());
+        pills.appendChild(pill);
+      });
+    }
+
+    function getCollapsedRows() {
+      return window.innerWidth <= 600 ? 5 : 6;
+    }
+
+    function getRowMetrics() {
+      const items = [...pills.children];
+      if (!items.length) return [];
+      const rows = [];
+      items.forEach(item => {
+        const top    = item.offsetTop;
+        const bottom = top + item.offsetHeight;
+        const last   = rows[rows.length - 1];
+        if (!last || Math.abs(last.top - top) > 1) {
+          rows.push({ top, bottom });
+        } else {
+          last.bottom = Math.max(last.bottom, bottom);
+        }
+      });
+      return rows;
+    }
+
+    function applyState() {
+      const rows = getRowMetrics();
+      const collapsedRows = getCollapsedRows();
+      const needsToggle = rows.length > collapsedRows || hasHidden;
+
+      if (!needsToggle) {
+        shell.style.maxHeight = 'none';
+        shell.classList.remove('is-collapsed');
+        toggle.classList.remove('is-visible');
+        return;
+      }
+
+      toggle.classList.add('is-visible');
+
+      if (isExpanded) {
+        shell.style.maxHeight = pills.scrollHeight + 'px';
+        shell.classList.remove('is-collapsed');
+        toggle.textContent = '−';
+        toggle.setAttribute('aria-expanded', 'true');
+      } else {
+        const collapsedHeight = rows.length > collapsedRows
+          ? rows[collapsedRows - 1].bottom
+          : pills.scrollHeight;
+        shell.style.maxHeight = collapsedHeight + 'px';
+        shell.classList.add('is-collapsed');
+        toggle.textContent = '+';
+        toggle.setAttribute('aria-expanded', 'false');
+      }
+    }
+
+    buildPills(windowed);
+
+    toggle.addEventListener('click', (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      isExpanded = !isExpanded;
+      buildPills(isExpanded ? allGenres : windowed);
+      requestAnimationFrame(applyState);
+    });
+
+    window.addEventListener('resize', applyState);
+
+    if (document.fonts && document.fonts.ready) {
+      document.fonts.ready.then(() => requestAnimationFrame(applyState));
+    } else {
+      requestAnimationFrame(() => requestAnimationFrame(applyState));
+    }
 
     if (activeGenre) {
       document.title = `${activeGenre.replace(/\b\w/g, c => c.toUpperCase())} — LATE RECORDS`;
@@ -712,19 +616,12 @@ document.addEventListener('DOMContentLoaded', async () => {
 });
 
 document.addEventListener('DOMContentLoaded', () => {
-  const guideBtn = document.getElementById('guideBtn');
+  const guideBtn   = document.getElementById('guideBtn');
   const guideModal = document.getElementById('guideModal');
-
   if (!guideBtn || !guideModal) return;
-
-  guideBtn.addEventListener('click', () => {
-    guideModal.classList.add('is-open');
-  });
-
+  guideBtn.addEventListener('click', () => { guideModal.classList.add('is-open'); });
   guideModal.addEventListener('click', e => {
-    if (e.target === guideModal) {
-      guideModal.classList.remove('is-open');
-    }
+    if (e.target === guideModal) guideModal.classList.remove('is-open');
   });
 });
 </script>
