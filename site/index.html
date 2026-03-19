@@ -433,24 +433,7 @@ function buildCarousel(albums) {
   document.getElementById('prevBtn').addEventListener('click', (e) => { e.stopPropagation(); goTo(current - 1); });
   document.getElementById('nextBtn').addEventListener('click', (e) => { e.stopPropagation(); goTo(current + 1); });
 
-  let touchStartX = 0;
-  track.addEventListener('touchstart', (e) => { touchStartX = e.touches[0].clientX; }, { passive: true });
-  track.addEventListener('touchend', (e) => {
-    const diff = touchStartX - e.changedTouches[0].clientX;
-    if (Math.abs(diff) > 40) goTo(diff > 0 ? current + 1 : current - 1);
-  });
 
-  let mouseStartX = 0;
-  let dragging = false;
-  track.addEventListener('mousedown', (e) => { mouseStartX = e.clientX; dragging = true; track.style.cursor = 'grabbing'; });
-  track.addEventListener('mouseup', (e) => {
-    if (!dragging) return;
-    dragging = false;
-    track.style.cursor = '';
-    const diff = mouseStartX - e.clientX;
-    if (Math.abs(diff) > 40) goTo(diff > 0 ? current + 1 : current - 1);
-  });
-  track.addEventListener('mouseleave', () => { dragging = false; track.style.cursor = ''; });
 
 }
 
