@@ -209,9 +209,14 @@ document.addEventListener('click', e => {
   if (id) { LR.cart.remove(id); renderCart(); return; }
   if (plus) {
     const item = LR.cart.get().find(i => i.id === plus);
-    if (item && item.qty >= item.stock) {
+    const limit = item.stock || 10;
+    if (item && item.qty >= limit) {
       const label = document.querySelector(`.cart-item[data-id="${plus}"] .stock-label`);
-      if (label) { label.style.opacity = '1'; setTimeout(() => label.style.opacity = '0', 2000); }
+      if (label) {
+        label.textContent = `Only ${limit} available`;
+        label.style.opacity = '1';
+        setTimeout(() => label.style.opacity = '0', 2000);
+      }
       return;
     }
     LR.cart.updateQty(plus, 1); renderCart(); return;
