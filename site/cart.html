@@ -183,7 +183,7 @@ function renderCart() {
   container.innerHTML = items.map(item => `
     <div class="cart-item" data-id="${item.id}">
       <a href="albums/album.html?id=${item.id}" class="cart-item-img-link">
-        <img src="images/${item.id}.jpg" class="cart-item-img" alt="${item.title}">
+        <img src="images/${item.id}.jpg" class="cart-item-img" alt="${item.title}" onerror="this.style.opacity='0'">
       </a>
       <div class="cart-item-details">
         <h2 class="cart-item-title">${item.title}</h2>
