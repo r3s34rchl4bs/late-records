@@ -193,6 +193,7 @@ html, body {
 <script>
 document.addEventListener('DOMContentLoaded', () => {
   const cart     = LR.cart.get();
+  if (!cart.length) { window.location.href = 'cart.html'; return; }
   const shipping = LR.cart.shipping();
   const subtotal = LR.cart.subtotal();
   const total    = subtotal + shipping;
