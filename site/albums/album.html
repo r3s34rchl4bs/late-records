@@ -503,7 +503,7 @@ function setupAudio(albumId) {
   next.addEventListener('click', () => { if (cur < valid.length - 1) setTrack(cur + 1); });
 
   function probe(i) {
-    const url = `${AUDIO_BASE}${albumId}/${albumId}-sample-${i}.mp3`;
+    const url = `${AUDIO_BASE}${albumId}/sample${i}.mp3`;
     const a = new Audio(); a.preload = 'metadata';
     a.addEventListener('loadedmetadata', () => { valid.push(url); probe(i + 1); }, { once: true });
     a.addEventListener('error', () => {
