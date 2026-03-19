@@ -7,7 +7,6 @@
  *   GET  /api/suggest?q=...  — smart suggestions (MusicBrainz → Gemini fallback)
  */
 
-const APPS_SCRIPT_URL = typeof APPS_SCRIPT_URL !== 'undefined' ? APPS_SCRIPT_URL : '';
 const CACHE_TTL = 120; // seconds
 
 // ── CORS headers ──────────────────────────────────────────
