@@ -319,9 +319,9 @@ document.addEventListener('DOMContentLoaded', async () => {
       return window.innerWidth <= 600 ? 8 : 6;
     }
 
-    function getCollapsedHeight() {
+    function getRowData() {
       const items = [...pills.children];
-      if (!items.length) return null;
+      if (!items.length) return [];
       const rows = [];
       items.forEach(item => {
         const top    = item.offsetTop;
@@ -333,30 +333,47 @@ document.addEventListener('DOMContentLoaded', async () => {
           last.bottom = Math.max(last.bottom, bottom);
         }
       });
-      const maxRows = getMaxRows();
-      if (rows.length <= maxRows) return null;
-      return rows[maxRows - 1].bottom;
+      return rows;
+    }
+
+    function scrollToActive(collapsedHeight) {
+      const activePill = pills.querySelector('.genre-pill.active');
+      if (!activePill) return;
+      const activeTop    = activePill.offsetTop;
+      const activeBottom = activeTop + activePill.offsetHeight;
+      if (activeTop < shell.scrollTop) {
+        shell.scrollTop = Math.max(0, activeTop - 6);
+      } else if (activeBottom > shell.scrollTop + collapsedHeight) {
+        shell.scrollTop = activeBottom - collapsedHeight + 6;
+      }
     }
 
     function applyState() {
+      const rows = getRowData();
+      const maxRows = getMaxRows();
       const fullHeight = pills.scrollHeight;
-      const collapsedHeight = getCollapsedHeight();
 
-      if (collapsedHeight === null) {
+      if (rows.length <= maxRows) {
         shell.style.maxHeight = fullHeight + 'px';
+        shell.style.overflow  = 'hidden';
         toggle.classList.remove('is-visible');
         toggle.setAttribute('aria-expanded', 'true');
         return;
       }
 
+      const collapsedHeight = rows[maxRows - 1].bottom;
       toggle.classList.add('is-visible');
 
       if (isExpanded) {
         shell.style.maxHeight = fullHeight + 'px';
+        shell.style.overflow  = 'hidden';
+        shell.scrollTop = 0;
         toggle.textContent = '−';
         toggle.setAttribute('aria-expanded', 'true');
       } else {
         shell.style.maxHeight = collapsedHeight + 'px';
+        shell.style.overflow  = 'hidden';
+        scrollToActive(collapsedHeight);
         toggle.textContent = '+';
         toggle.setAttribute('aria-expanded', 'false');
       }
