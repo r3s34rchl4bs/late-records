@@ -74,9 +74,9 @@ async function musicBrainzSuggest(query, catalog) {
 
   const scored = catalog.map(item => {
     let score = 0;
-    const itemGenres = item.genre.toLowerCase();
-    const itemArtist = item.artist.toLowerCase();
-    const itemTitle  = item.title.toLowerCase();
+    const itemGenres = String(item.genre  || '').toLowerCase();
+    const itemArtist = String(item.artist || '').toLowerCase();
+    const itemTitle  = String(item.title  || '').toLowerCase();
 
     tagWords.forEach(tag => {
       if (tag.length < 3) return;
@@ -221,6 +221,7 @@ export default {
         }
         return json(results, 200, origin);
       } catch (e) {
+        console.error('Suggest error:', e.message);
         return json([], 200, origin);
       }
     }
