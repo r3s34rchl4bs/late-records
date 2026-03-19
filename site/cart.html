@@ -194,7 +194,7 @@ function renderCart() {
             <button class="qty-btn" data-plus="${item.id}">+</button>
           </div>
         </div>
-        ${item.stock === 1 ? '<div class="stock-label" style="opacity:1;">Last copy</div>' : ''}
+        <div class="stock-label">${item.stock === 1 ? 'Last copy' : ''}</div>
       </div>
     </div>
   `).join('');
