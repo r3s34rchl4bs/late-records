@@ -673,11 +673,10 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
 
     buildPills(getWindowedGenres());
-    setupGenreCollapse();
 
     const toggle = document.getElementById('genreNavToggle');
-    const originalToggleClick = toggle.onclick;
     let isExpanded = false;
+
     toggle.addEventListener('click', () => {
       isExpanded = !isExpanded;
       if (isExpanded) {
@@ -685,7 +684,11 @@ document.addEventListener('DOMContentLoaded', async () => {
       } else {
         buildPills(getWindowedGenres());
       }
+      setupGenreCollapse();
     });
+
+    setupGenreCollapse();
+
 
     if (activeGenre) {
       document.title = `${activeGenre.replace(/\b\w/g, c => c.toUpperCase())} — LATE RECORDS`;
