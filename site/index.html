@@ -496,10 +496,10 @@ function renderTable(rawQuery) {
 
   const matches = _catalog
     .map(item => {
-      const artist = (item.artist || '').toLowerCase();
-      const title  = (item.title || '').toLowerCase();
-      const genre  = (item.genre || '').toLowerCase();
-      const format = (item.format || '').toLowerCase();
+      const artist = String(item.artist || '').toLowerCase();
+      const title  = String(item.title  || '').toLowerCase();
+      const genre  = String(item.genre  || '').toLowerCase();
+      const format = String(item.format || '').toLowerCase();
 
       let score = 0;
 
