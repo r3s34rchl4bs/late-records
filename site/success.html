@@ -28,24 +28,22 @@ html, body {
 .fixed-footer { display: none; }
 .container { padding-bottom: 80px; }
 
-/* PAGE */
-.success-page {
+/* PAGE — single column, order summary not in grid */
+.page-title {
+  font-size: 26px; font-weight: 600;
+  margin-bottom: 32px; letter-spacing: -.01em; color: #1a1a14;
+}
+
+.success-layout {
   display: grid;
   grid-template-columns: 1fr 380px;
   column-gap: 60px;
   align-items: start;
 }
 
-/* H1 same style as checkout/cart */
-.page-title {
-  font-size: 26px; font-weight: 600;
-  margin-bottom: 32px; letter-spacing: -.01em; color: #1a1a14;
-}
-
 /* META GRID */
 .order-meta {
   border-top: 1px solid rgba(26,26,20,.12);
-  margin-bottom: 0;
   display: grid; grid-template-columns: 1fr 1fr;
 }
 .meta-cell { padding: 16px 0; border-bottom: 1px solid rgba(26,26,20,.12); }
@@ -55,29 +53,30 @@ html, body {
 .meta-value { font-size: 13px; color: #1a1a14; line-height: 1.55; }
 .meta-value.amount { font-size: 24px; font-weight: 600; letter-spacing: -.02em; line-height: 1.1; }
 
-/* Mobile summary trigger — with top margin gap from grid */
+/* View summary button — shared style for both desktop and mobile */
 .view-summary-btn {
-  display: none; width: 100%;
+  width: 100%;
   background: rgba(26,26,20,.04); border: none;
   border-bottom: 1px solid rgba(26,26,20,.1);
   padding: 14px 16px; cursor: pointer;
   font-family: 'Inter', system-ui, sans-serif; text-align: left;
   box-shadow: 0 2px 8px rgba(26,26,20,.07);
-  margin-top: 20px; margin-bottom: 32px;
-  transition: background .15s;
+  margin-top: 20px; margin-bottom: 0;
+  transition: background .15s; display: block;
 }
 .view-summary-btn:hover { background: rgba(26,26,20,.07); }
 .vsb-inner { display: flex; justify-content: space-between; align-items: center; width: 100%; }
 .vsb-label { font-size: 10px; font-weight: 500; letter-spacing: .1em; text-transform: uppercase; color: rgba(26,26,20,.55); }
-.vsb-arrow { font-size: 14px; color: rgba(26,26,20,.35); }
+.vsb-arrow { font-size: 14px; color: rgba(26,26,20,.35); transition: transform .15s; }
+.vsb-arrow.open { transform: rotate(90deg); }
 
 /* PAYMENT */
 .payment-section { margin-top: 32px; }
 .payment-body {
   display: grid; grid-template-columns: 1fr auto;
-  gap: 32px; align-items: stretch; margin-bottom: 28px;
+  gap: 32px; align-items: start; margin-bottom: 28px;
 }
-.payment-left { display: flex; flex-direction: column; max-width: 200px; }
+.payment-left { display: flex; flex-direction: column; width: 40%; min-width: 180px; }
 .timer-label { font-size: 9px; font-weight: 500; letter-spacing: .12em; text-transform: uppercase; color: rgba(26,26,20,.38); margin-bottom: 8px; }
 .countdown { font-size: 36px; font-weight: 600; letter-spacing: -.02em; font-variant-numeric: tabular-nums; color: #1a1a14; line-height: 1; margin-bottom: 10px; }
 .countdown.is-expired { font-size: 16px; color: rgba(26,26,20,.5); }
@@ -92,8 +91,13 @@ html, body {
 
 .order-note { font-size: 12px; color: rgba(26,26,20,.42); line-height: 1.8; padding-left: 12px; border-left: 1px solid rgba(26,26,20,.18); }
 
-/* ORDER SUMMARY — matches checkout style exactly */
-.order-summary { padding-left: 30px; }
+/* ORDER SUMMARY PANEL — checkout style, hidden by default on desktop */
+.summary-panel {
+  display: none;
+  padding-left: 30px;
+}
+.summary-panel.is-open { display: block; }
+
 .section-label {
   font-size: 11px; font-weight: 500; letter-spacing: .09em;
   text-transform: uppercase; color: rgba(26,26,20,.5); margin-bottom: 20px;
@@ -125,11 +129,9 @@ html, body {
   border: 2px solid rgba(26,26,20,.35);
   max-height: calc(100vh - 80px); overflow-y: auto;
 }
-.modal-titlebar {
+.modal-close-row {
   display: flex; align-items: center; justify-content: flex-end;
-  padding: 10px 12px;
-  background: rgba(26,26,20,.05);
-  border-bottom: 1px solid rgba(26,26,20,.12);
+  padding: 12px 16px 0;
 }
 .modal-close {
   background: rgba(26,26,20,.18); border: 0;
@@ -140,27 +142,23 @@ html, body {
   transition: background .1s;
 }
 .modal-close:hover { background: #1a1a14; color: #e2e2e2; }
-
-/* Modal body uses same order summary style */
-.modal-body { padding: 20px 20px 28px; }
+.modal-body { padding: 16px 24px 32px; }
 
 /* RESPONSIVE */
 @media (max-width: 900px) {
-  .success-page { grid-template-columns: 1fr; gap: 40px; }
-  .order-summary { padding-left: 0; }
+  .success-layout { grid-template-columns: 1fr; }
+  .summary-panel { padding-left: 0; }
   .page-title { font-size: 22px; }
 }
 @media (max-width: 860px) {
-  .order-summary { display: none; }
-  .view-summary-btn { display: block; }
-  .payment-left { max-width: 160px; }
-  .qr-img { width: 160px; }
+  /* On mobile, desktop summary hidden, modal used instead */
+  .summary-panel { display: none !important; }
   .countdown { font-size: 30px; }
+  .qr-img { width: 140px; }
+  .payment-left { width: auto; min-width: 0; }
 }
 @media (max-width: 600px) {
   .countdown { font-size: 26px; }
-  .qr-img { width: 140px; }
-  .payment-left { max-width: 140px; }
 }
 </style>
 </head>
@@ -177,9 +175,9 @@ html, body {
 <div class="container">
   <h1 class="page-title">Order Received</h1>
 
-  <div class="success-page">
+  <div class="success-layout">
 
-    <!-- LEFT -->
+    <!-- LEFT COL -->
     <div>
       <div class="order-meta">
         <div class="meta-cell left">
@@ -200,10 +198,11 @@ html, body {
         </div>
       </div>
 
-      <button class="view-summary-btn" onclick="openModal()">
+      <!-- View summary trigger — shows modal on mobile, toggles panel on desktop -->
+      <button class="view-summary-btn" id="viewSummaryBtn" onclick="toggleSummary()">
         <div class="vsb-inner">
           <span class="vsb-label">View Order Summary</span>
-          <span class="vsb-arrow">&#x2192;</span>
+          <span class="vsb-arrow" id="vsbArrow">&#x2192;</span>
         </div>
       </button>
 
@@ -234,27 +233,17 @@ html, body {
       </p>
     </div>
 
-    <!-- RIGHT — order summary, checkout style -->
-    <div class="order-summary">
+    <!-- RIGHT COL — order summary panel, desktop only, toggled -->
+    <div class="summary-panel" id="summaryPanel">
       <div class="section-label">Order Summary</div>
 
-      <!-- Order meta rows -->
       <div class="order-item">
-        <div class="order-item-left">
-          <div class="order-item-title">Order</div>
-        </div>
-        <div class="order-item-price" id="rOrder" style="font-size:12px;">&#x2014;</div>
-      </div>
-      <div class="order-item">
-        <div class="order-item-left">
-          <div class="order-item-title">Date</div>
-        </div>
-        <div class="order-item-price" id="rDate" style="font-size:12px;">&#x2014;</div>
+        <div class="order-item-left"><div class="order-item-title">Date</div></div>
+        <div class="order-item-price" id="rDate" style="font-size:12px;font-weight:400;">&#x2014;</div>
       </div>
 
       <div class="order-divider"></div>
 
-      <!-- Items -->
       <div id="rItems"></div>
 
       <div class="order-divider"></div>
@@ -278,25 +267,19 @@ html, body {
 <!-- MOBILE MODAL -->
 <div class="modal-overlay" id="modalOverlay" onclick="handleOverlay(event)">
   <div class="modal-dialog">
-    <div class="modal-titlebar">
+    <div class="modal-close-row">
       <button class="modal-close" onclick="closeModal()">&#x2715;</button>
     </div>
     <div class="modal-body">
-      <div class="section-label" style="margin-bottom:16px;">Order Summary</div>
+      <div class="section-label" style="margin-bottom:4px;">Order Summary</div>
 
-      <!-- Order + Date -->
-      <div class="order-item">
-        <div class="order-item-left"><div class="order-item-title">Order</div></div>
-        <div class="order-item-price" id="mOrder" style="font-size:12px;">&#x2014;</div>
-      </div>
-      <div class="order-item">
-        <div class="order-item-left"><div class="order-item-title">Date</div></div>
-        <div class="order-item-price" id="mDate" style="font-size:12px;">&#x2014;</div>
+      <div class="order-item" style="margin-bottom:20px;">
+        <div class="order-item-left"><div class="order-item-title" style="font-weight:400;color:rgba(26,26,20,.5);font-size:11px;">Date</div></div>
+        <div class="order-item-price" id="mDate" style="font-size:11px;font-weight:400;color:rgba(26,26,20,.5);">&#x2014;</div>
       </div>
 
-      <div class="order-divider"></div>
+      <div class="order-divider" style="margin-top:0;"></div>
 
-      <!-- Items -->
       <div id="mItems"></div>
 
       <div class="order-divider"></div>
@@ -355,14 +338,14 @@ document.getElementById('metaBuyer').textContent   = buyer;
 document.getElementById('metaAmount').textContent  = orderTotal;
 document.getElementById('metaAddress').textContent = address;
 
-// Build items — checkout style
+// Build items
 function buildItems(cart) {
   if (!cart || !cart.length) return '<div style="font-size:12px;color:rgba(26,26,20,.4);padding:8px 0 14px;">No items</div>';
   return cart.map(function(item) {
     return '<div class="order-item">' +
       '<div class="order-item-left">' +
         '<div class="order-item-title">' + item.title + '</div>' +
-        '<div class="order-item-meta">by ' + (item.artist || '') + ' &times; ' + item.qty + '</div>' +
+        '<div class="order-item-meta">by ' + (item.artist || '') + ' \xd7 ' + item.qty + '</div>' +
       '</div>' +
       '<div class="order-item-price">' + LR.ui.peso(item.price * item.qty) + '</div>' +
     '</div>';
@@ -370,14 +353,12 @@ function buildItems(cart) {
 }
 
 // Desktop
-document.getElementById('rOrder').textContent    = orderNum;
 document.getElementById('rDate').textContent     = dateStr;
 document.getElementById('rItems').innerHTML      = buildItems(savedCart);
 document.getElementById('rShipping').textContent = LR.ui.peso(shipping);
 document.getElementById('rTotal').textContent    = LR.ui.peso(total);
 
-// Mobile modal
-document.getElementById('mOrder').textContent    = orderNum;
+// Mobile
 document.getElementById('mDate').textContent     = dateStr;
 document.getElementById('mItems').innerHTML      = buildItems(savedCart);
 document.getElementById('mShipping').textContent = LR.ui.peso(shipping);
@@ -419,6 +400,26 @@ function downloadQR() {
   a.href = 'images/late-records-qr-payment.jpg';
   a.download = 'late-records-payment-qr.jpg';
   a.click();
+}
+
+var summaryOpen = false;
+
+function toggleSummary() {
+  var isMobile = window.innerWidth <= 860;
+  if (isMobile) {
+    openModal();
+    return;
+  }
+  summaryOpen = !summaryOpen;
+  var panel = document.getElementById('summaryPanel');
+  var arrow = document.getElementById('vsbArrow');
+  if (summaryOpen) {
+    panel.classList.add('is-open');
+    arrow.classList.add('open');
+  } else {
+    panel.classList.remove('is-open');
+    arrow.classList.remove('open');
+  }
 }
 
 function openModal() {
