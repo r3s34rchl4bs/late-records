@@ -265,6 +265,13 @@ col.c-stock  { width: 8%; }
 .avail-toggle.active .box { border-color: #1a1a14; background: #1a1a14; }
 .avail-toggle.active .chk { border-color: #e2e2e2; }
 
+col.c-thumb { width: 48px; }
+.rec-thumb { width: 36px; height: 36px; object-fit: cover; display: block; }
+.rec-thumb-placeholder {
+  width: 36px; height: 36px; background: rgba(26,26,20,.06);
+  display: flex; align-items: center; justify-content: center;
+}
+
 .sk {
   background: linear-gradient(90deg, rgba(0,0,0,.07) 25%, rgba(0,0,0,.13) 50%, rgba(0,0,0,.07) 75%);
   background-size: 200% 100%; animation: sh 1.4s infinite;
@@ -287,6 +294,8 @@ col.c-stock  { width: 8%; }
 }
 
 @media (max-width: 600px) {
+  col.c-thumb { width: 40px; }
+  .rec-thumb, .rec-thumb-placeholder { width: 32px; height: 32px; }
   .container    { padding: 84px 20px 80px; }
   .header-inner { padding: 0 20px; }
   .card-inner   { padding: 10px 0 4px; }
@@ -376,22 +385,23 @@ col.c-stock  { width: 8%; }
 
   <table class="tbl" id="catalogTable">
     <colgroup>
-      <col class="c-title"><col class="c-genre"><col class="c-format"><col class="c-stock">
+      <col class="c-thumb"><col class="c-title"><col class="c-genre"><col class="c-format"><col class="c-stock">
     </colgroup>
     <thead>
       <tr>
-        <th class="c-title">Title / Artist</th>
+        <th class="c-thumb"></th>
+<th class="c-title">Title / Artist</th>
         <th class="c-genre">Genre</th>
         <th class="c-format">Format</th>
         <th class="c-stock">Stock</th>
       </tr>
     </thead>
     <tbody id="catalogList">
-      <tr><td class="c-title"><div class="sk" style="width:55%;margin-bottom:8px"></div><br><div class="sk" style="width:30%"></div></td><td class="c-genre"><div class="sk" style="width:70%"></div></td><td class="c-format"><div class="sk" style="width:55%"></div></td><td class="c-stock"><div class="sk" style="width:68%;float:right"></div></td></tr>
-      <tr><td class="c-title"><div class="sk" style="width:68%;margin-bottom:8px"></div><br><div class="sk" style="width:38%"></div></td><td class="c-genre"><div class="sk" style="width:60%"></div></td><td class="c-format"><div class="sk" style="width:55%"></div></td><td class="c-stock"><div class="sk" style="width:68%;float:right"></div></td></tr>
-      <tr><td class="c-title"><div class="sk" style="width:44%;margin-bottom:8px"></div><br><div class="sk" style="width:24%"></div></td><td class="c-genre"><div class="sk" style="width:78%"></div></td><td class="c-format"><div class="sk" style="width:55%"></div></td><td class="c-stock"><div class="sk" style="width:68%;float:right"></div></td></tr>
-      <tr><td class="c-title"><div class="sk" style="width:60%;margin-bottom:8px"></div><br><div class="sk" style="width:34%"></div></td><td class="c-genre"><div class="sk" style="width:63%"></div></td><td class="c-format"><div class="sk" style="width:55%"></div></td><td class="c-stock"><div class="sk" style="width:68%;float:right"></div></td></tr>
-      <tr><td class="c-title"><div class="sk" style="width:50%;margin-bottom:8px"></div><br><div class="sk" style="width:28%"></div></td><td class="c-genre"><div class="sk" style="width:72%"></div></td><td class="c-format"><div class="sk" style="width:55%"></div></td><td class="c-stock"><div class="sk" style="width:68%;float:right"></div></td></tr>
+      <tr><td class="c-thumb"></td><td class="c-title"><div class="sk" style="width:55%;margin-bottom:8px"></div><br><div class="sk" style="width:30%"></div></td><td class="c-genre"><div class="sk" style="width:70%"></div></td><td class="c-format"><div class="sk" style="width:55%"></div></td><td class="c-stock"><div class="sk" style="width:68%;float:right"></div></td></tr>
+      <tr><td class="c-thumb"></td><td class="c-title"><div class="sk" style="width:68%;margin-bottom:8px"></div><br><div class="sk" style="width:38%"></div></td><td class="c-genre"><div class="sk" style="width:60%"></div></td><td class="c-format"><div class="sk" style="width:55%"></div></td><td class="c-stock"><div class="sk" style="width:68%;float:right"></div></td></tr>
+      <tr><td class="c-thumb"></td><td class="c-title"><div class="sk" style="width:44%;margin-bottom:8px"></div><br><div class="sk" style="width:24%"></div></td><td class="c-genre"><div class="sk" style="width:78%"></div></td><td class="c-format"><div class="sk" style="width:55%"></div></td><td class="c-stock"><div class="sk" style="width:68%;float:right"></div></td></tr>
+      <tr><td class="c-thumb"></td><td class="c-title"><div class="sk" style="width:60%;margin-bottom:8px"></div><br><div class="sk" style="width:34%"></div></td><td class="c-genre"><div class="sk" style="width:63%"></div></td><td class="c-format"><div class="sk" style="width:55%"></div></td><td class="c-stock"><div class="sk" style="width:68%;float:right"></div></td></tr>
+      <tr><td class="c-thumb"></td><td class="c-title"><div class="sk" style="width:50%;margin-bottom:8px"></div><br><div class="sk" style="width:28%"></div></td><td class="c-genre"><div class="sk" style="width:72%"></div></td><td class="c-format"><div class="sk" style="width:55%"></div></td><td class="c-stock"><div class="sk" style="width:68%;float:right"></div></td></tr>
     </tbody>
   </table>
 
