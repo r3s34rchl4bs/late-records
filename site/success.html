@@ -28,18 +28,20 @@ html, body {
 .fixed-footer { display: none; }
 .container { padding-top: 40px; padding-bottom: 80px; }
 
+/* PAGE */
 .success-page {
   display: grid;
-  grid-template-columns: 1fr 360px;
+  grid-template-columns: 1fr 380px;
   gap: 80px;
   align-items: start;
 }
 
 .order-heading {
-  font-size: 22px; font-weight: 600; letter-spacing: -.02em;
-  line-height: 1.1; color: #1a1a14; margin-bottom: 24px;
+  font-size: 26px; font-weight: 600; letter-spacing: -.01em;
+  line-height: 1.1; color: #1a1a14; margin-bottom: 28px;
 }
 
+/* META GRID */
 .order-meta {
   border-top: 1px solid rgba(26,26,20,.12);
   margin-bottom: 0;
@@ -48,13 +50,11 @@ html, body {
 .meta-cell { padding: 16px 0; border-bottom: 1px solid rgba(26,26,20,.12); }
 .meta-cell.left  { padding-right: 28px; border-right: 1px solid rgba(26,26,20,.12); }
 .meta-cell.right { padding-left: 28px; }
-.meta-label {
-  font-size: 9px; font-weight: 500; letter-spacing: .12em;
-  text-transform: uppercase; color: rgba(26,26,20,.38); margin-bottom: 5px;
-}
+.meta-label { font-size: 9px; font-weight: 500; letter-spacing: .12em; text-transform: uppercase; color: rgba(26,26,20,.38); margin-bottom: 5px; }
 .meta-value { font-size: 13px; color: #1a1a14; line-height: 1.55; }
 .meta-value.amount { font-size: 24px; font-weight: 600; letter-spacing: -.02em; line-height: 1.1; }
 
+/* Mobile summary trigger */
 .view-summary-btn {
   display: none; width: 100%;
   background: rgba(26,26,20,.04); border: none;
@@ -69,126 +69,130 @@ html, body {
 .vsb-label { font-size: 10px; font-weight: 500; letter-spacing: .1em; text-transform: uppercase; color: rgba(26,26,20,.55); }
 .vsb-arrow { font-size: 14px; color: rgba(26,26,20,.35); }
 
+/* PAYMENT */
 .payment-section { margin-top: 32px; }
-.payment-body { display: grid; grid-template-columns: 1fr auto; gap: 32px; align-items: start; margin-bottom: 28px; }
-.timer-label { font-size: 9px; font-weight: 500; letter-spacing: .12em; text-transform: uppercase; color: rgba(26,26,20,.38); margin-bottom: 8px; }
-.countdown {
-  font-size: 36px; font-weight: 600; letter-spacing: -.02em;
-  font-variant-numeric: tabular-nums; color: #1a1a14; line-height: 1;
-  margin-bottom: 10px;
+.payment-body {
+  display: grid; grid-template-columns: 1fr auto;
+  gap: 32px; align-items: stretch; margin-bottom: 28px;
 }
+.payment-left { display: flex; flex-direction: column; }
+.timer-label { font-size: 9px; font-weight: 500; letter-spacing: .12em; text-transform: uppercase; color: rgba(26,26,20,.38); margin-bottom: 8px; }
+.countdown { font-size: 36px; font-weight: 600; letter-spacing: -.02em; font-variant-numeric: tabular-nums; color: #1a1a14; line-height: 1; margin-bottom: 10px; }
 .countdown.is-expired { font-size: 18px; color: rgba(26,26,20,.5); }
 .timer-note { font-size: 11px; color: rgba(26,26,20,.42); line-height: 1.65; max-width: 260px; margin-bottom: 16px; }
 .wallet-logos-wrap { display: flex; flex-wrap: wrap; gap: 12px 16px; align-items: center; max-width: 240px; }
 .wallet-logo { display: block; width: auto; flex-shrink: 0; filter: grayscale(100%) opacity(0.38); }
+
+/* QR block — stretches to match left column height on mobile */
 .qr-block { display: flex; flex-direction: column; align-items: center; gap: 6px; }
-.qr-ph-label { width: 130px; display: flex; align-items: center; justify-content: center; }
-.qr-ph-logo { height: 18px; width: auto; display: block; filter: grayscale(100%) opacity(0.38); }
-.qr-img { width: 130px; height: 130px; display: block; object-fit: cover; }
+.qr-img { width: 130px; display: block; object-fit: cover; }
 .qr-download { font-size: 9px; letter-spacing: .07em; text-transform: uppercase; color: rgba(26,26,20,.32); cursor: pointer; font-family: inherit; background: none; border: none; padding: 0; text-decoration: underline; transition: color .1s; }
 .qr-download:hover { color: rgba(26,26,20,.7); }
+
 .order-note { font-size: 12px; color: rgba(26,26,20,.42); line-height: 1.8; padding-left: 12px; border-left: 1px solid rgba(26,26,20,.18); }
 
-/* RECEIPT */
-.receipt-col { position: sticky; top: 94px; }
-.tear { width: 100%; height: 14px; background-image: radial-gradient(ellipse 7px 7px at 7px 0, #e2e2e2 7px, #ececec 7px); background-size: 14px 14px; background-repeat: repeat-x; }
-.tear-bottom { background-image: radial-gradient(ellipse 7px 7px at 7px 14px, #e2e2e2 7px, #ececec 7px); background-size: 14px 14px; background-repeat: repeat-x; }
-.receipt { background: #ececec; padding: 28px 24px 32px; font-family: 'Courier New', Courier, monospace; }
-.r-header { text-align: center; padding-bottom: 16px; margin-bottom: 4px; }
-.r-type { font-size: 11px; font-weight: 700; letter-spacing: .28em; text-transform: uppercase; color: #1a1a14; margin-bottom: 5px; }
-.r-sub { font-size: 8px; color: rgba(26,26,20,.35); letter-spacing: .05em; line-height: 1.9; }
-.r-dashes { font-size: 9px; color: rgba(26,26,20,.22); text-align: center; margin: 12px 0; letter-spacing: 2px; overflow: hidden; white-space: nowrap; }
-.r-row { display: flex; justify-content: space-between; font-size: 10px; margin-bottom: 4px; line-height: 1.8; }
-.r-row .k { color: rgba(26,26,20,.45); }
-.r-row .v { text-align: right; max-width: 55%; word-break: break-word; }
-.r-item { margin-bottom: 8px; }
-.r-item-title { font-size: 10px; font-weight: 700; line-height: 1.4; }
-.r-item-meta { display: flex; justify-content: space-between; font-size: 9px; color: rgba(26,26,20,.5); margin-top: 1px; }
-.r-total-row { display: flex; justify-content: space-between; font-size: 13px; font-weight: 700; margin-top: 2px; }
-.r-footer { text-align: center; margin-top: 16px; font-size: 8px; color: rgba(26,26,20,.28); letter-spacing: .05em; line-height: 2.2; }
+/* DESKTOP ORDER SUMMARY — clean site style, no receipt */
+.summary-col { position: sticky; top: 94px; }
+.summary-box {
+  background: rgba(26,26,20,.03);
+  border: 1px solid rgba(26,26,20,.12);
+  padding: 24px;
+}
+.summary-title {
+  font-size: 10px; font-weight: 500; letter-spacing: .12em;
+  text-transform: uppercase; color: rgba(26,26,20,.38);
+  margin-bottom: 16px; padding-bottom: 14px;
+  border-bottom: 1px solid rgba(26,26,20,.1);
+}
+.summary-meta { margin-bottom: 16px; display: flex; flex-direction: column; gap: 0; }
+.summary-meta-row {
+  display: flex; justify-content: space-between; align-items: baseline;
+  padding: 7px 0; border-bottom: 1px solid rgba(26,26,20,.07);
+  font-size: 12px;
+}
+.summary-meta-row:last-child { border-bottom: none; }
+.summary-meta-key { color: rgba(26,26,20,.45); }
+.summary-meta-val { color: #1a1a14; font-weight: 500; text-align: right; max-width: 55%; word-break: break-word; }
+.summary-items { margin-bottom: 0; }
+.summary-items-label {
+  font-size: 9px; font-weight: 500; letter-spacing: .1em; text-transform: uppercase;
+  color: rgba(26,26,20,.35); margin-bottom: 10px; margin-top: 16px;
+  padding-top: 14px; border-top: 1px solid rgba(26,26,20,.1);
+}
+.summary-item {
+  display: flex; justify-content: space-between; align-items: flex-start;
+  padding: 9px 0; border-bottom: 1px solid rgba(26,26,20,.08); gap: 12px;
+}
+.summary-item:last-child { border-bottom: none; }
+.summary-item-title { font-size: 12px; font-weight: 500; color: #1a1a14; line-height: 1.35; }
+.summary-item-meta { font-size: 11px; color: rgba(26,26,20,.4); margin-top: 2px; }
+.summary-item-price { font-size: 12px; font-weight: 500; color: #1a1a14; white-space: nowrap; flex-shrink: 0; }
+.summary-totals { margin-top: 14px; padding-top: 14px; border-top: 1px solid rgba(26,26,20,.12); display: flex; flex-direction: column; gap: 6px; }
+.summary-subtotal-row { display: flex; justify-content: space-between; font-size: 11px; color: rgba(26,26,20,.5); }
+.summary-total-row { display: flex; justify-content: space-between; align-items: baseline; margin-top: 4px; padding-top: 10px; border-top: 1px solid rgba(26,26,20,.12); }
+.summary-total-label { font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: .04em; color: #1a1a14; }
+.summary-total-value { font-size: 18px; font-weight: 600; letter-spacing: -.01em; color: #1a1a14; }
 
-/* MODAL — centered, 90s dialog style */
+/* MODAL — centered, 90s dialog */
 .modal-overlay {
-  display: none;
-  position: fixed; inset: 0; z-index: 300;
+  display: none; position: fixed; inset: 0; z-index: 300;
   background: rgba(10,10,8,.82);
   align-items: center; justify-content: center;
-  padding: 20px;
+  padding: 32px 20px;
 }
 .modal-overlay.is-open { display: flex; }
 .modal-dialog {
-  width: 100%; max-width: 420px;
+  width: 100%; max-width: 400px;
   background: #e2e2e2;
   background-image: radial-gradient(circle, rgba(0,0,0,.08) 0.5px, transparent 0.5px);
   background-size: 3px 3px;
-  border: 1px solid rgba(26,26,20,.5);
-  max-height: 90vh; overflow-y: auto;
+  border: 1px solid rgba(26,26,20,.4);
+  max-height: calc(100vh - 64px); overflow-y: auto;
 }
 .modal-titlebar {
-  display: flex; align-items: center; justify-content: space-between;
+  display: flex; align-items: center; justify-content: flex-end;
   padding: 10px 14px;
-  border-bottom: 1px solid rgba(26,26,20,.15);
-  background: rgba(26,26,20,.06);
-}
-.modal-titlebar-label {
-  font-size: 10px; font-weight: 600; letter-spacing: .1em;
-  text-transform: uppercase; color: rgba(26,26,20,.6);
+  background: rgba(26,26,20,.05);
 }
 .modal-close {
   background: none; border: 1px solid rgba(26,26,20,.25); cursor: pointer;
   width: 20px; height: 20px;
   display: flex; align-items: center; justify-content: center;
   color: rgba(26,26,20,.55); font-size: 11px; font-family: inherit;
-  transition: background .1s, color .1s; line-height: 1;
+  transition: background .1s, color .1s;
 }
 .modal-close:hover { background: #1a1a14; color: #e2e2e2; border-color: #1a1a14; }
-
-/* Modal body — site aesthetic, no receipt */
-.modal-body {
-  padding: 20px 20px 28px;
-  font-family: 'Inter', system-ui, sans-serif;
-}
-.modal-section-label {
-  font-size: 9px; font-weight: 500; letter-spacing: .12em;
-  text-transform: uppercase; color: rgba(26,26,20,.38);
-  margin-bottom: 12px; margin-top: 20px;
-}
+.modal-body { padding: 20px 20px 28px; font-family: 'Inter', system-ui, sans-serif; }
+.modal-section-label { font-size: 9px; font-weight: 500; letter-spacing: .12em; text-transform: uppercase; color: rgba(26,26,20,.38); margin-bottom: 10px; margin-top: 18px; }
 .modal-section-label:first-child { margin-top: 0; }
-.modal-item {
-  display: flex; justify-content: space-between; align-items: flex-start;
-  padding: 10px 0; border-bottom: 1px solid rgba(26,26,20,.1); gap: 12px;
-}
+.modal-meta-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0; }
+.modal-meta-cell { padding: 9px 0; border-bottom: 1px solid rgba(26,26,20,.08); }
+.modal-meta-cell:nth-child(odd) { padding-right: 14px; }
+.modal-meta-cell:nth-child(even) { padding-left: 14px; border-left: 1px solid rgba(26,26,20,.08); }
+.modal-meta-key { font-size: 9px; font-weight: 500; letter-spacing: .1em; text-transform: uppercase; color: rgba(26,26,20,.38); margin-bottom: 3px; }
+.modal-meta-val { font-size: 12px; font-weight: 500; color: #1a1a14; line-height: 1.4; }
+.modal-item { display: flex; justify-content: space-between; align-items: flex-start; padding: 10px 0; border-bottom: 1px solid rgba(26,26,20,.1); gap: 12px; }
 .modal-item:last-child { border-bottom: none; }
 .modal-item-title { font-size: 13px; font-weight: 500; color: #1a1a14; line-height: 1.4; }
 .modal-item-meta { font-size: 11px; color: rgba(26,26,20,.45); margin-top: 2px; }
 .modal-item-price { font-size: 13px; font-weight: 500; color: #1a1a14; white-space: nowrap; flex-shrink: 0; }
-.modal-total-row {
-  display: flex; justify-content: space-between; align-items: baseline;
-  padding-top: 14px; margin-top: 4px;
-  border-top: 1px solid rgba(26,26,20,.18);
-}
-.modal-total-label { font-size: 12px; font-weight: 600; color: #1a1a14; letter-spacing: .04em; text-transform: uppercase; }
-.modal-total-value { font-size: 18px; font-weight: 600; color: #1a1a14; letter-spacing: -.01em; }
-.modal-meta-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0; }
-.modal-meta-cell { padding: 10px 0; border-bottom: 1px solid rgba(26,26,20,.1); }
-.modal-meta-cell:nth-child(odd) { padding-right: 16px; }
-.modal-meta-cell:nth-child(even) { padding-left: 16px; border-left: 1px solid rgba(26,26,20,.1); }
-.modal-meta-key { font-size: 9px; font-weight: 500; letter-spacing: .1em; text-transform: uppercase; color: rgba(26,26,20,.38); margin-bottom: 3px; }
-.modal-meta-val { font-size: 12px; font-weight: 500; color: #1a1a14; line-height: 1.4; }
 
+/* RESPONSIVE */
 @media (max-width: 860px) {
   .success-page { grid-template-columns: 1fr; gap: 0; }
-  .receipt-col { display: none; }
-  .order-heading { font-size: 20px; }
+  .summary-col { display: none; }
+  .order-heading { font-size: 22px; }
   .countdown { font-size: 30px; }
-  .payment-body { gap: 20px; }
+  .payment-body { gap: 16px; align-items: flex-start; }
   .wallet-logos-wrap { max-width: 100%; }
   .view-summary-btn { display: block; }
-  .qr-img { width: 120px; height: 120px; }
-  .qr-ph-label { width: 120px; }
+  /* QR fills height of left column */
+  .qr-block { justify-content: flex-start; height: 100%; }
+  .qr-img { width: 100%; max-width: 140px; height: auto; aspect-ratio: 1/1; }
 }
 @media (max-width: 600px) {
   .countdown { font-size: 28px; }
+  .qr-img { max-width: 120px; }
 }
 </style>
 </head>
@@ -205,8 +209,9 @@ html, body {
 <div class="container">
   <div class="success-page">
 
+    <!-- LEFT -->
     <div>
-      <h3 class="order-heading">Order Received</h3>
+      <h1 class="order-heading">Order Received</h1>
 
       <div class="order-meta">
         <div class="meta-cell left">
@@ -236,11 +241,12 @@ html, body {
 
       <div class="payment-section">
         <div class="payment-body">
-          <div>
+          <div class="payment-left">
             <div class="timer-label">Pay Within</div>
             <div class="countdown" id="countdown">24:00:00</div>
             <div class="timer-note" id="timerNote">Scan the QR code using any QR PH&#x2013;enabled app. Order is held until the window closes.</div>
             <div class="wallet-logos-wrap">
+              <img src="images/late-records-payment-qrph.png"      class="wallet-logo" style="height:14px;" alt="QR PH">
               <img src="images/late-records-payment-bdo.png"       class="wallet-logo" style="height:13px;" alt="BDO">
               <img src="images/late-records-payment-gotyme.png"    class="wallet-logo" style="height:15px;" alt="GoTyme">
               <img src="images/late-records-payment-gcash.png"     class="wallet-logo" style="height:15px;" alt="GCash">
@@ -249,9 +255,6 @@ html, body {
             </div>
           </div>
           <div class="qr-block">
-            <div class="qr-ph-label">
-              <img src="images/late-records-payment-qrph.png" class="qr-ph-logo" alt="QR PH">
-            </div>
             <img src="images/late-records-qr-payment.jpg" class="qr-img" alt="Payment QR">
             <button class="qr-download" onclick="downloadQR()">&#x2193; download</button>
           </div>
@@ -263,41 +266,51 @@ html, body {
       </p>
     </div>
 
-    <!-- RECEIPT desktop -->
-    <div class="receipt-col">
-      <div class="tear"></div>
-      <div class="receipt">
-        <div class="r-header">
-          <div class="r-type">Order Summary</div>
-          <div class="r-sub">info.late.records@gmail.com</div>
+    <!-- DESKTOP ORDER SUMMARY — clean style -->
+    <div class="summary-col">
+      <div class="summary-box">
+        <div class="summary-title">Order Summary</div>
+
+        <div class="summary-meta">
+          <div class="summary-meta-row">
+            <span class="summary-meta-key">Order</span>
+            <span class="summary-meta-val" id="rOrder">&#x2014;</span>
+          </div>
+          <div class="summary-meta-row">
+            <span class="summary-meta-key">Date</span>
+            <span class="summary-meta-val" id="rDate">&#x2014;</span>
+          </div>
+          <div class="summary-meta-row">
+            <span class="summary-meta-key">Customer</span>
+            <span class="summary-meta-val" id="rCustomer">&#x2014;</span>
+          </div>
+          <div class="summary-meta-row">
+            <span class="summary-meta-key">Address</span>
+            <span class="summary-meta-val" id="rAddress">&#x2014;</span>
+          </div>
         </div>
-        <div class="r-dashes">- - - - - - - - - - - - - -</div>
-        <div class="r-row"><span class="k">Order</span><span class="v" id="rOrder">&#x2014;</span></div>
-        <div class="r-row"><span class="k">Date</span><span class="v" id="rDate">&#x2014;</span></div>
-        <div class="r-row"><span class="k">Customer</span><span class="v" id="rCustomer">&#x2014;</span></div>
-        <div class="r-dashes">- - - - - - - - - - - - - -</div>
-        <div id="rItems"></div>
-        <div class="r-dashes">- - - - - - - - - - - - - -</div>
-        <div class="r-row"><span class="k">Subtotal</span><span class="v" id="rSubtotal">&#x2014;</span></div>
-        <div class="r-row"><span class="k">Shipping</span><span class="v" id="rShipping">&#x2014;</span></div>
-        <div class="r-dashes">- - - - - - - - - - - - - -</div>
-        <div class="r-total-row"><span>Total</span><span id="rTotal">&#x2014;</span></div>
-        <div class="r-footer">
-          Packed with care in Bacolod City.<br>
-          Thank you for shopping Late Records.
+
+        <div class="summary-items-label">Items</div>
+        <div class="summary-items" id="rItems"></div>
+
+        <div class="summary-totals">
+          <div class="summary-subtotal-row"><span>Subtotal</span><span id="rSubtotal">&#x2014;</span></div>
+          <div class="summary-subtotal-row"><span>Shipping</span><span id="rShipping">&#x2014;</span></div>
+          <div class="summary-total-row">
+            <span class="summary-total-label">Total</span>
+            <span class="summary-total-value" id="rTotal">&#x2014;</span>
+          </div>
         </div>
       </div>
-      <div class="tear tear-bottom"></div>
     </div>
 
   </div>
 </div>
 
-<!-- MOBILE MODAL — centered 90s dialog -->
+<!-- MOBILE MODAL -->
 <div class="modal-overlay" id="modalOverlay" onclick="handleOverlay(event)">
   <div class="modal-dialog" id="modalDialog">
     <div class="modal-titlebar">
-      <span class="modal-titlebar-label">Order Summary</span>
       <button class="modal-close" onclick="closeModal()">&#x2715;</button>
     </div>
     <div class="modal-body">
@@ -305,44 +318,17 @@ html, body {
       <div class="modal-section-label">Details</div>
       <div class="modal-meta-grid">
         <div class="modal-meta-cell">
-          <div class="modal-meta-key">Order</div>
-          <div class="modal-meta-val" id="mOrder">&#x2014;</div>
-        </div>
-        <div class="modal-meta-cell">
-          <div class="modal-meta-key">Date</div>
-          <div class="modal-meta-val" id="mDate">&#x2014;</div>
-        </div>
-        <div class="modal-meta-cell">
           <div class="modal-meta-key">Customer</div>
           <div class="modal-meta-val" id="mCustomer">&#x2014;</div>
         </div>
         <div class="modal-meta-cell">
-          <div class="modal-meta-key">Ship To</div>
+          <div class="modal-meta-key">Address</div>
           <div class="modal-meta-val" id="mAddress">&#x2014;</div>
         </div>
       </div>
 
       <div class="modal-section-label">Items</div>
       <div id="mItems"></div>
-
-      <div class="modal-section-label">Summary</div>
-      <div class="modal-item" style="border-bottom:1px solid rgba(26,26,20,.1);">
-        <div>
-          <div class="modal-item-title" style="font-size:12px;font-weight:400;color:rgba(26,26,20,.55);">Subtotal</div>
-        </div>
-        <div class="modal-item-price" style="font-size:12px;font-weight:400;color:rgba(26,26,20,.55);" id="mSubtotal">&#x2014;</div>
-      </div>
-      <div class="modal-item">
-        <div>
-          <div class="modal-item-title" style="font-size:12px;font-weight:400;color:rgba(26,26,20,.55);">Shipping</div>
-        </div>
-        <div class="modal-item-price" style="font-size:12px;font-weight:400;color:rgba(26,26,20,.55);" id="mShipping">&#x2014;</div>
-      </div>
-
-      <div class="modal-total-row">
-        <span class="modal-total-label">Total</span>
-        <span class="modal-total-value" id="mTotal">&#x2014;</span>
-      </div>
 
     </div>
   </div>
@@ -387,16 +373,17 @@ document.getElementById('metaBuyer').textContent   = buyer;
 document.getElementById('metaAmount').textContent  = orderTotal;
 document.getElementById('metaAddress').textContent = address;
 
-// Receipt items
-function buildReceiptItems(cart) {
-  if (!cart || !cart.length) return '<div style="font-size:10px;color:rgba(26,26,20,.4);padding:4px 0;">No items</div>';
+// Desktop summary items
+function buildSummaryItems(cart) {
+  if (!cart || !cart.length) return '<div style="font-size:12px;color:rgba(26,26,20,.4);padding:8px 0;">No items</div>';
   return cart.map(function(item) {
-    return '<div class="r-item">' +
-      '<div class="r-item-title">' + item.title + '</div>' +
-      '<div class="r-item-meta">' +
-        '<span>' + (item.format || 'LP') + ' \xd7 ' + item.qty + '</span>' +
-        '<span>' + LR.ui.peso(item.price * item.qty) + '</span>' +
-      '</div></div>';
+    return '<div class="summary-item">' +
+      '<div>' +
+        '<div class="summary-item-title">' + item.title + '</div>' +
+        '<div class="summary-item-meta">' + (item.format || 'LP') + ' \xd7 ' + item.qty + '</div>' +
+      '</div>' +
+      '<div class="summary-item-price">' + LR.ui.peso(item.price * item.qty) + '</div>' +
+    '</div>';
   }).join('');
 }
 
@@ -414,24 +401,20 @@ function buildModalItems(cart) {
   }).join('');
 }
 
-// Desktop receipt
+// Desktop
 document.getElementById('rOrder').textContent    = orderNum;
 document.getElementById('rDate').textContent     = dateStr;
 document.getElementById('rCustomer').textContent = buyer;
-document.getElementById('rItems').innerHTML      = buildReceiptItems(savedCart);
+document.getElementById('rAddress').textContent  = address;
+document.getElementById('rItems').innerHTML      = buildSummaryItems(savedCart);
 document.getElementById('rSubtotal').textContent = LR.ui.peso(subtotal);
 document.getElementById('rShipping').textContent = LR.ui.peso(shipping);
 document.getElementById('rTotal').textContent    = LR.ui.peso(total);
 
 // Mobile modal
-document.getElementById('mOrder').textContent    = orderNum;
-document.getElementById('mDate').textContent     = dateStr;
 document.getElementById('mCustomer').textContent = buyer;
 document.getElementById('mAddress').textContent  = address;
 document.getElementById('mItems').innerHTML      = buildModalItems(savedCart);
-document.getElementById('mSubtotal').textContent = LR.ui.peso(subtotal);
-document.getElementById('mShipping').textContent = LR.ui.peso(shipping);
-document.getElementById('mTotal').textContent    = LR.ui.peso(total);
 
 // Countdown
 var deadline = orderCreatedAt + (24 * 60 * 60 * 1000);
