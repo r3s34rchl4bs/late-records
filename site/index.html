@@ -245,6 +245,26 @@ col.c-stock  { width: 8%; }
 }
 @media (max-width: 600px) { .search-count { display: none; } }
 
+.avail-toggle {
+  background: none; border: none; padding: 0; cursor: pointer;
+  width: 16px; height: 16px; position: relative; flex-shrink: 0;
+}
+.avail-toggle .box {
+  width: 16px; height: 16px;
+  border: 1.5px solid rgba(26,26,20,.35);
+  display: block; position: absolute; top: 0; left: 0;
+  transition: border-color .1s, background .1s;
+}
+.avail-toggle .chk {
+  position: absolute; top: 2px; left: 4px;
+  width: 6px; height: 9px;
+  border-right: 2px solid transparent;
+  border-bottom: 2px solid transparent;
+  transform: rotate(40deg); transition: border-color .1s;
+}
+.avail-toggle.active .box { border-color: #1a1a14; background: #1a1a14; }
+.avail-toggle.active .chk { border-color: #e2e2e2; }
+
 .sk {
   background: linear-gradient(90deg, rgba(0,0,0,.07) 25%, rgba(0,0,0,.13) 50%, rgba(0,0,0,.07) 75%);
   background-size: 200% 100%; animation: sh 1.4s infinite;
@@ -345,6 +365,10 @@ col.c-stock  { width: 8%; }
       placeholder="Search by title, artist, genre, format…">
     <button class="search-clear" id="searchClear" aria-label="Clear search">&#215;</button>
     <span class="search-count" id="searchCount"></span>
+<button class="avail-toggle" id="availToggle" onclick="toggleAvail()" aria-label="Show available only" style="margin-left:12px;">
+  <span class="box"></span>
+  <span class="chk"></span>
+</button>
   </div>
 
   <div class="suggestions-header" id="suggestionsHeader"></div>
@@ -441,11 +465,21 @@ function buildCarousel(albums) {
 
 
 
+let availFilterActive = false;
+
+function toggleAvail() {
+  availFilterActive = !availFilterActive;
+  document.getElementById('availToggle').classList.toggle('active', availFilterActive);
+  const catalog = window._catalogCache || [];
+  buildTable(availFilterActive ? catalog.filter(a => a.status === 'available') : catalog);
+}
+
 document.addEventListener('DOMContentLoaded', async () => {
   initSearch();
 
   try {
     const catalog = await LR.api.catalog();
+    window._catalogCache = catalog;
     buildCarousel(catalog);
     buildTable(catalog);
   } catch(e) {
@@ -456,6 +490,5 @@ document.addEventListener('DOMContentLoaded', async () => {
 });
 
 </script>
-<script src="under-construction.js"></script>
 </body>
 </html>
