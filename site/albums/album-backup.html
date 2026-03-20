@@ -33,9 +33,8 @@ html, body {
 }
 .cart-link:hover { background: none; color: rgba(26,26,20,.5); }
 .fixed-footer { display: none; }
-.container { padding-bottom: 80px; }
+.container { padding-bottom: 80px; padding-top: calc(74px + 10px); }
 
-/* Album layout */
 .album-page {
   display: flex;
   gap: 40px;
@@ -89,7 +88,6 @@ html, body {
 }
 .album-genre-tag:hover { background: #1a1a14; color: #e2e2e2; border-color: #1a1a14; }
 
-/* Price block — terminal/receipt style */
 .price-block {
   border-top: 1px dashed rgba(26,26,20,.3);
   padding-top: 12px;
@@ -123,7 +121,6 @@ html, body {
 }
 .cart-confirm.show { opacity: 1; }
 
-/* Description */
 .description {
   font-size: 14px; line-height: 1.7; font-weight: 400;
   margin: 0; color: rgba(26,26,20,.65);
@@ -141,7 +138,6 @@ html, body {
   vertical-align: middle; margin-left: 6px; flex-shrink: 0;
 }
 
-/* Custom Audio Player */
 .audio-block { display: none; flex-direction: column; gap: 0; }
 .audio-block.is-visible { display: flex; }
 
@@ -186,21 +182,18 @@ html, body {
   white-space: nowrap; min-width: 70px; text-align: right;
 }
 
-/* Tracklist */
 .tracklist-block { display: flex; flex-direction: column; gap: 10px; }
 .block-heading {
   font-size: 10px; letter-spacing: .1em; text-transform: uppercase;
   color: rgba(26,26,20,.5); font-weight: 500;
 }
 .tracklist { list-style: none; padding: 0; margin: 0; }
-.tracklist.two-col { column-count: 2; column-gap: 22px; }
 .tracklist li {
   font-size: 13px; line-height: 1.5; padding: 6px 0;
   border-bottom: 1px solid rgba(26,26,20,.1);
-  font-weight: 400; color: rgba(26,26,20,.65); break-inside: avoid;
+  font-weight: 400; color: rgba(26,26,20,.65);
 }
 
-/* Related */
 .related-section { margin-top: 52px; padding-top: 32px; border-top: 1px solid rgba(26,26,20,.12); }
 .related-title {
   font-size: 10px; letter-spacing: .1em; text-transform: uppercase;
@@ -224,7 +217,6 @@ html, body {
 .related-name  { font-size: 12px; font-weight: 600; line-height: 1.25; margin: 0; word-break: break-word; }
 .related-artist{ font-size: 11px; color: rgba(26,26,20,.5); margin-top: 2px; }
 
-/* Responsive */
 @media (max-width: 900px) {
   .album-page { flex-direction: column; gap: 22px; }
   .album-image-wrap { width: 100%; position: static; }
@@ -268,34 +260,24 @@ function renderNotFound() {
 
 function scoreRelated(cur, cand) {
   let s = 0;
-
   const cg = LR.ui.splitPipe(cur.genre);
   const cc = LR.ui.splitPipe(cur.context);
   const tg = LR.ui.splitPipe(cand.genre);
   const tc = LR.ui.splitPipe(cand.context);
-
-  // Genre match (strong)
   tg.forEach(t => { if (cg.includes(t)) s += 4; });
-
-  // Context match (medium)
   tc.forEach(t => { if (cc.includes(t)) s += 2; });
-
-  // Same artist (very strong)
   if (cur.artist === cand.artist) s += 6;
-
-  // Format match
   if ((cur.format || 'LP') === (cand.format || 'LP')) s += 2;
-
-  // Availability
   if (cand.status === 'available') s += 1;
   else s -= 5;
-
   return s;
 }
 
 function renderAlbum(item, all) {
-  const sold    = item.status !== 'available';
-  const tracks  = LR.ui.splitPipe(item.tracklist);
+  const sold           = item.status !== 'available';
+  const tracks         = LR.ui.splitPipe(item.tracklist);
+  const visibleTracks  = tracks.slice(0, 7);
+  const hiddenTracks   = tracks.slice(7);
   const related = all
     .filter(i => i.album_id !== item.album_id)
     .map(i => ({ i, s: scoreRelated(item, i) }))
@@ -330,7 +312,7 @@ function renderAlbum(item, all) {
           <div class="album-genre-tags">
             <span class="album-format-label">${(item.format || 'LP').trim()}</span>
             <span class="album-meta-divider"></span>
-            ${LR.ui.splitPipe(item.genre).slice(0, 2).map(g =>
+            ${LR.ui.splitPipe(item.genre).slice(0, 3).map(g =>
               `<a class="album-genre-tag" href="../genre.html?g=${encodeURIComponent(g.toLowerCase())}">${g}</a>`
             ).join('')}
           </div>
@@ -377,7 +359,19 @@ function renderAlbum(item, all) {
         ${tracks.length ? `
         <div class="tracklist-block">
           <p class="block-heading">Tracklist</p>
-          <ul class="tracklist${tracks.length >= 6 ? ' two-col' : ''}">${tracks.map(t => `<li>${t}</li>`).join('')}</ul>
+          <div style="display:flex;align-items:flex-end;gap:0;">
+            <div style="flex:1;">
+              <ul class="tracklist">
+                ${visibleTracks.map(t => `<li>${t}</li>`).join('')}
+              </ul>
+              ${hiddenTracks.length ? `
+              <ul class="tracklist" id="tracklistHidden" style="display:none;">
+                ${hiddenTracks.map(t => `<li>${t}</li>`).join('')}
+              </ul>` : ''}
+            </div>
+            ${hiddenTracks.length ? `
+            <button class="description-toggle" id="tracklistToggle">+</button>` : ''}
+          </div>
         </div>` : ''}
       </div>
     </div>
@@ -413,6 +407,7 @@ function renderAlbum(item, all) {
   `;
 
   setupDescToggle();
+  setupTracklist();
   setupAudio(item.album_id);
   setupAddToCart(item);
 }
@@ -431,6 +426,17 @@ function setupDescToggle() {
   toggle.addEventListener('click', () => {
     const c = desc.classList.toggle('is-collapsed');
     toggle.textContent = c ? '+' : '−';
+  });
+}
+
+function setupTracklist() {
+  const hidden = document.getElementById('tracklistHidden');
+  const toggle = document.getElementById('tracklistToggle');
+  if (!hidden || !toggle) return;
+  toggle.addEventListener('click', () => {
+    const isHidden = hidden.style.display === 'none';
+    hidden.style.display = isHidden ? 'block' : 'none';
+    toggle.textContent   = isHidden ? '−' : '+';
   });
 }
 
@@ -542,6 +548,5 @@ function setupAddToCart(item) {
 })();
 
 </script>
-<script src="../under-construction.js"></script>
 </body>
 </html>

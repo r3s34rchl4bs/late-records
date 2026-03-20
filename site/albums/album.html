@@ -126,7 +126,7 @@ html, body {
   margin: 0; color: rgba(26,26,20,.65);
 }
 .description.is-collapsed {
-  display: -webkit-box; -webkit-line-clamp: 4;
+  display: -webkit-box; -webkit-line-clamp: 3;
   -webkit-box-orient: vertical; overflow: hidden;
 }
 .description-toggle {
@@ -417,7 +417,7 @@ function setupDescToggle() {
   const toggle = document.getElementById('descToggle');
   if (!desc || !toggle) return;
   requestAnimationFrame(() => {
-    if (desc.scrollHeight > 175) {
+    if (desc.scrollHeight > 100) {
       desc.classList.add('is-collapsed');
       toggle.style.display = 'inline-flex';
       toggle.textContent   = '+';
