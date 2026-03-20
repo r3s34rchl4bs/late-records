@@ -77,6 +77,7 @@ button { cursor: pointer; font-family: inherit; }
   position: relative;
 }
 
+/* Nav sits at top-right corner of the viewport box */
 .carousel-nav {
   position: absolute; top: 0; right: 0;
   display: flex; align-items: center; gap: 5px; z-index: 10;
@@ -131,7 +132,6 @@ button { cursor: pointer; font-family: inherit; }
 
 /* ── Table ───────────────────────────────────────────────── */
 .tbl { width: 100%; border-collapse: collapse; table-layout: fixed; }
-col.c-thumb  { width: 48px; }
 col.c-title  { width: auto; }
 col.c-genre  { width: 14%; }
 col.c-format { width: 8%; }
@@ -163,13 +163,6 @@ col.c-stock  { width: 8%; }
 .tbl tbody td.c-stock { padding-top: 8px; padding-bottom: 8px; padding-right: 0; }
 .tbl thead th.c-stock { padding-bottom: 10px; padding-right: 0; }
 
-/* Thumbnail */
-.rec-thumb { width: 36px; height: 36px; object-fit: cover; display: block; }
-.rec-thumb-placeholder {
-  width: 36px; height: 36px; background: rgba(26,26,20,.06);
-  display: flex; align-items: center; justify-content: center;
-}
-
 .rec-title { font-size: 15px; font-weight: 500; line-height: 1.25; letter-spacing: -.01em; transition: color 0.1s linear; }
 .rec-artist { font-size: 12px; font-weight: 400; color: rgba(26,26,20,.48); margin-top: 3px; line-height: 1.4; transition: color 0.1s linear; }
 
@@ -197,27 +190,6 @@ col.c-stock  { width: 8%; }
 .tbl tbody tr.sold .rec-format { color: rgba(26,26,20,.28); }
 .tbl tbody tr.sold .rec-stock  { color: rgba(26,26,20,.28); }
 .tbl tbody tr.sold .sdot       { background: rgba(26,26,20,.28) !important; }
-
-/* ── Availability toggle ─────────────────────────────────── */
-.avail-toggle {
-  background: none; border: none; padding: 0; cursor: pointer;
-  width: 16px; height: 16px; position: relative; flex-shrink: 0;
-}
-.avail-toggle .box {
-  width: 16px; height: 16px;
-  border: 1.5px solid rgba(26,26,20,.35);
-  display: block; position: absolute; top: 0; left: 0;
-  transition: border-color .1s, background .1s;
-}
-.avail-toggle .chk {
-  position: absolute; top: 2px; left: 4px;
-  width: 6px; height: 9px;
-  border-right: 2px solid transparent;
-  border-bottom: 2px solid transparent;
-  transform: rotate(40deg); transition: border-color .1s;
-}
-.avail-toggle.active .box { border-color: #1a1a14; background: #1a1a14; }
-.avail-toggle.active .chk { border-color: #e2e2e2; }
 
 /* ── Search ──────────────────────────────────────────────── */
 .search-row {
@@ -327,8 +299,6 @@ col.c-stock  { width: 8%; }
   col.c-format, col.c-stock { display: none; }
   .tbl thead th.c-format, .tbl thead th.c-stock,
   .tbl tbody td.c-format, .tbl tbody td.c-stock { display: none; }
-  col.c-thumb { width: 40px; }
-  .rec-thumb, .rec-thumb-placeholder { width: 32px; height: 32px; }
 }
 
 </style>
@@ -375,10 +345,6 @@ col.c-stock  { width: 8%; }
       placeholder="Search by title, artist, genre, format…">
     <button class="search-clear" id="searchClear" aria-label="Clear search">&#215;</button>
     <span class="search-count" id="searchCount"></span>
-    <button class="avail-toggle" id="availToggle" onclick="toggleAvail()" aria-label="Show available only" style="margin-left:12px;">
-      <span class="box"></span>
-      <span class="chk"></span>
-    </button>
   </div>
 
   <div class="suggestions-header" id="suggestionsHeader"></div>
@@ -386,11 +352,10 @@ col.c-stock  { width: 8%; }
 
   <table class="tbl" id="catalogTable">
     <colgroup>
-      <col class="c-thumb"><col class="c-title"><col class="c-genre"><col class="c-format"><col class="c-stock">
+      <col class="c-title"><col class="c-genre"><col class="c-format"><col class="c-stock">
     </colgroup>
     <thead>
       <tr>
-        <th class="c-thumb"></th>
         <th class="c-title">Title / Artist</th>
         <th class="c-genre">Genre</th>
         <th class="c-format">Format</th>
@@ -398,11 +363,11 @@ col.c-stock  { width: 8%; }
       </tr>
     </thead>
     <tbody id="catalogList">
-      <tr><td class="c-thumb"></td><td class="c-title"><div class="sk" style="width:55%;margin-bottom:8px"></div><br><div class="sk" style="width:30%"></div></td><td class="c-genre"><div class="sk" style="width:70%"></div></td><td class="c-format"><div class="sk" style="width:55%"></div></td><td class="c-stock"><div class="sk" style="width:68%;float:right"></div></td></tr>
-      <tr><td class="c-thumb"></td><td class="c-title"><div class="sk" style="width:68%;margin-bottom:8px"></div><br><div class="sk" style="width:38%"></div></td><td class="c-genre"><div class="sk" style="width:60%"></div></td><td class="c-format"><div class="sk" style="width:55%"></div></td><td class="c-stock"><div class="sk" style="width:68%;float:right"></div></td></tr>
-      <tr><td class="c-thumb"></td><td class="c-title"><div class="sk" style="width:44%;margin-bottom:8px"></div><br><div class="sk" style="width:24%"></div></td><td class="c-genre"><div class="sk" style="width:78%"></div></td><td class="c-format"><div class="sk" style="width:55%"></div></td><td class="c-stock"><div class="sk" style="width:68%;float:right"></div></td></tr>
-      <tr><td class="c-thumb"></td><td class="c-title"><div class="sk" style="width:60%;margin-bottom:8px"></div><br><div class="sk" style="width:34%"></div></td><td class="c-genre"><div class="sk" style="width:63%"></div></td><td class="c-format"><div class="sk" style="width:55%"></div></td><td class="c-stock"><div class="sk" style="width:68%;float:right"></div></td></tr>
-      <tr><td class="c-thumb"></td><td class="c-title"><div class="sk" style="width:50%;margin-bottom:8px"></div><br><div class="sk" style="width:28%"></div></td><td class="c-genre"><div class="sk" style="width:72%"></div></td><td class="c-format"><div class="sk" style="width:55%"></div></td><td class="c-stock"><div class="sk" style="width:68%;float:right"></div></td></tr>
+      <tr><td class="c-title"><div class="sk" style="width:55%;margin-bottom:8px"></div><br><div class="sk" style="width:30%"></div></td><td class="c-genre"><div class="sk" style="width:70%"></div></td><td class="c-format"><div class="sk" style="width:55%"></div></td><td class="c-stock"><div class="sk" style="width:68%;float:right"></div></td></tr>
+      <tr><td class="c-title"><div class="sk" style="width:68%;margin-bottom:8px"></div><br><div class="sk" style="width:38%"></div></td><td class="c-genre"><div class="sk" style="width:60%"></div></td><td class="c-format"><div class="sk" style="width:55%"></div></td><td class="c-stock"><div class="sk" style="width:68%;float:right"></div></td></tr>
+      <tr><td class="c-title"><div class="sk" style="width:44%;margin-bottom:8px"></div><br><div class="sk" style="width:24%"></div></td><td class="c-genre"><div class="sk" style="width:78%"></div></td><td class="c-format"><div class="sk" style="width:55%"></div></td><td class="c-stock"><div class="sk" style="width:68%;float:right"></div></td></tr>
+      <tr><td class="c-title"><div class="sk" style="width:60%;margin-bottom:8px"></div><br><div class="sk" style="width:34%"></div></td><td class="c-genre"><div class="sk" style="width:63%"></div></td><td class="c-format"><div class="sk" style="width:55%"></div></td><td class="c-stock"><div class="sk" style="width:68%;float:right"></div></td></tr>
+      <tr><td class="c-title"><div class="sk" style="width:50%;margin-bottom:8px"></div><br><div class="sk" style="width:28%"></div></td><td class="c-genre"><div class="sk" style="width:72%"></div></td><td class="c-format"><div class="sk" style="width:55%"></div></td><td class="c-stock"><div class="sk" style="width:68%;float:right"></div></td></tr>
     </tbody>
   </table>
 
@@ -412,15 +377,6 @@ col.c-stock  { width: 8%; }
 <script src="catalog.js"></script>
 <script src="search.js"></script>
 <script>
-
-let availFilterActive = false;
-
-function toggleAvail() {
-  availFilterActive = !availFilterActive;
-  document.getElementById('availToggle').classList.toggle('active', availFilterActive);
-  const catalog = window._catalogCache || [];
-  buildTable(availFilterActive ? catalog.filter(a => a.status === 'available') : catalog);
-}
 
 function buildCarousel(albums) {
   const featured = albums.filter(a => String(a.featured).toLowerCase() === 'yes').slice(0, 5);
@@ -478,20 +434,24 @@ function buildCarousel(albums) {
   goTo(0);
   document.getElementById('prevBtn').addEventListener('click', (e) => { e.stopPropagation(); goTo(current - 1); });
   document.getElementById('nextBtn').addEventListener('click', (e) => { e.stopPropagation(); goTo(current + 1); });
+
+
+
 }
+
+
 
 document.addEventListener('DOMContentLoaded', async () => {
   initSearch();
 
   try {
     const catalog = await LR.api.catalog();
-    window._catalogCache = catalog;
     buildCarousel(catalog);
     buildTable(catalog);
   } catch(e) {
     document.getElementById('carouselTrack').innerHTML = '';
     document.getElementById('catalogList').innerHTML =
-      `<tr><td colspan="5" style="padding:40px 0;font-size:13px;color:rgba(26,26,20,.48)">Could not load catalog. Please refresh.</td></tr>`;
+      `<tr><td colspan="4" style="padding:40px 0;font-size:13px;color:rgba(26,26,20,.48)">Could not load catalog. Please refresh.</td></tr>`;
   }
 });
 
