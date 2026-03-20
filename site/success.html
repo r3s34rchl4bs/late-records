@@ -28,30 +28,22 @@ html, body {
 .fixed-footer { display: none; }
 .container { padding-top: 40px; padding-bottom: 80px; }
 
-/* PAGE GRID */
 .success-page {
   display: grid;
   grid-template-columns: 1fr 360px;
   gap: 80px;
   align-items: start;
 }
-
-/* HEADING */
 .order-heading {
   font-size: 36px; font-weight: 600; letter-spacing: -.03em;
   line-height: 1.05; color: #1a1a14; margin-bottom: 28px;
 }
-
-/* META GRID */
 .order-meta {
   border-top: 1px solid rgba(26,26,20,.12);
   margin-bottom: 0;
   display: grid; grid-template-columns: 1fr 1fr;
 }
-.meta-cell {
-  padding: 16px 0;
-  border-bottom: 1px solid rgba(26,26,20,.12);
-}
+.meta-cell { padding: 16px 0; border-bottom: 1px solid rgba(26,26,20,.12); }
 .meta-cell.left  { padding-right: 28px; border-right: 1px solid rgba(26,26,20,.12); }
 .meta-cell.right { padding-left: 28px; }
 .meta-label {
@@ -59,100 +51,48 @@ html, body {
   text-transform: uppercase; color: rgba(26,26,20,.38); margin-bottom: 5px;
 }
 .meta-value { font-size: 13px; color: #1a1a14; line-height: 1.55; }
-.meta-value.amount {
-  font-size: 24px; font-weight: 600; letter-spacing: -.02em; line-height: 1.1;
-}
+.meta-value.amount { font-size: 24px; font-weight: 600; letter-spacing: -.02em; line-height: 1.1; }
 
-/* Mobile summary trigger */
 .view-summary-btn {
-  display: none;
-  width: 100%;
-  background: rgba(26,26,20,.04);
-  border: none;
+  display: none; width: 100%;
+  background: rgba(26,26,20,.04); border: none;
   border-bottom: 1px solid rgba(26,26,20,.1);
-  padding: 14px 16px;
-  cursor: pointer;
-  font-family: 'Inter', system-ui, sans-serif;
-  text-align: left;
+  padding: 14px 16px; cursor: pointer;
+  font-family: 'Inter', system-ui, sans-serif; text-align: left;
   box-shadow: 0 2px 8px rgba(26,26,20,.07);
-  margin-bottom: 32px;
-  transition: background .15s;
+  margin-bottom: 32px; transition: background .15s;
 }
 .view-summary-btn:hover { background: rgba(26,26,20,.07); }
 .vsb-inner { display: flex; justify-content: space-between; align-items: center; width: 100%; }
-.vsb-label {
-  font-size: 10px; font-weight: 500; letter-spacing: .1em;
-  text-transform: uppercase; color: rgba(26,26,20,.55);
-}
+.vsb-label { font-size: 10px; font-weight: 500; letter-spacing: .1em; text-transform: uppercase; color: rgba(26,26,20,.55); }
 .vsb-arrow { font-size: 14px; color: rgba(26,26,20,.35); }
 
-/* PAYMENT */
 .payment-section { margin-top: 32px; }
-.payment-heading {
-  font-size: 10px; font-weight: 500; letter-spacing: .12em;
-  text-transform: uppercase; color: rgba(26,26,20,.38); margin-bottom: 20px;
-}
-.payment-body {
-  display: grid; grid-template-columns: 1fr auto;
-  gap: 32px; align-items: start; margin-bottom: 28px;
-}
-.timer-label {
-  font-size: 9px; font-weight: 500; letter-spacing: .12em;
-  text-transform: uppercase; color: rgba(26,26,20,.38); margin-bottom: 8px;
-}
-.countdown {
-  font-size: 44px; font-weight: 600; letter-spacing: -.02em;
-  font-variant-numeric: tabular-nums; color: #1a1a14; line-height: 1;
-  margin-bottom: 10px;
-}
-.countdown.is-expired { font-size: 22px; letter-spacing: -.01em; color: rgba(26,26,20,.5); }
-.timer-note {
-  font-size: 11px; color: rgba(26,26,20,.42); line-height: 1.65;
-  max-width: 260px; margin-bottom: 16px;
-}
-.wallet-logos-wrap {
-  display: flex; flex-wrap: wrap;
-  gap: 12px 16px; align-items: center;
-  max-width: 220px;
-}
-.wallet-logo {
-  display: block; width: auto; flex-shrink: 0;
-  filter: grayscale(100%) opacity(0.38);
-}
+.payment-heading { font-size: 10px; font-weight: 500; letter-spacing: .12em; text-transform: uppercase; color: rgba(26,26,20,.38); margin-bottom: 20px; }
+.payment-body { display: grid; grid-template-columns: 1fr auto; gap: 32px; align-items: start; margin-bottom: 28px; }
+.timer-label { font-size: 9px; font-weight: 500; letter-spacing: .12em; text-transform: uppercase; color: rgba(26,26,20,.38); margin-bottom: 8px; }
+.countdown { font-size: 44px; font-weight: 600; letter-spacing: -.02em; font-variant-numeric: tabular-nums; color: #1a1a14; line-height: 1; margin-bottom: 10px; }
+.countdown.is-expired { font-size: 20px; color: rgba(26,26,20,.5); }
+.timer-note { font-size: 11px; color: rgba(26,26,20,.42); line-height: 1.65; max-width: 260px; margin-bottom: 16px; }
+.wallet-logos-wrap { display: flex; flex-wrap: wrap; gap: 12px 16px; align-items: center; max-width: 240px; }
+.wallet-logo { display: block; width: auto; flex-shrink: 0; filter: grayscale(100%) opacity(0.38); }
 .qr-block { display: flex; flex-direction: column; align-items: center; gap: 6px; }
-.qr-ph-label { width: 112px; display: flex; align-items: center; justify-content: center; }
-.qr-ph-logo { height: 16px; width: auto; display: block; filter: grayscale(100%) opacity(0.38); }
-.qr-img { width: 112px; height: 112px; display: block; object-fit: cover; }
-.qr-download {
-  font-size: 9px; letter-spacing: .07em; text-transform: uppercase;
-  color: rgba(26,26,20,.32); cursor: pointer;
-  font-family: inherit; background: none; border: none; padding: 0;
-  text-decoration: underline; transition: color .1s;
-}
+.qr-ph-label { width: 130px; display: flex; align-items: center; justify-content: center; }
+.qr-ph-logo { height: 18px; width: auto; display: block; filter: grayscale(100%) opacity(0.38); }
+.qr-img { width: 130px; height: 130px; display: block; object-fit: cover; }
+.qr-download { font-size: 9px; letter-spacing: .07em; text-transform: uppercase; color: rgba(26,26,20,.32); cursor: pointer; font-family: inherit; background: none; border: none; padding: 0; text-decoration: underline; transition: color .1s; }
 .qr-download:hover { color: rgba(26,26,20,.7); }
-
-/* Note */
-.order-note {
-  font-size: 12px; color: rgba(26,26,20,.42); line-height: 1.8;
-  padding-left: 12px; border-left: 1px solid rgba(26,26,20,.18);
-}
+.order-note { font-size: 12px; color: rgba(26,26,20,.42); line-height: 1.8; padding-left: 12px; border-left: 1px solid rgba(26,26,20,.18); }
 
 /* RECEIPT */
 .receipt-col { position: sticky; top: 94px; }
-.tear {
-  width: 100%; height: 14px;
-  background-image: radial-gradient(ellipse 7px 7px at 7px 0, #e2e2e2 7px, #f5f3ee 7px);
-  background-size: 14px 14px; background-repeat: repeat-x;
-}
-.tear-bottom {
-  background-image: radial-gradient(ellipse 7px 7px at 7px 14px, #e2e2e2 7px, #f5f3ee 7px);
-  background-size: 14px 14px; background-repeat: repeat-x;
-}
-.receipt { background: #f5f3ee; padding: 28px 24px 32px; font-family: 'Courier New', Courier, monospace; }
+.tear { width: 100%; height: 14px; background-image: radial-gradient(ellipse 7px 7px at 7px 0, #e2e2e2 7px, #ececec 7px); background-size: 14px 14px; background-repeat: repeat-x; }
+.tear-bottom { background-image: radial-gradient(ellipse 7px 7px at 7px 14px, #e2e2e2 7px, #ececec 7px); background-size: 14px 14px; background-repeat: repeat-x; }
+.receipt { background: #ececec; padding: 28px 24px 32px; font-family: 'Courier New', Courier, monospace; }
 .r-header { text-align: center; padding-bottom: 16px; margin-bottom: 4px; }
 .r-type { font-size: 11px; font-weight: 700; letter-spacing: .28em; text-transform: uppercase; color: #1a1a14; margin-bottom: 5px; }
 .r-sub { font-size: 8px; color: rgba(26,26,20,.35); letter-spacing: .05em; line-height: 1.9; }
-.r-dashes { font-size: 9px; color: rgba(26,26,20,.18); text-align: center; margin: 12px 0; letter-spacing: 2px; overflow: hidden; white-space: nowrap; }
+.r-dashes { font-size: 9px; color: rgba(26,26,20,.22); text-align: center; margin: 12px 0; letter-spacing: 2px; overflow: hidden; white-space: nowrap; }
 .r-row { display: flex; justify-content: space-between; font-size: 10px; margin-bottom: 4px; line-height: 1.8; }
 .r-row .k { color: rgba(26,26,20,.45); }
 .r-row .v { text-align: right; max-width: 55%; word-break: break-word; }
@@ -160,39 +100,19 @@ html, body {
 .r-item-title { font-size: 10px; font-weight: 700; line-height: 1.4; }
 .r-item-meta { display: flex; justify-content: space-between; font-size: 9px; color: rgba(26,26,20,.5); margin-top: 1px; }
 .r-total-row { display: flex; justify-content: space-between; font-size: 13px; font-weight: 700; margin-top: 2px; }
-.r-footer { text-align: center; margin-top: 16px; font-size: 8px; color: rgba(26,26,20,.25); letter-spacing: .05em; line-height: 2.2; }
+.r-footer { text-align: center; margin-top: 16px; font-size: 8px; color: rgba(26,26,20,.28); letter-spacing: .05em; line-height: 2.2; }
 
 /* MODAL */
-.modal-overlay {
-  display: none;
-  position: fixed; inset: 0; z-index: 300;
-  background: rgba(10,10,8,.55);
-  backdrop-filter: blur(3px); -webkit-backdrop-filter: blur(3px);
-  align-items: flex-end; justify-content: center;
-}
+.modal-overlay { display: none; position: fixed; inset: 0; z-index: 300; background: rgba(10,10,8,.55); backdrop-filter: blur(3px); -webkit-backdrop-filter: blur(3px); align-items: flex-end; justify-content: center; }
 .modal-overlay.is-open { display: flex; }
-.modal-sheet {
-  width: 100%; max-width: 500px;
-  background: #e2e2e2;
-  background-image: radial-gradient(circle, rgba(0,0,0,.08) 0.5px, transparent 0.5px);
-  background-size: 3px 3px;
-  max-height: 88vh; overflow-y: auto;
-  padding: 0 20px 36px;
-}
-.modal-top-bar {
-  display: flex; align-items: center; justify-content: flex-end;
-  padding: 14px 0 10px;
-}
-.modal-close {
-  background: none; border: none; cursor: pointer;
-  width: 26px; height: 26px;
-  display: flex; align-items: center; justify-content: center;
-  color: rgba(26,26,20,.4); font-size: 13px; font-family: inherit;
-  transition: color .1s;
-}
+.modal-sheet { width: 100%; max-width: 500px; background: #e2e2e2; background-image: radial-gradient(circle, rgba(0,0,0,.08) 0.5px, transparent 0.5px); background-size: 3px 3px; max-height: 88vh; overflow-y: auto; padding: 0 20px 36px; }
+.modal-top-bar { display: flex; align-items: center; justify-content: flex-end; padding: 14px 0 10px; }
+.modal-close { background: none; border: none; cursor: pointer; width: 26px; height: 26px; display: flex; align-items: center; justify-content: center; color: rgba(26,26,20,.4); font-size: 13px; font-family: inherit; transition: color .1s; }
 .modal-close:hover { color: #1a1a14; }
+.modal-sheet .receipt { background: #ececec; }
+.modal-sheet .tear { background-image: radial-gradient(ellipse 7px 7px at 7px 0, #e2e2e2 7px, #ececec 7px); background-size: 14px 14px; background-repeat: repeat-x; }
+.modal-sheet .tear-bottom { background-image: radial-gradient(ellipse 7px 7px at 7px 14px, #e2e2e2 7px, #ececec 7px); background-size: 14px 14px; background-repeat: repeat-x; }
 
-/* RESPONSIVE */
 @media (max-width: 860px) {
   .success-page { grid-template-columns: 1fr; gap: 0; }
   .receipt-col { display: none; }
@@ -201,6 +121,8 @@ html, body {
   .payment-body { gap: 20px; }
   .wallet-logos-wrap { max-width: 100%; }
   .view-summary-btn { display: block; }
+  .qr-img { width: 120px; height: 120px; }
+  .qr-ph-label { width: 120px; }
 }
 @media (max-width: 600px) {
   .order-heading { font-size: 24px; }
@@ -221,49 +143,48 @@ html, body {
 <div class="container">
   <div class="success-page">
 
-    <!-- LEFT -->
     <div>
       <h1 class="order-heading">Order Received</h1>
 
       <div class="order-meta">
         <div class="meta-cell left">
           <div class="meta-label">Order</div>
-          <div class="meta-value" id="metaOrder">—</div>
+          <div class="meta-value" id="metaOrder">&#x2014;</div>
         </div>
         <div class="meta-cell right">
           <div class="meta-label">Address</div>
-          <div class="meta-value" id="metaAddress">—</div>
+          <div class="meta-value" id="metaAddress">&#x2014;</div>
         </div>
         <div class="meta-cell left">
           <div class="meta-label">Ship To</div>
-          <div class="meta-value" id="metaBuyer">—</div>
+          <div class="meta-value" id="metaBuyer">&#x2014;</div>
         </div>
         <div class="meta-cell right">
           <div class="meta-label">Amount Due</div>
-          <div class="meta-value amount" id="metaAmount">—</div>
+          <div class="meta-value amount" id="metaAmount">&#x2014;</div>
         </div>
       </div>
 
       <button class="view-summary-btn" onclick="openModal()">
         <div class="vsb-inner">
           <span class="vsb-label">View Order Summary</span>
-          <span class="vsb-arrow">→</span>
+          <span class="vsb-arrow">&#x2192;</span>
         </div>
       </button>
 
       <div class="payment-section">
-        <div class="payment-heading">Send Payment</div>
+        <div class="payment-heading">Payment Window</div>
         <div class="payment-body">
           <div>
             <div class="timer-label">Pay Within</div>
             <div class="countdown" id="countdown">24:00:00</div>
-            <div class="timer-note" id="timerNote">Scan the QR code using any QR PH–enabled app. Order is held until the window closes.</div>
+            <div class="timer-note" id="timerNote">Scan the QR code using any QR PH&#x2013;enabled app. Order is held until the window closes.</div>
             <div class="wallet-logos-wrap">
-              <img src="images/late-records-payment-bdo.png"       class="wallet-logo" style="height:11px;" alt="BDO">
-              <img src="images/late-records-payment-gotyme.png"    class="wallet-logo" style="height:13px;" alt="GoTyme">
-              <img src="images/late-records-payment-gcash.png"     class="wallet-logo" style="height:13px;" alt="GCash">
-              <img src="images/late-records-payment-maya.png"      class="wallet-logo" style="height:11px;" alt="Maya">
-              <img src="images/late-records-payment-shopeepay.png" class="wallet-logo" style="height:12px;" alt="ShopeePay">
+              <img src="images/late-records-payment-bdo.png"       class="wallet-logo" style="height:13px;" alt="BDO">
+              <img src="images/late-records-payment-gotyme.png"    class="wallet-logo" style="height:15px;" alt="GoTyme">
+              <img src="images/late-records-payment-gcash.png"     class="wallet-logo" style="height:15px;" alt="GCash">
+              <img src="images/late-records-payment-maya.png"      class="wallet-logo" style="height:13px;" alt="Maya">
+              <img src="images/late-records-payment-shopeepay.png" class="wallet-logo" style="height:14px;" alt="ShopeePay">
             </div>
           </div>
           <div class="qr-block">
@@ -281,7 +202,7 @@ html, body {
       </p>
     </div>
 
-    <!-- RECEIPT — desktop only -->
+    <!-- RECEIPT desktop -->
     <div class="receipt-col">
       <div class="tear"></div>
       <div class="receipt">
@@ -290,16 +211,16 @@ html, body {
           <div class="r-sub">info.late.records@gmail.com</div>
         </div>
         <div class="r-dashes">- - - - - - - - - - - - - -</div>
-        <div class="r-row"><span class="k">Order</span><span class="v" id="rOrder">—</span></div>
-        <div class="r-row"><span class="k">Date</span><span class="v" id="rDate">—</span></div>
-        <div class="r-row"><span class="k">Customer</span><span class="v" id="rCustomer">—</span></div>
+        <div class="r-row"><span class="k">Order</span><span class="v" id="rOrder">&#x2014;</span></div>
+        <div class="r-row"><span class="k">Date</span><span class="v" id="rDate">&#x2014;</span></div>
+        <div class="r-row"><span class="k">Customer</span><span class="v" id="rCustomer">&#x2014;</span></div>
         <div class="r-dashes">- - - - - - - - - - - - - -</div>
         <div id="rItems"></div>
         <div class="r-dashes">- - - - - - - - - - - - - -</div>
-        <div class="r-row"><span class="k">Subtotal</span><span class="v" id="rSubtotal">—</span></div>
-        <div class="r-row"><span class="k">Shipping</span><span class="v" id="rShipping">—</span></div>
+        <div class="r-row"><span class="k">Subtotal</span><span class="v" id="rSubtotal">&#x2014;</span></div>
+        <div class="r-row"><span class="k">Shipping</span><span class="v" id="rShipping">&#x2014;</span></div>
         <div class="r-dashes">- - - - - - - - - - - - - -</div>
-        <div class="r-total-row"><span>Total</span><span id="rTotal">—</span></div>
+        <div class="r-total-row"><span>Total</span><span id="rTotal">&#x2014;</span></div>
         <div class="r-footer">
           Packed with care in Bacolod City.<br>
           Thank you for shopping Late Records.
@@ -324,16 +245,16 @@ html, body {
         <div class="r-sub">info.late.records@gmail.com</div>
       </div>
       <div class="r-dashes">- - - - - - - - - - - - - -</div>
-      <div class="r-row"><span class="k">Order</span><span class="v" id="mOrder">—</span></div>
-      <div class="r-row"><span class="k">Date</span><span class="v" id="mDate">—</span></div>
-      <div class="r-row"><span class="k">Customer</span><span class="v" id="mCustomer">—</span></div>
+      <div class="r-row"><span class="k">Order</span><span class="v" id="mOrder">&#x2014;</span></div>
+      <div class="r-row"><span class="k">Date</span><span class="v" id="mDate">&#x2014;</span></div>
+      <div class="r-row"><span class="k">Customer</span><span class="v" id="mCustomer">&#x2014;</span></div>
       <div class="r-dashes">- - - - - - - - - - - - - -</div>
       <div id="mItems"></div>
       <div class="r-dashes">- - - - - - - - - - - - - -</div>
-      <div class="r-row"><span class="k">Subtotal</span><span class="v" id="mSubtotal">—</span></div>
-      <div class="r-row"><span class="k">Shipping</span><span class="v" id="mShipping">—</span></div>
+      <div class="r-row"><span class="k">Subtotal</span><span class="v" id="mSubtotal">&#x2014;</span></div>
+      <div class="r-row"><span class="k">Shipping</span><span class="v" id="mShipping">&#x2014;</span></div>
       <div class="r-dashes">- - - - - - - - - - - - - -</div>
-      <div class="r-total-row"><span>Total</span><span id="mTotal">—</span></div>
+      <div class="r-total-row"><span>Total</span><span id="mTotal">&#x2014;</span></div>
       <div class="r-footer">
         Packed with care in Bacolod City.<br>
         Thank you for shopping Late Records.
@@ -346,50 +267,43 @@ html, body {
 <script src="script.js"></script>
 <script>
 
-// Guard
-const buyer      = localStorage.getItem('lr_buyer');
-const orderTotal = localStorage.getItem('lr_order_total');
+var buyer      = localStorage.getItem('lr_buyer');
+var orderTotal = localStorage.getItem('lr_order_total');
 if (!buyer || !orderTotal) { window.location.href = 'index.html'; }
 
-// Timestamp
-let orderCreatedAt = localStorage.getItem('lr_order_created_at');
+var orderCreatedAt = localStorage.getItem('lr_order_created_at');
 if (!orderCreatedAt) {
   orderCreatedAt = String(Date.now());
   localStorage.setItem('lr_order_created_at', orderCreatedAt);
 }
 orderCreatedAt = Number(orderCreatedAt);
 
-// Order number
-let orderNum = localStorage.getItem('lr_order_number');
+var orderNum = localStorage.getItem('lr_order_number');
 if (!orderNum) {
   orderNum = '#LR-' + String(Math.floor(Math.random() * 90000) + 10000);
   localStorage.setItem('lr_order_number', orderNum);
 }
 
-// Address
-const address  = localStorage.getItem('lr_address') || '';
-const city     = localStorage.getItem('lr_city')    || '';
-const addrHTML = [address, city].filter(Boolean).join('<br>') || '—';
+var address     = localStorage.getItem('lr_address') || '—';
+var rawItems    = localStorage.getItem('lr_order_items');
+var rawSubtotal = localStorage.getItem('lr_order_subtotal');
+var rawShipping = localStorage.getItem('lr_order_shipping');
+var savedCart   = rawItems ? JSON.parse(rawItems) : [];
+var subtotal    = rawSubtotal ? Number(rawSubtotal) : 0;
+var shipping    = rawShipping ? Number(rawShipping) : 0;
+var total       = subtotal + shipping;
 
-// Cart
-const cart     = LR.cart.get;
-const subtotal = LR.cart.subtotal;
-const shipping = LR.cart.shipping;
-const total    = LR.cart.total;
-
-// Date
-const dateStr = new Date(orderCreatedAt).toLocaleDateString('en-GB', {
+var dateStr = new Date(orderCreatedAt).toLocaleDateString('en-GB', {
   day: 'numeric', month: 'short', year: 'numeric'
 });
 
-// Populate meta
-document.getElementById('metaOrder').textContent  = orderNum;
-document.getElementById('metaBuyer').textContent  = buyer;
-document.getElementById('metaAmount').textContent = orderTotal;
-document.getElementById('metaAddress').innerHTML  = addrHTML;
+document.getElementById('metaOrder').textContent   = orderNum;
+document.getElementById('metaBuyer').textContent   = buyer;
+document.getElementById('metaAmount').textContent  = orderTotal;
+document.getElementById('metaAddress').textContent = address;
 
-// Build items
 function buildItems(cart) {
+  if (!cart || !cart.length) return '<div style="font-size:10px;color:rgba(26,26,20,.4);padding:4px 0;">No items</div>';
   return cart.map(function(item) {
     return '<div class="r-item">' +
       '<div class="r-item-title">' + item.title + '</div>' +
@@ -400,25 +314,22 @@ function buildItems(cart) {
   }).join('');
 }
 
-// Desktop receipt
 document.getElementById('rOrder').textContent    = orderNum;
 document.getElementById('rDate').textContent     = dateStr;
 document.getElementById('rCustomer').textContent = buyer;
-document.getElementById('rItems').innerHTML      = buildItems(cart);
+document.getElementById('rItems').innerHTML      = buildItems(savedCart);
 document.getElementById('rSubtotal').textContent = LR.ui.peso(subtotal);
 document.getElementById('rShipping').textContent = LR.ui.peso(shipping);
 document.getElementById('rTotal').textContent    = LR.ui.peso(total);
 
-// Mobile modal receipt
 document.getElementById('mOrder').textContent    = orderNum;
 document.getElementById('mDate').textContent     = dateStr;
 document.getElementById('mCustomer').textContent = buyer;
-document.getElementById('mItems').innerHTML      = buildItems(cart);
+document.getElementById('mItems').innerHTML      = buildItems(savedCart);
 document.getElementById('mSubtotal').textContent = LR.ui.peso(subtotal);
 document.getElementById('mShipping').textContent = LR.ui.peso(shipping);
 document.getElementById('mTotal').textContent    = LR.ui.peso(total);
 
-// Countdown
 var deadline = orderCreatedAt + (24 * 60 * 60 * 1000);
 var cdEl     = document.getElementById('countdown');
 var noteEl   = document.getElementById('timerNote');
@@ -428,7 +339,7 @@ function fmt(ms) {
   var h   = Math.floor(s / 3600);
   var m   = Math.floor((s % 3600) / 60);
   var sec = s % 60;
-  return String(h).padStart(2,'0') + ':' + String(m).padStart(2,'0') + ':' + String(sec).padStart(2,'0');
+  return String(h).padStart(2, '0') + ':' + String(m).padStart(2, '0') + ':' + String(sec).padStart(2, '0');
 }
 
 function tick() {
@@ -437,19 +348,18 @@ function tick() {
     cdEl.textContent = 'Window Expired';
     cdEl.classList.add('is-expired');
     noteEl.textContent = 'The payment window has expired. Please contact us at info.late.records@gmail.com before sending payment.';
-    clearInterval(timer);
+    clearInterval(timerInterval);
     return;
   }
   cdEl.textContent = fmt(remaining);
 }
-tick();
-var timer = setInterval(tick, 1000);
 
-// Clear sensitive data
+tick();
+var timerInterval = setInterval(tick, 1000);
+
 localStorage.removeItem('lr_buyer');
 localStorage.removeItem('lr_order_total');
 
-// QR download
 function downloadQR() {
   var a = document.createElement('a');
   a.href = 'images/late-records-qr-payment.jpg';
@@ -457,7 +367,6 @@ function downloadQR() {
   a.click();
 }
 
-// Modal
 function openModal() {
   document.getElementById('modalOverlay').classList.add('is-open');
   document.body.style.overflow = 'hidden';
@@ -471,6 +380,5 @@ function handleOverlay(e) {
 }
 
 </script>
-<script src="under-construction.js"></script>
 </body>
 </html>
