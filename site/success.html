@@ -8,13 +8,13 @@
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="style.css">
 <style>
-
 html, body {
   font-family: 'Inter', system-ui, sans-serif;
   background-color: #e2e2e2;
   background-image: radial-gradient(circle, rgba(0,0,0,.08) 0.5px, transparent 0.5px);
   background-size: 3px 3px;
   color: #1a1a14;
+  -webkit-font-smoothing: antialiased;
 }
 .fixed-header {
   background-color: #e2e2e2;
@@ -22,208 +22,190 @@ html, body {
   background-size: 3px 3px;
   border-bottom-color: rgba(26,26,20,.22);
 }
-.header-logo       { height: 44px; filter: none; }
+.header-logo { height: 44px; filter: none; }
 .header-logo:hover { opacity: .5; transition: opacity .15s; }
 .cart-link { display: none; }
 .fixed-footer { display: none; }
-.container { padding-bottom: 80px; }
+.container { padding-top: 40px; padding-bottom: 80px; }
 
-.page-title {
-  font-size: 26px;
-  font-weight: 600;
-  margin-bottom: 10px;
-  letter-spacing: -.01em;
-  color: #1a1a14;
-}
-
-.sub-headline {
-  font-size: 15px;
-  color: rgba(26,26,20,.6);
-  max-width: 560px;
-  line-height: 1.75;
-  margin-bottom: 24px;
-}
-
-.payment-status-card {
-  max-width: 640px;
-  border: 1px solid rgba(26,26,20,.18);
-  background: rgba(26,26,20,.02);
-  padding: 20px;
-  margin-bottom: 30px;
-}
-
-.payment-status-label {
-  font-size: 10px;
-  font-weight: 500;
-  letter-spacing: .1em;
-  text-transform: uppercase;
-  color: rgba(26,26,20,.45);
-  margin-bottom: 14px;
-}
-
-.payment-status-grid {
+/* PAGE GRID */
+.success-page {
   display: grid;
-  grid-template-columns: 1fr 1px 1fr;
-  gap: 18px;
+  grid-template-columns: 1fr 360px;
+  gap: 80px;
   align-items: start;
 }
 
-.status-col {
-  min-width: 0;
+/* HEADING */
+.order-heading {
+  font-size: 36px; font-weight: 600; letter-spacing: -.03em;
+  line-height: 1.05; color: #1a1a14; margin-bottom: 28px;
 }
 
-.status-kicker {
-  font-size: 10px;
-  font-weight: 500;
-  letter-spacing: .08em;
-  text-transform: uppercase;
-  color: rgba(26,26,20,.42);
-  margin-bottom: 6px;
-}
-
-.status-value {
-  font-size: 38px;
-  font-weight: 700;
-  letter-spacing: -.05em;
-  line-height: 1;
-  color: #1a1a14;
-}
-
-.status-value.timer {
-  font-size: 28px;
-  font-weight: 500;
-  letter-spacing: -.02em;
-  color: rgba(26,26,20,.72);
-  font-variant-numeric: tabular-nums;
-}
-
-.status-divider {
-  width: 1px;
-  background: rgba(26,26,20,.12);
-  justify-self: center;
-  align-self: stretch;
-}
-
-.payment-status-help {
-  margin-top: 16px;
-  padding-top: 14px;
-  border-top: 1px solid rgba(26,26,20,.1);
-  font-size: 13px;
-  line-height: 1.6;
-  color: rgba(26,26,20,.62);
-  max-width: 520px;
-}
-
-.payment-status-card.is-expired {
-  border-color: rgba(26,26,20,.28);
-  background: rgba(26,26,20,.04);
-}
-
-.payment-status-card.is-expired .status-value.timer {
-  font-size: 24px;
-  letter-spacing: -.02em;
-}
-
-.payment-section {
-  display: flex;
-  align-items: center;
-  gap: 48px;
-  max-width: 640px;
+/* META GRID */
+.order-meta {
   border-top: 1px solid rgba(26,26,20,.12);
+  margin-bottom: 0;
+  display: grid; grid-template-columns: 1fr 1fr;
+}
+.meta-cell {
+  padding: 16px 0;
   border-bottom: 1px solid rgba(26,26,20,.12);
-  padding: 32px 0;
+}
+.meta-cell.left  { padding-right: 28px; border-right: 1px solid rgba(26,26,20,.12); }
+.meta-cell.right { padding-left: 28px; }
+.meta-label {
+  font-size: 9px; font-weight: 500; letter-spacing: .12em;
+  text-transform: uppercase; color: rgba(26,26,20,.38); margin-bottom: 5px;
+}
+.meta-value { font-size: 13px; color: #1a1a14; line-height: 1.55; }
+.meta-value.amount {
+  font-size: 24px; font-weight: 600; letter-spacing: -.02em; line-height: 1.1;
 }
 
-.qr-code {
-  width: 200px;
-  height: auto;
-  display: block;
-  flex-shrink: 0;
-}
-
-.payment-copy {
-  min-width: 0;
-}
-
-.payment-label {
-  font-size: 18px;
-  font-weight: 600;
-  margin-bottom: 6px;
-  color: #1a1a14;
-}
-
-.payment-wallets {
-  font-size: 14px;
-  color: rgba(26,26,20,.6);
-  line-height: 1.7;
-}
-
-.notice {
-  margin-top: 32px;
-  max-width: 580px;
-  font-size: 14px;
-  line-height: 1.8;
-  color: rgba(26,26,20,.65);
-  border-left: 2px solid rgba(26,26,20,.4);
-  padding-left: 16px;
-}
-
-.return-link {
-  display: inline-block;
-  margin-top: 36px;
-  border: 1px solid #1a1a14;
-  background: #1a1a14;
-  color: #e2e2e2;
-  padding: 11px 22px;
-  text-decoration: none;
-  font-size: 11px;
-  font-weight: 500;
-  letter-spacing: .09em;
-  text-transform: uppercase;
+/* Mobile summary trigger */
+.view-summary-btn {
+  display: none;
+  width: 100%;
+  background: rgba(26,26,20,.04);
+  border: none;
+  border-bottom: 1px solid rgba(26,26,20,.1);
+  padding: 14px 16px;
+  cursor: pointer;
   font-family: 'Inter', system-ui, sans-serif;
+  text-align: left;
+  box-shadow: 0 2px 8px rgba(26,26,20,.07);
+  margin-bottom: 32px;
   transition: background .15s;
 }
-.return-link:hover { background: rgba(26,26,20,.82); color: #e2e2e2; }
+.view-summary-btn:hover { background: rgba(26,26,20,.07); }
+.vsb-inner { display: flex; justify-content: space-between; align-items: center; width: 100%; }
+.vsb-label {
+  font-size: 10px; font-weight: 500; letter-spacing: .1em;
+  text-transform: uppercase; color: rgba(26,26,20,.55);
+}
+.vsb-arrow { font-size: 14px; color: rgba(26,26,20,.35); }
 
-@media (max-width: 600px) {
-  .payment-status-grid {
-    grid-template-columns: 1fr;
-    gap: 14px;
-  }
-  .status-divider {
-    display: none;
-  }
-  .status-value {
-    font-size: 32px;
-  }
-  .status-value.timer {
-    font-size: 24px;
-  }
-  .payment-section {
-    gap: 16px;
-    align-items: flex-start;
-  }
-  .qr-code {
-    width: 132px;
-  }
-  .payment-copy {
-    flex: 1;
-    padding-top: 2px;
-  }
-  .payment-label {
-    font-size: 16px;
-    line-height: 1.25;
-    margin-bottom: 8px;
-  }
-  .payment-wallets {
-    font-size: 13px;
-    line-height: 1.6;
-  }
-  .return-link {
-    margin-bottom: 40px;
-  }
+/* PAYMENT */
+.payment-section { margin-top: 32px; }
+.payment-heading {
+  font-size: 10px; font-weight: 500; letter-spacing: .12em;
+  text-transform: uppercase; color: rgba(26,26,20,.38); margin-bottom: 20px;
+}
+.payment-body {
+  display: grid; grid-template-columns: 1fr auto;
+  gap: 32px; align-items: start; margin-bottom: 28px;
+}
+.timer-label {
+  font-size: 9px; font-weight: 500; letter-spacing: .12em;
+  text-transform: uppercase; color: rgba(26,26,20,.38); margin-bottom: 8px;
+}
+.countdown {
+  font-size: 44px; font-weight: 600; letter-spacing: -.02em;
+  font-variant-numeric: tabular-nums; color: #1a1a14; line-height: 1;
+  margin-bottom: 10px;
+}
+.countdown.is-expired { font-size: 22px; letter-spacing: -.01em; color: rgba(26,26,20,.5); }
+.timer-note {
+  font-size: 11px; color: rgba(26,26,20,.42); line-height: 1.65;
+  max-width: 260px; margin-bottom: 16px;
+}
+.wallet-logos-wrap {
+  display: flex; flex-wrap: wrap;
+  gap: 12px 16px; align-items: center;
+  max-width: 220px;
+}
+.wallet-logo {
+  display: block; width: auto; flex-shrink: 0;
+  filter: grayscale(100%) opacity(0.38);
+}
+.qr-block { display: flex; flex-direction: column; align-items: center; gap: 6px; }
+.qr-ph-label { width: 112px; display: flex; align-items: center; justify-content: center; }
+.qr-ph-logo { height: 16px; width: auto; display: block; filter: grayscale(100%) opacity(0.38); }
+.qr-img { width: 112px; height: 112px; display: block; object-fit: cover; }
+.qr-download {
+  font-size: 9px; letter-spacing: .07em; text-transform: uppercase;
+  color: rgba(26,26,20,.32); cursor: pointer;
+  font-family: inherit; background: none; border: none; padding: 0;
+  text-decoration: underline; transition: color .1s;
+}
+.qr-download:hover { color: rgba(26,26,20,.7); }
+
+/* Note */
+.order-note {
+  font-size: 12px; color: rgba(26,26,20,.42); line-height: 1.8;
+  padding-left: 12px; border-left: 1px solid rgba(26,26,20,.18);
 }
 
+/* RECEIPT */
+.receipt-col { position: sticky; top: 94px; }
+.tear {
+  width: 100%; height: 14px;
+  background-image: radial-gradient(ellipse 7px 7px at 7px 0, #e2e2e2 7px, #f5f3ee 7px);
+  background-size: 14px 14px; background-repeat: repeat-x;
+}
+.tear-bottom {
+  background-image: radial-gradient(ellipse 7px 7px at 7px 14px, #e2e2e2 7px, #f5f3ee 7px);
+  background-size: 14px 14px; background-repeat: repeat-x;
+}
+.receipt { background: #f5f3ee; padding: 28px 24px 32px; font-family: 'Courier New', Courier, monospace; }
+.r-header { text-align: center; padding-bottom: 16px; margin-bottom: 4px; }
+.r-type { font-size: 11px; font-weight: 700; letter-spacing: .28em; text-transform: uppercase; color: #1a1a14; margin-bottom: 5px; }
+.r-sub { font-size: 8px; color: rgba(26,26,20,.35); letter-spacing: .05em; line-height: 1.9; }
+.r-dashes { font-size: 9px; color: rgba(26,26,20,.18); text-align: center; margin: 12px 0; letter-spacing: 2px; overflow: hidden; white-space: nowrap; }
+.r-row { display: flex; justify-content: space-between; font-size: 10px; margin-bottom: 4px; line-height: 1.8; }
+.r-row .k { color: rgba(26,26,20,.45); }
+.r-row .v { text-align: right; max-width: 55%; word-break: break-word; }
+.r-item { margin-bottom: 8px; }
+.r-item-title { font-size: 10px; font-weight: 700; line-height: 1.4; }
+.r-item-meta { display: flex; justify-content: space-between; font-size: 9px; color: rgba(26,26,20,.5); margin-top: 1px; }
+.r-total-row { display: flex; justify-content: space-between; font-size: 13px; font-weight: 700; margin-top: 2px; }
+.r-footer { text-align: center; margin-top: 16px; font-size: 8px; color: rgba(26,26,20,.25); letter-spacing: .05em; line-height: 2.2; }
+
+/* MODAL */
+.modal-overlay {
+  display: none;
+  position: fixed; inset: 0; z-index: 300;
+  background: rgba(10,10,8,.55);
+  backdrop-filter: blur(3px); -webkit-backdrop-filter: blur(3px);
+  align-items: flex-end; justify-content: center;
+}
+.modal-overlay.is-open { display: flex; }
+.modal-sheet {
+  width: 100%; max-width: 500px;
+  background: #e2e2e2;
+  background-image: radial-gradient(circle, rgba(0,0,0,.08) 0.5px, transparent 0.5px);
+  background-size: 3px 3px;
+  max-height: 88vh; overflow-y: auto;
+  padding: 0 20px 36px;
+}
+.modal-top-bar {
+  display: flex; align-items: center; justify-content: flex-end;
+  padding: 14px 0 10px;
+}
+.modal-close {
+  background: none; border: none; cursor: pointer;
+  width: 26px; height: 26px;
+  display: flex; align-items: center; justify-content: center;
+  color: rgba(26,26,20,.4); font-size: 13px; font-family: inherit;
+  transition: color .1s;
+}
+.modal-close:hover { color: #1a1a14; }
+
+/* RESPONSIVE */
+@media (max-width: 860px) {
+  .success-page { grid-template-columns: 1fr; gap: 0; }
+  .receipt-col { display: none; }
+  .order-heading { font-size: 28px; }
+  .countdown { font-size: 36px; }
+  .payment-body { gap: 20px; }
+  .wallet-logos-wrap { max-width: 100%; }
+  .view-summary-btn { display: block; }
+}
+@media (max-width: 600px) {
+  .order-heading { font-size: 24px; }
+  .countdown { font-size: 32px; }
+}
 </style>
 </head>
 <body>
@@ -233,63 +215,143 @@ html, body {
     <a href="index.html">
       <img src="images/late-records-logo.png" class="header-logo" alt="LATE RECORDS">
     </a>
-    <a href="cart.html" class="cart-link">Cart (<span class="cart-count">0</span>)</a>
   </div>
 </header>
 
 <div class="container">
-  <h1 class="page-title">Order Received</h1>
+  <div class="success-page">
 
-  <p class="sub-headline" id="thankYouText">
-    Thank you for your order. To complete your purchase, please submit payment using the QR code below.
-  </p>
+    <!-- LEFT -->
+    <div>
+      <h1 class="order-heading">Order Received</h1>
 
-  <div class="payment-status-card" id="paymentStatusCard">
-    <div class="payment-status-label">Payment Summary</div>
-
-    <div class="payment-status-grid">
-      <div class="status-col">
-        <div class="status-kicker">Amount Due</div>
-        <div class="status-value" id="amountDueValue">₱0</div>
+      <div class="order-meta">
+        <div class="meta-cell left">
+          <div class="meta-label">Order</div>
+          <div class="meta-value" id="metaOrder">—</div>
+        </div>
+        <div class="meta-cell right">
+          <div class="meta-label">Address</div>
+          <div class="meta-value" id="metaAddress">—</div>
+        </div>
+        <div class="meta-cell left">
+          <div class="meta-label">Ship To</div>
+          <div class="meta-value" id="metaBuyer">—</div>
+        </div>
+        <div class="meta-cell right">
+          <div class="meta-label">Amount Due</div>
+          <div class="meta-value amount" id="metaAmount">—</div>
+        </div>
       </div>
 
-      <div class="status-divider"></div>
+      <button class="view-summary-btn" onclick="openModal()">
+        <div class="vsb-inner">
+          <span class="vsb-label">View Order Summary</span>
+          <span class="vsb-arrow">→</span>
+        </div>
+      </button>
 
-      <div class="status-col">
-        <div class="status-kicker">Payment Window</div>
-        <div class="status-value timer" id="paymentWindowValue">24:00:00</div>
+      <div class="payment-section">
+        <div class="payment-heading">Send Payment</div>
+        <div class="payment-body">
+          <div>
+            <div class="timer-label">Pay Within</div>
+            <div class="countdown" id="countdown">24:00:00</div>
+            <div class="timer-note" id="timerNote">Scan the QR code using any QR PH–enabled app. Order is held until the window closes.</div>
+            <div class="wallet-logos-wrap">
+              <img src="images/late-records-payment-bdo.png"       class="wallet-logo" style="height:11px;" alt="BDO">
+              <img src="images/late-records-payment-gotyme.png"    class="wallet-logo" style="height:13px;" alt="GoTyme">
+              <img src="images/late-records-payment-gcash.png"     class="wallet-logo" style="height:13px;" alt="GCash">
+              <img src="images/late-records-payment-maya.png"      class="wallet-logo" style="height:11px;" alt="Maya">
+              <img src="images/late-records-payment-shopeepay.png" class="wallet-logo" style="height:12px;" alt="ShopeePay">
+            </div>
+          </div>
+          <div class="qr-block">
+            <div class="qr-ph-label">
+              <img src="images/late-records-payment-qrph.png" class="qr-ph-logo" alt="QR PH">
+            </div>
+            <img src="images/late-records-qr-payment.jpg" class="qr-img" alt="Payment QR">
+            <button class="qr-download" onclick="downloadQR()">&#x2193; download</button>
+          </div>
+        </div>
+      </div>
+
+      <p class="order-note">
+        Orders unpaid after the payment window may be cancelled and released back to stock. Contact us at info.late.records@gmail.com with any questions.
+      </p>
+    </div>
+
+    <!-- RECEIPT — desktop only -->
+    <div class="receipt-col">
+      <div class="tear"></div>
+      <div class="receipt">
+        <div class="r-header">
+          <div class="r-type">Order Summary</div>
+          <div class="r-sub">info.late.records@gmail.com</div>
+        </div>
+        <div class="r-dashes">- - - - - - - - - - - - - -</div>
+        <div class="r-row"><span class="k">Order</span><span class="v" id="rOrder">—</span></div>
+        <div class="r-row"><span class="k">Date</span><span class="v" id="rDate">—</span></div>
+        <div class="r-row"><span class="k">Customer</span><span class="v" id="rCustomer">—</span></div>
+        <div class="r-dashes">- - - - - - - - - - - - - -</div>
+        <div id="rItems"></div>
+        <div class="r-dashes">- - - - - - - - - - - - - -</div>
+        <div class="r-row"><span class="k">Subtotal</span><span class="v" id="rSubtotal">—</span></div>
+        <div class="r-row"><span class="k">Shipping</span><span class="v" id="rShipping">—</span></div>
+        <div class="r-dashes">- - - - - - - - - - - - - -</div>
+        <div class="r-total-row"><span>Total</span><span id="rTotal">—</span></div>
+        <div class="r-footer">
+          Packed with care in Bacolod City.<br>
+          Thank you for shopping Late Records.
+        </div>
+      </div>
+      <div class="tear tear-bottom"></div>
+    </div>
+
+  </div>
+</div>
+
+<!-- MOBILE MODAL -->
+<div class="modal-overlay" id="modalOverlay" onclick="handleOverlay(event)">
+  <div class="modal-sheet">
+    <div class="modal-top-bar">
+      <button class="modal-close" onclick="closeModal()">&#x2715;</button>
+    </div>
+    <div class="tear"></div>
+    <div class="receipt">
+      <div class="r-header">
+        <div class="r-type">Order Summary</div>
+        <div class="r-sub">info.late.records@gmail.com</div>
+      </div>
+      <div class="r-dashes">- - - - - - - - - - - - - -</div>
+      <div class="r-row"><span class="k">Order</span><span class="v" id="mOrder">—</span></div>
+      <div class="r-row"><span class="k">Date</span><span class="v" id="mDate">—</span></div>
+      <div class="r-row"><span class="k">Customer</span><span class="v" id="mCustomer">—</span></div>
+      <div class="r-dashes">- - - - - - - - - - - - - -</div>
+      <div id="mItems"></div>
+      <div class="r-dashes">- - - - - - - - - - - - - -</div>
+      <div class="r-row"><span class="k">Subtotal</span><span class="v" id="mSubtotal">—</span></div>
+      <div class="r-row"><span class="k">Shipping</span><span class="v" id="mShipping">—</span></div>
+      <div class="r-dashes">- - - - - - - - - - - - - -</div>
+      <div class="r-total-row"><span>Total</span><span id="mTotal">—</span></div>
+      <div class="r-footer">
+        Packed with care in Bacolod City.<br>
+        Thank you for shopping Late Records.
       </div>
     </div>
-
-    <div class="payment-status-help" id="paymentStatusHelp">
-      Please complete your payment within the payment window shown above.
-    </div>
+    <div class="tear tear-bottom"></div>
   </div>
-
-  <div class="payment-section">
-    <img src="images/late-records-qr-payment.jpg" class="qr-code" alt="LATE RECORDS payment QR">
-    <div class="payment-copy">
-      <div class="payment-label">QR PH / E-Wallet</div>
-      <div class="payment-wallets">GoTyme &nbsp;•&nbsp; GCash &nbsp;•&nbsp; Maya</div>
-    </div>
-  </div>
-
-  <p class="notice" id="paymentNotice">
-    Orders unpaid after the payment window may be cancelled and released back into stock.
-  </p>
-
-  <a href="index.html" class="return-link">Return to Shop</a>
 </div>
 
 <script src="script.js"></script>
 <script>
-const buyer = localStorage.getItem('lr_buyer');
+
+// Guard
+const buyer      = localStorage.getItem('lr_buyer');
 const orderTotal = localStorage.getItem('lr_order_total');
+if (!buyer || !orderTotal) { window.location.href = 'index.html'; }
 
-if (!buyer || !orderTotal) {
-  window.location.href = 'index.html';
-}
-
+// Timestamp
 let orderCreatedAt = localStorage.getItem('lr_order_created_at');
 if (!orderCreatedAt) {
   orderCreatedAt = String(Date.now());
@@ -297,56 +359,118 @@ if (!orderCreatedAt) {
 }
 orderCreatedAt = Number(orderCreatedAt);
 
-if (buyer) {
-  document.getElementById('thankYouText').innerHTML =
-    `Thank you for your order, <strong>${buyer}</strong>. To complete your purchase, please submit payment using the QR code below.`;
+// Order number
+let orderNum = localStorage.getItem('lr_order_number');
+if (!orderNum) {
+  orderNum = '#LR-' + String(Math.floor(Math.random() * 90000) + 10000);
+  localStorage.setItem('lr_order_number', orderNum);
 }
 
-if (orderTotal) {
-  document.getElementById('amountDueValue').textContent = orderTotal;
+// Address
+const address  = localStorage.getItem('lr_address') || '';
+const city     = localStorage.getItem('lr_city')    || '';
+const addrHTML = [address, city].filter(Boolean).join('<br>') || '—';
+
+// Cart
+const cart     = LR.cart.get;
+const subtotal = LR.cart.subtotal;
+const shipping = LR.cart.shipping;
+const total    = LR.cart.total;
+
+// Date
+const dateStr = new Date(orderCreatedAt).toLocaleDateString('en-GB', {
+  day: 'numeric', month: 'short', year: 'numeric'
+});
+
+// Populate meta
+document.getElementById('metaOrder').textContent  = orderNum;
+document.getElementById('metaBuyer').textContent  = buyer;
+document.getElementById('metaAmount').textContent = orderTotal;
+document.getElementById('metaAddress').innerHTML  = addrHTML;
+
+// Build items
+function buildItems(cart) {
+  return cart.map(function(item) {
+    return '<div class="r-item">' +
+      '<div class="r-item-title">' + item.title + '</div>' +
+      '<div class="r-item-meta">' +
+        '<span>' + (item.format || 'LP') + ' \xd7 ' + item.qty + '</span>' +
+        '<span>' + LR.ui.peso(item.price * item.qty) + '</span>' +
+      '</div></div>';
+  }).join('');
 }
 
-function formatRemaining(ms) {
-  const totalSeconds = Math.max(0, Math.floor(ms / 1000));
-  const hours = Math.floor(totalSeconds / 3600);
-  const minutes = Math.floor((totalSeconds % 3600) / 60);
-  const seconds = totalSeconds % 60;
+// Desktop receipt
+document.getElementById('rOrder').textContent    = orderNum;
+document.getElementById('rDate').textContent     = dateStr;
+document.getElementById('rCustomer').textContent = buyer;
+document.getElementById('rItems').innerHTML      = buildItems(cart);
+document.getElementById('rSubtotal').textContent = LR.ui.peso(subtotal);
+document.getElementById('rShipping').textContent = LR.ui.peso(shipping);
+document.getElementById('rTotal').textContent    = LR.ui.peso(total);
 
-  return `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+// Mobile modal receipt
+document.getElementById('mOrder').textContent    = orderNum;
+document.getElementById('mDate').textContent     = dateStr;
+document.getElementById('mCustomer').textContent = buyer;
+document.getElementById('mItems').innerHTML      = buildItems(cart);
+document.getElementById('mSubtotal').textContent = LR.ui.peso(subtotal);
+document.getElementById('mShipping').textContent = LR.ui.peso(shipping);
+document.getElementById('mTotal').textContent    = LR.ui.peso(total);
+
+// Countdown
+var deadline = orderCreatedAt + (24 * 60 * 60 * 1000);
+var cdEl     = document.getElementById('countdown');
+var noteEl   = document.getElementById('timerNote');
+
+function fmt(ms) {
+  var s   = Math.max(0, Math.floor(ms / 1000));
+  var h   = Math.floor(s / 3600);
+  var m   = Math.floor((s % 3600) / 60);
+  var sec = s % 60;
+  return String(h).padStart(2,'0') + ':' + String(m).padStart(2,'0') + ':' + String(sec).padStart(2,'0');
 }
 
-function startCountdown(createdAt) {
-  const card = document.getElementById('paymentStatusCard');
-  const value = document.getElementById('paymentWindowValue');
-  const help = document.getElementById('paymentStatusHelp');
-  const notice = document.getElementById('paymentNotice');
-
-  const deadline = createdAt + (24 * 60 * 60 * 1000);
-
-  function updateCountdown() {
-    const remaining = deadline - Date.now();
-
-    if (remaining <= 0) {
-      card.classList.add('is-expired');
-      value.textContent = 'Expired';
-      help.textContent = 'The payment window has expired. Please contact Late Records before sending payment.';
-      notice.textContent = 'Orders unpaid after the payment window may be cancelled and released back into stock.';
-      clearInterval(timer);
-      return;
-    }
-
-    value.textContent = formatRemaining(remaining);
+function tick() {
+  var remaining = deadline - Date.now();
+  if (remaining <= 0) {
+    cdEl.textContent = 'Window Expired';
+    cdEl.classList.add('is-expired');
+    noteEl.textContent = 'The payment window has expired. Please contact us at info.late.records@gmail.com before sending payment.';
+    clearInterval(timer);
+    return;
   }
-
-  updateCountdown();
-  const timer = setInterval(updateCountdown, 1000);
+  cdEl.textContent = fmt(remaining);
 }
+tick();
+var timer = setInterval(tick, 1000);
 
-startCountdown(orderCreatedAt);
-
+// Clear sensitive data
 localStorage.removeItem('lr_buyer');
 localStorage.removeItem('lr_order_total');
-</script>
 
+// QR download
+function downloadQR() {
+  var a = document.createElement('a');
+  a.href = 'images/late-records-qr-payment.jpg';
+  a.download = 'late-records-payment-qr.jpg';
+  a.click();
+}
+
+// Modal
+function openModal() {
+  document.getElementById('modalOverlay').classList.add('is-open');
+  document.body.style.overflow = 'hidden';
+}
+function closeModal() {
+  document.getElementById('modalOverlay').classList.remove('is-open');
+  document.body.style.overflow = '';
+}
+function handleOverlay(e) {
+  if (e.target === document.getElementById('modalOverlay')) closeModal();
+}
+
+</script>
+<script src="under-construction.js"></script>
 </body>
 </html>
