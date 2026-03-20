@@ -33,7 +33,10 @@ html, body {
 }
 .cart-link:hover { background: none; color: rgba(26,26,20,.5); }
 .fixed-footer { display: none; }
-.container { padding-bottom: 80px; padding-top: calc(74px + 10px); }
+.container { padding-bottom: 80px; padding-top: calc(74px + 30px); }
+@media (max-width: 900px) {
+  .container { padding-top: calc(74px + 10px); }
+}
 
 .album-page {
   display: flex;
