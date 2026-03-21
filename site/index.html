@@ -409,7 +409,7 @@ col.c-stock  { width: 8%; }
       placeholder="Search by title, artist, genre, format…">
     <button class="search-clear" id="searchClear" aria-label="Clear search">&#215;</button>
     <span class="search-count" id="searchCount"></span>
-    <button class="avail-toggle" id="availToggle" aria-label="Show available only">
+    <button class="avail-toggle" id="availToggle" aria-label="Show available only" onclick="toggleAvail()">
       <span class="avail-track"></span>
       <span class="avail-thumb"></span>
     </button>
@@ -507,11 +507,11 @@ function buildCarousel(albums) {
 
 window.availFilterActive = false;
 
-document.getElementById('availToggle').addEventListener('click', function() {
+function toggleAvail() {
   window.availFilterActive = !window.availFilterActive;
-  this.classList.toggle('active', window.availFilterActive);
+  document.getElementById('availToggle').classList.toggle('active', window.availFilterActive);
   applyAvailToggle();
-});
+}
 
 document.addEventListener('DOMContentLoaded', async () => {
   initSearch();
