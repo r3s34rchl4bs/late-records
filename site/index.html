@@ -268,25 +268,42 @@ col.c-stock  { width: 8%; }
 }
 @media (max-width: 600px) { .search-count { display: none; } }
 
+/* ── Availability toggle (switch) ────────────────────────── */
 .avail-toggle {
-  background: none; border: none; padding: 0; cursor: pointer;
-  width: 16px; height: 16px; position: relative; flex-shrink: 0;
+  position: relative;
+  width: 36px;
+  height: 20px;
+  cursor: pointer;
+  flex-shrink: 0;
+  margin-left: 12px;
+  background: none;
+  border: none;
+  padding: 0;
 }
-.avail-toggle .box {
-  width: 16px; height: 16px;
-  border: 1.5px solid rgba(26,26,20,.35);
-  display: block; position: absolute; top: 0; left: 0;
-  transition: border-color .1s, background .1s;
+.avail-track {
+  position: absolute;
+  inset: 0;
+  background: rgba(26,26,20,.15);
+  border: 1px solid rgba(26,26,20,.2);
+  transition: background .15s, border-color .15s;
 }
-.avail-toggle .chk {
-  position: absolute; top: 2px; left: 4px;
-  width: 6px; height: 9px;
-  border-right: 2px solid transparent;
-  border-bottom: 2px solid transparent;
-  transform: rotate(40deg); transition: border-color .1s;
+.avail-thumb {
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  width: 12px;
+  height: 12px;
+  background: rgba(26,26,20,.4);
+  transition: transform .15s, background .15s;
 }
-.avail-toggle.active .box { border-color: #1a1a14; background: #1a1a14; }
-.avail-toggle.active .chk { border-color: #e2e2e2; }
+.avail-toggle.active .avail-track {
+  background: #1a1a14;
+  border-color: #1a1a14;
+}
+.avail-toggle.active .avail-thumb {
+  transform: translateX(16px);
+  background: #e2e2e2;
+}
 
 .sk {
   background: linear-gradient(90deg, rgba(0,0,0,.07) 25%, rgba(0,0,0,.13) 50%, rgba(0,0,0,.07) 75%);
@@ -367,7 +384,6 @@ col.c-stock  { width: 8%; }
   <section class="carousel-section">
     <div class="carousel-viewport">
       <div class="carousel-track" id="carouselTrack">
-        <!-- skeleton -->
         <div class="carousel-card" style="cursor:default">
           <div class="card-inner">
             <div class="card-top">
@@ -393,9 +409,9 @@ col.c-stock  { width: 8%; }
       placeholder="Search by title, artist, genre, format…">
     <button class="search-clear" id="searchClear" aria-label="Clear search">&#215;</button>
     <span class="search-count" id="searchCount"></span>
-    <button class="avail-toggle" id="availToggle" onclick="toggleAvail()" aria-label="Show available only" style="margin-left:12px;">
-      <span class="box"></span>
-      <span class="chk"></span>
+    <button class="avail-toggle" id="availToggle" aria-label="Show available only">
+      <span class="avail-track"></span>
+      <span class="avail-thumb"></span>
     </button>
   </div>
 
@@ -491,11 +507,11 @@ function buildCarousel(albums) {
 
 window.availFilterActive = false;
 
-function toggleAvail() {
+document.getElementById('availToggle').addEventListener('click', function() {
   window.availFilterActive = !window.availFilterActive;
-  document.getElementById('availToggle').classList.toggle('active', window.availFilterActive);
+  this.classList.toggle('active', window.availFilterActive);
   applyAvailToggle();
-}
+});
 
 document.addEventListener('DOMContentLoaded', async () => {
   initSearch();

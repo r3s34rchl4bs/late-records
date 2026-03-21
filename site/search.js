@@ -25,7 +25,7 @@ function renderTable(rawQuery) {
   }
 
   if (!q) {
-    const base = window.availFilterActive === true
+    const base = window.availFilterActive
       ? _catalog.filter(a => a.status === 'available')
       : _catalog;
     tbody.innerHTML = base.map(item => rowHTML(item, '', false)).join('');
@@ -62,7 +62,7 @@ function renderTable(rawQuery) {
     })
     .map(x => x.item);
 
-  const filtered = window.availFilterActive === true
+  const filtered = window.availFilterActive
     ? matches.filter(a => a.status === 'available')
     : matches;
 
@@ -118,12 +118,10 @@ function applySuggestionsWithToggle(query) {
   const tbody = document.getElementById('catalogList');
   const tbl   = document.getElementById('catalogTable');
 
-  const isAvailOn = window.availFilterActive === true;
-
   tbl.style.display = '';
   empty.style.display = 'none';
 
-  const toShow = isAvailOn
+  const toShow = window.availFilterActive
     ? _currentSuggestions.filter(a => a.status === 'available')
     : _currentSuggestions;
 
@@ -137,7 +135,7 @@ function applySuggestionsWithToggle(query) {
 
   hdr.className = 'suggestions-header';
   hdr.style.display = 'block';
-  hdr.innerHTML = isAvailOn
+  hdr.innerHTML = window.availFilterActive
     ? `No results for <span>"${query || ''}"</span> — showing available suggestions only`
     : `No results for <span>"${query || ''}"</span> — you might like:`;
 
