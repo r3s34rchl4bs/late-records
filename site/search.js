@@ -26,7 +26,7 @@ function renderTable(rawQuery) {
 
   if (!q) {
     const base = window.availFilterActive
-      ? _catalog.filter(a => a.status === 'available')
+      ? _catalog.filter(a => String(a.status).toLowerCase() === 'available')
       : _catalog;
     tbody.innerHTML = base.map(item => rowHTML(item, '', false)).join('');
     count.textContent = '';
@@ -63,7 +63,7 @@ function renderTable(rawQuery) {
     .map(x => x.item);
 
   const filtered = window.availFilterActive
-    ? matches.filter(a => a.status === 'available')
+    ? matches.filter(a => String(a.status).toLowerCase() === 'available')
     : matches;
 
   if (filtered.length) {
@@ -122,7 +122,7 @@ function applySuggestionsWithToggle(query) {
   empty.style.display = 'none';
 
   const toShow = window.availFilterActive
-    ? _currentSuggestions.filter(a => a.status === 'available')
+    ? _currentSuggestions.filter(a => String(a.status).toLowerCase() === 'available')
     : _currentSuggestions;
 
   if (!toShow.length) {

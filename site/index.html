@@ -268,7 +268,7 @@ col.c-stock  { width: 8%; }
 }
 @media (max-width: 600px) { .search-count { display: none; } }
 
-/* ── Availability toggle (switch) ────────────────────────── */
+/* ── Availability toggle ─────────────────────────────────── */
 .avail-toggle {
   position: relative;
   width: 36px;
@@ -283,9 +283,9 @@ col.c-stock  { width: 8%; }
 .avail-track {
   position: absolute;
   inset: 0;
-  background: rgba(26,26,20,.15);
-  border: 1px solid rgba(26,26,20,.2);
-  transition: background .15s, border-color .15s;
+  background: transparent;
+  border: 1px solid rgba(26,26,20,.35);
+  transition: border-color .15s;
 }
 .avail-thumb {
   position: absolute;
@@ -293,16 +293,17 @@ col.c-stock  { width: 8%; }
   left: 3px;
   width: 12px;
   height: 12px;
-  background: rgba(26,26,20,.4);
-  transition: transform .15s, background .15s;
+  background: transparent;
+  border: 1px solid rgba(26,26,20,.35);
+  transition: transform .15s, background .15s, border-color .15s;
 }
 .avail-toggle.active .avail-track {
-  background: #1a1a14;
   border-color: #1a1a14;
 }
 .avail-toggle.active .avail-thumb {
   transform: translateX(16px);
-  background: #e2e2e2;
+  background: #1a1a14;
+  border-color: #1a1a14;
 }
 
 .sk {
