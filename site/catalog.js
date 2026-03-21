@@ -9,6 +9,7 @@ function rowHTML(item, query, isSuggestion) {
   const artist = query ? highlight(item.artist, query) : item.artist;
   return `<tr class="${sold ? 'sold' : ''}${isSuggestion ? ' is-suggestion' : ''}"
     onclick="location.href='albums/album.html?id=${item.album_id}'">
+    <td class="c-art"><div class="rec-art-wrap"><img src="images/${item.album_id}.jpg" alt="" loading="lazy" onerror="this.parentNode.style.opacity='0'"></div></td>
     <td class="c-title"><div class="rec-title">${title}</div><div class="rec-artist">${artist}</div></td>
     <td class="c-genre"><span class="genre-tag"
       onclick="event.stopPropagation();location.href='genre.html?g=${encodeURIComponent(genre.toLowerCase())}'">${genre}</span></td>
