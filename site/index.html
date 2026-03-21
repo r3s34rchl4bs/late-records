@@ -494,8 +494,7 @@ let availFilterActive = false;
 function toggleAvail() {
   availFilterActive = !availFilterActive;
   document.getElementById('availToggle').classList.toggle('active', availFilterActive);
-  const catalog = window._catalogCache || [];
-  buildTable(availFilterActive ? catalog.filter(a => a.status === 'available') : catalog);
+  applyAvailToggle();
 }
 
 document.addEventListener('DOMContentLoaded', async () => {

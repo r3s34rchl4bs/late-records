@@ -1,5 +1,7 @@
 let _catalog = [];
 let _suggestTimer = null;
+let _currentSuggestions = [];
+let _isSuggestionMode = false;
 
 function renderTable(rawQuery) {
   const q      = rawQuery.trim().toLowerCase();
@@ -14,13 +16,19 @@ function renderTable(rawQuery) {
   empty.style.display = 'none';
   tbl.style.display = '';
 
+  _isSuggestionMode = false;
+  _currentSuggestions = [];
+
   if (_suggestTimer) {
     clearTimeout(_suggestTimer);
     _suggestTimer = null;
   }
 
   if (!q) {
-    tbody.innerHTML = _catalog.map(item => rowHTML(item, '', false)).join('');
+    const base = availFilterActive
+      ? _catalog.filter(a => a.status === 'available')
+      : _catalog;
+    tbody.innerHTML = base.map(item => rowHTML(item, '', false)).join('');
     count.textContent = '';
     return;
   }
@@ -54,12 +62,18 @@ function renderTable(rawQuery) {
     })
     .map(x => x.item);
 
-  if (matches.length) {
-    tbody.innerHTML = matches.map(item => rowHTML(item, rawQuery.trim(), false)).join('');
-    count.textContent = `${matches.length} result${matches.length !== 1 ? 's' : ''}`;
+  // Apply avail filter to direct matches too
+  const filtered = availFilterActive
+    ? matches.filter(a => a.status === 'available')
+    : matches;
+
+  if (filtered.length) {
+    tbody.innerHTML = filtered.map(item => rowHTML(item, rawQuery.trim(), false)).join('');
+    count.textContent = `${filtered.length} result${filtered.length !== 1 ? 's' : ''}`;
     return;
   }
 
+  // No matches at all — go fetch suggestions
   count.textContent = '';
   hdr.style.display = 'block';
   hdr.className = 'suggestions-header is-loading';
@@ -73,26 +87,65 @@ async function fetchSuggestions(query) {
   const empty = document.getElementById('noResultsEmpty');
   const tbody = document.getElementById('catalogList');
   const tbl   = document.getElementById('catalogTable');
+
   try {
     const controller = new AbortController();
     const timeout = setTimeout(() => controller.abort(), 5000);
     const res = await fetch(`https://late-records.shop/api/suggest?q=${encodeURIComponent(query)}`, { signal: controller.signal });
     clearTimeout(timeout);
     const suggestions = await res.json();
+
     if (!suggestions.length) {
       tbl.style.display = 'none';
       hdr.style.display = 'none';
       empty.style.display = 'block';
       return;
     }
-    hdr.className = 'suggestions-header';
-    hdr.innerHTML = `No results for <span>"${query}"</span> — you might like:`;
-    tbody.innerHTML = suggestions.map(item => rowHTML(item, '', true)).join('');
+
+    _isSuggestionMode = true;
+    _currentSuggestions = suggestions;
+
+    applySuggestionsWithToggle(query);
+
   } catch {
     tbl.style.display = 'none';
     hdr.style.display = 'none';
     empty.style.display = 'block';
   }
+}
+
+function applySuggestionsWithToggle(query) {
+  const hdr   = document.getElementById('suggestionsHeader');
+  const empty = document.getElementById('noResultsEmpty');
+  const tbody = document.getElementById('catalogList');
+  const tbl   = document.getElementById('catalogTable');
+
+  tbl.style.display = '';
+  empty.style.display = 'none';
+
+  const toShow = availFilterActive
+    ? _currentSuggestions.filter(a => a.status === 'available')
+    : _currentSuggestions;
+
+  if (!toShow.length) {
+    // Toggle is on but all suggestions are sold
+    hdr.className = 'suggestions-header';
+    hdr.style.display = 'block';
+    hdr.innerHTML = `No available results for <span>"${query || ''}"</span> — turn off the filter to see sold items`;
+    tbody.innerHTML = '';
+    return;
+  }
+
+  hdr.className = 'suggestions-header';
+  hdr.style.display = 'block';
+
+  if (availFilterActive) {
+    hdr.innerHTML = `No results for <span>"${query || ''}"</span> — showing available suggestions only`;
+  } else {
+    hdr.innerHTML = `No results for <span>"${query || ''}"</span> — you might like:`;
+  }
+
+  tbody.innerHTML = toShow.map(item => rowHTML(item, '', true)).join('');
 }
 
 function initSearch() {
@@ -115,6 +168,8 @@ function initSearch() {
   clear.addEventListener('click', () => {
     input.value = '';
     clear.style.display = 'none';
+    _isSuggestionMode = false;
+    _currentSuggestions = [];
     renderTable('');
     input.focus();
   });
@@ -128,6 +183,8 @@ function initSearch() {
     ) {
       input.value = '';
       clear.style.display = 'none';
+      _isSuggestionMode = false;
+      _currentSuggestions = [];
       renderTable('');
     }
   });
@@ -138,4 +195,15 @@ function buildTable(albums) {
     String(a.artist || '').localeCompare(String(b.artist || ''))
   );
   renderTable('');
+}
+
+function applyAvailToggle() {
+  if (_isSuggestionMode) {
+    // We're in suggestion mode — re-filter suggestions instead of catalog
+    const query = document.getElementById('searchInput').value.trim();
+    applySuggestionsWithToggle(query);
+  } else {
+    // Normal mode — just re-render the table
+    renderTable(document.getElementById('searchInput').value);
+  }
 }
