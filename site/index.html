@@ -285,7 +285,7 @@ col.c-stock  { width: 8%; }
   inset: 0;
   background: transparent;
   border: 1px solid rgba(26,26,20,.35);
-  transition: border-color .15s;
+  transition: background .15s, border-color .15s;
 }
 .avail-thumb {
   position: absolute;
@@ -295,15 +295,15 @@ col.c-stock  { width: 8%; }
   height: 12px;
   background: transparent;
   border: 1px solid rgba(26,26,20,.35);
-  transition: transform .15s, background .15s, border-color .15s;
+  transition: transform .15s, border-color .15s;
 }
 .avail-toggle.active .avail-track {
-  border-color: #1a1a14;
+  background: rgba(26,26,20,.18);
+  border-color: rgba(26,26,20,.5);
 }
 .avail-toggle.active .avail-thumb {
   transform: translateX(16px);
-  background: #1a1a14;
-  border-color: #1a1a14;
+  border-color: rgba(26,26,20,.5);
 }
 
 .sk {
