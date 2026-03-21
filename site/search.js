@@ -25,7 +25,7 @@ function renderTable(rawQuery) {
   }
 
   if (!q) {
-    const base = availFilterActive
+    const base = window.availFilterActive === true
       ? _catalog.filter(a => a.status === 'available')
       : _catalog;
     tbody.innerHTML = base.map(item => rowHTML(item, '', false)).join('');
@@ -62,8 +62,7 @@ function renderTable(rawQuery) {
     })
     .map(x => x.item);
 
-  // Apply avail filter to direct matches too
-  const filtered = availFilterActive
+  const filtered = window.availFilterActive === true
     ? matches.filter(a => a.status === 'available')
     : matches;
 
@@ -73,7 +72,6 @@ function renderTable(rawQuery) {
     return;
   }
 
-  // No matches at all — go fetch suggestions
   count.textContent = '';
   hdr.style.display = 'block';
   hdr.className = 'suggestions-header is-loading';
@@ -120,15 +118,16 @@ function applySuggestionsWithToggle(query) {
   const tbody = document.getElementById('catalogList');
   const tbl   = document.getElementById('catalogTable');
 
+  const isAvailOn = window.availFilterActive === true;
+
   tbl.style.display = '';
   empty.style.display = 'none';
 
-  const toShow = availFilterActive
+  const toShow = isAvailOn
     ? _currentSuggestions.filter(a => a.status === 'available')
     : _currentSuggestions;
 
   if (!toShow.length) {
-    // Toggle is on but all suggestions are sold
     hdr.className = 'suggestions-header';
     hdr.style.display = 'block';
     hdr.innerHTML = `No available results for <span>"${query || ''}"</span> — turn off the filter to see sold items`;
@@ -138,12 +137,9 @@ function applySuggestionsWithToggle(query) {
 
   hdr.className = 'suggestions-header';
   hdr.style.display = 'block';
-
-  if (availFilterActive) {
-    hdr.innerHTML = `No results for <span>"${query || ''}"</span> — showing available suggestions only`;
-  } else {
-    hdr.innerHTML = `No results for <span>"${query || ''}"</span> — you might like:`;
-  }
+  hdr.innerHTML = isAvailOn
+    ? `No results for <span>"${query || ''}"</span> — showing available suggestions only`
+    : `No results for <span>"${query || ''}"</span> — you might like:`;
 
   tbody.innerHTML = toShow.map(item => rowHTML(item, '', true)).join('');
 }
@@ -199,11 +195,9 @@ function buildTable(albums) {
 
 function applyAvailToggle() {
   if (_isSuggestionMode) {
-    // We're in suggestion mode — re-filter suggestions instead of catalog
     const query = document.getElementById('searchInput').value.trim();
     applySuggestionsWithToggle(query);
   } else {
-    // Normal mode — just re-render the table
     renderTable(document.getElementById('searchInput').value);
   }
 }

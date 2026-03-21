@@ -489,11 +489,11 @@ function buildCarousel(albums) {
   document.getElementById('nextBtn').addEventListener('click', (e) => { e.stopPropagation(); goTo(current + 1); });
 }
 
-let availFilterActive = false;
+window.availFilterActive = false;
 
 function toggleAvail() {
-  availFilterActive = !availFilterActive;
-  document.getElementById('availToggle').classList.toggle('active', availFilterActive);
+  window.availFilterActive = !window.availFilterActive;
+  document.getElementById('availToggle').classList.toggle('active', window.availFilterActive);
   applyAvailToggle();
 }
 
