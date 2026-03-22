@@ -114,7 +114,7 @@ button { cursor: pointer; font-family: inherit; }
 
 /* ── Table ───────────────────────────────────────────────── */
 .tbl { width: 100%; border-collapse: collapse; table-layout: fixed; }
-col.c-art    { width: 52px; }
+col.c-art    { width: 72px; }
 col.c-title  { width: auto; }
 col.c-genre  { width: 14%; }
 col.c-format { width: 8%; }
@@ -139,7 +139,7 @@ col.c-stock  { width: 8%; }
 .tbl tbody tr:hover .rec-artist,
 .tbl tbody tr:hover .rec-stock { color: #1a1a14; }
 .tbl tbody td {
-  padding: 10px 12px 10px 0;
+  padding: 14px 12px 14px 0;
   border-bottom: 1px solid rgba(26,26,20,.12); vertical-align: middle;
 }
 .tbl tbody td:first-child { padding-left: 0; }
@@ -150,7 +150,7 @@ col.c-stock  { width: 8%; }
 
 /* ── Album art ───────────────────────────────────────────── */
 .rec-art-wrap {
-  width: 38px; height: 38px;
+  width: 56px; height: 56px;
   overflow: hidden; flex-shrink: 0;
   background: rgba(26,26,20,.07);
 }
@@ -263,7 +263,7 @@ col.c-stock  { width: 8%; }
 
 /* ── Desktop ─────────────────────────────────────────────── */
 @media (max-width: 900px) {
-  col.c-art    { width: 44px; }
+  col.c-art    { width: 60px; }
   col.c-format, col.c-stock { display: none; }
   .tbl thead th.c-format, .tbl thead th.c-stock,
   .tbl tbody td.c-format, .tbl tbody td.c-stock { display: none; }
@@ -275,7 +275,7 @@ col.c-stock  { width: 8%; }
   .card-artist { font-size: 11px; }
   .rec-title   { font-size: 14px; }
   .rec-artist  { font-size: 11px; }
-  .rec-art-wrap { width: 32px; height: 32px; }
+  .rec-art-wrap { width: 48px; height: 48px; }
 }
 
 /* ── PROTOTYPE MOBILE — bigger proportions ───────────────── */
