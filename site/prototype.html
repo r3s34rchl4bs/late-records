@@ -18,11 +18,10 @@ html, body {
   background-size: 3px 3px;
   color: #1a1a14;
   -webkit-font-smoothing: antialiased;
-  cursor: none;
 }
 img { display: block; max-width: 100%; }
-a   { color: inherit; text-decoration: none; cursor: none; }
-button { cursor: none; font-family: inherit; }
+a   { color: inherit; text-decoration: none; }
+button { cursor: pointer; font-family: inherit; }
 
 /* ── Film grain ──────────────────────────────────────────── */
 #grain {
@@ -32,28 +31,11 @@ button { cursor: none; font-family: inherit; }
   height: 100%;
   pointer-events: none;
   z-index: 9998;
-  opacity: .75;
-  mix-blend-mode: overlay;
+  opacity: .9;
+  mix-blend-mode: multiply;
 }
 
-/* ── Custom cursor ───────────────────────────────────────── */
-#cursor {
-  position: fixed;
-  width: 4px; height: 4px;
-  background: #1a1a14;
-  border-radius: 50%;
-  pointer-events: none;
-  z-index: 9999;
-  transform: translate(-50%, -50%);
-  transition: width .18s ease, height .18s ease, background .18s ease, border .18s ease;
-  left: -100px; top: -100px;
-}
-#cursor.expanded {
-  width: 18px; height: 18px;
-  background: transparent;
-  border: 1px solid rgba(26,26,20,.55);
-}
-@media (max-width: 600px) { #cursor { display: none; } }
+
 
 /* ── Header ──────────────────────────────────────────────── */
 .fixed-header {
@@ -77,6 +59,23 @@ button { cursor: none; font-family: inherit; }
 }
 .cart-link:hover { color: rgba(26,26,20,.5); }
 
+/* ── Shop open indicator ─────────────────────────────────── */
+.shop-status {
+  display: flex; align-items: center; gap: 6px;
+  font-size: 11px; font-weight: 500; letter-spacing: .07em;
+  text-transform: uppercase; color: rgba(26,26,20,.5);
+  margin-right: 20px;
+}
+.shop-dot {
+  width: 5px; height: 5px; border-radius: 50%;
+  background: #1a1a14; flex-shrink: 0;
+  animation: pulse 2.4s ease-in-out infinite;
+}
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: .25; }
+}
+
 .container {
   max-width: 1200px; margin: 0 auto; padding: 84px 30px 0;
 }
@@ -94,7 +93,7 @@ button { cursor: none; font-family: inherit; }
 .carousel-card {
   min-width: 100%; height: 100%;
   display: flex; flex-direction: column;
-  position: relative; cursor: none;
+  position: relative; cursor: pointer;
 }
 .card-inner {
   width: 100%; padding: 22px 0 18px; height: 100%;
@@ -108,7 +107,7 @@ button { cursor: none; font-family: inherit; }
 .carousel-btn {
   width: 34px; height: 34px;
   border: 1px solid rgba(26,26,20,.2); background: transparent;
-  cursor: none; display: flex; align-items: center; justify-content: center;
+  cursor: pointer; display: flex; align-items: center; justify-content: center;
   font-size: 20px; color: #1a1a14; transition: color 0.1s linear, background 0.1s linear;
 }
 .carousel-btn:hover { background: #1a1a14; color: #e2e2e2; border-color: #1a1a14; }
@@ -141,7 +140,7 @@ button { cursor: none; font-family: inherit; }
   font-size: 10px; font-weight: 500; letter-spacing: .07em;
   text-transform: uppercase; border: 1px solid rgba(26,26,20,.24);
   padding: 3px 8px; color: rgba(26,26,20,.45);
-  cursor: none; transition: color 0.1s linear, background 0.1s;
+  cursor: pointer; transition: color 0.1s linear, background 0.1s;
 }
 .card-tag:hover { background: #1a1a14; color: #e2e2e2; border-color: #1a1a14; }
 .carousel-card:hover .card-artist,
@@ -169,7 +168,7 @@ col.c-stock  { width: 8%; }
 .tbl thead th.c-stock { text-align: right; padding-right: 0; }
 .tbl thead th.c-art   { padding-right: 0; }
 
-.tbl tbody tr { cursor: none; transition: color 0.1s linear; }
+.tbl tbody tr { cursor: pointer; transition: color 0.1s linear; }
 .tbl tbody tr:hover .rec-title,
 .tbl tbody tr:hover .rec-artist,
 .tbl tbody tr:hover .rec-stock { color: #1a1a14; }
@@ -179,6 +178,7 @@ col.c-stock  { width: 8%; }
   padding: 16px 12px 16px 0;
   border-bottom: 1px solid rgba(26,26,20,.12); vertical-align: middle;
 }
+.tbl tbody td.c-title { vertical-align: middle; }
 .tbl tbody td:first-child { padding-left: 0; }
 .tbl tbody td:last-child  { padding-right: 0; }
 .tbl tbody td.c-stock  { padding-top: 10px; padding-bottom: 10px; padding-right: 0; }
@@ -283,7 +283,7 @@ col.c-stock  { width: 8%; }
   width: 14px; height: 14px;
   border: 1.5px solid rgba(26,26,20,.3);
   background: transparent;
-  cursor: none; flex-shrink: 0;
+  cursor: pointer; flex-shrink: 0;
   margin-left: 12px; padding: 0;
   transition: background .12s, border-color .12s;
 }
@@ -308,12 +308,12 @@ col.c-stock  { width: 8%; }
 }
 .footer-col-label {
   font-size: 9px; font-weight: 600; letter-spacing: .14em;
-  text-transform: uppercase; color: rgba(26,26,20,.3);
+  text-transform: uppercase; color: rgba(26,26,20,.28);
   margin-bottom: 10px;
 }
 .footer-col-value {
-  font-size: 12px; font-weight: 400; color: rgba(26,26,20,.55);
-  line-height: 1.7; letter-spacing: .01em;
+  font-size: 11px; font-weight: 400; color: rgba(26,26,20,.5);
+  line-height: 1.7; letter-spacing: .06em; text-transform: uppercase;
 }
 .footer-col-value a:hover { color: #1a1a14; }
 
@@ -378,21 +378,24 @@ col.c-stock  { width: 8%; }
   col.c-genre { width: 90px; }
   .site-footer { grid-template-columns: 1fr; gap: 28px; padding: 40px 20px 32px; margin-top: 40px; }
   .footer-sig  { padding: 0 20px 32px; flex-direction: column; align-items: flex-start; gap: 6px; }
-  html, body, a, button { cursor: auto; }
+
 }
 </style>
 </head>
 <body>
 
 <canvas id="grain"></canvas>
-<div id="cursor"></div>
+
 
 <header class="fixed-header">
   <div class="header-inner">
     <a href="index.html">
       <img src="images/late-records-logo.png" class="header-logo" alt="LATE RECORDS">
     </a>
-    <a href="cart.html" class="cart-link">Cart (<span class="cart-count">0</span>)</a>
+    <div style="display:flex;align-items:center;">
+      <div class="shop-status"><span class="shop-dot"></span>Open</div>
+      <a href="cart.html" class="cart-link">Cart (<span class="cart-count">0</span>)</a>
+    </div>
   </div>
 </header>
 
@@ -470,7 +473,7 @@ col.c-stock  { width: 8%; }
     <div>
       <div class="footer-col-label">Inquiries</div>
       <div class="footer-col-value">
-        <a href="mailto:hello@late-records.shop">hello@late-records.shop</a>
+        <a href="/cdn-cgi/l/email-protection#cda5a8a1a1a28da1acb9a8e0bfa8aea2bfa9bee3bea5a2bd"><span class="__cf_email__" data-cfemail="b4dcd1d8d8dbf4d8d5c0d199c6d1d7dbc6d0c79ac7dcdbc4">[email&#160;protected]</span></a>
       </div>
     </div>
     <div>
@@ -484,11 +487,11 @@ col.c-stock  { width: 8%; }
   </div>
   <div class="footer-sig">
     <span>r3s34rchl4bs</span>
-    <span class="footer-sig-right">© Late Records — All records are one of one.</span>
+    
   </div>
 </footer>
 
-<script src="script.js"></script>
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script src="script.js"></script>
 <script src="catalog.js"></script>
 <script src="search.js"></script>
 <script>
@@ -510,7 +513,7 @@ function drawGrain() {
   for (let i = 0; i < d.length; i += 4) {
     const v = Math.random() * 255;
     d[i] = d[i+1] = d[i+2] = v;
-    d[i+3] = 32;
+    d[i+3] = 55;
   }
   grainCtx.putImageData(img, 0, 0);
   requestAnimationFrame(drawGrain);
@@ -520,16 +523,7 @@ window.addEventListener('resize', resizeGrain);
 resizeGrain();
 drawGrain();
 
-/* ── Custom cursor ───────────────────────────────────────── */
-const cursorEl = document.getElementById('cursor');
-document.addEventListener('mousemove', e => {
-  cursorEl.style.left = e.clientX + 'px';
-  cursorEl.style.top  = e.clientY + 'px';
-});
-document.addEventListener('mouseover', e => {
-  const interactive = e.target.closest('a, button, tr, .carousel-card, .genre-tag, .card-tag');
-  cursorEl.classList.toggle('expanded', !!interactive);
-});
+
 
 /* ── Typewriter ──────────────────────────────────────────── */
 function typewrite(el, text, speed, onDone) {
@@ -643,12 +637,4 @@ document.addEventListener('DOMContentLoaded', async () => {
     buildCarousel(catalog);
     buildTable(catalog);
   } catch(e) {
-    document.getElementById('carouselTrack').innerHTML = '';
-    document.getElementById('catalogList').innerHTML =
-      `<tr><td colspan="5" style="padding:40px 0;font-size:13px;color:rgba(26,26,20,.48)">Could not load catalog. Please refresh.</td></tr>`;
-  }
-});
-
-</script>
-</body>
-</html>
+    document.getElementById('carouselTrack
