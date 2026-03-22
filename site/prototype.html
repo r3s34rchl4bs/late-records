@@ -6,36 +6,46 @@
 <title>LATE RECORDS — Prototype</title>
 <meta name="description" content="Curated vinyl records. Rare, used, and hard to find.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
 
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
 html, body {
   font-family: 'Inter', system-ui, sans-serif;
-  background-color: #e2e2e2;
-  background-image: radial-gradient(circle, rgba(0,0,0,.08) 0.5px, transparent 0.5px);
-  background-size: 3px 3px;
-  color: #1a1a14;
+  background-color: #f2f2f2;
+  background-image: radial-gradient(circle, rgba(0,0,0,.04) 0.5px, transparent 0.5px);
+  background-size: 4px 4px;
+  color: #F6F6EF;
   -webkit-font-smoothing: antialiased;
 }
+
+/* ── Page fade in ────────────────────────────────────────── */
+body { opacity: 0; animation: page-fade-in .6s ease forwards; }
+@keyframes page-fade-in { to { opacity: 1; } }
+
 img { display: block; max-width: 100%; }
 a   { color: inherit; text-decoration: none; }
 button { cursor: pointer; font-family: inherit; }
 
-/* ── Film grain ──────────────────────────────────────────── */
-#grain {
-  position: fixed;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  pointer-events: none;
-  z-index: 9998;
-  opacity: .9;
-  mix-blend-mode: multiply;
+/* ── Custom cursor ───────────────────────────────────────── */
+@media (hover: hover) { body, a, button { cursor: none; } }
+#cursor {
+  position: fixed; width: 8px; height: 8px;
+  background: #1a1a14; pointer-events: none; z-index: 9999;
+  transform: translate(-50%,-50%);
+  transition: width .2s ease, height .2s ease, opacity .2s ease;
+  display: none;
 }
+#cursor-ring {
+  position: fixed; width: 28px; height: 28px;
+  border: 1px solid rgba(26,26,20,.4); pointer-events: none; z-index: 9998;
+  transform: translate(-50%,-50%);
+  transition: width .2s ease, height .2s ease, opacity .2s ease;
+  display: none;
+}
+@media (hover: hover) { #cursor, #cursor-ring { display: block; } }
 
-/* ── Header ──────────────────────────────────────────────── */
 .fixed-header {
   position: fixed; top: 0; left: 0; width: 100%;
   background-color: #e2e2e2;
@@ -51,33 +61,13 @@ button { cursor: pointer; font-family: inherit; }
 }
 .header-logo { height: 44px; display: block; }
 .header-logo:hover { opacity: .5; transition: opacity .15s; }
-.header-right { display: flex; align-items: center; gap: 20px; }
-
-/* ── Shop open indicator ─────────────────────────────────── */
-.shop-status {
-  display: flex; align-items: center; gap: 6px;
-  font-size: 11px; font-weight: 500; letter-spacing: .07em;
-  text-transform: uppercase; color: rgba(26,26,20,.5);
-}
-.shop-dot {
-  width: 5px; height: 5px; border-radius: 50%;
-  background: #1a1a14; flex-shrink: 0;
-  animation: pulse 2.4s ease-in-out infinite;
-}
-@keyframes pulse {
-  0%, 100% { opacity: 1; }
-  50%       { opacity: .2; }
-}
-
 .cart-link {
   font-size: 11px; font-weight: 500; letter-spacing: .07em;
   text-transform: uppercase; color: #1a1a14; text-decoration: none;
 }
 .cart-link:hover { color: rgba(26,26,20,.5); }
 
-.container {
-  max-width: 1200px; margin: 0 auto; padding: 84px 30px 0;
-}
+.container { max-width: 1200px; margin: 0 auto; padding: 84px 30px 80px; }
 
 /* ── Carousel ────────────────────────────────────────────── */
 .carousel-section { margin-bottom: 0; }
@@ -87,17 +77,16 @@ button { cursor: pointer; font-family: inherit; }
   height: 235px; overflow: hidden; position: relative;
   border-bottom: 1px solid rgba(26,26,20,.22);
 }
-.carousel-track { display: flex; height: 100%; transition: transform .35s cubic-bezier(.4,0,.2,1); }
+.carousel-track { display: flex; height: 100%; transition: transform .4s cubic-bezier(.4,0,.2,1); }
 
 .carousel-card {
   min-width: 100%; height: 100%;
   display: flex; flex-direction: column;
-  position: relative; cursor: pointer;
+  position: relative; cursor: none;
 }
 .card-inner {
   width: 100%; padding: 22px 0 18px; height: 100%;
   display: flex; flex-direction: column; justify-content: space-between;
-  position: relative;
 }
 .carousel-nav {
   position: absolute; top: 0; right: 0;
@@ -106,7 +95,7 @@ button { cursor: pointer; font-family: inherit; }
 .carousel-btn {
   width: 34px; height: 34px;
   border: 1px solid rgba(26,26,20,.2); background: transparent;
-  cursor: pointer; display: flex; align-items: center; justify-content: center;
+  cursor: none; display: flex; align-items: center; justify-content: center;
   font-size: 20px; color: #1a1a14; transition: color 0.1s linear, background 0.1s linear;
 }
 .carousel-btn:hover { background: #1a1a14; color: #e2e2e2; border-color: #1a1a14; }
@@ -115,20 +104,26 @@ button { cursor: pointer; font-family: inherit; }
 .card-staff-pick {
   font-size: 10px; font-weight: 600; letter-spacing: .12em;
   text-transform: uppercase; color: rgba(26,26,20,.3); margin-bottom: 14px;
+  opacity: 0; transition: opacity .3s ease;
 }
 .card-artist {
   font-size: 13px; font-weight: 500; letter-spacing: .07em;
   text-transform: uppercase; color: rgba(26,26,20,.45); margin-bottom: 8px;
-  min-height: 1.2em;
+  opacity: 0; min-height: 1em;
 }
 .card-title {
   font-size: 42px; font-weight: 500; line-height: 1.05;
-  letter-spacing: -.035em; margin-bottom: 12px; word-break: break-word;
+  letter-spacing: -.035em; margin-bottom: 12px;
   color: rgba(26,26,20,.88);
   display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
-  min-height: 1.1em;
+  opacity: 0; min-height: 1em;
 }
-.card-meta { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+.card-meta {
+  display: flex; align-items: center; gap: 6px; flex-wrap: wrap;
+  opacity: 0; transition: opacity .4s ease;
+}
+.card-meta.visible { opacity: 1; }
+
 .card-format {
   font-size: 11px; font-weight: 500; letter-spacing: .08em;
   text-transform: uppercase; color: rgba(26,26,20,.45);
@@ -139,11 +134,19 @@ button { cursor: pointer; font-family: inherit; }
   font-size: 10px; font-weight: 500; letter-spacing: .07em;
   text-transform: uppercase; border: 1px solid rgba(26,26,20,.24);
   padding: 3px 8px; color: rgba(26,26,20,.45);
-  cursor: pointer; transition: color 0.1s linear, background 0.1s;
+  cursor: none; transition: color 0.1s linear, background 0.1s;
 }
 .card-tag:hover { background: #1a1a14; color: #e2e2e2; border-color: #1a1a14; }
 .carousel-card:hover .card-artist,
 .carousel-card:hover .card-title { color: #1a1a14; }
+
+/* Typewriter cursor */
+.tw-cursor {
+  display: inline-block; width: 2px; height: .85em;
+  background: #1a1a14; margin-left: 1px; vertical-align: middle;
+  animation: blink .7s step-end infinite;
+}
+@keyframes blink { 50% { opacity: 0; } }
 
 /* ── Table ───────────────────────────────────────────────── */
 .tbl { width: 100%; border-collapse: collapse; table-layout: fixed; }
@@ -167,32 +170,32 @@ col.c-stock  { width: 8%; }
 .tbl thead th.c-stock { text-align: right; padding-right: 0; }
 .tbl thead th.c-art   { padding-right: 0; }
 
-.tbl tbody tr { cursor: pointer; transition: color 0.1s linear; }
+.tbl tbody tr { cursor: none; transition: color 0.1s linear; }
 .tbl tbody tr:hover .rec-title,
 .tbl tbody tr:hover .rec-artist,
 .tbl tbody tr:hover .rec-stock { color: #1a1a14; }
-
-/* ── Taller rows ─────────────────────────────────────────── */
 .tbl tbody td {
-  padding: 16px 12px 16px 0;
+  padding: 14px 12px 14px 0;
   border-bottom: 1px solid rgba(26,26,20,.12); vertical-align: middle;
 }
+.tbl tbody td.c-title { vertical-align: middle; padding-top: 0; padding-bottom: 0; }
 .tbl tbody td:first-child { padding-left: 0; }
 .tbl tbody td:last-child  { padding-right: 0; }
-.tbl tbody td.c-stock  { padding-top: 10px; padding-bottom: 10px; padding-right: 0; }
+.tbl tbody td.c-stock  { padding-top: 8px; padding-bottom: 8px; padding-right: 0; }
 .tbl thead th.c-stock  { padding-bottom: 10px; padding-right: 0; }
-.tbl tbody td.c-art    { padding-right: 12px; }
+.tbl tbody td.c-art    { padding-right: 10px; }
 
-/* ── Album art — 56px both screens ──────────────────────── */
+/* ── Album art — scale on hover ──────────────────────────── */
 .rec-art-wrap {
   width: 56px; height: 56px;
   overflow: hidden; flex-shrink: 0;
   background: rgba(26,26,20,.07);
 }
 .rec-art-wrap img {
-  width: 100%; height: 100%;
-  object-fit: cover; display: block;
+  width: 100%; height: 100%; object-fit: cover; display: block;
+  transition: transform .5s cubic-bezier(.22,1,.36,1);
 }
+.tbl tbody tr:hover .rec-art-wrap img { transform: scale(1.08); }
 .tbl tbody tr.sold .rec-art-wrap { opacity: .35; }
 
 /* ── Row text ────────────────────────────────────────────── */
@@ -209,7 +212,7 @@ col.c-stock  { width: 8%; }
 .genre-tag {
   display: inline-block; font-size: 10px; font-weight: 500; letter-spacing: .06em;
   text-transform: uppercase; color: rgba(26,26,20,.48); border: 1px solid rgba(26,26,20,.32);
-  padding: 3px 7px; line-height: 1.4; white-space: nowrap; cursor: pointer;
+  padding: 3px 7px; line-height: 1.4; white-space: nowrap; cursor: none;
   transition: color 0.1s linear, border-color 0.1s linear;
 }
 .genre-tag:hover { color: #1a1a14; border-color: #1a1a14; }
@@ -235,12 +238,12 @@ col.c-stock  { width: 8%; }
   flex: 1; border: none; background: transparent;
   font-family: 'Inter', system-ui, sans-serif;
   font-size: 13px; font-weight: 400; color: #1a1a14;
-  padding: 5px 0; outline: none; letter-spacing: .01em;
+  padding: 5px 0; outline: none; letter-spacing: .01em; cursor: text;
 }
 .search-input::placeholder { color: rgba(26,26,20,.32); }
 .search-clear {
   border: none; background: none; padding: 0 0 0 8px;
-  font-size: 16px; color: rgba(26,26,20,.32); cursor: pointer;
+  font-size: 16px; color: rgba(26,26,20,.32); cursor: none;
   line-height: 1; display: none; transition: color .1s;
 }
 .search-clear:hover { color: #1a1a14; }
@@ -255,18 +258,10 @@ col.c-stock  { width: 8%; }
   text-transform: uppercase; color: rgba(26,26,20,.4);
 }
 .suggestions-header span { color: #1a1a14; }
-.suggestions-header.is-loading::after {
-  content: ''; animation: ellipsis 1.2s steps(4, end) infinite;
-}
-@keyframes ellipsis {
-  0%   { content: ''; }
-  25%  { content: '.'; }
-  50%  { content: '..'; }
-  75%  { content: '...'; }
-}
+.suggestions-header.is-loading::after { content: ''; animation: ellipsis 1.2s steps(4,end) infinite; }
+@keyframes ellipsis { 0%{content:''} 25%{content:'.'} 50%{content:'..'} 75%{content:'...'} }
 .no-results-empty {
-  padding: 40px 0;
-  font-size: 13px; color: rgba(26,26,20,.38); letter-spacing: .01em; display: none;
+  padding: 40px 0; font-size: 13px; color: rgba(26,26,20,.38); letter-spacing: .01em; display: none;
 }
 .rec-title mark, .rec-artist mark {
   background: rgba(26,26,20,.12); color: #1a1a14; padding: 0 1px; border-radius: 1px;
@@ -280,8 +275,7 @@ col.c-stock  { width: 8%; }
 .avail-toggle {
   width: 14px; height: 14px;
   border: 1.5px solid rgba(26,26,20,.3);
-  background: transparent;
-  cursor: pointer; flex-shrink: 0;
+  background: transparent; cursor: none; flex-shrink: 0;
   margin-left: 12px; padding: 0;
   transition: background .12s, border-color .12s;
 }
@@ -291,42 +285,11 @@ col.c-stock  { width: 8%; }
   background: linear-gradient(90deg, rgba(0,0,0,.07) 25%, rgba(0,0,0,.13) 50%, rgba(0,0,0,.07) 75%);
   background-size: 200% 100%; animation: sh 1.4s infinite;
 }
-@keyframes sh { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
-
-/* ── Footer ──────────────────────────────────────────────── */
-.site-footer {
-  max-width: 1200px; margin: 80px auto 0;
-  padding: 60px 30px 48px;
-  border-top: 1px solid rgba(26,26,20,.22);
-  display: grid;
-  grid-template-columns: 1fr 1fr 1fr;
-  gap: 40px;
-  align-items: start;
-}
-.footer-col-label {
-  font-size: 9px; font-weight: 600; letter-spacing: .14em;
-  text-transform: uppercase; color: rgba(26,26,20,.28);
-  margin-bottom: 10px;
-}
-.footer-col-value {
-  font-size: 11px; font-weight: 400; color: rgba(26,26,20,.5);
-  line-height: 1.7; letter-spacing: .06em; text-transform: uppercase;
-}
-.footer-col-value a { color: rgba(26,26,20,.5); }
-.footer-col-value a:hover { color: #1a1a14; }
-
-.footer-sig {
-  font-family: 'Share Tech Mono', monospace;
-  font-size: 11px; letter-spacing: .08em;
-  color: rgba(26,26,20,.28);
-  padding: 0 30px 48px;
-  max-width: 1200px;
-  margin: 0 auto;
-}
+@keyframes sh { 0%{background-position:200% 0} 100%{background-position:-200% 0} }
 
 /* ── Responsive ──────────────────────────────────────────── */
 @media (max-width: 900px) {
-  col.c-art    { width: 64px; }
+  col.c-art    { width: 60px; }
   col.c-format, col.c-stock { display: none; }
   .tbl thead th.c-format, .tbl thead th.c-stock,
   .tbl tbody td.c-format, .tbl tbody td.c-stock { display: none; }
@@ -338,11 +301,11 @@ col.c-stock  { width: 8%; }
   .card-artist { font-size: 11px; }
   .rec-title   { font-size: 14px; }
   .rec-artist  { font-size: 11px; }
-  .site-footer { grid-template-columns: 1fr 1fr; }
+  .rec-art-wrap { width: 48px; height: 48px; }
 }
 
 @media (max-width: 600px) {
-  .container    { padding: 84px 20px 0; }
+  .container    { padding: 84px 20px 80px; }
   .header-inner { padding: 0 20px; }
   .card-inner   { padding: 10px 0 4px; }
   .carousel-nav { right: 0; top: 0; }
@@ -361,31 +324,38 @@ col.c-stock  { width: 8%; }
   .tbl tbody td.c-format, .tbl tbody td.c-stock { display: none; }
   col.c-art { width: 72px; }
   .tbl tbody td.c-art { padding-right: 14px; }
-  .tbl tbody td { padding-top: 16px; padding-bottom: 16px; }
+  .rec-art-wrap { width: 56px; height: 56px; }
+  .tbl tbody td { padding-top: 14px; padding-bottom: 14px; }
   .tbl thead th { top: 74px; font-size: 10px; }
   .rec-title  { font-size: 14px; }
   .rec-artist { font-size: 12px; margin-top: 5px; }
   .genre-tag  { font-size: 10px; padding: 3px 7px; }
   col.c-genre { width: 90px; }
-  .site-footer { grid-template-columns: 1fr; gap: 28px; padding: 40px 20px 32px; margin-top: 40px; }
-  .footer-sig  { padding: 0 20px 32px; }
-  .shop-status { display: none; }
 }
+#grain {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 9998;
+  opacity: .4;
+  mix-blend-mode: overlay;
+
+
 </style>
 </head>
 <body>
 
-<canvas id="grain"></canvas>
+<div id="cursor"></div>
+<div id="cursor-ring"></div>
 
 <header class="fixed-header">
   <div class="header-inner">
     <a href="index.html">
       <img src="images/late-records-logo.png" class="header-logo" alt="LATE RECORDS">
     </a>
-    <div class="header-right">
-      <div class="shop-status"><span class="shop-dot"></span>Open</div>
-      <a href="cart.html" class="cart-link">Cart (<span class="cart-count">0</span>)</a>
-    </div>
+    <a href="cart.html" class="cart-link">Cart (<span class="cart-count">0</span>)</a>
   </div>
 </header>
 
@@ -449,80 +419,90 @@ col.c-stock  { width: 8%; }
 
 </div>
 
-<footer>
-  <div class="site-footer">
-    <div>
-      <div class="footer-col-label">Late Records</div>
-      <div class="footer-col-value">
-        Curated vinyl.<br>
-        Rare, used, and hard to find.<br>
-        Manila, PH.
-      </div>
-    </div>
-    <div>
-      <div class="footer-col-label">Inquiries</div>
-      <div class="footer-col-value">
-        <a href="mailto:info.late.records@gmail.com">info.late.records<br>@gmail.com</a>
-      </div>
-    </div>
-    <div>
-      <div class="footer-col-label">Orders</div>
-      <div class="footer-col-value">
-        Processed daily.<br>
-        Ships within 2–3 days.<br>
-        Local pickup available.
-      </div>
-    </div>
-  </div>
-  <div class="footer-sig">r3s34rchl4bs</div>
-</footer>
-
 <script src="script.js"></script>
 <script src="catalog.js"></script>
 <script src="search.js"></script>
 <script>
 
-/* ── Film grain ──────────────────────────────────────────── */
-const grainCanvas = document.getElementById('grain');
-const grainCtx    = grainCanvas.getContext('2d');
+/* ── Custom cursor ───────────────────────────────────────── */
+const cursor     = document.getElementById('cursor');
+const cursorRing = document.getElementById('cursor-ring');
+let mouseX = 0, mouseY = 0, ringX = 0, ringY = 0;
 
-function resizeGrain() {
-  grainCanvas.width  = window.innerWidth;
-  grainCanvas.height = window.innerHeight;
-}
+document.addEventListener('mousemove', e => {
+  mouseX = e.clientX; mouseY = e.clientY;
+  cursor.style.left = mouseX + 'px';
+  cursor.style.top  = mouseY + 'px';
+});
 
-function drawGrain() {
-  const w   = grainCanvas.width;
-  const h   = grainCanvas.height;
-  const img = grainCtx.createImageData(w, h);
-  const d   = img.data;
-  for (let i = 0; i < d.length; i += 4) {
-    const v = Math.random() * 255;
-    d[i] = d[i+1] = d[i+2] = v;
-    d[i+3] = 55;
-  }
-  grainCtx.putImageData(img, 0, 0);
-  requestAnimationFrame(drawGrain);
-}
+(function animateRing() {
+  ringX += (mouseX - ringX) * 0.12;
+  ringY += (mouseY - ringY) * 0.12;
+  cursorRing.style.left = ringX + 'px';
+  cursorRing.style.top  = ringY + 'px';
+  requestAnimationFrame(animateRing);
+})();
 
-window.addEventListener('resize', resizeGrain);
-resizeGrain();
-drawGrain();
+document.addEventListener('mouseover', e => {
+  const isHoverable = e.target.closest('a, button, .genre-tag, .card-tag, .tbl tbody tr');
+  cursor.style.width      = isHoverable ? '3px'  : '8px';
+  cursor.style.height     = isHoverable ? '3px'  : '8px';
+  cursorRing.style.width  = isHoverable ? '40px' : '28px';
+  cursorRing.style.height = isHoverable ? '40px' : '28px';
+});
 
 /* ── Typewriter ──────────────────────────────────────────── */
+let twActive = false;
+
 function typewrite(el, text, speed, onDone) {
   el.textContent = '';
+  el.style.opacity = '1';
+  const cur = document.createElement('span');
+  cur.className = 'tw-cursor';
+  el.appendChild(cur);
   let i = 0;
   function tick() {
-    if (i <= text.length) {
-      el.textContent = text.slice(0, i);
+    if (!twActive) return;
+    if (i < text.length) {
+      el.insertBefore(document.createTextNode(text[i]), cur);
       i++;
       setTimeout(tick, speed);
     } else {
-      if (onDone) onDone();
+      setTimeout(() => { cur.remove(); if (onDone) onDone(); }, 250);
     }
   }
   tick();
+}
+
+function runCardReveal(card) {
+  twActive = false;
+  setTimeout(() => { twActive = true; }, 50);
+
+  const staffPick = card.querySelector('.card-staff-pick');
+  const artist    = card.querySelector('.card-artist');
+  const title     = card.querySelector('.card-title');
+  const meta      = card.querySelector('.card-meta');
+
+  const artistText = artist.dataset.original || artist.textContent.trim();
+  const titleText  = title.dataset.original  || title.textContent.trim();
+  artist.dataset.original = artistText;
+  title.dataset.original  = titleText;
+
+  staffPick.style.opacity = '0';
+  artist.style.opacity    = '0';
+  title.style.opacity     = '0';
+  meta.classList.remove('visible');
+
+  setTimeout(() => {
+    staffPick.style.opacity = '1';
+    setTimeout(() => {
+      typewrite(artist, artistText, 20, () => {
+        typewrite(title, titleText, 14, () => {
+          meta.classList.add('visible');
+        });
+      });
+    }, 100);
+  }, 60);
 }
 
 /* ── Carousel ────────────────────────────────────────────── */
@@ -535,75 +515,61 @@ function buildCarousel(albums) {
 
   cards.forEach(album => {
     const tags     = LR.ui.splitPipe(album.genre).slice(0, 2);
-    const albumUrl = 'albums/album.html?id=' + album.album_id;
+    const albumUrl = `albums/album.html?id=${album.album_id}`;
     const card     = document.createElement('div');
     card.className = 'carousel-card';
-    card.dataset.artist = album.artist;
-    card.dataset.title  = album.title;
-    card.addEventListener('click', function() { location.href = albumUrl; });
-    card.innerHTML =
-      '<div class="card-inner"><div class="card-top">' +
-      '<div class="card-staff-pick">Staff Pick</div>' +
-      '<div class="card-artist"></div>' +
-      '<div class="card-title"></div>' +
-      '<div class="card-meta">' +
-      '<span class="card-format">' + (album.format || 'LP') + '</span>' +
-      '<span class="card-meta-divider"></span>' +
-      '<div class="card-tags">' +
-      tags.map(function(t) {
-        return '<span class="card-tag" onclick="event.stopPropagation();location.href=\'genre.html?g=' + encodeURIComponent(t.toLowerCase()) + '\'">' + t + '</span>';
-      }).join('') +
-      '</div></div></div></div>';
+    card.addEventListener('click', () => location.href = albumUrl);
+    card.innerHTML = `
+      <div class="card-inner">
+        <div class="card-top">
+          <div class="card-staff-pick">Staff Pick</div>
+          <div class="card-artist">${album.artist}</div>
+          <div class="card-title">${album.title}</div>
+          <div class="card-meta">
+            <span class="card-format">${album.format || 'LP'}</span>
+            <span class="card-meta-divider"></span>
+            <div class="card-tags">${tags.map(t =>
+              `<span class="card-tag" onclick="event.stopPropagation();location.href='genre.html?g=${encodeURIComponent(t.toLowerCase())}'">${t}</span>`
+            ).join('')}</div>
+          </div>
+        </div>
+      </div>`;
     track.appendChild(card);
   });
 
   const viewport = document.querySelector('.carousel-viewport');
-  const progressContainer = document.createElement('div');
-  progressContainer.style.cssText = 'display:flex;gap:3px;margin-top:10px;';
-  viewport.parentNode.insertBefore(progressContainer, viewport.nextSibling);
+  const prog = document.createElement('div');
+  prog.style.cssText = 'display:flex;gap:3px;margin-top:10px;';
+  viewport.parentNode.insertBefore(prog, viewport.nextSibling);
   const bars = [];
-  cards.forEach(function() {
+  cards.forEach(() => {
     const b = document.createElement('div');
     b.style.cssText = 'flex:1;height:2px;background:rgba(26,26,20,.15);transition:height .2s ease,background .2s ease;';
-    progressContainer.appendChild(b);
+    prog.appendChild(b);
     bars.push(b);
   });
-
-  function revealCard(card) {
-    const artistEl = card.querySelector('.card-artist');
-    const titleEl  = card.querySelector('.card-title');
-    const artist   = card.dataset.artist;
-    const title    = card.dataset.title;
-    artistEl.textContent = '';
-    titleEl.textContent  = '';
-    const aSpeed = Math.max(22, Math.floor(320 / artist.length));
-    const tSpeed = Math.max(16, Math.floor(440 / title.length));
-    setTimeout(function() {
-      typewrite(artistEl, artist, aSpeed, function() {
-        typewrite(titleEl, title, tSpeed);
-      });
-    }, 60);
-  }
 
   function goTo(index) {
     if (index < 0) index = cards.length - 1;
     if (index >= cards.length) index = 0;
     current = index;
-    track.style.transform = 'translateX(-' + (current * 100) + '%)';
-    bars.forEach(function(b, i) {
+    track.style.transform = `translateX(-${current * 100}%)`;
+    bars.forEach((b, i) => {
       b.style.height     = i === current ? '4px' : '2px';
       b.style.background = i === current ? '#1a1a14' : 'rgba(26,26,20,.15)';
     });
-    revealCard(track.querySelectorAll('.carousel-card')[current]);
+    const activeCard = track.querySelectorAll('.carousel-card')[current];
+    setTimeout(() => runCardReveal(activeCard), 60);
   }
 
   goTo(0);
-  document.getElementById('prevBtn').addEventListener('click', function(e) { e.stopPropagation(); goTo(current - 1); });
-  document.getElementById('nextBtn').addEventListener('click', function(e) { e.stopPropagation(); goTo(current + 1); });
+  document.getElementById('prevBtn').addEventListener('click', e => { e.stopPropagation(); goTo(current - 1); });
+  document.getElementById('nextBtn').addEventListener('click', e => { e.stopPropagation(); goTo(current + 1); });
 }
 
 /* ── Toggle ──────────────────────────────────────────────── */
 window.availFilterActive = false;
+
 function toggleAvail() {
   window.availFilterActive = !window.availFilterActive;
   document.getElementById('availToggle').classList.toggle('active', window.availFilterActive);
@@ -611,7 +577,7 @@ function toggleAvail() {
 }
 
 /* ── Init ────────────────────────────────────────────────── */
-document.addEventListener('DOMContentLoaded', async function() {
+document.addEventListener('DOMContentLoaded', async () => {
   initSearch();
   try {
     const catalog = await LR.api.catalog();
@@ -621,10 +587,39 @@ document.addEventListener('DOMContentLoaded', async function() {
   } catch(e) {
     document.getElementById('carouselTrack').innerHTML = '';
     document.getElementById('catalogList').innerHTML =
-      '<tr><td colspan="5" style="padding:40px 0;font-size:13px;color:rgba(26,26,20,.48)">Could not load catalog. Please refresh.</td></tr>';
+      `<tr><td colspan="5" style="padding:40px 0;font-size:13px;color:rgba(26,26,20,.48)">Could not load catalog. Please refresh.</td></tr>`;
   }
 });
 
+</script>
+<canvas id="grain"></canvas>
+<script>
+const canvas = document.getElementById('grain');
+const ctx    = canvas.getContext('2d');
+let animId;
+
+function resize() {
+  canvas.width  = window.innerWidth;
+  canvas.height = window.innerHeight;
+}
+
+function grain() {
+  const w = canvas.width;
+  const h = canvas.height;
+  const img = ctx.createImageData(w, h);
+  const d   = img.data;
+  for (let i = 0; i < d.length; i += 4) {
+    const v = Math.random() * 255;
+    d[i] = d[i+1] = d[i+2] = v;
+    d[i+3] = 14;
+  }
+  ctx.putImageData(img, 0, 0);
+  animId = requestAnimationFrame(grain);
+}
+
+window.addEventListener('resize', resize);
+resize();
+grain();
 </script>
 </body>
 </html>
