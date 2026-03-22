@@ -33,7 +33,10 @@ html, body {
 }
 .cart-link:hover { background: none; color: rgba(26,26,20,.5); }
 .fixed-footer { display: none; }
-.container { padding-bottom: 80px; padding-top: calc(74px + 10px); }
+.container { padding-bottom: 80px; padding-top: calc(74px + 30px); }
+@media (max-width: 900px) {
+  .container { padding-top: calc(74px + 10px); }
+}
 
 .album-page {
   display: flex;
@@ -126,7 +129,7 @@ html, body {
   margin: 0; color: rgba(26,26,20,.65);
 }
 .description.is-collapsed {
-  display: -webkit-box; -webkit-line-clamp: 4;
+  display: -webkit-box; -webkit-line-clamp: 3;
   -webkit-box-orient: vertical; overflow: hidden;
 }
 .description-toggle {
@@ -194,7 +197,7 @@ html, body {
   font-weight: 400; color: rgba(26,26,20,.65);
 }
 
-.related-section { margin-top: 52px; padding-top: 32px; border-top: 1px solid rgba(26,26,20,.12); }
+.related-section { margin-top: 28px; padding-top: 24px; border-top: 1px solid rgba(26,26,20,.12); }
 .related-title {
   font-size: 10px; letter-spacing: .1em; text-transform: uppercase;
   color: rgba(26,26,20,.5); margin: 0 0 16px; font-weight: 500;
@@ -276,8 +279,8 @@ function scoreRelated(cur, cand) {
 function renderAlbum(item, all) {
   const sold           = item.status !== 'available';
   const tracks         = LR.ui.splitPipe(item.tracklist);
-  const visibleTracks  = tracks.slice(0, 7);
-  const hiddenTracks   = tracks.slice(7);
+  const visibleTracks  = tracks.slice(0, 6);
+  const hiddenTracks   = tracks.slice(6);
   const related = all
     .filter(i => i.album_id !== item.album_id)
     .map(i => ({ i, s: scoreRelated(item, i) }))
@@ -417,7 +420,7 @@ function setupDescToggle() {
   const toggle = document.getElementById('descToggle');
   if (!desc || !toggle) return;
   requestAnimationFrame(() => {
-    if (desc.scrollHeight > 175) {
+    if (desc.scrollHeight > 100) {
       desc.classList.add('is-collapsed');
       toggle.style.display = 'inline-flex';
       toggle.textContent   = '+';
