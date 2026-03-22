@@ -20,9 +20,31 @@ html, body {
   -webkit-font-smoothing: antialiased;
 }
 
+/* ── Page fade in ────────────────────────────────────────── */
+body { opacity: 0; animation: page-fade-in .6s ease forwards; }
+@keyframes page-fade-in { to { opacity: 1; } }
+
 img { display: block; max-width: 100%; }
 a   { color: inherit; text-decoration: none; }
 button { cursor: pointer; font-family: inherit; }
+
+/* ── Custom cursor ───────────────────────────────────────── */
+@media (hover: hover) { body, a, button { cursor: none; } }
+#cursor {
+  position: fixed; width: 8px; height: 8px;
+  background: #1a1a14; pointer-events: none; z-index: 9999;
+  transform: translate(-50%,-50%);
+  transition: width .2s ease, height .2s ease, opacity .2s ease;
+  display: none;
+}
+#cursor-ring {
+  position: fixed; width: 28px; height: 28px;
+  border: 1px solid rgba(26,26,20,.4); pointer-events: none; z-index: 9998;
+  transform: translate(-50%,-50%);
+  transition: width .2s ease, height .2s ease, opacity .2s ease;
+  display: none;
+}
+@media (hover: hover) { #cursor, #cursor-ring { display: block; } }
 
 .fixed-header {
   position: fixed; top: 0; left: 0; width: 100%;
@@ -45,9 +67,7 @@ button { cursor: pointer; font-family: inherit; }
 }
 .cart-link:hover { color: rgba(26,26,20,.5); }
 
-.container {
-  max-width: 1200px; margin: 0 auto; padding: 84px 30px 80px;
-}
+.container { max-width: 1200px; margin: 0 auto; padding: 84px 30px 80px; }
 
 /* ── Carousel ────────────────────────────────────────────── */
 .carousel-section { margin-bottom: 0; }
@@ -57,17 +77,16 @@ button { cursor: pointer; font-family: inherit; }
   height: 235px; overflow: hidden; position: relative;
   border-bottom: 1px solid rgba(26,26,20,.22);
 }
-.carousel-track { display: flex; height: 100%; transition: transform .35s cubic-bezier(.4,0,.2,1); }
+.carousel-track { display: flex; height: 100%; transition: transform .4s cubic-bezier(.4,0,.2,1); }
 
 .carousel-card {
   min-width: 100%; height: 100%;
   display: flex; flex-direction: column;
-  position: relative; cursor: pointer;
+  position: relative; cursor: none;
 }
 .card-inner {
   width: 100%; padding: 22px 0 18px; height: 100%;
   display: flex; flex-direction: column; justify-content: space-between;
-  position: relative;
 }
 .carousel-nav {
   position: absolute; top: 0; right: 0;
@@ -76,26 +95,35 @@ button { cursor: pointer; font-family: inherit; }
 .carousel-btn {
   width: 34px; height: 34px;
   border: 1px solid rgba(26,26,20,.2); background: transparent;
-  cursor: pointer; display: flex; align-items: center; justify-content: center;
+  cursor: none; display: flex; align-items: center; justify-content: center;
   font-size: 20px; color: #1a1a14; transition: color 0.1s linear, background 0.1s linear;
 }
 .carousel-btn:hover { background: #1a1a14; color: #e2e2e2; border-color: #1a1a14; }
-.card-top { flex: 1; min-height: 0; padding-right: 110px; }
+.card-top { flex: 1; min-height: 0; padding-right: 110px; overflow: hidden; }
+
 .card-staff-pick {
   font-size: 10px; font-weight: 600; letter-spacing: .12em;
   text-transform: uppercase; color: rgba(26,26,20,.3); margin-bottom: 14px;
+  opacity: 0; transition: opacity .3s ease;
 }
 .card-artist {
   font-size: 13px; font-weight: 500; letter-spacing: .07em;
   text-transform: uppercase; color: rgba(26,26,20,.45); margin-bottom: 8px;
+  opacity: 0; min-height: 1em;
 }
 .card-title {
   font-size: 42px; font-weight: 500; line-height: 1.05;
-  letter-spacing: -.035em; margin-bottom: 12px; word-break: break-word;
-  color: rgba(26,26,20,.88); transition: color 0.1s linear;
+  letter-spacing: -.035em; margin-bottom: 12px;
+  color: rgba(26,26,20,.88);
   display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
+  opacity: 0; min-height: 1em;
 }
-.card-meta { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+.card-meta {
+  display: flex; align-items: center; gap: 6px; flex-wrap: wrap;
+  opacity: 0; transition: opacity .4s ease;
+}
+.card-meta.visible { opacity: 1; }
+
 .card-format {
   font-size: 11px; font-weight: 500; letter-spacing: .08em;
   text-transform: uppercase; color: rgba(26,26,20,.45);
@@ -106,35 +134,19 @@ button { cursor: pointer; font-family: inherit; }
   font-size: 10px; font-weight: 500; letter-spacing: .07em;
   text-transform: uppercase; border: 1px solid rgba(26,26,20,.24);
   padding: 3px 8px; color: rgba(26,26,20,.45);
-  cursor: pointer; transition: color 0.1s linear, background 0.1s;
+  cursor: none; transition: color 0.1s linear, background 0.1s;
 }
 .card-tag:hover { background: #1a1a14; color: #e2e2e2; border-color: #1a1a14; }
 .carousel-card:hover .card-artist,
 .carousel-card:hover .card-title { color: #1a1a14; }
 
-/* ── Stagger reveal ──────────────────────────────────────── */
-.card-staff-pick,
-.card-artist,
-.card-title,
-.card-meta {
-  opacity: 0;
-  transform: translateY(10px);
+/* Typewriter cursor */
+.tw-cursor {
+  display: inline-block; width: 2px; height: .85em;
+  background: #1a1a14; margin-left: 1px; vertical-align: middle;
+  animation: blink .7s step-end infinite;
 }
-.card-reveal .card-staff-pick {
-  animation: stagger-in .4s cubic-bezier(.22,1,.36,1) 0ms forwards;
-}
-.card-reveal .card-artist {
-  animation: stagger-in .4s cubic-bezier(.22,1,.36,1) 60ms forwards;
-}
-.card-reveal .card-title {
-  animation: stagger-in .5s cubic-bezier(.22,1,.36,1) 130ms forwards;
-}
-.card-reveal .card-meta {
-  animation: stagger-in .4s cubic-bezier(.22,1,.36,1) 220ms forwards;
-}
-@keyframes stagger-in {
-  to { opacity: 1; transform: translateY(0); }
-}
+@keyframes blink { 50% { opacity: 0; } }
 
 /* ── Table ───────────────────────────────────────────────── */
 .tbl { width: 100%; border-collapse: collapse; table-layout: fixed; }
@@ -158,7 +170,7 @@ col.c-stock  { width: 8%; }
 .tbl thead th.c-stock { text-align: right; padding-right: 0; }
 .tbl thead th.c-art   { padding-right: 0; }
 
-.tbl tbody tr { cursor: pointer; transition: color 0.1s linear; }
+.tbl tbody tr { cursor: none; transition: color 0.1s linear; }
 .tbl tbody tr:hover .rec-title,
 .tbl tbody tr:hover .rec-artist,
 .tbl tbody tr:hover .rec-stock { color: #1a1a14; }
@@ -172,16 +184,17 @@ col.c-stock  { width: 8%; }
 .tbl thead th.c-stock  { padding-bottom: 10px; padding-right: 0; }
 .tbl tbody td.c-art    { padding-right: 10px; }
 
-/* ── Album art ───────────────────────────────────────────── */
+/* ── Album art — scale on hover ──────────────────────────── */
 .rec-art-wrap {
   width: 56px; height: 56px;
   overflow: hidden; flex-shrink: 0;
   background: rgba(26,26,20,.07);
 }
 .rec-art-wrap img {
-  width: 100%; height: 100%;
-  object-fit: cover; display: block;
+  width: 100%; height: 100%; object-fit: cover; display: block;
+  transition: transform .5s cubic-bezier(.22,1,.36,1);
 }
+.tbl tbody tr:hover .rec-art-wrap img { transform: scale(1.08); }
 .tbl tbody tr.sold .rec-art-wrap { opacity: .35; }
 
 /* ── Row text ────────────────────────────────────────────── */
@@ -198,7 +211,7 @@ col.c-stock  { width: 8%; }
 .genre-tag {
   display: inline-block; font-size: 10px; font-weight: 500; letter-spacing: .06em;
   text-transform: uppercase; color: rgba(26,26,20,.48); border: 1px solid rgba(26,26,20,.32);
-  padding: 3px 7px; line-height: 1.4; white-space: nowrap; cursor: pointer;
+  padding: 3px 7px; line-height: 1.4; white-space: nowrap; cursor: none;
   transition: color 0.1s linear, border-color 0.1s linear;
 }
 .genre-tag:hover { color: #1a1a14; border-color: #1a1a14; }
@@ -219,20 +232,17 @@ col.c-stock  { width: 8%; }
 .tbl tbody tr.sold .sdot       { background: rgba(26,26,20,.28) !important; }
 
 /* ── Search ──────────────────────────────────────────────── */
-.search-row {
-  display: flex; align-items: center;
-  margin: 10px 0;
-}
+.search-row { display: flex; align-items: center; margin: 10px 0; }
 .search-input {
   flex: 1; border: none; background: transparent;
   font-family: 'Inter', system-ui, sans-serif;
   font-size: 13px; font-weight: 400; color: #1a1a14;
-  padding: 5px 0; outline: none; letter-spacing: .01em;
+  padding: 5px 0; outline: none; letter-spacing: .01em; cursor: text;
 }
 .search-input::placeholder { color: rgba(26,26,20,.32); }
 .search-clear {
   border: none; background: none; padding: 0 0 0 8px;
-  font-size: 16px; color: rgba(26,26,20,.32); cursor: pointer;
+  font-size: 16px; color: rgba(26,26,20,.32); cursor: none;
   line-height: 1; display: none; transition: color .1s;
 }
 .search-clear:hover { color: #1a1a14; }
@@ -247,18 +257,10 @@ col.c-stock  { width: 8%; }
   text-transform: uppercase; color: rgba(26,26,20,.4);
 }
 .suggestions-header span { color: #1a1a14; }
-.suggestions-header.is-loading::after {
-  content: ''; animation: ellipsis 1.2s steps(4, end) infinite;
-}
-@keyframes ellipsis {
-  0%   { content: ''; }
-  25%  { content: '.'; }
-  50%  { content: '..'; }
-  75%  { content: '...'; }
-}
+.suggestions-header.is-loading::after { content: ''; animation: ellipsis 1.2s steps(4,end) infinite; }
+@keyframes ellipsis { 0%{content:''} 25%{content:'.'} 50%{content:'..'} 75%{content:'...'} }
 .no-results-empty {
-  padding: 40px 0;
-  font-size: 13px; color: rgba(26,26,20,.38); letter-spacing: .01em; display: none;
+  padding: 40px 0; font-size: 13px; color: rgba(26,26,20,.38); letter-spacing: .01em; display: none;
 }
 .rec-title mark, .rec-artist mark {
   background: rgba(26,26,20,.12); color: #1a1a14; padding: 0 1px; border-radius: 1px;
@@ -272,8 +274,7 @@ col.c-stock  { width: 8%; }
 .avail-toggle {
   width: 14px; height: 14px;
   border: 1.5px solid rgba(26,26,20,.3);
-  background: transparent;
-  cursor: pointer; flex-shrink: 0;
+  background: transparent; cursor: none; flex-shrink: 0;
   margin-left: 12px; padding: 0;
   transition: background .12s, border-color .12s;
 }
@@ -283,9 +284,9 @@ col.c-stock  { width: 8%; }
   background: linear-gradient(90deg, rgba(0,0,0,.07) 25%, rgba(0,0,0,.13) 50%, rgba(0,0,0,.07) 75%);
   background-size: 200% 100%; animation: sh 1.4s infinite;
 }
-@keyframes sh { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
+@keyframes sh { 0%{background-position:200% 0} 100%{background-position:-200% 0} }
 
-/* ── Desktop ─────────────────────────────────────────────── */
+/* ── Responsive ──────────────────────────────────────────── */
 @media (max-width: 900px) {
   col.c-art    { width: 60px; }
   col.c-format, col.c-stock { display: none; }
@@ -302,7 +303,6 @@ col.c-stock  { width: 8%; }
   .rec-art-wrap { width: 48px; height: 48px; }
 }
 
-/* ── PROTOTYPE MOBILE — bigger proportions ───────────────── */
 @media (max-width: 600px) {
   .container    { padding: 84px 20px 80px; }
   .header-inner { padding: 0 20px; }
@@ -311,48 +311,32 @@ col.c-stock  { width: 8%; }
   .carousel-viewport { height: 155px; }
   .card-top     { padding-right: 90px; }
   .card-staff-pick { font-size: 8px; margin-bottom: 10px; }
-  .card-artist  {
-    font-size: 10px;
-    display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
-    margin-bottom: 8px;
-  }
-  .card-title   {
-    font-size: 20px; letter-spacing: -.02em;
-    display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
-    margin-bottom: 6px;
-  }
+  .card-artist  { font-size: 10px; margin-bottom: 8px; }
+  .card-title   { font-size: 20px; letter-spacing: -.02em; margin-bottom: 6px; }
   .card-format  { font-size: 9px; }
   .card-tag     { font-size: 9px; padding: 2px 6px; }
   .card-meta    { gap: 6px; }
   .card-tags    { gap: 4px; }
   .carousel-btn { height: 30px; }
-
   col.c-format, col.c-stock { display: none; }
   .tbl thead th.c-format, .tbl thead th.c-stock,
   .tbl tbody td.c-format, .tbl tbody td.c-stock { display: none; }
-
-  /* ↓ KEY PROTOTYPE CHANGES — bigger art, taller rows */
   col.c-art { width: 72px; }
   .tbl tbody td.c-art { padding-right: 14px; }
   .rec-art-wrap { width: 56px; height: 56px; }
-
-  .tbl tbody td {
-    padding-top: 14px;
-    padding-bottom: 14px;
-  }
-
+  .tbl tbody td { padding-top: 14px; padding-bottom: 14px; }
   .tbl thead th { top: 74px; font-size: 10px; }
   .rec-title  { font-size: 14px; }
-  .rec-artist {
-    font-size: 12px; margin-top: 5px;
-    display: -webkit-box; -webkit-line-clamp: 1; -webkit-box-orient: vertical; overflow: hidden;
-  }
+  .rec-artist { font-size: 12px; margin-top: 5px; }
   .genre-tag  { font-size: 10px; padding: 3px 7px; }
   col.c-genre { width: 90px; }
 }
 </style>
 </head>
 <body>
+
+<div id="cursor"></div>
+<div id="cursor-ring"></div>
 
 <header class="fixed-header">
   <div class="header-inner">
@@ -428,13 +412,96 @@ col.c-stock  { width: 8%; }
 <script src="search.js"></script>
 <script>
 
+/* ── Custom cursor ───────────────────────────────────────── */
+const cursor     = document.getElementById('cursor');
+const cursorRing = document.getElementById('cursor-ring');
+let mouseX = 0, mouseY = 0, ringX = 0, ringY = 0;
+
+document.addEventListener('mousemove', e => {
+  mouseX = e.clientX; mouseY = e.clientY;
+  cursor.style.left = mouseX + 'px';
+  cursor.style.top  = mouseY + 'px';
+});
+
+(function animateRing() {
+  ringX += (mouseX - ringX) * 0.12;
+  ringY += (mouseY - ringY) * 0.12;
+  cursorRing.style.left = ringX + 'px';
+  cursorRing.style.top  = ringY + 'px';
+  requestAnimationFrame(animateRing);
+})();
+
+document.addEventListener('mouseover', e => {
+  const isHoverable = e.target.closest('a, button, .genre-tag, .card-tag, .tbl tbody tr');
+  cursor.style.width      = isHoverable ? '3px'  : '8px';
+  cursor.style.height     = isHoverable ? '3px'  : '8px';
+  cursorRing.style.width  = isHoverable ? '40px' : '28px';
+  cursorRing.style.height = isHoverable ? '40px' : '28px';
+});
+
+/* ── Typewriter ──────────────────────────────────────────── */
+let twActive = false;
+
+function typewrite(el, text, speed, onDone) {
+  el.textContent = '';
+  el.style.opacity = '1';
+  const cur = document.createElement('span');
+  cur.className = 'tw-cursor';
+  el.appendChild(cur);
+  let i = 0;
+  function tick() {
+    if (!twActive) return;
+    if (i < text.length) {
+      el.insertBefore(document.createTextNode(text[i]), cur);
+      i++;
+      setTimeout(tick, speed);
+    } else {
+      setTimeout(() => { cur.remove(); if (onDone) onDone(); }, 250);
+    }
+  }
+  tick();
+}
+
+function runCardReveal(card) {
+  twActive = false;
+  setTimeout(() => { twActive = true; }, 50);
+
+  const staffPick = card.querySelector('.card-staff-pick');
+  const artist    = card.querySelector('.card-artist');
+  const title     = card.querySelector('.card-title');
+  const meta      = card.querySelector('.card-meta');
+
+  const artistText = artist.dataset.original || artist.textContent.trim();
+  const titleText  = title.dataset.original  || title.textContent.trim();
+  artist.dataset.original = artistText;
+  title.dataset.original  = titleText;
+
+  staffPick.style.opacity = '0';
+  artist.style.opacity    = '0';
+  title.style.opacity     = '0';
+  meta.classList.remove('visible');
+
+  setTimeout(() => {
+    staffPick.style.opacity = '1';
+    setTimeout(() => {
+      typewrite(artist, artistText, 20, () => {
+        typewrite(title, titleText, 14, () => {
+          meta.classList.add('visible');
+        });
+      });
+    }, 100);
+  }, 60);
+}
+
+/* ── Carousel ────────────────────────────────────────────── */
 function buildCarousel(albums) {
   const featured = albums.filter(a => String(a.featured).toLowerCase() === 'yes').slice(0, 5);
-  const cards = featured.length >= 1 ? featured : albums.slice(0, 5);
-  const track = document.getElementById('carouselTrack');
-  let current = 0;
+  const cards    = featured.length >= 1 ? featured : albums.slice(0, 5);
+  const track    = document.getElementById('carouselTrack');
+  let current    = 0;
   track.innerHTML = '';
-  cards.forEach((album) => {
+
+  cards.forEach(album => {
     const tags     = LR.ui.splitPipe(album.genre).slice(0, 2);
     const albumUrl = `albums/album.html?id=${album.album_id}`;
     const card     = document.createElement('div');
@@ -457,23 +524,18 @@ function buildCarousel(albums) {
       </div>`;
     track.appendChild(card);
   });
+
   const viewport = document.querySelector('.carousel-viewport');
-  const progressContainer = document.createElement('div');
-  progressContainer.style.cssText = 'display:flex;gap:3px;margin-top:10px;';
-  viewport.parentNode.insertBefore(progressContainer, viewport.nextSibling);
+  const prog = document.createElement('div');
+  prog.style.cssText = 'display:flex;gap:3px;margin-top:10px;';
+  viewport.parentNode.insertBefore(prog, viewport.nextSibling);
   const bars = [];
-  cards.forEach((_, i) => {
+  cards.forEach(() => {
     const b = document.createElement('div');
     b.style.cssText = 'flex:1;height:2px;background:rgba(26,26,20,.15);transition:height .2s ease,background .2s ease;';
-    progressContainer.appendChild(b);
+    prog.appendChild(b);
     bars.push(b);
   });
-  function triggerReveal(index) {
-    const allCards = track.querySelectorAll('.carousel-card');
-    allCards.forEach(c => c.classList.remove('card-reveal'));
-    void allCards[index].offsetWidth; // force reflow so animation restarts
-    allCards[index].classList.add('card-reveal');
-  }
 
   function goTo(index) {
     if (index < 0) index = cards.length - 1;
@@ -481,16 +543,19 @@ function buildCarousel(albums) {
     current = index;
     track.style.transform = `translateX(-${current * 100}%)`;
     bars.forEach((b, i) => {
-      b.style.height = i === current ? '4px' : '2px';
+      b.style.height     = i === current ? '4px' : '2px';
       b.style.background = i === current ? '#1a1a14' : 'rgba(26,26,20,.15)';
     });
-    triggerReveal(current);
+    const activeCard = track.querySelectorAll('.carousel-card')[current];
+    setTimeout(() => runCardReveal(activeCard), 60);
   }
+
   goTo(0);
-  document.getElementById('prevBtn').addEventListener('click', (e) => { e.stopPropagation(); goTo(current - 1); });
-  document.getElementById('nextBtn').addEventListener('click', (e) => { e.stopPropagation(); goTo(current + 1); });
+  document.getElementById('prevBtn').addEventListener('click', e => { e.stopPropagation(); goTo(current - 1); });
+  document.getElementById('nextBtn').addEventListener('click', e => { e.stopPropagation(); goTo(current + 1); });
 }
 
+/* ── Toggle ──────────────────────────────────────────────── */
 window.availFilterActive = false;
 
 function toggleAvail() {
@@ -499,6 +564,7 @@ function toggleAvail() {
   applyAvailToggle();
 }
 
+/* ── Init ────────────────────────────────────────────────── */
 document.addEventListener('DOMContentLoaded', async () => {
   initSearch();
   try {
