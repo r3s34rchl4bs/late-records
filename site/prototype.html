@@ -112,6 +112,30 @@ button { cursor: pointer; font-family: inherit; }
 .carousel-card:hover .card-artist,
 .carousel-card:hover .card-title { color: #1a1a14; }
 
+/* ── Stagger reveal ──────────────────────────────────────── */
+.card-staff-pick,
+.card-artist,
+.card-title,
+.card-meta {
+  opacity: 0;
+  transform: translateY(10px);
+}
+.card-reveal .card-staff-pick {
+  animation: stagger-in .4s cubic-bezier(.22,1,.36,1) 0ms forwards;
+}
+.card-reveal .card-artist {
+  animation: stagger-in .4s cubic-bezier(.22,1,.36,1) 60ms forwards;
+}
+.card-reveal .card-title {
+  animation: stagger-in .5s cubic-bezier(.22,1,.36,1) 130ms forwards;
+}
+.card-reveal .card-meta {
+  animation: stagger-in .4s cubic-bezier(.22,1,.36,1) 220ms forwards;
+}
+@keyframes stagger-in {
+  to { opacity: 1; transform: translateY(0); }
+}
+
 /* ── Table ───────────────────────────────────────────────── */
 .tbl { width: 100%; border-collapse: collapse; table-layout: fixed; }
 col.c-art    { width: 72px; }
@@ -444,6 +468,13 @@ function buildCarousel(albums) {
     progressContainer.appendChild(b);
     bars.push(b);
   });
+  function triggerReveal(index) {
+    const allCards = track.querySelectorAll('.carousel-card');
+    allCards.forEach(c => c.classList.remove('card-reveal'));
+    void allCards[index].offsetWidth; // force reflow so animation restarts
+    allCards[index].classList.add('card-reveal');
+  }
+
   function goTo(index) {
     if (index < 0) index = cards.length - 1;
     if (index >= cards.length) index = 0;
@@ -453,6 +484,7 @@ function buildCarousel(albums) {
       b.style.height = i === current ? '4px' : '2px';
       b.style.background = i === current ? '#1a1a14' : 'rgba(26,26,20,.15)';
     });
+    triggerReveal(current);
   }
   goTo(0);
   document.getElementById('prevBtn').addEventListener('click', (e) => { e.stopPropagation(); goTo(current - 1); });
