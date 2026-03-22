@@ -289,9 +289,9 @@ function renderAlbum(item, all) {
 
   document.title = item.title + ' by ' + item.artist;
 const favLink = document.querySelector("link[rel*='icon']") || document.createElement('link');
-favLink.type = 'image/jpeg';
+favLink.type = 'image/png';
 favLink.rel  = 'shortcut icon';
-favLink.href = '/images/' + item.album_id + '.jpg';
+favLink.href = '/images/' + item.album_id + '.jpg?v=' + Date.now();
 document.head.appendChild(favLink);
 
   document.getElementById('mainContainer').innerHTML = `
