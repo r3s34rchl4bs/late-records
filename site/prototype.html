@@ -35,8 +35,6 @@ button { cursor: pointer; font-family: inherit; }
   mix-blend-mode: multiply;
 }
 
-
-
 /* ── Header ──────────────────────────────────────────────── */
 .fixed-header {
   position: fixed; top: 0; left: 0; width: 100%;
@@ -53,18 +51,13 @@ button { cursor: pointer; font-family: inherit; }
 }
 .header-logo { height: 44px; display: block; }
 .header-logo:hover { opacity: .5; transition: opacity .15s; }
-.cart-link {
-  font-size: 11px; font-weight: 500; letter-spacing: .07em;
-  text-transform: uppercase; color: #1a1a14; text-decoration: none;
-}
-.cart-link:hover { color: rgba(26,26,20,.5); }
+.header-right { display: flex; align-items: center; gap: 20px; }
 
 /* ── Shop open indicator ─────────────────────────────────── */
 .shop-status {
   display: flex; align-items: center; gap: 6px;
   font-size: 11px; font-weight: 500; letter-spacing: .07em;
   text-transform: uppercase; color: rgba(26,26,20,.5);
-  margin-right: 20px;
 }
 .shop-dot {
   width: 5px; height: 5px; border-radius: 50%;
@@ -73,8 +66,14 @@ button { cursor: pointer; font-family: inherit; }
 }
 @keyframes pulse {
   0%, 100% { opacity: 1; }
-  50%       { opacity: .25; }
+  50%       { opacity: .2; }
 }
+
+.cart-link {
+  font-size: 11px; font-weight: 500; letter-spacing: .07em;
+  text-transform: uppercase; color: #1a1a14; text-decoration: none;
+}
+.cart-link:hover { color: rgba(26,26,20,.5); }
 
 .container {
   max-width: 1200px; margin: 0 auto; padding: 84px 30px 0;
@@ -178,7 +177,6 @@ col.c-stock  { width: 8%; }
   padding: 16px 12px 16px 0;
   border-bottom: 1px solid rgba(26,26,20,.12); vertical-align: middle;
 }
-.tbl tbody td.c-title { vertical-align: middle; }
 .tbl tbody td:first-child { padding-left: 0; }
 .tbl tbody td:last-child  { padding-right: 0; }
 .tbl tbody td.c-stock  { padding-top: 10px; padding-bottom: 10px; padding-right: 0; }
@@ -211,7 +209,7 @@ col.c-stock  { width: 8%; }
 .genre-tag {
   display: inline-block; font-size: 10px; font-weight: 500; letter-spacing: .06em;
   text-transform: uppercase; color: rgba(26,26,20,.48); border: 1px solid rgba(26,26,20,.32);
-  padding: 3px 7px; line-height: 1.4; white-space: nowrap; cursor: none;
+  padding: 3px 7px; line-height: 1.4; white-space: nowrap; cursor: pointer;
   transition: color 0.1s linear, border-color 0.1s linear;
 }
 .genre-tag:hover { color: #1a1a14; border-color: #1a1a14; }
@@ -237,12 +235,12 @@ col.c-stock  { width: 8%; }
   flex: 1; border: none; background: transparent;
   font-family: 'Inter', system-ui, sans-serif;
   font-size: 13px; font-weight: 400; color: #1a1a14;
-  padding: 5px 0; outline: none; letter-spacing: .01em; cursor: text;
+  padding: 5px 0; outline: none; letter-spacing: .01em;
 }
 .search-input::placeholder { color: rgba(26,26,20,.32); }
 .search-clear {
   border: none; background: none; padding: 0 0 0 8px;
-  font-size: 16px; color: rgba(26,26,20,.32); cursor: none;
+  font-size: 16px; color: rgba(26,26,20,.32); cursor: pointer;
   line-height: 1; display: none; transition: color .1s;
 }
 .search-clear:hover { color: #1a1a14; }
@@ -297,14 +295,13 @@ col.c-stock  { width: 8%; }
 
 /* ── Footer ──────────────────────────────────────────────── */
 .site-footer {
-  max-width: 1200px; margin: 0 auto;
+  max-width: 1200px; margin: 80px auto 0;
   padding: 60px 30px 48px;
   border-top: 1px solid rgba(26,26,20,.22);
-  margin-top: 80px;
   display: grid;
   grid-template-columns: 1fr 1fr 1fr;
   gap: 40px;
-  align-items: end;
+  align-items: start;
 }
 .footer-col-label {
   font-size: 9px; font-weight: 600; letter-spacing: .14em;
@@ -315,22 +312,16 @@ col.c-stock  { width: 8%; }
   font-size: 11px; font-weight: 400; color: rgba(26,26,20,.5);
   line-height: 1.7; letter-spacing: .06em; text-transform: uppercase;
 }
+.footer-col-value a { color: rgba(26,26,20,.5); }
 .footer-col-value a:hover { color: #1a1a14; }
 
 .footer-sig {
   font-family: 'Share Tech Mono', monospace;
   font-size: 11px; letter-spacing: .08em;
   color: rgba(26,26,20,.28);
-  margin-top: 48px;
-  padding: 0 30px 40px;
+  padding: 0 30px 48px;
   max-width: 1200px;
-  margin-left: auto; margin-right: auto;
-  display: flex; align-items: center; justify-content: space-between;
-}
-.footer-sig-right {
-  font-family: 'Share Tech Mono', monospace;
-  font-size: 10px; letter-spacing: .06em;
-  color: rgba(26,26,20,.2);
+  margin: 0 auto;
 }
 
 /* ── Responsive ──────────────────────────────────────────── */
@@ -377,8 +368,8 @@ col.c-stock  { width: 8%; }
   .genre-tag  { font-size: 10px; padding: 3px 7px; }
   col.c-genre { width: 90px; }
   .site-footer { grid-template-columns: 1fr; gap: 28px; padding: 40px 20px 32px; margin-top: 40px; }
-  .footer-sig  { padding: 0 20px 32px; flex-direction: column; align-items: flex-start; gap: 6px; }
-
+  .footer-sig  { padding: 0 20px 32px; }
+  .shop-status { display: none; }
 }
 </style>
 </head>
@@ -386,13 +377,12 @@ col.c-stock  { width: 8%; }
 
 <canvas id="grain"></canvas>
 
-
 <header class="fixed-header">
   <div class="header-inner">
     <a href="index.html">
       <img src="images/late-records-logo.png" class="header-logo" alt="LATE RECORDS">
     </a>
-    <div style="display:flex;align-items:center;">
+    <div class="header-right">
       <div class="shop-status"><span class="shop-dot"></span>Open</div>
       <a href="cart.html" class="cart-link">Cart (<span class="cart-count">0</span>)</a>
     </div>
@@ -459,7 +449,6 @@ col.c-stock  { width: 8%; }
 
 </div>
 
-<!-- Footer -->
 <footer>
   <div class="site-footer">
     <div>
@@ -473,25 +462,22 @@ col.c-stock  { width: 8%; }
     <div>
       <div class="footer-col-label">Inquiries</div>
       <div class="footer-col-value">
-        <a href="/cdn-cgi/l/email-protection#cda5a8a1a1a28da1acb9a8e0bfa8aea2bfa9bee3bea5a2bd"><span class="__cf_email__" data-cfemail="b4dcd1d8d8dbf4d8d5c0d199c6d1d7dbc6d0c79ac7dcdbc4">[email&#160;protected]</span></a>
+        <a href="mailto:info.late.records@gmail.com">info.late.records<br>@gmail.com</a>
       </div>
     </div>
     <div>
-      <div class="footer-col-label">Hours</div>
+      <div class="footer-col-label">Orders</div>
       <div class="footer-col-value">
-        Orders processed daily.<br>
-        Shipping within 2–3 days.<br>
+        Processed daily.<br>
+        Ships within 2–3 days.<br>
         Local pickup available.
       </div>
     </div>
   </div>
-  <div class="footer-sig">
-    <span>r3s34rchl4bs</span>
-    
-  </div>
+  <div class="footer-sig">r3s34rchl4bs</div>
 </footer>
 
-<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script src="script.js"></script>
+<script src="script.js"></script>
 <script src="catalog.js"></script>
 <script src="search.js"></script>
 <script>
@@ -523,8 +509,6 @@ window.addEventListener('resize', resizeGrain);
 resizeGrain();
 drawGrain();
 
-
-
 /* ── Typewriter ──────────────────────────────────────────── */
 function typewrite(el, text, speed, onDone) {
   el.textContent = '';
@@ -551,27 +535,25 @@ function buildCarousel(albums) {
 
   cards.forEach(album => {
     const tags     = LR.ui.splitPipe(album.genre).slice(0, 2);
-    const albumUrl = `albums/album.html?id=${album.album_id}`;
+    const albumUrl = 'albums/album.html?id=' + album.album_id;
     const card     = document.createElement('div');
     card.className = 'carousel-card';
     card.dataset.artist = album.artist;
     card.dataset.title  = album.title;
-    card.addEventListener('click', () => location.href = albumUrl);
-    card.innerHTML = `
-      <div class="card-inner">
-        <div class="card-top">
-          <div class="card-staff-pick">Staff Pick</div>
-          <div class="card-artist"></div>
-          <div class="card-title"></div>
-          <div class="card-meta">
-            <span class="card-format">${album.format || 'LP'}</span>
-            <span class="card-meta-divider"></span>
-            <div class="card-tags">${tags.map(t =>
-              `<span class="card-tag" onclick="event.stopPropagation();location.href='genre.html?g=${encodeURIComponent(t.toLowerCase())}'">${t}</span>`
-            ).join('')}</div>
-          </div>
-        </div>
-      </div>`;
+    card.addEventListener('click', function() { location.href = albumUrl; });
+    card.innerHTML =
+      '<div class="card-inner"><div class="card-top">' +
+      '<div class="card-staff-pick">Staff Pick</div>' +
+      '<div class="card-artist"></div>' +
+      '<div class="card-title"></div>' +
+      '<div class="card-meta">' +
+      '<span class="card-format">' + (album.format || 'LP') + '</span>' +
+      '<span class="card-meta-divider"></span>' +
+      '<div class="card-tags">' +
+      tags.map(function(t) {
+        return '<span class="card-tag" onclick="event.stopPropagation();location.href=\'genre.html?g=' + encodeURIComponent(t.toLowerCase()) + '\'">' + t + '</span>';
+      }).join('') +
+      '</div></div></div></div>';
     track.appendChild(card);
   });
 
@@ -580,7 +562,7 @@ function buildCarousel(albums) {
   progressContainer.style.cssText = 'display:flex;gap:3px;margin-top:10px;';
   viewport.parentNode.insertBefore(progressContainer, viewport.nextSibling);
   const bars = [];
-  cards.forEach(() => {
+  cards.forEach(function() {
     const b = document.createElement('div');
     b.style.cssText = 'flex:1;height:2px;background:rgba(26,26,20,.15);transition:height .2s ease,background .2s ease;';
     progressContainer.appendChild(b);
@@ -596,8 +578,8 @@ function buildCarousel(albums) {
     titleEl.textContent  = '';
     const aSpeed = Math.max(22, Math.floor(320 / artist.length));
     const tSpeed = Math.max(16, Math.floor(440 / title.length));
-    setTimeout(() => {
-      typewrite(artistEl, artist, aSpeed, () => {
+    setTimeout(function() {
+      typewrite(artistEl, artist, aSpeed, function() {
         typewrite(titleEl, title, tSpeed);
       });
     }, 60);
@@ -607,8 +589,8 @@ function buildCarousel(albums) {
     if (index < 0) index = cards.length - 1;
     if (index >= cards.length) index = 0;
     current = index;
-    track.style.transform = `translateX(-${current * 100}%)`;
-    bars.forEach((b, i) => {
+    track.style.transform = 'translateX(-' + (current * 100) + '%)';
+    bars.forEach(function(b, i) {
       b.style.height     = i === current ? '4px' : '2px';
       b.style.background = i === current ? '#1a1a14' : 'rgba(26,26,20,.15)';
     });
@@ -616,8 +598,8 @@ function buildCarousel(albums) {
   }
 
   goTo(0);
-  document.getElementById('prevBtn').addEventListener('click', e => { e.stopPropagation(); goTo(current - 1); });
-  document.getElementById('nextBtn').addEventListener('click', e => { e.stopPropagation(); goTo(current + 1); });
+  document.getElementById('prevBtn').addEventListener('click', function(e) { e.stopPropagation(); goTo(current - 1); });
+  document.getElementById('nextBtn').addEventListener('click', function(e) { e.stopPropagation(); goTo(current + 1); });
 }
 
 /* ── Toggle ──────────────────────────────────────────────── */
@@ -629,7 +611,7 @@ function toggleAvail() {
 }
 
 /* ── Init ────────────────────────────────────────────────── */
-document.addEventListener('DOMContentLoaded', async () => {
+document.addEventListener('DOMContentLoaded', async function() {
   initSearch();
   try {
     const catalog = await LR.api.catalog();
@@ -637,4 +619,12 @@ document.addEventListener('DOMContentLoaded', async () => {
     buildCarousel(catalog);
     buildTable(catalog);
   } catch(e) {
-    document.getElementById('carouselTrack
+    document.getElementById('carouselTrack').innerHTML = '';
+    document.getElementById('catalogList').innerHTML =
+      '<tr><td colspan="5" style="padding:40px 0;font-size:13px;color:rgba(26,26,20,.48)">Could not load catalog. Please refresh.</td></tr>';
+  }
+});
+
+</script>
+</body>
+</html>
