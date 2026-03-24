@@ -287,7 +287,12 @@ function renderAlbum(item, all) {
     .sort((a, b) => b.s - a.s)
     .slice(0, 4);
 
-  document.title = `${item.title} — LATE RECORDS`;
+  document.title = item.title + ' by ' + item.artist;
+const favLink = document.querySelector("link[rel*='icon']") || document.createElement('link');
+favLink.type = 'image/png';
+favLink.rel  = 'shortcut icon';
+favLink.href = '/images/' + item.album_id + '.jpg?v=' + Date.now();
+document.head.appendChild(favLink);
 
   document.getElementById('mainContainer').innerHTML = `
     <div class="album-page">
