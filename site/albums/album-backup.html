@@ -279,8 +279,8 @@ function scoreRelated(cur, cand) {
 function renderAlbum(item, all) {
   const sold           = item.status !== 'available';
   const tracks         = LR.ui.splitPipe(item.tracklist);
-  const visibleTracks  = tracks.slice(0, 6);
-  const hiddenTracks   = tracks.slice(6);
+  const visibleTracks  = tracks.slice(0, 4);
+  const hiddenTracks   = tracks.slice(4);
   const related = all
     .filter(i => i.album_id !== item.album_id)
     .map(i => ({ i, s: scoreRelated(item, i) }))
