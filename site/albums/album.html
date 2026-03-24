@@ -6,7 +6,7 @@
 <title>LATE RECORDS</title>
 <meta name="description" content="Curated vinyl records.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Crimson+Pro:wght@400;500&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="../style.css">
 <style>
 
@@ -125,8 +125,12 @@ html, body {
 .cart-confirm.show { opacity: 1; }
 
 .description {
-  font-size: 14px; line-height: 1.7; font-weight: 400;
-  margin: 0; color: rgba(26,26,20,.65);
+  font-family: 'Crimson Pro', serif;
+  font-size: 15px;
+  line-height: 1.75;
+  font-weight: 400;
+  margin: 0;
+  color: rgba(26,26,20,.68);
 }
 .description.is-collapsed {
   display: -webkit-box; -webkit-line-clamp: 3;
@@ -192,9 +196,13 @@ html, body {
 }
 .tracklist { list-style: none; padding: 0; margin: 0; }
 .tracklist li {
-  font-size: 13px; line-height: 1.5; padding: 6px 0;
+  font-family: 'Crimson Pro', serif;
+  font-size: 13px;
+  line-height: 1.6;
+  padding: 6px 0;
   border-bottom: 1px solid rgba(26,26,20,.1);
-  font-weight: 400; color: rgba(26,26,20,.65);
+  font-weight: 400;
+  color: rgba(26,26,20,.65);
 }
 
 .related-section { margin-top: 28px; padding-top: 24px; border-top: 1px solid rgba(26,26,20,.12); }
@@ -218,7 +226,12 @@ html, body {
 }
 .related-info  { margin-top: 8px; }
 .related-name  { font-size: 12px; font-weight: 600; line-height: 1.25; margin: 0; word-break: break-word; }
-.related-artist{ font-size: 11px; color: rgba(26,26,20,.5); margin-top: 2px; }
+.related-artist{
+  font-family: 'Crimson Pro', serif;
+  font-size: 11px;
+  color: rgba(26,26,20,.5);
+  margin-top: 2px;
+}
 
 @media (max-width: 900px) {
   .album-page { flex-direction: column; gap: 22px; }
