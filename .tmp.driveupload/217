@@ -1,0 +1,281 @@
+0000000000000000000000000000000000000000 d16f61553aba8ec90ae0666751a9c8c7ea243b4c Late Admin <m4r1w4r4@gmail.com> 1773205037 +0800	commit (initial): Initial commit
+d16f61553aba8ec90ae0666751a9c8c7ea243b4c 0000000000000000000000000000000000000000 Late Admin <m4r1w4r4@gmail.com> 1773205088 +0800	Branch: renamed refs/heads/main to refs/heads/main
+d16f61553aba8ec90ae0666751a9c8c7ea243b4c d16f61553aba8ec90ae0666751a9c8c7ea243b4c Late Admin <m4r1w4r4@gmail.com> 1773205088 +0800	Branch: renamed refs/heads/main to refs/heads/main
+d16f61553aba8ec90ae0666751a9c8c7ea243b4c 532ab8cabe12ac846c4fa95186f48302a396df8d Late Admin <m4r1w4r4@gmail.com> 1773211569 +0800	commit: fix api base url
+532ab8cabe12ac846c4fa95186f48302a396df8d ac14136957dc9303d2f1483a485d1acbf2d1dab4 Late Admin <m4r1w4r4@gmail.com> 1773212133 +0800	commit: force redeploy
+ac14136957dc9303d2f1483a485d1acbf2d1dab4 6c99f459c6ddd8c009a94a4003c8949b3d7e3696 Late Admin <m4r1w4r4@gmail.com> 1773216928 +0800	commit: fix api url in html files
+6c99f459c6ddd8c009a94a4003c8949b3d7e3696 d8ddcf5aaaa24b2fcb523f16922399ee5facc3fb Late Admin <m4r1w4r4@gmail.com> 1773229340 +0800	commit: fix cart rendering and turnstile key
+d8ddcf5aaaa24b2fcb523f16922399ee5facc3fb e0aef37f6166b843792b439afa10f0a7133d90f7 Late Admin <m4r1w4r4@gmail.com> 1773230820 +0800	commit: fix order item format
+e0aef37f6166b843792b439afa10f0a7133d90f7 d5cfbfead2bff98edff5061e6f85073bec1cf3e4 Late Admin <m4r1w4r4@gmail.com> 1773231092 +0800	commit: add error logging to checkout
+d5cfbfead2bff98edff5061e6f85073bec1cf3e4 3419b5bb22ae31d132a23ca1ac43af776bbe2d88 Late Admin <m4r1w4r4@gmail.com> 1773235706 +0800	commit: redesign index, fix success page amount due
+3419b5bb22ae31d132a23ca1ac43af776bbe2d88 8411be6062427973d28116d671949d48f7d7acdd Late Admin <m4r1w4r4@gmail.com> 1773236140 +0800	commit: redesign index, fix success page amount due
+8411be6062427973d28116d671949d48f7d7acdd 5672313d6c1d5277bff987202448c5f10e3a72ab Late Admin <m4r1w4r4@gmail.com> 1773236905 +0800	commit: fix cart buttons, block sold-out checkout
+5672313d6c1d5277bff987202448c5f10e3a72ab 3a9f118b92bef0e500d24ff1e181b8966d34fbd2 Late Admin <m4r1w4r4@gmail.com> 1773240009 +0800	commit: new index: direction 03 signal/broadcast
+3a9f118b92bef0e500d24ff1e181b8966d34fbd2 b895f0c34dcb9af3cfff538e9ed8dfca17b1148e Late Admin <m4r1w4r4@gmail.com> 1773241396 +0800	commit: fix ticker, featured card lock, mobile columns + tap popup
+b895f0c34dcb9af3cfff538e9ed8dfca17b1148e 16033938b029a32b7288aec7b4933e087e28b33e Late Admin <m4r1w4r4@gmail.com> 1773241602 +0800	commit: fix ticker, featured card lock, mobile columns + tap popup
+16033938b029a32b7288aec7b4933e087e28b33e d7bb5a85dd13faedc7f363fb5625f8a318768177 Late Admin <m4r1w4r4@gmail.com> 1773242736 +0800	commit: header cleanup, ticker fix, genre links, mobile alignment
+d7bb5a85dd13faedc7f363fb5625f8a318768177 6ab51b8f5c6cbd22c702a50b586f35ddbf9dbdf5 Late Admin <m4r1w4r4@gmail.com> 1773249596 +0800	commit: new design
+6ab51b8f5c6cbd22c702a50b586f35ddbf9dbdf5 dbb2614983fe6f9219ed1167b14ce2667450bfc1 Late Admin <m4r1w4r4@gmail.com> 1773250063 +0800	commit: fix turnstile widget
+dbb2614983fe6f9219ed1167b14ce2667450bfc1 47f2904812acb3bd7b0229b8029054f1fa915a58 Late Admin <m4r1w4r4@gmail.com> 1773251772 +0800	commit: fix order response check
+47f2904812acb3bd7b0229b8029054f1fa915a58 9f1213ac7be22a51165c08b5d58a750f044150c7 Late Admin <m4r1w4r4@gmail.com> 1773253033 +0800	commit: fix order field names
+9f1213ac7be22a51165c08b5d58a750f044150c7 8edf86c357bfc12baa7c2f5c8c1bee995483e32b Late Admin <m4r1w4r4@gmail.com> 1773257487 +0800	commit: new index design
+8edf86c357bfc12baa7c2f5c8c1bee995483e32b 19a8c46d9d44cadec914396c7eb3d9e492f3b870 Late Admin <m4r1w4r4@gmail.com> 1773258118 +0800	commit: your message here
+19a8c46d9d44cadec914396c7eb3d9e492f3b870 6082835c11ce3c35dfaaf97cad854729bb14edd0 Late Admin <m4r1w4r4@gmail.com> 1773258671 +0800	commit: removed footer and addded font weight
+6082835c11ce3c35dfaaf97cad854729bb14edd0 d1ba5c06c46ec72e14c38f68e1496c0077cd057d Late Admin <m4r1w4r4@gmail.com> 1773258923 +0800	commit: album template update
+d1ba5c06c46ec72e14c38f68e1496c0077cd057d 860cc7f163cee19a21dd7b5f951d49f6c64507a9 Late Admin <m4r1w4r4@gmail.com> 1773259137 +0800	commit: index fix
+860cc7f163cee19a21dd7b5f951d49f6c64507a9 a47e2bc6c22dff5907e2f13b84676284f2f75d31 Late Admin <m4r1w4r4@gmail.com> 1773306777 +0800	commit: fix order field names
+a47e2bc6c22dff5907e2f13b84676284f2f75d31 3213bd9c34e89e910bdb19a0e247bffe5ef23f3d Late Admin <m4r1w4r4@gmail.com> 1773332280 +0800	commit: new index and genre pages
+3213bd9c34e89e910bdb19a0e247bffe5ef23f3d 87217fc137d1d6c773ae036b42b443b32c3fe99e Late Admin <m4r1w4r4@gmail.com> 1773332937 +0800	commit: update genre and index
+87217fc137d1d6c773ae036b42b443b32c3fe99e 8404bb1de425c63fd8d31f5219b73b4b3b28a3fc Late Admin <m4r1w4r4@gmail.com> 1773335112 +0800	commit: Update featured carousel and catalog layout
+8404bb1de425c63fd8d31f5219b73b4b3b28a3fc 2e11ab63b82cecd67251e97e8dd3267c8b76279d Late Admin <m4r1w4r4@gmail.com> 1773362619 +0800	commit: carousel fix and genre table borders
+2e11ab63b82cecd67251e97e8dd3267c8b76279d 8277abc5b6afc7b91ec698da5b9ebbde2c495510 Late Admin <m4r1w4r4@gmail.com> 1773363174 +0800	commit: tighten padding and snap transitions
+8277abc5b6afc7b91ec698da5b9ebbde2c495510 3a9b67ba362758438d142a537d206e4fd7700b2d Late Admin <m4r1w4r4@gmail.com> 1773364024 +0800	commit: carousel nav fix and spacing
+3a9b67ba362758438d142a537d206e4fd7700b2d d2917fbfba989058abe2458937ae868ad6a3bf8c Late Admin <m4r1w4r4@gmail.com> 1773364301 +0800	commit: carousel bottom border
+d2917fbfba989058abe2458937ae868ad6a3bf8c 22fd8d1c15f1c90d8d97f85e6fd3c1baa788ba34 Late Admin <m4r1w4r4@gmail.com> 1773367331 +0800	commit: bug fixes and code cleanup
+22fd8d1c15f1c90d8d97f85e6fd3c1baa788ba34 97262130b2df9d0b8b71bd04aeb85da1475aa35f Late Admin <m4r1w4r4@gmail.com> 1773368292 +0800	commit: add staging debug page
+97262130b2df9d0b8b71bd04aeb85da1475aa35f 820fe753567d9174ac0bab954fe593ddb1ca25ef Late Admin <m4r1w4r4@gmail.com> 1773368537 +0800	commit: fix debug page syntax error
+820fe753567d9174ac0bab954fe593ddb1ca25ef 40e89a88ff7533ac5e8da6a8845ad6647890d226 Late Admin <m4r1w4r4@gmail.com> 1773368860 +0800	commit: update debug page long description
+40e89a88ff7533ac5e8da6a8845ad6647890d226 bf0f86a8e471b5a3d5b21572fe891988ad06c37f Late Admin <m4r1w4r4@gmail.com> 1773369078 +0800	commit: debug page with related albums
+bf0f86a8e471b5a3d5b21572fe891988ad06c37f 148391f3923ca29621d1b3bc14bc9182d1218889 Late Admin <m4r1w4r4@gmail.com> 1773369286 +0800	commit: debug page mock audio player
+148391f3923ca29621d1b3bc14bc9182d1218889 9593c5a150a122ab0adf5be47726c5cbf22a08c6 Late Admin <m4r1w4r4@gmail.com> 1773370913 +0800	commit: debug page audio and toggle updates
+9593c5a150a122ab0adf5be47726c5cbf22a08c6 2297aeabac327973e071824d01d0607af91daac5 Late Admin <m4r1w4r4@gmail.com> 1773371471 +0800	commit: custom audio player and toggle updates
+2297aeabac327973e071824d01d0607af91daac5 58da0190b89499594c97f6b14c854e750ff97ba7 Late Admin <m4r1w4r4@gmail.com> 1773372543 +0800	commit: debug page terminal price block
+58da0190b89499594c97f6b14c854e750ff97ba7 580f427fa46b0995ac234ee356dbe973c5752b8c Late Admin <m4r1w4r4@gmail.com> 1773372865 +0800	commit: debug page option b price block
+580f427fa46b0995ac234ee356dbe973c5752b8c 135c80f488b2deff88174f9cb8232fcc9e58bf4d Late Admin <m4r1w4r4@gmail.com> 1773373214 +0800	commit: debug price block remove line keep indent
+135c80f488b2deff88174f9cb8232fcc9e58bf4d 0f382556f153e9a7c4ab0ffed46ab6f2011fb38e Late Admin <m4r1w4r4@gmail.com> 1773373991 +0800	commit: album page updates
+0f382556f153e9a7c4ab0ffed46ab6f2011fb38e ba4ab69bf1c272c7406014a1e568c66f343a4d95 Late Admin <m4r1w4r4@gmail.com> 1773374558 +0800	commit: cart confirm position update
+ba4ab69bf1c272c7406014a1e568c66f343a4d95 f5077bac4ec63472949847500e9516e120980065 Late Admin <m4r1w4r4@gmail.com> 1773374956 +0800	commit: tighten header to carousel gap
+f5077bac4ec63472949847500e9516e120980065 1df5c88fe717e590cf643a8ae8e1f1914f4bbf2f Late Admin <m4r1w4r4@gmail.com> 1773375505 +0800	commit: remove stray push command from css
+1df5c88fe717e590cf643a8ae8e1f1914f4bbf2f aa14c652af6704956e1b790dcd7a9c9e4caf9e23 Late Admin <m4r1w4r4@gmail.com> 1773375703 +0800	commit: narrow top padding
+aa14c652af6704956e1b790dcd7a9c9e4caf9e23 80cae6ae698eaacb44db148e2b8921269c7e9d29 Late Admin <m4r1w4r4@gmail.com> 1773377674 +0800	commit: tighten header to carousel gap mobile
+80cae6ae698eaacb44db148e2b8921269c7e9d29 bc88655f2692a89bae9ef08c89621ec6c27a32cc Late Admin <m4r1w4r4@gmail.com> 1773377847 +0800	commit: tighten header to carousel gap mobile
+bc88655f2692a89bae9ef08c89621ec6c27a32cc 9b4a0d8d4edaaad944b39d8ca0c87ac50f1bcd3e Late Admin <m4r1w4r4@gmail.com> 1773379487 +0800	commit: add under construction layer
+9b4a0d8d4edaaad944b39d8ca0c87ac50f1bcd3e e82a97477757f1fc88ce56ddf9b4a0750be71b0d Late Admin <m4r1w4r4@gmail.com> 1773380128 +0800	commit: add under construction script tags to all pages
+e82a97477757f1fc88ce56ddf9b4a0750be71b0d 328f9b8745baa8547ada24f8379377f600517ab1 Late Admin <m4r1w4r4@gmail.com> 1773381285 +0800	commit: update under construction layer
+328f9b8745baa8547ada24f8379377f600517ab1 a135f1913c1cc8f966738d8f2bf13b5a15a364e2 Late Admin <m4r1w4r4@gmail.com> 1773381915 +0800	commit: fix ticker mobile alignment and font size
+a135f1913c1cc8f966738d8f2bf13b5a15a364e2 5d2640aa63262013820f3dd526f140b6a1e6b74a Late Admin <m4r1w4r4@gmail.com> 1773382663 +0800	commit: fix ticker alignment, checkout notice, feedback widget
+5d2640aa63262013820f3dd526f140b6a1e6b74a d6dc2eb3dfcfe9a8129531626ae99cbb8098ae9b Late Admin <m4r1w4r4@gmail.com> 1773382940 +0800	commit: rename feedback widget to report issue
+d6dc2eb3dfcfe9a8129531626ae99cbb8098ae9b fb74ebca0b06b5f258ab371426ad39e64833f664 Late Admin <m4r1w4r4@gmail.com> 1773387607 +0800	commit: remove grey wash
+fb74ebca0b06b5f258ab371426ad39e64833f664 027a7b8f220b0ee9b747b923aacd6de8877e8aca Late Admin <m4r1w4r4@gmail.com> 1773387683 +0800	commit: remove grey wash
+027a7b8f220b0ee9b747b923aacd6de8877e8aca d3a96b4d1eca288390878e2840002479fe1babd5 Late Admin <m4r1w4r4@gmail.com> 1773458098 +0800	commit: add paymongo integration
+d3a96b4d1eca288390878e2840002479fe1babd5 615fee4bcddd7a9d30455d9976099e987b401ed4 Late Admin <m4r1w4r4@gmail.com> 1773458393 +0800	commit: revert to clean version no paymongo
+615fee4bcddd7a9d30455d9976099e987b401ed4 615fee4bcddd7a9d30455d9976099e987b401ed4 Late Admin <m4r1w4r4@gmail.com> 1773458431 +0800	reset: moving to HEAD
+615fee4bcddd7a9d30455d9976099e987b401ed4 e02c4624c56aa771801554d97515dcf30c8b04d6 Late Admin <m4r1w4r4@gmail.com> 1773458432 +0800	pull origin main --rebase (start): checkout e02c4624c56aa771801554d97515dcf30c8b04d6
+e02c4624c56aa771801554d97515dcf30c8b04d6 615fee4bcddd7a9d30455d9976099e987b401ed4 Late Admin <m4r1w4r4@gmail.com> 1773458462 +0800	rebase (abort): returning to refs/heads/main
+615fee4bcddd7a9d30455d9976099e987b401ed4 46153377a4426e6975ac2f2654482c7f06950d31 Late Admin <m4r1w4r4@gmail.com> 1773459121 +0800	commit: remove duplicate script block from index
+46153377a4426e6975ac2f2654482c7f06950d31 58573d871caaaa056501b5b3584529e1fa8fbdef Late Admin <m4r1w4r4@gmail.com> 1773459846 +0800	commit: add top border to search bar
+58573d871caaaa056501b5b3584529e1fa8fbdef c87cd69c88b80f856bdb6f8c0ce4db4fda9a1058 Late Admin <m4r1w4r4@gmail.com> 1773460758 +0800	commit: show most relevant genre tag in suggestion rows
+c87cd69c88b80f856bdb6f8c0ce4db4fda9a1058 ef1307f983d2744e25babe781f6ae42858b4849f Late Admin <m4r1w4r4@gmail.com> 1773462046 +0800	commit: pass matched genre from worker for suggestion rows
+ef1307f983d2744e25babe781f6ae42858b4849f 630bf5166f547eb75e2eb28650e933ccca17e474 Late Admin <m4r1w4r4@gmail.com> 1773464393 +0800	commit: Update index search ranking
+630bf5166f547eb75e2eb28650e933ccca17e474 e034ea499da5602e77fcc89e365e021e09cab24e Late Admin <m4r1w4r4@gmail.com> 1773468576 +0800	commit: add format and genre tags to album page
+e034ea499da5602e77fcc89e365e021e09cab24e 68dc66bbcaee29bd15ca0d5c7086341df7d3c0d4 Late Admin <m4r1w4r4@gmail.com> 1773468780 +0800	commit: add vinyl placeholder for missing album images
+68dc66bbcaee29bd15ca0d5c7086341df7d3c0d4 ee3c67795517e8e2ca241fe5cddede4a687b03f4 Late Admin <m4r1w4r4@gmail.com> 1773468885 +0800	commit: add vinyl placeholder for missing related album images
+ee3c67795517e8e2ca241fe5cddede4a687b03f4 d143d5a85481cf3b2df72480c30f61fd023bbf39 Late Admin <m4r1w4r4@gmail.com> 1773554207 +0800	commit: add format guide button and modal to genre page
+d143d5a85481cf3b2df72480c30f61fd023bbf39 e5d7496a13f12e6d9668d2c01c11fbb9078bca99 Late Admin <m4r1w4r4@gmail.com> 1773554376 +0800	commit: remove report issue widget from all pages
+e5d7496a13f12e6d9668d2c01c11fbb9078bca99 80ea8b111c375882f242d318ab2956c405f3513e Late Admin <m4r1w4r4@gmail.com> 1773554750 +0800	commit: remove stale backup files
+80ea8b111c375882f242d318ab2956c405f3513e e8fee421029d4de6261ac1b11b4785b11c9cb7f4 Late Admin <m4r1w4r4@gmail.com> 1773555018 +0800	commit: fix guide icon and modal open on genre page
+e8fee421029d4de6261ac1b11b4785b11c9cb7f4 ed07ac380d6b0fd1026f3f81bcb2f78c77dd9e1a Late Admin <m4r1w4r4@gmail.com> 1773555529 +0800	commit: Fix genre guide modal duplicates
+ed07ac380d6b0fd1026f3f81bcb2f78c77dd9e1a a967f66c1c05953da8cd6cd53e362814c58012fb Late Admin <m4r1w4r4@gmail.com> 1773557274 +0800	commit: Update genre format guide styling
+a967f66c1c05953da8cd6cd53e362814c58012fb b9f5da337da48ba2fc99c65fddd9274bfa0fd83b Late Admin <m4r1w4r4@gmail.com> 1773558566 +0800	commit: Update genre guide footer layout
+b9f5da337da48ba2fc99c65fddd9274bfa0fd83b 1e1a9f68fb452b84caf14af943921d0a4037eeed Late Admin <m4r1w4r4@gmail.com> 1773559264 +0800	commit: Update genre guide with document icon
+1e1a9f68fb452b84caf14af943921d0a4037eeed 258f67964c9a4f73f193cf15e7604bc2f62a3688 Late Admin <m4r1w4r4@gmail.com> 1773559882 +0800	commit: Refine genre guide footer and modal
+258f67964c9a4f73f193cf15e7604bc2f62a3688 763377ccfcb710ba1bdf6f907660ad7f553e3ee7 Late Admin <m4r1w4r4@gmail.com> 1773560522 +0800	commit: Align genre guide footer and sticky table header
+763377ccfcb710ba1bdf6f907660ad7f553e3ee7 1afcc6d0fe0f1cfed66e84e9986f29a83cdb807d Late Admin <m4r1w4r4@gmail.com> 1773561282 +0800	commit: Fix genre table header sticky offset
+1afcc6d0fe0f1cfed66e84e9986f29a83cdb807d 4b0904a32cf2142fb62d1bf0503e2408bcc594fb Late Admin <m4r1w4r4@gmail.com> 1773562906 +0800	commit: Remove global under-construction ticker offset
+4b0904a32cf2142fb62d1bf0503e2408bcc594fb 2c5a7267ecfd98a8686030d4ab86f01f2cd3b34b Late Admin <m4r1w4r4@gmail.com> 1773563412 +0800	commit: Match genre header layout to index
+2c5a7267ecfd98a8686030d4ab86f01f2cd3b34b 3603c90e0df29a7ac4b17e3db7054990464cb27f Late Admin <m4r1w4r4@gmail.com> 1773563426 +0800	commit: Match genre header layout to index
+3603c90e0df29a7ac4b17e3db7054990464cb27f f2322de37be6e5cf70d96f8cdc30b1c1f12060c8 Late Admin <m4r1w4r4@gmail.com> 1773563635 +0800	commit: Add sticky table header to index
+f2322de37be6e5cf70d96f8cdc30b1c1f12060c8 71500bbc3cfdbb048050c3e505b874e3fbb93b67 Late Admin <m4r1w4r4@gmail.com> 1773565945 +0800	commit: Refine index feature card spacing and mobile height
+71500bbc3cfdbb048050c3e505b874e3fbb93b67 ed5a91140bdb45042f4062a2b7dd5afeb8e29e26 Late Admin <m4r1w4r4@gmail.com> 1773566810 +0800	commit: Tighten index search row outer spacing
+ed5a91140bdb45042f4062a2b7dd5afeb8e29e26 819d35a23de97d1fe52ec59381958ee71642d5ef Late Admin <m4r1w4r4@gmail.com> 1773567194 +0800	commit: Reduce index feature card bottom spacing
+819d35a23de97d1fe52ec59381958ee71642d5ef 9fd4977689aa5f1cb8ffe7c3c0c58c93d2f16de3 Late Admin <m4r1w4r4@gmail.com> 1773567277 +0800	commit: Reduce index feature card bottom spacing
+9fd4977689aa5f1cb8ffe7c3c0c58c93d2f16de3 176032f3ca240639689ceef9bccf2c50bbebb9a3 Late Admin <m4r1w4r4@gmail.com> 1773567476 +0800	commit: Reduce index feature card bottom spacing
+176032f3ca240639689ceef9bccf2c50bbebb9a3 1728d2270c744dd350b8c45e8ce43aa89a5de830 Late Admin <m4r1w4r4@gmail.com> 1773567594 +0800	commit: Reduce search bottom spacing
+1728d2270c744dd350b8c45e8ce43aa89a5de830 a82f15e562938b40673b9c3613f8bf04313e8a3e Late Admin <m4r1w4r4@gmail.com> 1773567725 +0800	commit: Reduce index feature card bottom spacing
+a82f15e562938b40673b9c3613f8bf04313e8a3e eb4383fc68d1f1fd0b479ea33151a316638a32fe Late Admin <m4r1w4r4@gmail.com> 1773568013 +0800	commit: Reduce search spacing
+eb4383fc68d1f1fd0b479ea33151a316638a32fe a4b605ba75f0d62100d920d6881a211c7e13b6c5 Late Admin <m4r1w4r4@gmail.com> 1773568084 +0800	commit: Reduce search spacing
+a4b605ba75f0d62100d920d6881a211c7e13b6c5 fa590ff02122be86c6a9135570661d47d8755336 Late Admin <m4r1w4r4@gmail.com> 1773568382 +0800	commit: Tighten card bottom spacing
+fa590ff02122be86c6a9135570661d47d8755336 3d9d676b71718d71ccd5f1adf15299abb80d6786 Late Admin <m4r1w4r4@gmail.com> 1773568723 +0800	commit: Remove index search row top and bottom borders
+3d9d676b71718d71ccd5f1adf15299abb80d6786 c0c037f3a78c155dc53ccd2073be6c33545fac96 Late Admin <m4r1w4r4@gmail.com> 1773570181 +0800	commit: Add inline collapsible browse tags on genre page
+c0c037f3a78c155dc53ccd2073be6c33545fac96 b0f95000d0776e8f2fb5f6eefbe4b795c476d05e Late Admin <m4r1w4r4@gmail.com> 1773570364 +0800	commit: Make genre browse tags expand below first line
+b0f95000d0776e8f2fb5f6eefbe4b795c476d05e 64efa4d4b4d04d81b6b6f66421490dcf833e315e Late Admin <m4r1w4r4@gmail.com> 1773570738 +0800	commit: Update genre tag collapse behavior
+64efa4d4b4d04d81b6b6f66421490dcf833e315e 114a4745a013cac25ac9b4af39045bd6039dc706 Late Admin <m4r1w4r4@gmail.com> 1773571986 +0800	commit: Fix genre browse collapse toggle behavior
+114a4745a013cac25ac9b4af39045bd6039dc706 ce35d44a2d882bb3f136468c9ab65c6e165b95bb Late Admin <m4r1w4r4@gmail.com> 1773572579 +0800	commit: Remove genre divider and update browse collapse limit
+ce35d44a2d882bb3f136468c9ab65c6e165b95bb 3f1e6236e9066724ac5b372c231d2787e88ff8c2 Late Admin <m4r1w4r4@gmail.com> 1773572884 +0800	commit: Fix genre collapse toggle visibility
+3f1e6236e9066724ac5b372c231d2787e88ff8c2 962c910b688ed9540ca372731744931397349cf8 Late Admin <m4r1w4r4@gmail.com> 1773574121 +0800	commit: Update genre page collapse behavior
+962c910b688ed9540ca372731744931397349cf8 3fb9291365d0cf0bbec7f9496eaf396c7400c213 Late Admin <m4r1w4r4@gmail.com> 1773760835 +0800	commit: Remove all under-construction notices
+3fb9291365d0cf0bbec7f9496eaf396c7400c213 e06706d32f523ace99b441c1cbbcc82920c5e8d2 Late Admin <m4r1w4r4@gmail.com> 1773761162 +0800	commit: Remove under-construction script from success page
+e06706d32f523ace99b441c1cbbcc82920c5e8d2 66ae0fa9437fc48c9f35de075d39b7f66f73314b Late Admin <m4r1w4r4@gmail.com> 1773762324 +0800	commit: Add success page payment countdown
+66ae0fa9437fc48c9f35de075d39b7f66f73314b 827999f3eb540454d44ddc6ed533431833750222 Late Admin <m4r1w4r4@gmail.com> 1773763923 +0800	commit: Improve contrast between amount due and payment window
+827999f3eb540454d44ddc6ed533431833750222 cf12b093e479f6e9c1c29b337fff1b843e7284b4 Late Admin <m4r1w4r4@gmail.com> 1773793803 +0800	commit: fix: final album page image loading
+cf12b093e479f6e9c1c29b337fff1b843e7284b4 774a57634be6a10111ed4604d4e8af9867213add Late Admin <m4r1w4r4@gmail.com> 1773793993 +0800	commit: fix: final album page image loading
+774a57634be6a10111ed4604d4e8af9867213add 5ddcb843416fce781fc93262bd9e752f2773b945 Late Admin <m4r1w4r4@gmail.com> 1773794075 +0800	commit: fix: image loading path only
+5ddcb843416fce781fc93262bd9e752f2773b945 fc064a56390968c33cb4425aeac01097ef0ae7a7 Late Admin <m4r1w4r4@gmail.com> 1773794192 +0800	commit: revert to working page
+fc064a56390968c33cb4425aeac01097ef0ae7a7 9fc8d28a6f1714bfbd8df14bb998e32ce70e7283 Late Admin <m4r1w4r4@gmail.com> 1773794527 +0800	commit: fix: consistent image paths (main + related)
+9fc8d28a6f1714bfbd8df14bb998e32ce70e7283 00b569bd5f0a704a134b5aeb8c005204ee752546 Late Admin <m4r1w4r4@gmail.com> 1773794817 +0800	commit: feat: improved related scoring (no price, multi-signal)
+00b569bd5f0a704a134b5aeb8c005204ee752546 1d7f68fa65d2f8ffe14478c8307e16ba3701361d Late Admin <m4r1w4r4@gmail.com> 1773797010 +0800	commit: fix: absolute image path using window.location.origin
+1d7f68fa65d2f8ffe14478c8307e16ba3701361d 875fc9f1eda53d74511c350601e11184d0dc881d Late Admin <m4r1w4r4@gmail.com> 1773797107 +0800	commit: revert to working site
+875fc9f1eda53d74511c350601e11184d0dc881d 73438de034e16d8411c5b81baef50910b00d6b89 Late Admin <m4r1w4r4@gmail.com> 1773797430 +0800	commit: fix: image cache busting
+73438de034e16d8411c5b81baef50910b00d6b89 9f2da4ec5506f6f9744b5340cbff58e60bc94e6f Late Admin <m4r1w4r4@gmail.com> 1773799138 +0800	commit: image push
+9f2da4ec5506f6f9744b5340cbff58e60bc94e6f e92864406c215debb3d7e60163a345c6dd736eab Late Admin <m4r1w4r4@gmail.com> 1773800234 +0800	commit: update: audio pending state without layout changes
+e92864406c215debb3d7e60163a345c6dd736eab 002aa8b6e700a5b64dff5663de23f452b2741858 Late Admin <m4r1w4r4@gmail.com> 1773801208 +0800	commit: update: audio logic supports title-by-artist folder structure
+002aa8b6e700a5b64dff5663de23f452b2741858 4cc520a9653b2d2304c8f6f9dfc2a0723d4e0eaa Late Admin <m4r1w4r4@gmail.com> 1773801464 +0800	commit: fix: audio filename format
+4cc520a9653b2d2304c8f6f9dfc2a0723d4e0eaa a0e8fd204ad32fc1ee6f85101f2cfa3762684548 Late Admin <m4r1w4r4@gmail.com> 1773801582 +0800	commit: fix: audio filename format
+a0e8fd204ad32fc1ee6f85101f2cfa3762684548 7920877a8c1a76ff672995c8c186777d6f191e12 Late Admin <m4r1w4r4@gmail.com> 1773801727 +0800	commit: revert to working file
+7920877a8c1a76ff672995c8c186777d6f191e12 5d804a5fbfcee105ef30462e2022f32394067d16 Late Admin <m4r1w4r4@gmail.com> 1773802454 +0800	commit: album image update
+5d804a5fbfcee105ef30462e2022f32394067d16 17b4ab3b8e6f0c10d947fe85ff5c49544e56aa1a Late Admin <m4r1w4r4@gmail.com> 1773802763 +0800	commit: add: succhiamo – mani in fuoco (complete data)
+17b4ab3b8e6f0c10d947fe85ff5c49544e56aa1a ca097060ac6eb7e86e3aae750babba3439decc08 Late Admin <m4r1w4r4@gmail.com> 1773803011 +0800	commit: add: the crazy world of arthur brown – self-titled
+ca097060ac6eb7e86e3aae750babba3439decc08 680ab2f1417b519e533673cc6704c4cd8ec199e8 Late Admin <m4r1w4r4@gmail.com> 1773803429 +0800	commit: add: the beatles – magical mystery tour
+680ab2f1417b519e533673cc6704c4cd8ec199e8 312deb85edb61b5e58f11c47c3f4d293bcef9a10 Late Admin <m4r1w4r4@gmail.com> 1773803636 +0800	commit: add: gherkin jerks – gherkin jerks ep
+312deb85edb61b5e58f11c47c3f4d293bcef9a10 e03103182a004bd88bc038f31ebfd7f695fe67b9 Late Admin <m4r1w4r4@gmail.com> 1773804910 +0800	commit: add: james mason – nightgruv / i want your love
+e03103182a004bd88bc038f31ebfd7f695fe67b9 6206aa70742ef0e045079911247b0b0c19ae0b45 Late Admin <m4r1w4r4@gmail.com> 1773805269 +0800	commit: add: michael jackson – off the wall
+6206aa70742ef0e045079911247b0b0c19ae0b45 3de894cf32bc3c339af7316fc9de1693803559c6 Late Admin <m4r1w4r4@gmail.com> 1773805473 +0800	commit: add: getz / gilberto
+3de894cf32bc3c339af7316fc9de1693803559c6 c4315e53f9cde4c16df93cc75d9ecf3a47ab0a68 Late Admin <m4r1w4r4@gmail.com> 1773805828 +0800	commit: add: tom ze – com defeito de fabricação
+c4315e53f9cde4c16df93cc75d9ecf3a47ab0a68 09d3ac4781a73ede778a17eb22dbc900735b63b4 Late Admin <m4r1w4r4@gmail.com> 1773807018 +0800	commit: fix: tom carruthers – non stop rhythms (correct tracklist)
+09d3ac4781a73ede778a17eb22dbc900735b63b4 59393432a9f99eb79ecf4521823f55c4b6d63c6c Late Admin <m4r1w4r4@gmail.com> 1773818865 +0800	commit: add: citi express – living for the city
+59393432a9f99eb79ecf4521823f55c4b6d63c6c 5d3f1730c2b276a3accb696f4cd55b70760d99c4 Late Admin <m4r1w4r4@gmail.com> 1773819327 +0800	commit: add: a tribe called quest – the anthology
+5d3f1730c2b276a3accb696f4cd55b70760d99c4 819078e112e11122373073fac0eee5225d7d7cb2 Late Admin <m4r1w4r4@gmail.com> 1773819478 +0800	commit: fleedwod mac rumors
+819078e112e11122373073fac0eee5225d7d7cb2 ac48d5ae93b2fb680043d9ef03eb34ae64aff61a Late Admin <m4r1w4r4@gmail.com> 1773820898 +0800	commit: add: fleetwood mac – tango in the night
+ac48d5ae93b2fb680043d9ef03eb34ae64aff61a d95fbdf019bc214e4a68ae00c8b3ecfe14c2851f Late Admin <m4r1w4r4@gmail.com> 1773821261 +0800	commit: add: chet baker – chet baker sings
+d95fbdf019bc214e4a68ae00c8b3ecfe14c2851f f8ab87f03055f185ee02038eacc605ba220b410a Late Admin <m4r1w4r4@gmail.com> 1773821340 +0800	commit: add: the roots – what they do
+f8ab87f03055f185ee02038eacc605ba220b410a 2321ddff46967ce5a67dd64c2845812288e2e9bc Late Admin <m4r1w4r4@gmail.com> 1773821723 +0800	commit: add: bill withers – still bill
+2321ddff46967ce5a67dd64c2845812288e2e9bc e77eb64d87e0ff32d04d9dfd63bbe05851c9e729 Late Admin <m4r1w4r4@gmail.com> 1773822220 +0800	commit: add: jimmy smith & wes montgomery – further adventures of jimmy and wes
+e77eb64d87e0ff32d04d9dfd63bbe05851c9e729 db65e1911a0259973224c8ba5739b2aa0950df96 Late Admin <m4r1w4r4@gmail.com> 1773823060 +0800	commit: add: various artists – only you / hafi deo
+db65e1911a0259973224c8ba5739b2aa0950df96 0143ac0e0412da2764128def467e4397d5b9b23f Late Admin <m4r1w4r4@gmail.com> 1773823179 +0800	commit: add: various artists – 10 (music from memory)
+0143ac0e0412da2764128def467e4397d5b9b23f bb9751257fcdf7da7dfb14ee427bae7bb1d458fa Late Admin <m4r1w4r4@gmail.com> 1773823737 +0800	commit: fix: slug for I.A.O. – Phase III
+bb9751257fcdf7da7dfb14ee427bae7bb1d458fa 993d1f0c29a0b720b948f0f857862b1e068bfcfe Late Admin <m4r1w4r4@gmail.com> 1773823857 +0800	commit: add: various artists – give a little love / african message
+993d1f0c29a0b720b948f0f857862b1e068bfcfe 2961bc97a138826a0c04392dccab13a6f5a0622a Late Admin <m4r1w4r4@gmail.com> 1773824138 +0800	commit: update: sassy j – patchwork tracklist (discogs verified)
+2961bc97a138826a0c04392dccab13a6f5a0622a 9418207d2558ffc06f1ec2da87a56fc3de0e3661 Late Admin <m4r1w4r4@gmail.com> 1773842444 +0800	commit: add: leron carson & theo parrish – 1987 ep
+9418207d2558ffc06f1ec2da87a56fc3de0e3661 b3c1c1d5f2d6bf0da64775f20e564fd94fb606ce Late Admin <m4r1w4r4@gmail.com> 1773842819 +0800	commit: fix: slug for starlight self-titled
+b3c1c1d5f2d6bf0da64775f20e564fd94fb606ce e593498ee1bc9e2494cc6a29167e2b664a7ce565 Late Admin <m4r1w4r4@gmail.com> 1773843074 +0800	commit: fix: title + slug for nu guinea & tony allen
+e593498ee1bc9e2494cc6a29167e2b664a7ce565 217889eb06175c61ee77c493d876ccc316acefa1 Late Admin <m4r1w4r4@gmail.com> 1773843500 +0800	commit: add: ryuichi sakamoto – field work
+217889eb06175c61ee77c493d876ccc316acefa1 6b1fae557b22b550103ef6ac5561318f8d87c601 Late Admin <m4r1w4r4@gmail.com> 1773843981 +0800	commit: fix: album id format (title-by-artist) for eric burdon band
+6b1fae557b22b550103ef6ac5561318f8d87c601 d88b4d75a95b0c2426f072d3a66a92214d24405e Late Admin <m4r1w4r4@gmail.com> 1773844393 +0800	commit: MOI
+d88b4d75a95b0c2426f072d3a66a92214d24405e 25cc3a82763570db98e441b5b5c538d6795b97e4 Late Admin <m4r1w4r4@gmail.com> 1773845574 +0800	commit: Add King Sunny Adé - Juju Music entry
+25cc3a82763570db98e441b5b5c538d6795b97e4 5144629a77989567f21bddc19eda879470a3e141 Late Admin <m4r1w4r4@gmail.com> 1773845970 +0800	commit: phraraoh
+5144629a77989567f21bddc19eda879470a3e141 ebb13ab21f3f99c2f0386051c665bd2a47ae592d Late Admin <m4r1w4r4@gmail.com> 1773888717 +0800	commit: fix: success.html redirect uses || instead of &&
+ebb13ab21f3f99c2f0386051c665bd2a47ae592d 47d947c7403e4f6ca3e86fb170fa193663f81b23 Late Admin <m4r1w4r4@gmail.com> 1773889221 +0800	commit: fix: lower cart qty fallback ceiling from 99 to 10
+47d947c7403e4f6ca3e86fb170fa193663f81b23 877c496f954be3ebfefc2446f6e64eece7b9cf19 Late Admin <m4r1w4r4@gmail.com> 1773889555 +0800	commit: feat: show stock limit message when cart qty maxed out
+877c496f954be3ebfefc2446f6e64eece7b9cf19 f14061b6e96eaf0a52ab187fe0598ddca83ca7b8 Late Admin <m4r1w4r4@gmail.com> 1773889710 +0800	commit: fix: stock label always rendered so qty limit message can show
+f14061b6e96eaf0a52ab187fe0598ddca83ca7b8 9bdf33007b465f9a6a31c0177223515f8fbd4368 Late Admin <m4r1w4r4@gmail.com> 1773889976 +0800	commit: fix: stock label repositioned below qty row, no overlap on mobile
+9bdf33007b465f9a6a31c0177223515f8fbd4368 8ba1b0ea17ad61c2d8077f7efd09611e543b98b8 Late Admin <m4r1w4r4@gmail.com> 1773890204 +0800	commit: fix: redirect to cart if checkout opened with empty cart
+8ba1b0ea17ad61c2d8077f7efd09611e543b98b8 b72bafb485197fc8c4223b38e7f118e239faa87a Late Admin <m4r1w4r4@gmail.com> 1773890654 +0800	commit: fix: reset order created timestamp on each new order
+b72bafb485197fc8c4223b38e7f118e239faa87a ebdae7f2f6be6748b7b1ad9bdc71bed637c84043 Late Admin <m4r1w4r4@gmail.com> 1773890723 +0800	commit: fix: reset order created timestamp on each new order
+ebdae7f2f6be6748b7b1ad9bdc71bed637c84043 95d16c191c135decf40af751ed20c883cb109772 Late Admin <m4r1w4r4@gmail.com> 1773892066 +0800	commit: feat: add swipe/drag and progress bars to featured carousel
+95d16c191c135decf40af751ed20c883cb109772 8553e7857d988c5219914bde4e4d36aa17178ac5 Late Admin <m4r1w4r4@gmail.com> 1773892111 +0800	commit: feat: add swipe/drag and progress bars to featured carousel
+8553e7857d988c5219914bde4e4d36aa17178ac5 db966e1bc2fae6524841132ea84503beb2c020e9 Late Admin <m4r1w4r4@gmail.com> 1773892494 +0800	commit: feat: remove swipe/drag, keep progress bars on carousel
+db966e1bc2fae6524841132ea84503beb2c020e9 6c104dfd92ee6d3919ef59e6149b0f1484b2b14a Late Admin <m4r1w4r4@gmail.com> 1773892720 +0800	commit: fix: hide broken image icon in cart when album cover missing
+6c104dfd92ee6d3919ef59e6149b0f1484b2b14a 471e13ddcfef41f55cd69aec803306378810e7de Late Admin <m4r1w4r4@gmail.com> 1773894494 +0800	commit: fix: show vinyl placeholder in cart when album image is missing
+471e13ddcfef41f55cd69aec803306378810e7de 88dd310f57a99137e0ada88256b47705ea38bd89 Late Admin <m4r1w4r4@gmail.com> 1773894672 +0800	commit: fix: show vinyl placeholder in cart when album image is missing
+88dd310f57a99137e0ada88256b47705ea38bd89 4ba22586f0c0d254e21c3fb64cec490374aa2bc1 Late Admin <m4r1w4r4@gmail.com> 1773896052 +0800	commit: fix: handle Enter key on search input for mobile keyboard
+4ba22586f0c0d254e21c3fb64cec490374aa2bc1 63c43fd180899ea7d2a2b1eaa8be7e3f0ce7ddf3 Late Admin <m4r1w4r4@gmail.com> 1773896440 +0800	commit: fix: search results no longer cleared on Enter or row click
+63c43fd180899ea7d2a2b1eaa8be7e3f0ce7ddf3 f038163276863b5ab0bf0b210bb8423798a4bb74 Late Admin <m4r1w4r4@gmail.com> 1773896973 +0800	commit: fix: force string conversion on search fields to prevent toLowerCase crash
+f038163276863b5ab0bf0b210bb8423798a4bb74 3dfde735c2dedad891dff58018167555690f72fb Late Admin <m4r1w4r4@gmail.com> 1773903169 +0800	commit: refactor: move search logic to search.js
+3dfde735c2dedad891dff58018167555690f72fb 1f8bdcc54ac50a6ecdb19a8d3b1826c27d6ab582 Late Admin <m4r1w4r4@gmail.com> 1773904111 +0800	commit: refactor: move rowHTML and highlight to catalog.js
+1f8bdcc54ac50a6ecdb19a8d3b1826c27d6ab582 e97f898a3737b998fc24f513379d624e5530b219 Late Admin <m4r1w4r4@gmail.com> 1773905216 +0800	commit: fix: update audio filename convention to sample{n}.mp3
+e97f898a3737b998fc24f513379d624e5530b219 7d488b42e05b9f1463ba153efbb101d618677c2b Late Admin <m4r1w4r4@gmail.com> 1773908411 +0800	commit: perf: compress oversized album images
+7d488b42e05b9f1463ba153efbb101d618677c2b 7edf0abc4e5aa69ed9f64e9e2c14a2cf3ce98717 Late Admin <m4r1w4r4@gmail.com> 1773910991 +0800	commit: feat: genre nav shows windowed slice centered on active genre
+7edf0abc4e5aa69ed9f64e9e2c14a2cf3ce98717 9a6351205787cefddccadfa6a36e20863f0b941e Late Admin <m4r1w4r4@gmail.com> 1773911365 +0800	commit: fix: restore genre nav toggle button after windowed pill refactor
+9a6351205787cefddccadfa6a36e20863f0b941e e1387959f342ddb42ab6a268974eda11a51e0b84 Late Admin <m4r1w4r4@gmail.com> 1773911565 +0800	commit: fix: unify genre collapse and windowed pill logic into single controller
+e1387959f342ddb42ab6a268974eda11a51e0b84 6662b11b9a5c488e14146e31f535dabd4fa059df Late Admin <m4r1w4r4@gmail.com> 1773912030 +0800	commit: fix: genre nav toggle always visible when windowed slice active
+6662b11b9a5c488e14146e31f535dabd4fa059df 9967a2716b0f71482344be3cf3181ca9dfed5fbc Late Admin <m4r1w4r4@gmail.com> 1773914365 +0800	commit: feat: genre nav collapses to 6 rows desktop 8 rows mobile with clean cutoff
+9967a2716b0f71482344be3cf3181ca9dfed5fbc 436bedaa6014bff60c4518482f076d3beb87b7c1 Late Admin <m4r1w4r4@gmail.com> 1773916063 +0800	commit: feat: genre nav scrolls to show active genre in collapsed state
+436bedaa6014bff60c4518482f076d3beb87b7c1 11329b72d5c2a9f520f5f6fa5eef9a93d52f8237 Late Admin <m4r1w4r4@gmail.com> 1773916705 +0800	commit: fix: genre nav uses row-based windowed slice to always show active genre
+11329b72d5c2a9f520f5f6fa5eef9a93d52f8237 48d72b49861348a5160e475ffbbb77e8b56549d8 Late Admin <m4r1w4r4@gmail.com> 1773917805 +0800	commit: feat: add optimized audio samples for guilherme coutinho
+48d72b49861348a5160e475ffbbb77e8b56549d8 b4e766618298a8c93d9a68eebb61104efdbeccd9 Late Admin <m4r1w4r4@gmail.com> 1773923549 +0800	commit: perf: compress very-best-of-by-shigeru-izumiya image
+b4e766618298a8c93d9a68eebb61104efdbeccd9 fb44ff8c630ce36c4c9df59b2216a23301068d13 Late Admin <m4r1w4r4@gmail.com> 1773926427 +0800	commit: perf: uniform recompress all album images to quality 80 600px
+fb44ff8c630ce36c4c9df59b2216a23301068d13 47dceaa36a602d9c09215f72c7580b70297ece89 Late Admin <m4r1w4r4@gmail.com> 1773927891 +0800	commit: update photo
+47dceaa36a602d9c09215f72c7580b70297ece89 a279424a3a390ceff81c8d825f438b0cdbb21f57 Late Admin <m4r1w4r4@gmail.com> 1773929079 +0800	commit: feat: add audio samples for red-october-by-deep-pearl
+a279424a3a390ceff81c8d825f438b0cdbb21f57 73d6c25cdaf1e7d4f5a82c53669f2e3d5f665ea0 Late Admin <m4r1w4r4@gmail.com> 1773929826 +0800	commit: feat: add audio samples for tengo-la-sangre-caliente-by-double-face
+73d6c25cdaf1e7d4f5a82c53669f2e3d5f665ea0 018f8a6d0afa85564bd289ce463dd5f7e91c6938 Late Admin <m4r1w4r4@gmail.com> 1773929931 +0800	commit: feat: add album images
+018f8a6d0afa85564bd289ce463dd5f7e91c6938 fef1747928c33e67007f0c8ceaf733b089ad62b3 Late Admin <m4r1w4r4@gmail.com> 1773930878 +0800	commit: feat: add audio samples and image for gonzo-goa-party-music-87-94-by-various-artists
+fef1747928c33e67007f0c8ceaf733b089ad62b3 5a7d92205f982d9c0c96238cf94a672a8ecfed63 Late Admin <m4r1w4r4@gmail.com> 1773933798 +0800	commit: feat: add audio samples and image for a-moi-la-liberte-early-electronic-rai-by-various-artists
+5a7d92205f982d9c0c96238cf94a672a8ecfed63 be42b25c706fbe951a4aa1263dcaa5e622172bb5 Late Admin <m4r1w4r4@gmail.com> 1773934787 +0800	commit: feat: tracklist single column with collapse after 7 tracks
+be42b25c706fbe951a4aa1263dcaa5e622172bb5 7e7528715e653b55347c1b7c74543ecea8c8230e Late Admin <m4r1w4r4@gmail.com> 1773935158 +0800	commit: feat: tracklist single column with collapse after 7 tracks
+7e7528715e653b55347c1b7c74543ecea8c8230e 2cdc83fe0f37ec0d80f4b4a3390da65c8a2546fd Late Admin <m4r1w4r4@gmail.com> 1773935484 +0800	commit: feat: tracklist single column with collapse after 7 tracks
+2cdc83fe0f37ec0d80f4b4a3390da65c8a2546fd fd89e6e4315b99bebfc3846e5299620cb34968e1 Late Admin <m4r1w4r4@gmail.com> 1773935663 +0800	commit: removed construction script
+fd89e6e4315b99bebfc3846e5299620cb34968e1 64ae640d51afeb28b7100d983d177b001616aea9 Late Admin <m4r1w4r4@gmail.com> 1773936288 +0800	commit: tighten album page top gap
+64ae640d51afeb28b7100d983d177b001616aea9 f2491f9f835c5c8f6076888a6bea33458e57118e Late Admin <m4r1w4r4@gmail.com> 1773936620 +0800	commit: tighten album page top gap
+f2491f9f835c5c8f6076888a6bea33458e57118e 76c904f9f0dd3b882948e53d9b70111f57986728 Late Admin <m4r1w4r4@gmail.com> 1773936838 +0800	commit: tighten album page top gap
+76c904f9f0dd3b882948e53d9b70111f57986728 d4ba360e32133cc9307aee308f9a43c3b4a8d043 Late Admin <m4r1w4r4@gmail.com> 1773961711 +0800	commit: feat: add audio samples for a-reference-to-e2-e4-mad-professor-remix-by-alex-kassian
+d4ba360e32133cc9307aee308f9a43c3b4a8d043 8e196dcaa20112918e26646f2315af17c1136e0f Late Admin <m4r1w4r4@gmail.com> 1773987971 +0800	commit: replace album art for nuits
+8e196dcaa20112918e26646f2315af17c1136e0f db57ed17ac6833d1f79262384c559a60a761ca22 Late Admin <m4r1w4r4@gmail.com> 1773988876 +0800	commit: audio samples for nuits-d-ete-avec-abdou-el-omari-by-abdou-el-omari
+db57ed17ac6833d1f79262384c559a60a761ca22 eb5120500281a02a401dabc5caaf75de719839dd Late Admin <m4r1w4r4@gmail.com> 1773990541 +0800	commit: audio samples forintroduction-by-witch
+eb5120500281a02a401dabc5caaf75de719839dd 341df2d6cf044c728a86a5d43454057a6a28f07e Late Admin <m4r1w4r4@gmail.com> 1773991304 +0800	commit: ethiopian audio samples
+341df2d6cf044c728a86a5d43454057a6a28f07e 42b7daff3852157aaff2a8d0c275b8ff66a27779 Late Admin <m4r1w4r4@gmail.com> 1773991703 +0800	commit: feat: add audio samples for ethiopian-modern-instrumental-hits-by-various-artist
+42b7daff3852157aaff2a8d0c275b8ff66a27779 f8b4daad894037257ce494a513379771f1ab371e Late Admin <m4r1w4r4@gmail.com> 1773992125 +0800	commit: fix: replace corrupt sample2 for ethiopian-modern album
+f8b4daad894037257ce494a513379771f1ab371e 62d5cecfa0a11c427980c637f844a2d9862536ce Late Admin <m4r1w4r4@gmail.com> 1773992742 +0800	commit: a naoito
+62d5cecfa0a11c427980c637f844a2d9862536ce 0f3de8da7a83dd402109704e81047e7b517d9d51 Late Admin <m4r1w4r4@gmail.com> 1773993296 +0800	commit: a naoito info edit
+0f3de8da7a83dd402109704e81047e7b517d9d51 5062c92e3cdef6115002590cdb98a708aed1993e Late Admin <m4r1w4r4@gmail.com> 1773993622 +0800	commit: fix: rename album id to remove invalid slash character
+5062c92e3cdef6115002590cdb98a708aed1993e 8f26a5ca6cea7e3bcf8cae1e655fe69095888cab Late Admin <m4r1w4r4@gmail.com> 1773994533 +0800	commit: feat: add audio samples for saturday-fever-by-jivaro
+8f26a5ca6cea7e3bcf8cae1e655fe69095888cab 9de109c5117c468ef4deb64d56d8d25192ae0ba9 Late Admin <m4r1w4r4@gmail.com> 1773995036 +0800	commit: feat: show 3 genre tags on album page
+9de109c5117c468ef4deb64d56d8d25192ae0ba9 a6e1fa87b50228214917ee4bdbc1a1cb5e4b89f6 Late Admin <m4r1w4r4@gmail.com> 1773996933 +0800	commit: audio update
+a6e1fa87b50228214917ee4bdbc1a1cb5e4b89f6 6bedeb1d4b33e74d74ce3dced3b4ab80b523df04 Late Admin <m4r1w4r4@gmail.com> 1773997523 +0800	commit: feat: add audio sample
+6bedeb1d4b33e74d74ce3dced3b4ab80b523df04 462b298902ffe32488c04cd6dd5db034d38f85aa Late Admin <m4r1w4r4@gmail.com> 1773997940 +0800	commit: fix: lower description collapse threshold to 3 lines
+462b298902ffe32488c04cd6dd5db034d38f85aa 6318271ecaf8ce40ea81afddb7012a0902b83711 Late Admin <m4r1w4r4@gmail.com> 1773998169 +0800	commit: fix: tracklist collapses after 6 tracks
+6318271ecaf8ce40ea81afddb7012a0902b83711 5b5294e67286ad6bcfc36a31e07bdd5807ed8c75 Late Admin <m4r1w4r4@gmail.com> 1773998400 +0800	commit: fix: increase album page top padding on desktop
+5b5294e67286ad6bcfc36a31e07bdd5807ed8c75 2f6eb08cc6b40a7df648710d7317acf5fb0daf6d Late Admin <m4r1w4r4@gmail.com> 1773998809 +0800	commit: fix: reduce spacing above recommended section on album page
+2f6eb08cc6b40a7df648710d7317acf5fb0daf6d 30109c7e266f3cad315bfc75a18e0a34bb49fff6 Late Admin <m4r1w4r4@gmail.com> 1774005757 +0800	commit: feat: redesign success page with receipt layout and mobile modal
+30109c7e266f3cad315bfc75a18e0a34bb49fff6 896cd9464b76b23f70093f86cd5febb26c5cfe27 Late Admin <m4r1w4r4@gmail.com> 1774007882 +0800	commit: fix: success page timer, items, address, grey receipt, remove under-construction
+896cd9464b76b23f70093f86cd5febb26c5cfe27 091c6fcd036f4b1dc88018d75b490fa9cec20cd5 Late Admin <m4r1w4r4@gmail.com> 1774009384 +0800	commit: fix: success page modal centered 90s style, remove receipt from popup, smaller heading and countdown
+091c6fcd036f4b1dc88018d75b490fa9cec20cd5 aef419042ff632873f7bb4cc86af5ab10a207d24 Late Admin <m4r1w4r4@gmail.com> 1774010566 +0800	commit: fix: success page H1, QR PH moved to logos row, desktop clean summary, mobile modal items only
+aef419042ff632873f7bb4cc86af5ab10a207d24 1558bc0bae76eb27b9ad37e5f34c86e63497d3b7 Late Admin <m4r1w4r4@gmail.com> 1774011522 +0800	commit: fix: success page final layout, checkout-style order summary, updated modal
+1558bc0bae76eb27b9ad37e5f34c86e63497d3b7 c59013abe8b20adb862053497881a564789e9f1a Late Admin <m4r1w4r4@gmail.com> 1774013066 +0800	commit: fix: success page toggle summary, mobile modal cleaned up, pay within wider
+c59013abe8b20adb862053497881a564789e9f1a 859a48aef1d640c10b8ffbf158a7513a62c93119 Late Admin <m4r1w4r4@gmail.com> 1774013942 +0800	commit: chore: update shopeepay logo
+859a48aef1d640c10b8ffbf158a7513a62c93119 081cf67ce5ab5e0628e0ed8691bb0f7c0e920a8a Late Admin <m4r1w4r4@gmail.com> 1774014417 +0800	commit: fix: update timer note wording, modal padding, shopee logo cache bust
+081cf67ce5ab5e0628e0ed8691bb0f7c0e920a8a 24d71d5388b1a99bd30145c3ec3df075cade5e62 Late Admin <m4r1w4r4@gmail.com> 1774025724 +0800	commit: feat: thumbnail column and availability toggle on index
+24d71d5388b1a99bd30145c3ec3df075cade5e62 c75d9246e0e502546903b482bccfbd82c34fd2de Late Admin <m4r1w4r4@gmail.com> 1774025935 +0800	commit: revert back to working site
+c75d9246e0e502546903b482bccfbd82c34fd2de 5b6e4d7f8c36b9a4b419e9a7ed331c628cdf1e65 Late Admin <m4r1w4r4@gmail.com> 1774026107 +0800	commit: feat: availability toggle on index
+5b6e4d7f8c36b9a4b419e9a7ed331c628cdf1e65 10fb20c050032f0e50245941f9394da10272607e Late Admin <m4r1w4r4@gmail.com> 1774026683 +0800	commit: feat: thumbnail column in catalog table
+10fb20c050032f0e50245941f9394da10272607e 7b279d02928a8903f97e1cef9147b41738483976 Late Admin <m4r1w4r4@gmail.com> 1774027289 +0800	commit: feat: availability toggle on index
+7b279d02928a8903f97e1cef9147b41738483976 e163cae0822765018640af517eb23b8aa540f69c Late Admin <m4r1w4r4@gmail.com> 1774027442 +0800	commit: feat: availability toggle on index
+e163cae0822765018640af517eb23b8aa540f69c 39cd363e8b1e341ccd3ffd08089bce87a0dfcc1e Late Admin <m4r1w4r4@gmail.com> 1774057432 +0800	commit: feat: add album art column to catalog table
+39cd363e8b1e341ccd3ffd08089bce87a0dfcc1e ce5efd7ba6a3ed3bfa3284dfc416c632ad6912f1 Late Admin <m4r1w4r4@gmail.com> 1774058809 +0800	commit: fix: availability toggle now works with search and recommendations
+ce5efd7ba6a3ed3bfa3284dfc416c632ad6912f1 552bd73d5186a458d1887a2466dbeaca62acbcf8 Late Admin <m4r1w4r4@gmail.com> 1774059643 +0800	commit: fix: availability toggle correctly filters recommendations
+552bd73d5186a458d1887a2466dbeaca62acbcf8 1857c2fbca83e2d1519784d9e607530d61dc39f7 Late Admin <m4r1w4r4@gmail.com> 1774059992 +0800	commit: fix: toggle switch working correctly in all modes
+1857c2fbca83e2d1519784d9e607530d61dc39f7 a8bd210d35400f45ee8ee6bf1af763ca2b001e60 Late Admin <m4r1w4r4@gmail.com> 1774060116 +0800	commit: fix: toggle button onclick properly wired
+a8bd210d35400f45ee8ee6bf1af763ca2b001e60 89e9eba1bc63fae130787006176e6a1ab87f9048 Late Admin <m4r1w4r4@gmail.com> 1774060456 +0800	commit: fix: toggle filter working, new minimal toggle design
+89e9eba1bc63fae130787006176e6a1ab87f9048 9fa6a0ce14c33544b275567d409883dae1dabe6a Late Admin <m4r1w4r4@gmail.com> 1774061401 +0800	commit: fix: toggle on state subtle fill, square unfilled
+9fa6a0ce14c33544b275567d409883dae1dabe6a 0f1600d82d3d2ce8d0a8d2c9fcfb9b802b6ea09a Late Admin <m4r1w4r4@gmail.com> 1774061550 +0800	commit: fix: toggle remove dark border and square fill on active
+0f1600d82d3d2ce8d0a8d2c9fcfb9b802b6ea09a f965ef6fa312690c43c1f80093050093ee5310e6 Late Admin <m4r1w4r4@gmail.com> 1774061823 +0800	commit: fix: toggle clean active state
+f965ef6fa312690c43c1f80093050093ee5310e6 6e2f4d0d50684fbe589f326659b58c2b8ee3a226 Late Admin <m4r1w4r4@gmail.com> 1774062328 +0800	commit: feat: toggle design option A — solid square
+6e2f4d0d50684fbe589f326659b58c2b8ee3a226 7e389e384e35eaafcfc2a0505d8450bae799b98e Late Admin <m4r1w4r4@gmail.com> 1774168886 +0800	commit: add: mobile prototype
+7e389e384e35eaafcfc2a0505d8450bae799b98e f92bd980a44436f68bf73ce6b6ec9fb722300526 Late Admin <m4r1w4r4@gmail.com> 1774169404 +0800	commit: prototype: bigger art and breathing room on desktop too
+f92bd980a44436f68bf73ce6b6ec9fb722300526 cc390dc6b834d3f879c45d4392662ce506dd85fc Late Admin <m4r1w4r4@gmail.com> 1774176822 +0800	commit: audio update
+cc390dc6b834d3f879c45d4392662ce506dd85fc 42d3b4dc189892771f8bb9580c5239dc7e756e3e Late Admin <m4r1w4r4@gmail.com> 1774177024 +0800	commit: audio update
+42d3b4dc189892771f8bb9580c5239dc7e756e3e 8837862b44be7327be1b3772a23e8dfe8fa0ae61 Late Admin <m4r1w4r4@gmail.com> 1774182778 +0800	commit: prototype: stagger reveal on carousel load and swipe
+8837862b44be7327be1b3772a23e8dfe8fa0ae61 31252416c7f1a417093c30cb9e3930c6db967397 Late Admin <m4r1w4r4@gmail.com> 1774183482 +0800	commit: prototype: typewriter carousel, scroll reveal rows, custom cursor, header fade
+31252416c7f1a417093c30cb9e3930c6db967397 ba718e2870708b124ad0d57b196c4ca1a6e278e5 Late Admin <m4r1w4r4@gmail.com> 1774189396 +0800	commit: prototype: typewriter, cursor, grain, footer, bigger art, taller rows
+ba718e2870708b124ad0d57b196c4ca1a6e278e5 7bdfad502dd42784aa2d1ed483b8d012b2bfa88e Late Admin <m4r1w4r4@gmail.com> 1774190989 +0800	commit: prototype: alignment fix, footer cleanup, shop open, grain boost, default cursor
+7bdfad502dd42784aa2d1ed483b8d012b2bfa88e 087d27ceec7ec0e466d455b83b5269cf752ba712 Late Admin <m4r1w4r4@gmail.com> 1774191464 +0800	commit: prototype: fixed syntax error, clean rebuild with all updates
+087d27ceec7ec0e466d455b83b5269cf752ba712 b010c035bfcfe34fe0eddd5d488264b977eefbe6 Late Admin <m4r1w4r4@gmail.com> 1774192017 +0800	commit: prototype: lighter background, subtler grain
+b010c035bfcfe34fe0eddd5d488264b977eefbe6 f2e9a9e83f4eff3eb17454301db38c01899fb782 Late Admin <m4r1w4r4@gmail.com> 1774192751 +0800	commit: prototype: whiter background, less noise, grain still visible
+f2e9a9e83f4eff3eb17454301db38c01899fb782 148afec84381e2013f8e19a1864501770332a26c Late Admin <m4r1w4r4@gmail.com> 1774193792 +0800	commit: audio update
+148afec84381e2013f8e19a1864501770332a26c 978f30b5df925cc31891ddd1957c16c3f6abc15f Late Admin <m4r1w4r4@gmail.com> 1774194262 +0800	commit: audio update
+978f30b5df925cc31891ddd1957c16c3f6abc15f 4a2c0fd5ec5290a494b9fcd6c80d0f7e637ee030 Late Admin <m4r1w4r4@gmail.com> 1774195209 +0800	commit: audio update
+4a2c0fd5ec5290a494b9fcd6c80d0f7e637ee030 ae222e5ac6532cfb76a1fa226d3795842fdca732 Late Admin <m4r1w4r4@gmail.com> 1774195856 +0800	commit: feat: album art as tab favicon, title format updated
+ae222e5ac6532cfb76a1fa226d3795842fdca732 42a904e2e7565da8e4d0c1e00d6534df8c50acc2 Late Admin <m4r1w4r4@gmail.com> 1774196085 +0800	commit: fix: force album art favicon refresh
+42a904e2e7565da8e4d0c1e00d6534df8c50acc2 73e97e80b2d0b7d5d4bb923668685533e6a39d0b Late Admin <m4r1w4r4@gmail.com> 1774196737 +0800	commit: audio update
+73e97e80b2d0b7d5d4bb923668685533e6a39d0b bcca143c800648b18e67f5496063aa8d58e44b76 Late Admin <m4r1w4r4@gmail.com> 1774196922 +0800	commit: audio update
+bcca143c800648b18e67f5496063aa8d58e44b76 4777181aa60cd0ad72bb4e86534cdec549e17873 Late Admin <m4r1w4r4@gmail.com> 1774197379 +0800	commit: audio update
+4777181aa60cd0ad72bb4e86534cdec549e17873 0d792518d5cc2e483c7b17dd8c7a899e71707ec3 Late Admin <m4r1w4r4@gmail.com> 1774273587 +0800	commit: audio update
+0d792518d5cc2e483c7b17dd8c7a899e71707ec3 b5ccec7cb62906aa442615c23946390d31bb7b52 Late Admin <m4r1w4r4@gmail.com> 1774274156 +0800	commit: audio update
+b5ccec7cb62906aa442615c23946390d31bb7b52 cd9db3766c92180aec5c5753ae005d9259541a51 Late Admin <m4r1w4r4@gmail.com> 1774274514 +0800	commit: audio update
+cd9db3766c92180aec5c5753ae005d9259541a51 365bafec7bf20410b23d69b167cb6f996f97890c Late Admin <m4r1w4r4@gmail.com> 1774275304 +0800	commit: audio update
+365bafec7bf20410b23d69b167cb6f996f97890c fac7bdcdc9201412f69bcac333b088784b69c721 Late Admin <m4r1w4r4@gmail.com> 1774276491 +0800	commit: audio update
+fac7bdcdc9201412f69bcac333b088784b69c721 f9e8ccde4fa8884b319da5a526b30dbb3a6d1086 Late Admin <m4r1w4r4@gmail.com> 1774277284 +0800	commit: audio update
+f9e8ccde4fa8884b319da5a526b30dbb3a6d1086 50751b3de7bf23a6530a893cb79871b79ad5bcb4 Late Admin <m4r1w4r4@gmail.com> 1774278401 +0800	commit: image update
+50751b3de7bf23a6530a893cb79871b79ad5bcb4 02cb0b8c9679adb07818bc607c8389e5f61e44f7 Late Admin <m4r1w4r4@gmail.com> 1774278547 +0800	commit: image update
+02cb0b8c9679adb07818bc607c8389e5f61e44f7 cc3042cdb257f5f955c70dfd7ba764dbe17974f7 Late Admin <m4r1w4r4@gmail.com> 1774279267 +0800	commit: audio update
+cc3042cdb257f5f955c70dfd7ba764dbe17974f7 1036085dd0d038f16d8bbd9b0dc5d23d396a939b Late Admin <m4r1w4r4@gmail.com> 1774279716 +0800	commit: audio update
+1036085dd0d038f16d8bbd9b0dc5d23d396a939b 5707a058e6fee377e16ff700bd3f1685e358bc86 Late Admin <m4r1w4r4@gmail.com> 1774280104 +0800	commit: audio update
+5707a058e6fee377e16ff700bd3f1685e358bc86 ce8263bf5f97a3bfe349416f2187a1d6ec77f4a5 Late Admin <m4r1w4r4@gmail.com> 1774280451 +0800	commit: audio update
+ce8263bf5f97a3bfe349416f2187a1d6ec77f4a5 04793a7cb3bda3485b40e6306778850dd8aa35d5 Late Admin <m4r1w4r4@gmail.com> 1774280663 +0800	commit: audio update
+04793a7cb3bda3485b40e6306778850dd8aa35d5 a181adfe24afc209f2983c7386d46f64275f9dc4 Late Admin <m4r1w4r4@gmail.com> 1774281846 +0800	commit: audio update
+a181adfe24afc209f2983c7386d46f64275f9dc4 b9063d138d1b5da205419497d43bf941e2a93be3 Late Admin <m4r1w4r4@gmail.com> 1774283532 +0800	commit: audio update
+b9063d138d1b5da205419497d43bf941e2a93be3 6aa8f7ce5b4659354affefcd479ece4386aa065a Late Admin <m4r1w4r4@gmail.com> 1774332974 +0800	commit: audio update
+6aa8f7ce5b4659354affefcd479ece4386aa065a 3d5dd7ef3b745c473ee678c0f88205cceb2d0f40 Late Admin <m4r1w4r4@gmail.com> 1774333915 +0800	commit: audio update
+3d5dd7ef3b745c473ee678c0f88205cceb2d0f40 36bf5d33ecfa7feaa8508702fc2402e3dfa7174e Late Admin <m4r1w4r4@gmail.com> 1774334542 +0800	commit: audio update
+36bf5d33ecfa7feaa8508702fc2402e3dfa7174e b3bcd0b6f40189a467552a23a1dc96476f26180c Late Admin <m4r1w4r4@gmail.com> 1774335814 +0800	commit: audio update
+b3bcd0b6f40189a467552a23a1dc96476f26180c 798953cecdfcc05faf9f57513a01cd4872babdbc Late Admin <m4r1w4r4@gmail.com> 1774336425 +0800	commit: audio update
+798953cecdfcc05faf9f57513a01cd4872babdbc 8aae0e04dce278c2bd1e3a6b3e75a416ee46d6c3 Late Admin <m4r1w4r4@gmail.com> 1774336748 +0800	commit: audio update
