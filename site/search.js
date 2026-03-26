@@ -3,6 +3,12 @@ let _suggestTimer = null;
 let _currentSuggestions = [];
 let _isSuggestionMode = false;
 
+function _esc(s) {
+  const d = document.createElement('div');
+  d.textContent = s;
+  return d.innerHTML;
+}
+
 function renderTable(rawQuery) {
   const q      = rawQuery.trim().toLowerCase();
   const tbody  = document.getElementById('catalogList');
@@ -75,7 +81,7 @@ function renderTable(rawQuery) {
   count.textContent = '';
   hdr.style.display = 'block';
   hdr.className = 'suggestions-header is-loading';
-  hdr.innerHTML = `No results for <span>"${rawQuery.trim()}"</span> — looking for suggestions`;
+  hdr.innerHTML = `No results for <span>"${_esc(rawQuery.trim())}"</span> — looking for suggestions`;
   tbody.innerHTML = '';
   _suggestTimer = setTimeout(() => fetchSuggestions(rawQuery.trim()), 500);
 }
@@ -128,7 +134,7 @@ function applySuggestionsWithToggle(query) {
   if (!toShow.length) {
     hdr.className = 'suggestions-header';
     hdr.style.display = 'block';
-    hdr.innerHTML = `No available results for <span>"${query || ''}"</span> — turn off the filter to see sold items`;
+    hdr.innerHTML = `No available results for <span>"${_esc(query || '')}"</span> — turn off the filter to see sold items`;
     tbody.innerHTML = '';
     return;
   }
@@ -136,8 +142,8 @@ function applySuggestionsWithToggle(query) {
   hdr.className = 'suggestions-header';
   hdr.style.display = 'block';
   hdr.innerHTML = window.availFilterActive
-    ? `No results for <span>"${query || ''}"</span> — showing available suggestions only`
-    : `No results for <span>"${query || ''}"</span> — you might like:`;
+    ? `No results for <span>"${_esc(query || '')}"</span> — showing available suggestions only`
+    : `No results for <span>"${_esc(query || '')}"</span> — you might like:`;
 
   tbody.innerHTML = toShow.map(item => rowHTML(item, '', true)).join('');
 }
