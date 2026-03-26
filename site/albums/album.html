@@ -253,6 +253,12 @@ html, body {
 const ALBUM_ID   = new URLSearchParams(location.search).get('id') || '';
 const AUDIO_BASE = '../audio/';
 
+function _escHTML(s) {
+  const d = document.createElement('div');
+  d.textContent = s;
+  return d.innerHTML;
+}
+
 function renderNotFound() {
   document.getElementById('mainContainer').innerHTML = `
     <div style="padding:80px 0;text-align:center;">
@@ -299,7 +305,7 @@ document.head.appendChild(favLink);
   document.getElementById('mainContainer').innerHTML = `
     <div class="album-page">
       <div class="album-image-wrap">
-        <img src="/images/${item.album_id}.jpg?v=${Date.now()}" class="album-image" id="albumImg" alt="${item.title}"
+        <img src="/images/${encodeURIComponent(item.album_id)}.jpg" class="album-image" id="albumImg" alt="${_escHTML(item.title)}"
           onerror="this.style.display='none';document.getElementById('albumPlaceholder').style.display='flex';">
         <div id="albumPlaceholder" class="album-placeholder" style="display:none;">
           <div class="album-placeholder-inner">
@@ -317,14 +323,14 @@ document.head.appendChild(favLink);
       </div>
       <div class="album-details">
         <div>
-          <h1 class="album-title">${item.title}</h1>
-          <p class="album-artist">by ${item.artist}</p>
+          <h1 class="album-title">${_escHTML(item.title)}</h1>
+          <p class="album-artist">by ${_escHTML(item.artist)}</p>
          <div class="album-genre-tags">
-          <span class="album-format-label">${(item.format || 'LP').trim()}</span>
+          <span class="album-format-label">${_escHTML((item.format || 'LP').trim())}</span>
 
           ${item.condition ? `
             <span class="album-meta-divider"></span>
-            <span class="album-format-label">${item.condition}</span>
+            <span class="album-format-label">${_escHTML(item.condition)}</span>
           ` : ''}
 
           ${LR.ui.splitPipe(item.genre).length ? `
@@ -332,7 +338,7 @@ document.head.appendChild(favLink);
           ` : ''}
 
           ${LR.ui.splitPipe(item.genre).slice(0, 3).map(g =>
-            `<a class="album-genre-tag" href="../genre.html?g=${encodeURIComponent(g.toLowerCase())}">${g}</a>`
+            `<a class="album-genre-tag" href="../genre.html?g=${encodeURIComponent(g.toLowerCase())}">${_escHTML(g)}</a>`
           ).join('')}
         </div>
         </div>
@@ -342,8 +348,8 @@ document.head.appendChild(favLink);
             ? `<span style="color:rgba(26,26,20,.3);text-decoration:line-through;">${LR.ui.peso(item.price)}</span>`
             : LR.ui.peso(item.price)}</div>
           <button class="add-to-cart-btn" id="addToCartBtn"
-            data-id="${item.album_id}" data-title="${item.title}"
-            data-artist="${item.artist}" data-price="${item.price}"
+            data-id="${_escHTML(item.album_id)}" data-title="${_escHTML(item.title)}"
+            data-artist="${_escHTML(item.artist)}" data-price="${item.price}"
             data-stock="${item.stock}" ${sold ? 'disabled' : ''}>
             ${sold ? 'Sold Out' : 'Add to Cart'}
           </button>
@@ -352,7 +358,7 @@ document.head.appendChild(favLink);
         ${item.description ? `
         <div class="description-block">
           <div style="display:flex;align-items:flex-end;gap:0;">
-            <p class="description" id="albumDesc" style="flex:1;">${item.description}</p>
+            <p class="description" id="albumDesc" style="flex:1;">${_escHTML(item.description)}</p>
             <button class="description-toggle" id="descToggle" style="display:none;">+</button>
           </div>
         </div>` : ''}
@@ -381,11 +387,11 @@ document.head.appendChild(favLink);
           <div style="display:flex;align-items:flex-end;gap:0;">
             <div style="flex:1;">
               <ul class="tracklist">
-                ${visibleTracks.map(t => `<li>${t}</li>`).join('')}
+                ${visibleTracks.map(t => `<li>${_escHTML(t)}</li>`).join('')}
               </ul>
               ${hiddenTracks.length ? `
               <ul class="tracklist" id="tracklistHidden" style="display:none;">
-                ${hiddenTracks.map(t => `<li>${t}</li>`).join('')}
+                ${hiddenTracks.map(t => `<li>${_escHTML(t)}</li>`).join('')}
               </ul>` : ''}
             </div>
             ${hiddenTracks.length ? `
@@ -399,8 +405,8 @@ document.head.appendChild(favLink);
       <h3 class="related-title">Recommended</h3>
       <div class="related-grid">
         ${related.map(({ i }) => `
-          <a class="related-card" href="album.html?id=${i.album_id}">
-            <img src="/images/${i.album_id}.jpg?v=${Date.now()}" class="related-cover" alt="${i.title}" loading="lazy"
+          <a class="related-card" href="album.html?id=${encodeURIComponent(i.album_id)}">
+            <img src="/images/${encodeURIComponent(i.album_id)}.jpg" class="related-cover" alt="${_escHTML(i.title)}" loading="lazy"
               onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">
             <div class="related-placeholder" style="display:none;">
               <div class="album-placeholder-inner">
@@ -416,8 +422,8 @@ document.head.appendChild(favLink);
               </div>
             </div>
             <div class="related-info">
-              <p class="related-name">${i.title}</p>
-              <p class="related-artist">${i.artist}</p>
+              <p class="related-name">${_escHTML(i.title)}</p>
+              <p class="related-artist">${_escHTML(i.artist)}</p>
             </div>
           </a>
         `).join('')}
