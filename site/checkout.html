@@ -123,6 +123,75 @@ html, body {
   .page-title { font-size: 22px; }
 }
 
+.delivery-methods {
+  margin: 24px 0 20px;
+}
+.delivery-methods .section-label { margin-bottom: 12px; }
+.delivery-option {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 11px 14px;
+  border: 1px solid rgba(26,26,20,.15);
+  cursor: pointer;
+  margin-bottom: -1px;
+  transition: background .1s;
+}
+.delivery-option:first-of-type { border-top-left-radius: 0; border-top-right-radius: 0; }
+.delivery-option:last-of-type  { border-bottom-left-radius: 0; border-bottom-right-radius: 0; }
+.delivery-option:hover { background: rgba(26,26,20,.03); }
+.delivery-option.is-selected {
+  background: rgba(26,26,20,.06);
+  border-color: rgba(26,26,20,.35);
+  z-index: 1;
+  position: relative;
+}
+.delivery-option input[type="radio"] {
+  appearance: none;
+  -webkit-appearance: none;
+  width: 14px; height: 14px;
+  border: 1px solid rgba(26,26,20,.35);
+  border-radius: 50%;
+  margin: 0 10px 0 0;
+  flex-shrink: 0;
+  position: relative;
+  cursor: pointer;
+}
+.delivery-option input[type="radio"]:checked {
+  border-color: #1a1a14;
+}
+.delivery-option input[type="radio"]:checked::after {
+  content: '';
+  position: absolute;
+  top: 2px; left: 2px;
+  width: 8px; height: 8px;
+  background: #1a1a14;
+  border-radius: 50%;
+}
+.delivery-option-left {
+  display: flex;
+  align-items: center;
+  flex: 1;
+  min-width: 0;
+}
+.delivery-option-label {
+  font-size: 13px;
+  font-weight: 500;
+  color: #1a1a14;
+}
+.delivery-option-desc {
+  font-size: 11px;
+  color: rgba(26,26,20,.45);
+  margin-left: 8px;
+}
+.delivery-option-price {
+  font-size: 13px;
+  font-weight: 500;
+  color: #1a1a14;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
 </style>
 </head>
 <body>
@@ -159,6 +228,33 @@ html, body {
         <label>Shipping Address</label>
         <input type="text" id="address" required placeholder="Street address, city, province">
       </div>
+      <div class="delivery-methods">
+        <div class="section-label">Delivery Method</div>
+        <label class="delivery-option is-selected">
+          <div class="delivery-option-left">
+            <input type="radio" name="deliveryMethod" value="ship" checked>
+            <span class="delivery-option-label">Ship</span>
+          </div>
+          <span class="delivery-option-price" data-delivery-price="ship"></span>
+        </label>
+        <label class="delivery-option">
+          <div class="delivery-option-left">
+            <input type="radio" name="deliveryMethod" value="local">
+            <span class="delivery-option-label">Local Delivery</span>
+            <span class="delivery-option-desc">Bacolod City</span>
+          </div>
+          <span class="delivery-option-price">₱100</span>
+        </label>
+        <label class="delivery-option">
+          <div class="delivery-option-left">
+            <input type="radio" name="deliveryMethod" value="pickup">
+            <span class="delivery-option-label">Pickup</span>
+            <span class="delivery-option-desc">Bacolod City</span>
+          </div>
+          <span class="delivery-option-price">Free</span>
+        </label>
+      </div>
+
       <div class="payment-note">
         <strong>E-Wallet / QR PH</strong><br><br>
         Payments accepted via <strong>GoTyme, GCash, or Maya</strong>.<br>
@@ -191,10 +287,15 @@ html, body {
 document.addEventListener('DOMContentLoaded', () => {
   const cart = LR.cart.get();
   if (!cart.length) { window.location.href = 'cart.html'; return; }
-  const shipping = LR.cart.shipping();
-  const subtotal = LR.cart.subtotal();
-  const total    = subtotal + shipping;
+  const subtotal    = LR.cart.subtotal();
+  const shipDefault = LR.cart.shipping();
+  let shipping      = shipDefault;
+  let deliveryMethod = 'ship';
 
+  /* ── Show default ship price in the delivery selector ── */
+  document.querySelector('[data-delivery-price="ship"]').textContent = LR.ui.peso(shipDefault);
+
+  /* ── Render cart items ── */
   const itemsEl = document.getElementById('orderItems');
   cart.forEach(item => {
     const div = document.createElement('div');
@@ -209,8 +310,25 @@ document.addEventListener('DOMContentLoaded', () => {
     itemsEl.appendChild(div);
   });
 
-  document.getElementById('shippingFee').textContent = LR.ui.peso(shipping);
-  document.getElementById('orderTotal').textContent  = LR.ui.peso(total);
+  function updateTotals() {
+    const total = subtotal + shipping;
+    document.getElementById('shippingFee').textContent = shipping === 0 ? 'Free' : LR.ui.peso(shipping);
+    document.getElementById('orderTotal').textContent  = LR.ui.peso(total);
+  }
+  updateTotals();
+
+  /* ── Delivery method toggle ── */
+  document.querySelectorAll('input[name="deliveryMethod"]').forEach(radio => {
+    radio.addEventListener('change', () => {
+      deliveryMethod = radio.value;
+      if (radio.value === 'ship')   shipping = shipDefault;
+      if (radio.value === 'local')  shipping = 100;
+      if (radio.value === 'pickup') shipping = 0;
+      document.querySelectorAll('.delivery-option').forEach(el => el.classList.remove('is-selected'));
+      radio.closest('.delivery-option').classList.add('is-selected');
+      updateTotals();
+    });
+  });
 
   document.getElementById('completeBtn').addEventListener('click', async () => {
     const form = document.getElementById('checkoutForm');
@@ -221,6 +339,8 @@ document.addEventListener('DOMContentLoaded', () => {
     btn.disabled    = true;
     btn.textContent = 'Processing…';
 
+    const total = subtotal + shipping;
+
     try {
       const turnstileToken = await LR_TURNSTILE.getToken();
       const result = await LR.api.order({
@@ -228,6 +348,7 @@ document.addEventListener('DOMContentLoaded', () => {
         email:         document.getElementById('email').value.trim(),
         phone:         document.getElementById('phone').value.trim(),
         address:       document.getElementById('address').value.trim(),
+        deliveryMethod,
         subtotal, shipping, total,
         items:         cart.map(i => ({ album_id: i.id, quantity: i.qty })),
         turnstileToken: turnstileToken
@@ -245,6 +366,7 @@ document.addEventListener('DOMContentLoaded', () => {
       localStorage.setItem('lr_order_items',      JSON.stringify(cart));
       localStorage.setItem('lr_order_subtotal',   String(subtotal));
       localStorage.setItem('lr_order_shipping',   String(shipping));
+      localStorage.setItem('lr_delivery_method',  deliveryMethod);
       LR.cart.clear();
       window.location.href = 'success.html';
     } catch (err) {
