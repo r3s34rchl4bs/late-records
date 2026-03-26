@@ -257,11 +257,32 @@ html, body {
   transition: opacity .1s steps(3);
 }
 .cart-toast.is-duplicate {
-  background: #252520;
+  background: transparent;
   border: 1px dashed rgba(226,226,226,.25);
 }
 .cart-toast.is-duplicate .cart-toast-label {
   color: rgba(226,226,226,.35);
+}
+.cart-toast.is-duplicate .cart-toast-title,
+.cart-toast.is-duplicate .cart-toast-artist {
+  color: rgba(226,226,226,.3);
+}
+.cart-toast.is-duplicate .cart-toast-img {
+  opacity: .35;
+}
+.cart-toast-checkout {
+  flex-shrink: 0;
+  font-size: 9px;
+  font-weight: 500;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  color: #e2e2e2;
+  text-decoration: none;
+  padding: 6px 10px;
+  border: 1px solid rgba(226,226,226,.25);
+}
+.cart-toast-checkout:hover {
+  background: rgba(226,226,226,.1);
 }
 .cart-toast-img {
   width: 40px;
@@ -647,6 +668,7 @@ function showCartToast(item, isDuplicate) {
       <div class="cart-toast-title">${_escHTML(item.title)}</div>
       <div class="cart-toast-artist">${_escHTML(item.artist)}</div>
     </div>
+    <a href="../checkout.html" class="cart-toast-checkout">Checkout</a>
   `;
   container.appendChild(toast);
   requestAnimationFrame(() => toast.classList.add('is-visible'));
