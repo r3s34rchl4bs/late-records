@@ -9,6 +9,20 @@
 
 const CACHE_TTL = 120; // seconds
 
+// ── Turnstile verification ─────────────────────────────────
+// To update this logic, edit turnstile.js (frontend) or this
+// function (backend). Do not touch the order handler below.
+async function verifyTurnstile(token, ip, secret) {
+  if (!token) return false;
+  const res = await fetch('https://challenges.cloudflare.com/turnstile/v0/siteverify', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+    body: `secret=${encodeURIComponent(secret)}&response=${encodeURIComponent(token)}&remoteip=${encodeURIComponent(ip || '')}`
+  });
+  const data = await res.json();
+  return data.success === true;
+}
+
 // ── CORS headers ──────────────────────────────────────────
 function cors(origin) {
   return {
@@ -195,7 +209,10 @@ export default {
     // POST /api/order
     if (path === '/api/order' && request.method === 'POST') {
       try {
-        const body = await request.json();
+        const body  = await request.json();
+        const ip    = request.headers.get('CF-Connecting-IP') || '';
+        const valid = await verifyTurnstile(body.turnstileToken, ip, env.TURNSTILE_SECRET);
+        if (!valid) return json({ error: 'Security check failed. Please refresh and try again.' }, 403, origin);
         const res  = await fetch(env.APPS_SCRIPT_URL, {
           method:  'POST',
           headers: { 'Content-Type': 'application/json' },
