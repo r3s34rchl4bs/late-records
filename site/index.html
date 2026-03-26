@@ -496,12 +496,23 @@ function toggleAvail() {
 document.addEventListener('DOMContentLoaded', async () => {
   initSearch();
 
-  try {
-    const catalog = await LR.api.catalog();
+  async function loadCatalog(retries) {
+    for (let i = 0; i <= retries; i++) {
+      try {
+        return await LR.api.catalog();
+      } catch(e) {
+        if (i < retries) await new Promise(r => setTimeout(r, 1000 * (i + 1)));
+      }
+    }
+    return null;
+  }
+
+  const catalog = await loadCatalog(2);
+  if (catalog) {
     window._catalogCache = catalog;
     buildCarousel(catalog);
     buildTable(catalog);
-  } catch(e) {
+  } else {
     document.getElementById('carouselTrack').innerHTML = '';
     document.getElementById('catalogList').innerHTML =
       `<tr><td colspan="5" style="padding:40px 0;font-size:13px;color:rgba(26,26,20,.48)">Could not load catalog. Please refresh.</td></tr>`;
