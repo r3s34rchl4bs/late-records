@@ -532,16 +532,22 @@ function setupAudio(albumId) {
   prev.addEventListener('click', () => { if (cur > 0) setTrack(cur - 1); });
   next.addEventListener('click', () => { if (cur < valid.length - 1) setTrack(cur + 1); });
 
-  function probe(i) {
-    const url = `${AUDIO_BASE}${albumId}/sample${i}.mp3`;
-    const a = new Audio(); a.preload = 'metadata';
-    a.addEventListener('loadedmetadata', () => { valid.push(url); probe(i + 1); }, { once: true });
-    a.addEventListener('error', () => {
-      if (valid.length) { block.classList.add('is-visible'); setTrack(0); }
-    }, { once: true });
-    a.src = url;
+  function probeOne(url) {
+    return new Promise(resolve => {
+      const a = new Audio(); a.preload = 'metadata';
+      a.addEventListener('loadedmetadata', () => resolve(url), { once: true });
+      a.addEventListener('error', () => resolve(null), { once: true });
+      a.src = url;
+    });
   }
-  probe(1);
+
+  const probes = [1, 2, 3, 4, 5].map(i =>
+    probeOne(`${AUDIO_BASE}${albumId}/sample${i}.mp3`)
+  );
+  Promise.all(probes).then(results => {
+    results.forEach(url => { if (url) valid.push(url); });
+    if (valid.length) { block.classList.add('is-visible'); setTrack(0); }
+  });
 }
 
 function setupAddToCart(item) {
