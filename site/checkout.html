@@ -222,10 +222,11 @@ document.addEventListener('DOMContentLoaded', () => {
     if (!cart.length)          { alert('Your cart is empty.'); return; }
 
     const btn = document.getElementById('completeBtn');
-    btn.disabled    = true;
-    btn.textContent = 'Processing…';
+btn.disabled    = true;
+btn.textContent = 'Processing…';
 
     try {
+      const turnstileToken = await LR_TURNSTILE.getToken();
       const result = await LR.api.order({
         name:     document.getElementById('name').value.trim(),
         email:    document.getElementById('email').value.trim(),
@@ -233,7 +234,7 @@ document.addEventListener('DOMContentLoaded', () => {
         address:  document.getElementById('address').value.trim(),
         subtotal, shipping, total,
         items: cart.map(i => ({ album_id: i.id, quantity: i.qty })),
-turnstileToken: LR_TURNSTILE.getToken()
+turnstileToken: turnstileToken
       });
 
       if (!result.ok && !result.success) throw new Error(result.error || 'Order failed');

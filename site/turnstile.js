@@ -1,7 +1,7 @@
 /**
  * Late Records — Turnstile Security
  * Handles bot/spam protection on the checkout form.
- * 
+ *
  * To update Turnstile settings, only edit this file.
  * Do not touch checkout.html for anything Turnstile-related.
  */
@@ -9,61 +9,64 @@
 const LR_TURNSTILE = (() => {
 
   const SITE_KEY = '0x4AAAAAACpBT7ijFgQum-H_';
+  let widgetId   = null;
+  let _resolve   = null;
 
-  // Inject the Cloudflare Turnstile script into the page
   function loadScript() {
-    if (document.querySelector('script[src*="turnstile"]')) return;
-    const s = document.createElement('script');
-    s.src   = 'https://challenges.cloudflare.com/turnstile/v0/api.js';
-    s.async = true;
-    s.defer = true;
-    document.head.appendChild(s);
+    return new Promise(resolve => {
+      if (typeof turnstile !== 'undefined') { resolve(); return; }
+      const s    = document.createElement('script');
+      s.src      = 'https://challenges.cloudflare.com/turnstile/v0/api.js';
+      s.async    = true;
+      s.onload   = () => resolve();
+      document.head.appendChild(s);
+    });
   }
 
-  // Inject the invisible Turnstile widget into the checkout form
-  function mountWidget() {
+  async function mountWidget() {
+    await loadScript();
     const form = document.getElementById('checkoutForm');
     if (!form) return;
     if (document.getElementById('lr-turnstile-widget')) return;
+
     const div = document.createElement('div');
-    div.id                       = 'lr-turnstile-widget';
-    div.className                = 'cf-turnstile';
-    div.dataset.sitekey          = SITE_KEY;
-    div.dataset.theme            = 'light';
-    div.dataset.size             = 'invisible';
-    div.style.display            = 'none';
+    div.id    = 'lr-turnstile-widget';
+    div.style.display = 'none';
     form.appendChild(div);
+
+    widgetId = turnstile.render(div, {
+      sitekey:    SITE_KEY,
+      size:       'invisible',
+      callback:   token => { if (_resolve) { _resolve(token); _resolve = null; } },
+      'error-callback': () => { if (_resolve) { _resolve(''); _resolve = null; } }
+    });
   }
 
-  // Get the Turnstile token to send with the order
+  // Returns a promise that resolves to the token
+  // Executes the challenge on demand right before submit
   function getToken() {
-    if (typeof turnstile === 'undefined') return '';
-    return turnstile.getResponse() || '';
-  }
-
-  // Reset the widget after a failed order attempt (so they can try again)
-  function reset() {
-    if (typeof turnstile === 'undefined') return;
-    turnstile.reset();
-  }
-
-  // Init — call this once on DOMContentLoaded
-  function init() {
-    loadScript();
-    // Wait briefly for the form to exist before mounting
-    const ready = () => {
-      if (document.getElementById('checkoutForm')) {
-        mountWidget();
-      } else {
-        setTimeout(ready, 100);
+    return new Promise(resolve => {
+      if (typeof turnstile === 'undefined' || widgetId === null) {
+        resolve(''); return;
       }
-    };
-    ready();
+      const existing = turnstile.getResponse(widgetId);
+      if (existing) { resolve(existing); return; }
+      _resolve = resolve;
+      turnstile.execute(widgetId);
+    });
+  }
+
+  function reset() {
+    if (typeof turnstile === 'undefined' || widgetId === null) return;
+    turnstile.reset(widgetId);
+  }
+
+  async function init() {
+    await mountWidget();
   }
 
   return { init, getToken, reset };
 
 })();
 
-// Auto-init when the page loads
 document.addEventListener('DOMContentLoaded', () => LR_TURNSTILE.init());
