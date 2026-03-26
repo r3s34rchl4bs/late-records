@@ -421,6 +421,12 @@ col.c-stock  { width: 8%; }
 <script src="search.js"></script>
 <script>
 
+function _escHTML(s) {
+  const d = document.createElement('div');
+  d.textContent = s;
+  return d.innerHTML;
+}
+
 function buildCarousel(albums) {
   const featured = albums.filter(a => String(a.featured).toLowerCase() === 'yes').slice(0, 5);
   const cards = featured.length >= 1 ? featured : albums.slice(0, 5);
@@ -429,7 +435,7 @@ function buildCarousel(albums) {
   track.innerHTML = '';
   cards.forEach((album) => {
     const tags     = LR.ui.splitPipe(album.genre).slice(0, 2);
-    const albumUrl = `albums/album.html?id=${album.album_id}`;
+    const albumUrl = `albums/album.html?id=${encodeURIComponent(album.album_id)}`;
     const card     = document.createElement('div');
     card.className = 'carousel-card';
     card.addEventListener('click', () => location.href = albumUrl);
@@ -437,13 +443,13 @@ function buildCarousel(albums) {
       <div class="card-inner">
         <div class="card-top">
           <div class="card-staff-pick">Staff Pick</div>
-          <div class="card-artist">${album.artist}</div>
-          <div class="card-title">${album.title}</div>
+          <div class="card-artist">${_escHTML(album.artist)}</div>
+          <div class="card-title">${_escHTML(album.title)}</div>
           <div class="card-meta">
-            <span class="card-format">${album.format || 'LP'}</span>
+            <span class="card-format">${_escHTML(album.format || 'LP')}</span>
             <span class="card-meta-divider"></span>
             <div class="card-tags">${tags.map(t =>
-              `<span class="card-tag" onclick="event.stopPropagation();location.href='genre.html?g=${encodeURIComponent(t.toLowerCase())}'">${t}</span>`
+              `<span class="card-tag" onclick="event.stopPropagation();location.href='genre.html?g=${encodeURIComponent(t.toLowerCase())}'">${_escHTML(t)}</span>`
             ).join('')}</div>
           </div>
         </div>
