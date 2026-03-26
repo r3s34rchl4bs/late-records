@@ -31,7 +31,8 @@ const LR_TURNSTILE = (() => {
     form.appendChild(div);
     widgetId = turnstile.render(div, {
       sitekey:            SITE_KEY,
-      size:               'invisible',
+      execution:          'execute',
+      appearance:         'interaction-only',
       callback:           token => {
         _ready = true;
         if (_resolve) { _resolve(token); _resolve = null; }
