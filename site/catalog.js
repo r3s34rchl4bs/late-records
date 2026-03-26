@@ -1,7 +1,16 @@
+/* Late Records — Catalog row renderer (scoped) */
+
 function _escHTML(s) {
   const d = document.createElement('div');
   d.textContent = s;
   return d.innerHTML;
+}
+
+function highlight(text, query) {
+  if (!query) return _escHTML(text);
+  const safe = _escHTML(String(text || ''));
+  const esc  = _escHTML(query).replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  return safe.replace(new RegExp(`(${esc})`, 'gi'), '<mark>$1</mark>');
 }
 
 function rowHTML(item, query, isSuggestion) {
@@ -22,11 +31,4 @@ function rowHTML(item, query, isSuggestion) {
     <td class="c-format"><span class="rec-format">${format}</span></td>
     <td class="c-stock"><div class="rec-stock"><span class="sdot ${sold ? 's' : 'a'}"></span><span>${sold ? 'Sold' : 'Avail'}</span></div></td>
   </tr>`;
-}
-
-function highlight(text, query) {
-  if (!query) return _escHTML(text);
-  const safe = _escHTML(String(text || ''));
-  const esc  = _escHTML(query).replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-  return safe.replace(new RegExp(`(${esc})`, 'gi'), '<mark>$1</mark>');
 }
