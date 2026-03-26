@@ -30,14 +30,22 @@ function json(data, status = 200, origin) {
 async function verifyTurnstile(token, ip, secret) {
   if (!token) return { ok: false, reason: 'empty-token' };
   if (!secret) return { ok: false, reason: 'missing-secret' };
-  const res = await fetch('https://challenges.cloudflare.com/turnstile/v0/siteverify', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-    body: `secret=${encodeURIComponent(secret)}&response=${encodeURIComponent(token)}&remoteip=${encodeURIComponent(ip || '')}`
-  });
-  const data = await res.json();
-  if (data.success === true) return { ok: true };
-  return { ok: false, reason: 'siteverify-rejected', codes: data['error-codes'] || [] };
+  try {
+    const form = new URLSearchParams();
+    form.set('secret', secret);
+    form.set('response', token);
+    const res = await fetch('https://challenges.cloudflare.com/turnstile/v0/siteverify', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+      body: form.toString()
+    });
+    const data = await res.json();
+    if (data.success === true) return { ok: true };
+    return { ok: false, reason: 'siteverify-rejected', codes: data['error-codes'] || [], raw: data };
+  } catch (e) {
+    console.error('Turnstile fetch error:', e.message);
+    return { ok: false, reason: 'fetch-error', message: e.message };
+  }
 }
 
 // ── Catalog helpers ───────────────────────────────────────
@@ -211,7 +219,7 @@ export default {
         const body  = await request.json();
         const ip    = request.headers.get('CF-Connecting-IP') || '';
         const check = await verifyTurnstile(body.turnstileToken, ip, env.TURNSTILE_SECRET);
-        if (!check.ok) return json({ error: 'Security check failed. Please refresh and try again.', debug: check.reason, codes: check.codes || [] }, 403, origin);
+        if (!check.ok) return json({ error: 'Security check failed. Please refresh and try again.', debug: check.reason, codes: check.codes || [], raw: check.raw || null }, 403, origin);
         const res  = await fetch(env.APPS_SCRIPT_URL, {
           method:  'POST',
           headers: { 'Content-Type': 'application/json' },

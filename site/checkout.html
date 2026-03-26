@@ -224,7 +224,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
     try {
       const turnstileToken = await LR_TURNSTILE.getToken();
-      console.log("TURNSTILE TOKEN:", turnstileToken);
       const result = await LR.api.order({
         name:          document.getElementById('name').value.trim(),
         email:         document.getElementById('email').value.trim(),
