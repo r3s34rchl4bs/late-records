@@ -95,7 +95,7 @@ async function fetchSuggestions(query) {
   try {
     const controller = new AbortController();
     const timeout = setTimeout(() => controller.abort(), 5000);
-    const res = await fetch(`https://late-records.shop/api/suggest?q=${encodeURIComponent(query)}`, { signal: controller.signal });
+    const res = await fetch(`${location.origin}/api/suggest?q=${encodeURIComponent(query)}`, { signal: controller.signal });
     clearTimeout(timeout);
     const suggestions = await res.json();
 
