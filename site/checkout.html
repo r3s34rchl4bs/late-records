@@ -28,7 +28,6 @@ html, body {
 .fixed-footer { display: none; }
 .container { padding-bottom: 80px; }
 
-/* Form field overrides */
 .form-group label {
   font-size: 11px; font-weight: 500;
   letter-spacing: .07em; text-transform: uppercase;
@@ -55,12 +54,12 @@ html, body {
   text-transform: uppercase; color: rgba(26,26,20,.5); margin-bottom: 20px;
 }
 
-/* Two-column layout */
 .checkout-grid {
   display: grid;
   grid-template-columns: 1fr 380px;
   column-gap: 60px;
   align-items: start;
+  position: relative;
 }
 .checkout-grid::after {
   content: '';
@@ -70,7 +69,6 @@ html, body {
   width: 1px;
   background: rgba(26,26,20,.1);
 }
-.checkout-grid { position: relative; }
 
 .payment-note {
   border-left: 2px solid rgba(26,26,20,.4);
@@ -81,7 +79,6 @@ html, body {
   color: rgba(26,26,20,.65);
 }
 
-/* Order summary */
 .order-summary { padding-left: 30px; }
 
 .order-item {
@@ -193,7 +190,7 @@ html, body {
 <script src="turnstile.js"></script>
 <script>
 document.addEventListener('DOMContentLoaded', () => {
-  const cart     = LR.cart.get();
+  const cart = LR.cart.get();
   if (!cart.length) { window.location.href = 'cart.html'; return; }
   const shipping = LR.cart.shipping();
   const subtotal = LR.cart.subtotal();
@@ -219,22 +216,22 @@ document.addEventListener('DOMContentLoaded', () => {
   document.getElementById('completeBtn').addEventListener('click', async () => {
     const form = document.getElementById('checkoutForm');
     if (!form.checkValidity()) { form.reportValidity(); return; }
-    if (!cart.length)          { alert('Your cart is empty.'); return; }
+    if (!cart.length) { alert('Your cart is empty.'); return; }
 
     const btn = document.getElementById('completeBtn');
-btn.disabled    = true;
-btn.textContent = 'Processing…';
+    btn.disabled    = true;
+    btn.textContent = 'Processing…';
 
     try {
       const turnstileToken = await LR_TURNSTILE.getToken();
       const result = await LR.api.order({
-        name:     document.getElementById('name').value.trim(),
-        email:    document.getElementById('email').value.trim(),
-        phone:    document.getElementById('phone').value.trim(),
-        address:  document.getElementById('address').value.trim(),
+        name:          document.getElementById('name').value.trim(),
+        email:         document.getElementById('email').value.trim(),
+        phone:         document.getElementById('phone').value.trim(),
+        address:       document.getElementById('address').value.trim(),
         subtotal, shipping, total,
-        items: cart.map(i => ({ album_id: i.id, quantity: i.qty })),
-turnstileToken: turnstileToken
+        items:         cart.map(i => ({ album_id: i.id, quantity: i.qty })),
+        turnstileToken: turnstileToken
       });
 
       if (!result.ok && !result.success) throw new Error(result.error || 'Order failed');
@@ -246,18 +243,14 @@ turnstileToken: turnstileToken
       localStorage.setItem('lr_order_items',      JSON.stringify(cart));
       localStorage.setItem('lr_order_subtotal',   String(subtotal));
       localStorage.setItem('lr_order_shipping',   String(shipping));
-      localStorage.setItem('lr_address',          document.getElementById('address').value.trim());
-      localStorage.setItem('lr_order_items',      JSON.stringify(cart));
-      localStorage.setItem('lr_order_subtotal',   String(subtotal));
-      localStorage.setItem('lr_order_shipping',   String(shipping));
       LR.cart.clear();
       window.location.href = 'success.html';
     } catch (err) {
       console.error(err);
       alert('There was a problem processing your order. Please try again.');
       btn.disabled    = false;
-btn.textContent = 'Complete Order';
-LR_TURNSTILE.reset();
+      btn.textContent = 'Complete Order';
+      LR_TURNSTILE.reset();
     }
   });
 });

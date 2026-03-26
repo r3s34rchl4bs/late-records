@@ -1,9 +1,6 @@
 /**
  * Late Records — Turnstile Security
- * Handles bot/spam protection on the checkout form.
- *
- * To update Turnstile settings, only edit this file.
- * Do not touch checkout.html for anything Turnstile-related.
+ * Only edit this file for anything Turnstile-related.
  */
 
 const LR_TURNSTILE = (() => {
@@ -11,14 +8,15 @@ const LR_TURNSTILE = (() => {
   const SITE_KEY = '0x4AAAAAACpBT7ijFgQum-H_';
   let widgetId   = null;
   let _resolve   = null;
+  let _ready     = false;
 
   function loadScript() {
     return new Promise(resolve => {
       if (typeof turnstile !== 'undefined') { resolve(); return; }
-      const s    = document.createElement('script');
-      s.src      = 'https://challenges.cloudflare.com/turnstile/v0/api.js';
-      s.async    = true;
-      s.onload   = () => resolve();
+      window.__tsOnLoad = () => resolve();
+      const s = document.createElement('script');
+      s.src   = 'https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit&onload=__tsOnLoad';
+      s.async = true;
       document.head.appendChild(s);
     });
   }
@@ -26,46 +24,48 @@ const LR_TURNSTILE = (() => {
   async function mountWidget() {
     await loadScript();
     const form = document.getElementById('checkoutForm');
-    if (!form) return;
-    if (document.getElementById('lr-turnstile-widget')) return;
-
+    if (!form || document.getElementById('lr-ts-widget')) return;
     const div = document.createElement('div');
-    div.id    = 'lr-turnstile-widget';
+    div.id    = 'lr-ts-widget';
     div.style.display = 'none';
     form.appendChild(div);
-
     widgetId = turnstile.render(div, {
-      sitekey:    SITE_KEY,
-      size:       'invisible',
-      callback:   token => { if (_resolve) { _resolve(token); _resolve = null; } },
-      'error-callback': () => { if (_resolve) { _resolve(''); _resolve = null; } }
+      sitekey:            SITE_KEY,
+      size:               'invisible',
+      callback:           token => {
+        _ready = true;
+        if (_resolve) { _resolve(token); _resolve = null; }
+      },
+      'error-callback':   () => {
+        _ready = false;
+        if (_resolve) { _resolve(''); _resolve = null; }
+      },
+      'expired-callback': () => { _ready = false; }
     });
   }
 
-  // Returns a promise that resolves to the token
-  // Executes the challenge on demand right before submit
   function getToken() {
     return new Promise(resolve => {
       if (typeof turnstile === 'undefined' || widgetId === null) {
         resolve(''); return;
       }
-      const existing = turnstile.getResponse(widgetId);
-      if (existing) { resolve(existing); return; }
+      if (_ready) {
+        const t = turnstile.getResponse(widgetId);
+        if (t) { resolve(t); return; }
+      }
       _resolve = resolve;
-      turnstile.execute(widgetId);
+      try { turnstile.execute(widgetId); }
+      catch(e) { resolve(''); }
     });
   }
 
   function reset() {
+    _ready = false;
     if (typeof turnstile === 'undefined' || widgetId === null) return;
-    turnstile.reset(widgetId);
+    try { turnstile.reset(widgetId); } catch(e) {}
   }
 
-  async function init() {
-    await mountWidget();
-  }
-
-  return { init, getToken, reset };
+  return { init: mountWidget, getToken, reset };
 
 })();
 

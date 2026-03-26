@@ -9,20 +9,6 @@
 
 const CACHE_TTL = 120; // seconds
 
-// ── Turnstile verification ─────────────────────────────────
-// To update this logic, edit turnstile.js (frontend) or this
-// function (backend). Do not touch the order handler below.
-async function verifyTurnstile(token, ip, secret) {
-  if (!token) return false;
-  const res = await fetch('https://challenges.cloudflare.com/turnstile/v0/siteverify', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-    body: `secret=${encodeURIComponent(secret)}&response=${encodeURIComponent(token)}&remoteip=${encodeURIComponent(ip || '')}`
-  });
-  const data = await res.json();
-  return data.success === true;
-}
-
 // ── CORS headers ──────────────────────────────────────────
 function cors(origin) {
   return {
@@ -39,17 +25,28 @@ function json(data, status = 200, origin) {
   });
 }
 
+// ── Turnstile verification ────────────────────────────────
+// To update security logic, only edit this function.
+async function verifyTurnstile(token, ip, secret) {
+  if (!token) return false;
+  const res = await fetch('https://challenges.cloudflare.com/turnstile/v0/siteverify', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+    body: `secret=${encodeURIComponent(secret)}&response=${encodeURIComponent(token)}&remoteip=${encodeURIComponent(ip || '')}`
+  });
+  const data = await res.json();
+  return data.success === true;
+}
+
 // ── Catalog helpers ───────────────────────────────────────
 async function fetchCatalog(env) {
-  const cache = caches.default;
+  const cache    = caches.default;
   const cacheKey = new Request('https://lr-cache/catalog-v4');
-  const cached = await cache.match(cacheKey);
+  const cached   = await cache.match(cacheKey);
   if (cached) return cached.json();
 
   const res  = await fetch(env.APPS_SCRIPT_URL + '?action=catalog');
   const data = await res.json();
-
-  // Normalize — Apps Script may return {success,items} or array
   const items = Array.isArray(data) ? data : (data.items || []);
 
   const r = new Response(JSON.stringify(items), {
@@ -70,11 +67,11 @@ async function musicBrainzSuggest(query, catalog) {
   });
   if (!mbRes.ok) return [];
 
-  const mbData = await mbRes.json();
+  const mbData  = await mbRes.json();
   const artists = mbData.artists || [];
   if (!artists.length) return [];
 
-  const tagWords = new Set();
+  const tagWords           = new Set();
   const relatedArtistNames = new Set();
 
   for (const artist of artists.slice(0, 3)) {
@@ -110,7 +107,7 @@ async function musicBrainzSuggest(query, catalog) {
     .sort((a, b) => b.score - a.score)
     .slice(0, 6)
     .map(({ item }) => {
-      const genres = item.genre.split('||').map(g => g.trim());
+      const genres       = item.genre.split('||').map(g => g.trim());
       const matchedGenre = genres.find(g =>
         g.toLowerCase().split(/[\s\/\-]+/).some(gw =>
           [...tagWords].some(tw => tw.length > 2 && (gw.includes(tw) || tw.includes(gw)))
@@ -232,7 +229,7 @@ export default {
 
       try {
         const catalog = await fetchCatalog(env);
-        let results = await musicBrainzSuggest(q, catalog);
+        let results   = await musicBrainzSuggest(q, catalog);
         if (results.length < 4 && env.GEMINI_API_KEY) {
           results = await geminiSuggest(q, catalog, env.GEMINI_API_KEY);
         }
