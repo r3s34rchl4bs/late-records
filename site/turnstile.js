@@ -27,7 +27,6 @@ const LR_TURNSTILE = (() => {
     if (!form || document.getElementById('lr-ts-widget')) return;
     const div = document.createElement('div');
     div.id    = 'lr-ts-widget';
-    div.style.display = 'none';
     form.appendChild(div);
     widgetId = turnstile.render(div, {
       sitekey:            SITE_KEY,
