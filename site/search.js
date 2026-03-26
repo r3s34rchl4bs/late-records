@@ -155,16 +155,19 @@ const LR_SEARCH = (() => {
   function initSearch() {
     const input = document.getElementById('searchInput');
     const clear = document.getElementById('searchClear');
+    let _debounce = null;
 
     input.addEventListener('input', () => {
       const v = input.value;
       clear.style.display = v ? 'block' : 'none';
-      renderTable(v);
+      clearTimeout(_debounce);
+      _debounce = setTimeout(() => renderTable(v), 150);
     });
 
     input.addEventListener('keydown', (e) => {
       if (e.key === 'Enter') {
         e.preventDefault();
+        clearTimeout(_debounce);
         renderTable(input.value);
       }
     });
