@@ -235,7 +235,10 @@ document.addEventListener('DOMContentLoaded', () => {
         turnstileToken: turnstileToken
       });
 
-      if (!result.ok && !result.success) throw new Error(result.error || 'Order failed');
+      if (!result.ok && !result.success) {
+        const detail = result.debug ? ` [${result.debug}${result.codes?.length ? ': ' + result.codes.join(', ') : ''}]` : '';
+        throw new Error((result.error || 'Order failed') + detail);
+      }
 
       localStorage.setItem('lr_buyer',            document.getElementById('name').value.trim());
       localStorage.setItem('lr_order_total',      LR.ui.peso(total));
@@ -248,7 +251,7 @@ document.addEventListener('DOMContentLoaded', () => {
       window.location.href = 'success.html';
     } catch (err) {
       console.error(err);
-      alert('There was a problem processing your order. Please try again.');
+      alert('There was a problem processing your order. Please try again.\n\nError: ' + err.message);
       btn.disabled    = false;
       btn.textContent = 'Complete Order';
       LR_TURNSTILE.reset();
