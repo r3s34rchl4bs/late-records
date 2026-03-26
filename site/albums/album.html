@@ -563,9 +563,9 @@ function setupAddToCart(item) {
 (async () => {
   if (!ALBUM_ID) { renderNotFound(); return; }
   try {
-    const album = await LR.api.album(ALBUM_ID);
+    const all = await LR.api.catalog();
+    const album = all.find(a => a.album_id === ALBUM_ID);
     if (!album) { renderNotFound(); return; }
-    const all = await LR.api.catalog().catch(() => []);
     renderAlbum(album, all);
   } catch (e) {
     renderNotFound();
