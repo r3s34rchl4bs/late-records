@@ -339,12 +339,19 @@ document.addEventListener('DOMContentLoaded', () => {
     const total = subtotal + shipping;
 
     try {
+      /* ── Normalize inputs (Postel's Law) ── */
+      const normName = document.getElementById('name').value.trim().replace(/\s+/g, ' ')
+        .replace(/\b\w/g, c => c.toUpperCase());
+      const normEmail = document.getElementById('email').value.trim().toLowerCase();
+      const normPhone = document.getElementById('phone').value.trim().replace(/[\s\-\.\(\)]/g, '');
+      const normAddr  = document.getElementById('address').value.trim().replace(/\s+/g, ' ');
+
       const turnstileToken = await LR_TURNSTILE.getToken();
       const result = await LR.api.order({
-        name:          document.getElementById('name').value.trim(),
-        email:         document.getElementById('email').value.trim(),
-        phone:         document.getElementById('phone').value.trim(),
-        address:       document.getElementById('address').value.trim(),
+        name:          normName,
+        email:         normEmail,
+        phone:         normPhone,
+        address:       normAddr,
         deliveryMethod,
         subtotal, shipping, total,
         items:         cart.map(i => ({ album_id: i.id, quantity: i.qty })),
@@ -356,10 +363,10 @@ document.addEventListener('DOMContentLoaded', () => {
         throw new Error((result.error || 'Order failed') + detail);
       }
 
-      localStorage.setItem('lr_buyer',            document.getElementById('name').value.trim());
+      localStorage.setItem('lr_buyer',            normName);
       localStorage.setItem('lr_order_total',      LR.ui.peso(total));
       localStorage.setItem('lr_order_created_at', String(Date.now()));
-      localStorage.setItem('lr_address',          document.getElementById('address').value.trim());
+      localStorage.setItem('lr_address',          normAddr);
       localStorage.setItem('lr_order_items',      JSON.stringify(cart));
       localStorage.setItem('lr_order_subtotal',   String(subtotal));
       localStorage.setItem('lr_order_shipping',   String(shipping));
