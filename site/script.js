@@ -145,6 +145,10 @@ function applyTheme(dark) {
   var body   = document.body;
   var header = document.querySelector('.fixed-header');
 
+  // Freeze all transitions for this frame so nothing flickers mid-switch
+  html.classList.add('no-transitions');
+  requestAnimationFrame(function() { html.classList.remove('no-transitions'); });
+
   if (dark) {
     html.classList.add('dark');
     body.style.setProperty('background-color', '#141410', 'important');

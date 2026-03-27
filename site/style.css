@@ -112,6 +112,10 @@ button { cursor: pointer; font-family: inherit; }
   gap: 16px;
 }
 
+/* ── Freeze transitions during theme switch ───────────────── */
+
+html.no-transitions * { transition: none !important; }
+
 /* ── Logo swap (CSS-only, no src change) ──────────────────── */
 
 .logo-dark              { display: none; }
