@@ -137,3 +137,51 @@ const LR = (() => {
   return { api, cart, ui };
 
 })();
+
+// ── Theme ──────────────────────────────────────────────────
+
+function applyTheme(dark) {
+  var html   = document.documentElement;
+  var body   = document.body;
+  var header = document.querySelector('.fixed-header');
+  var logo   = document.querySelector('.header-logo');
+
+  if (dark) {
+    html.classList.add('dark');
+    body.style.setProperty('background-color', '#141410', 'important');
+    body.style.setProperty('background-image', 'radial-gradient(circle, rgba(255,255,255,.04) 0.5px, transparent 0.5px)', 'important');
+    body.style.setProperty('background-size', '3px 3px', 'important');
+    body.style.setProperty('color', '#e8e8df', 'important');
+    if (header) {
+      header.style.setProperty('background-color', '#141410', 'important');
+      header.style.setProperty('background-image', 'radial-gradient(circle, rgba(255,255,255,.04) 0.5px, transparent 0.5px)', 'important');
+      header.style.setProperty('background-size', '3px 3px', 'important');
+    }
+    if (logo) logo.src = '/images/late-records-logo-dark.png';
+    localStorage.setItem('lr_theme', 'dark');
+  } else {
+    html.classList.remove('dark');
+    body.style.setProperty('background-color', '#e2e2e2', 'important');
+    body.style.setProperty('background-image', 'radial-gradient(circle, rgba(0,0,0,.08) 0.5px, transparent 0.5px)', 'important');
+    body.style.setProperty('background-size', '3px 3px', 'important');
+    body.style.setProperty('color', '#1a1a14', 'important');
+    if (header) {
+      header.style.setProperty('background-color', '#e2e2e2', 'important');
+      header.style.setProperty('background-image', 'radial-gradient(circle, rgba(0,0,0,.08) 0.5px, transparent 0.5px)', 'important');
+      header.style.setProperty('background-size', '3px 3px', 'important');
+    }
+    if (logo) logo.src = '/images/late-records-logo.png';
+    localStorage.setItem('lr_theme', 'light');
+  }
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+  var saved = localStorage.getItem('lr_theme');
+  applyTheme(saved === 'dark');
+  var toggle = document.getElementById('themeToggle');
+  if (toggle) {
+    toggle.addEventListener('click', function() {
+      applyTheme(!document.documentElement.classList.contains('dark'));
+    });
+  }
+});
