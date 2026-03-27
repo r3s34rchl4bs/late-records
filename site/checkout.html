@@ -344,7 +344,8 @@ document.addEventListener('DOMContentLoaded', () => {
         .toLowerCase().replace(/\b\w/g, c => c.toUpperCase());
       const normEmail = document.getElementById('email').value.trim().toLowerCase();
       const normPhone = document.getElementById('phone').value.trim().replace(/[\s\-\.\(\)]/g, '');
-      const normAddr  = document.getElementById('address').value.trim().replace(/\s+/g, ' ');
+      const normAddr  = document.getElementById('address').value.trim().replace(/\s+/g, ' ')
+        .toLowerCase().replace(/\b\w/g, c => c.toUpperCase());
 
       const turnstileToken = await LR_TURNSTILE.getToken();
       const result = await LR.api.order({
