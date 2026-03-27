@@ -348,6 +348,61 @@ html.dark .sk {
 }
 @keyframes sh { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
 
+/* ── The Wall ────────────────────────────────────────────── */
+.wall-section {
+  margin-top: 60px;
+  border: 1px solid var(--border);
+}
+.wall-header {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 9px 12px;
+  border-bottom: 1px solid var(--border);
+}
+.wall-label {
+  font-size: 11px; font-weight: 500; letter-spacing: .09em;
+  text-transform: uppercase; color: var(--ink55);
+}
+.wall-count {
+  font-size: 11px; font-weight: 400; letter-spacing: .07em;
+  color: var(--ink30); font-variant-numeric: tabular-nums;
+}
+.wall-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+  gap: 1px;
+  background: var(--border);
+}
+.wall-item {
+  position: relative; aspect-ratio: 1;
+  overflow: hidden; background: var(--art-bg); cursor: pointer;
+}
+.wall-item img {
+  width: 100%; height: 100%;
+  object-fit: cover; display: block;
+}
+.wall-item-info {
+  position: absolute; inset: 0;
+  background: var(--btn-bg);
+  opacity: 0;
+  padding: 8px;
+  display: flex; flex-direction: column; justify-content: flex-end;
+  transition: opacity .1s;
+}
+.wall-item-title {
+  font-size: 9px; font-weight: 600; letter-spacing: .08em;
+  text-transform: uppercase; color: var(--btn-fg);
+  line-height: 1.3;
+  display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.wall-item-artist {
+  font-size: 8px; font-weight: 400; letter-spacing: .06em;
+  text-transform: uppercase; color: var(--btn-fg);
+  opacity: .55; margin-top: 3px;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.wall-item:hover .wall-item-info { opacity: 1; }
+
 /* ── Responsive ──────────────────────────────────────────── */
 @media (max-width: 900px) {
   col.c-art    { width: 44px; }
@@ -493,6 +548,14 @@ html.dark .sk {
     </tbody>
   </table>
 
+  <section class="wall-section" id="wallSection">
+    <div class="wall-header">
+      <span class="wall-label">The Wall</span>
+      <span class="wall-count" id="wallCount">—</span>
+    </div>
+    <div class="wall-grid" id="wallGrid"></div>
+  </section>
+
 </div>
 
 <script src="script.js"></script>
@@ -564,6 +627,26 @@ function buildCarousel(albums) {
   document.getElementById('nextBtn').addEventListener('click', (e) => { e.stopPropagation(); goTo(current + 1); });
 }
 
+function buildWall(catalog) {
+  const grid    = document.getElementById('wallGrid');
+  const countEl = document.getElementById('wallCount');
+  if (!grid) return;
+  if (countEl) countEl.textContent = catalog.length;
+  grid.innerHTML = catalog.map(a => {
+    const url    = `albums/album.html?id=${encodeURIComponent(a.album_id)}`;
+    const title  = _escHTML(a.title);
+    const artist = _escHTML(a.artist);
+    const src    = `images/${encodeURIComponent(a.album_id)}.jpg`;
+    return `<div class="wall-item" onclick="location.href='${url}'">
+      <img src="${src}" alt="${title}" loading="lazy" onerror="this.parentNode.style.display='none'">
+      <div class="wall-item-info">
+        <div class="wall-item-title">${title}</div>
+        <div class="wall-item-artist">${artist}</div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
 window.availFilterActive = false;
 
 function toggleAvail() {
@@ -591,6 +674,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     window._catalogCache = catalog;
     buildCarousel(catalog);
     buildTable(catalog);
+    buildWall(catalog);
   } else {
     document.getElementById('carouselTrack').innerHTML = '';
     document.getElementById('catalogList').innerHTML =
