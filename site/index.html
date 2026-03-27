@@ -51,26 +51,25 @@ html, body {
 }
 body::before {
   content: '';
-  position: fixed;
-  inset: 0;
+  position: fixed; inset: 0;
   background-image: radial-gradient(circle, var(--bg-dot) 0.5px, transparent 0.5px);
   background-size: 3px 3px;
-  pointer-events: none;
-  z-index: -1;
+  pointer-events: none; z-index: -1;
 }
 
 img { display: block; max-width: 100%; }
 a   { color: inherit; text-decoration: none; }
 button { cursor: pointer; font-family: inherit; }
 
+html.no-transitions * { transition: none !important; }
+
+/* ── Header ──────────────────────────────────────────────── */
 .fixed-header {
   position: fixed; top: 0; left: 0; width: 100%;
   background-color: var(--bg);
   background-image: radial-gradient(circle, var(--bg-dot) 0.5px, transparent 0.5px);
   background-size: 3px 3px;
-  z-index: 1000;
-  border-bottom: 1px solid var(--border);
-  height: 74px;
+  z-index: 1000; border-bottom: 1px solid var(--border); height: 74px;
 }
 .header-inner {
   max-width: 1200px; margin: 0 auto; padding: 0 30px;
@@ -81,14 +80,11 @@ button { cursor: pointer; font-family: inherit; }
 .header-right { display: flex; align-items: center; gap: 16px; }
 .cart-link {
   font-size: 11px; font-weight: 500; letter-spacing: .07em;
-  text-transform: uppercase; color: var(--ink); text-decoration: none;
+  text-transform: uppercase; color: var(--ink);
 }
 .cart-link:hover { color: var(--ink55); }
-
-/* ── Theme toggle ──────────────────────────────────────────── */
 .theme-toggle {
-  background: none; border: none; padding: 4px;
-  color: var(--ink); cursor: pointer;
+  background: none; border: none; padding: 4px; color: var(--ink);
   display: flex; align-items: center; justify-content: center;
   transition: opacity .15s; flex-shrink: 0;
 }
@@ -101,89 +97,121 @@ html.dark        .theme-toggle .icon-sun  { display: none; }
 html.dark .logo-light { display: none; }
 html.dark .logo-dark  { display: block; }
 
+/* ── Container ───────────────────────────────────────────── */
 .container {
-  max-width: 1200px; margin: 0 auto; padding: 84px 30px 80px;
+  max-width: 1200px; margin: 0 auto; padding: 74px 30px 0;
 }
 
-/* ── Carousel ────────────────────────────────────────────── */
-.carousel-section { margin-bottom: 0; }
-
-.section-divider {
-  border: none;
-  margin: 3px 0;
-}
-
-.carousel-viewport {
-  height: 235px; overflow: hidden; position: relative;
+/* ── Needle Drop ─────────────────────────────────────────── */
+.needle-drop {
+  padding: 48px 0 40px;
   border-bottom: 1px solid var(--border);
+  cursor: pointer;
 }
-.carousel-track {
-  display: flex; height: 100%;
+.nd-eyebrow {
+  font-size: 10px; font-weight: 600; letter-spacing: .14em;
+  text-transform: uppercase; color: var(--ink30); margin-bottom: 18px;
 }
-
-.carousel-card {
-  min-width: 100%; height: 100%;
-  display: flex; flex-direction: column;
-  position: relative; cursor: pointer;
+.nd-artist {
+  font-size: 12px; font-weight: 500; letter-spacing: .1em;
+  text-transform: uppercase; color: var(--ink45); margin-bottom: 12px;
 }
-
-.card-inner {
-  width: 100%; padding: 22px 0 18px; height: 100%;
-  display: flex; flex-direction: column; justify-content: space-between;
-  position: relative;
-}
-
-.carousel-nav {
-  position: absolute; top: 0; right: 0;
-  display: flex; align-items: center; gap: 5px; z-index: 10;
-}
-.carousel-btn {
-  width: 34px; height: 34px;
-  border: 1px solid var(--ink30); background: transparent;
-  cursor: pointer; display: flex; align-items: center; justify-content: center;
-  font-size: 20px; color: var(--ink); transition: color 0.1s linear;
-}
-.carousel-btn:hover { background: var(--btn-bg); color: var(--btn-fg); border-color: var(--btn-bg); }
-
-.card-top { flex: 1; min-height: 0; padding-right: 110px; }
-
-.card-staff-pick {
-  font-size: 10px; font-weight: 600; letter-spacing: .12em;
-  text-transform: uppercase; color: var(--ink30); margin-bottom: 14px;
-}
-.card-artist {
-  font-size: 13px; font-weight: 500; letter-spacing: .07em;
-  text-transform: uppercase; color: var(--ink45); margin-bottom: 8px;
-}
-.card-title {
-  font-size: 42px; font-weight: 500; line-height: 1.05;
-  letter-spacing: -.035em; margin-bottom: 12px; word-break: break-word;
-  color: var(--ink); transition: color 0.1s linear;
+.nd-title {
+  font-size: 72px; font-weight: 500; line-height: 1; letter-spacing: -.04em;
+  color: var(--ink); transition: opacity .15s; margin-bottom: 24px;
   display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
 }
-.card-meta {
-  display: flex; align-items: center; gap: 6px; flex-wrap: wrap;
-}
-.card-format {
+.needle-drop:hover .nd-title { opacity: .6; }
+.nd-meta { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.nd-format {
   font-size: 11px; font-weight: 500; letter-spacing: .08em;
   text-transform: uppercase; color: var(--ink45);
 }
-.card-meta-divider {
-  width: 1px; height: 10px; background: var(--ink30); flex-shrink: 0;
-}
-.card-tags { display: flex; gap: 4px; flex-wrap: wrap; align-items: center; }
-.card-tag {
+.nd-divider { width: 1px; height: 10px; background: var(--ink30); flex-shrink: 0; }
+.nd-tags { display: flex; gap: 4px; flex-wrap: wrap; }
+.nd-tag {
   font-size: 10px; font-weight: 500; letter-spacing: .07em;
   text-transform: uppercase; border: 1px solid var(--border-tag);
   padding: 3px 8px; color: var(--ink45);
-  cursor: pointer; transition: color 0.1s linear;
 }
-.card-tag:hover { background: var(--btn-bg); color: var(--btn-fg); border-color: var(--btn-bg); }
+.nd-link {
+  margin-left: auto; font-size: 11px; font-weight: 500;
+  letter-spacing: .08em; text-transform: uppercase; color: var(--ink30);
+  transition: color .15s;
+}
+.needle-drop:hover .nd-link { color: var(--ink); }
 
-.card-bottom { display: none; }
+/* ── A–Z Bar ─────────────────────────────────────────────── */
+.az-bar {
+  display: flex; border-bottom: 1px solid var(--border);
+  overflow-x: auto; -webkit-overflow-scrolling: touch; scrollbar-width: none;
+}
+.az-bar::-webkit-scrollbar { display: none; }
+.az-btn {
+  flex-shrink: 0; background: none; border: none;
+  padding: 9px 9px; font-size: 11px; font-weight: 500;
+  letter-spacing: .06em; text-transform: uppercase;
+  color: var(--ink30); cursor: pointer; line-height: 1;
+  transition: color .1s, background .1s;
+}
+.az-btn:hover { color: var(--ink); }
+.az-btn.active { background: var(--btn-bg); color: var(--btn-fg); }
 
-.carousel-card:hover .card-artist,
-.carousel-card:hover .card-title { color: var(--ink); }
+/* ── Search ──────────────────────────────────────────────── */
+.search-row {
+  display: flex; align-items: center; margin: 10px 0;
+}
+.search-input {
+  flex: 1; border: none; background: transparent;
+  font-family: 'Inter', system-ui, sans-serif;
+  font-size: 13px; font-weight: 400; color: var(--ink);
+  padding: 5px 0; outline: none; letter-spacing: .01em;
+}
+.search-input::placeholder { color: var(--ink30); }
+.search-clear {
+  border: none; background: none; padding: 0 0 0 8px;
+  font-size: 16px; color: var(--ink30); cursor: pointer;
+  line-height: 1; display: none; transition: color .1s;
+}
+.search-clear:hover { color: var(--ink); }
+.search-count {
+  font-size: 10px; font-weight: 500; letter-spacing: .08em;
+  text-transform: uppercase; color: var(--ink30);
+  padding-left: 14px; white-space: nowrap; flex-shrink: 0;
+}
+.suggestions-header {
+  display: none; padding: 28px 0 16px;
+  font-size: 11px; font-weight: 500; letter-spacing: .09em;
+  text-transform: uppercase; color: var(--ink45);
+}
+.suggestions-header span { color: var(--ink); }
+.suggestions-header.is-loading::after {
+  content: ''; animation: ellipsis 1.2s steps(4, end) infinite;
+}
+@keyframes ellipsis {
+  0%   { content: ''; }
+  25%  { content: '.'; }
+  50%  { content: '..'; }
+  75%  { content: '...'; }
+}
+.no-results-empty {
+  padding: 40px 0; font-size: 13px; color: var(--ink30);
+  letter-spacing: .01em; display: none;
+}
+.rec-title mark, .rec-artist mark {
+  background: var(--border-mid); color: var(--ink); padding: 0 1px; border-radius: 1px;
+}
+.tbl tbody tr.is-suggestion td:nth-child(2) {
+  border-left: 2px solid var(--border-mid); padding-left: 10px;
+}
+
+/* ── Availability toggle ─────────────────────────────────── */
+.avail-toggle {
+  width: 14px; height: 14px; border: 1.5px solid var(--ink30);
+  background: transparent; cursor: pointer; flex-shrink: 0;
+  margin-left: 12px; padding: 0; transition: background .12s, border-color .12s;
+}
+.avail-toggle.active { background: var(--btn-bg); border-color: var(--btn-bg); }
 
 /* ── Table ───────────────────────────────────────────────── */
 .tbl { width: 100%; border-collapse: collapse; table-layout: fixed; }
@@ -194,9 +222,7 @@ col.c-format { width: 8%; }
 col.c-stock  { width: 8%; }
 
 .tbl thead th {
-  position: sticky;
-  top: 74px;
-  z-index: 30;
+  position: sticky; top: 74px; z-index: 30;
   background-color: var(--bg);
   background-image: radial-gradient(circle, var(--bg-dot) 0.5px, transparent 0.5px);
   background-size: 3px 3px;
@@ -221,19 +247,12 @@ col.c-stock  { width: 8%; }
 .tbl thead th.c-stock { padding-bottom: 10px; padding-right: 0; }
 .tbl tbody td.c-art   { padding-right: 10px; }
 
-/* ── Album art ───────────────────────────────────────────── */
 .rec-art-wrap {
-  width: 38px; height: 38px;
-  overflow: hidden; flex-shrink: 0;
-  background: var(--art-bg);
+  width: 38px; height: 38px; overflow: hidden; flex-shrink: 0; background: var(--art-bg);
 }
-.rec-art-wrap img {
-  width: 100%; height: 100%;
-  object-fit: cover; display: block;
-}
+.rec-art-wrap img { width: 100%; height: 100%; object-fit: cover; display: block; }
 .tbl tbody tr.sold .rec-art-wrap { opacity: .35; }
 
-/* ── Row text ────────────────────────────────────────────── */
 .rec-title {
   font-size: 15px; font-weight: 500; line-height: 1.25; letter-spacing: -.01em;
   transition: color 0.1s linear;
@@ -244,7 +263,6 @@ col.c-stock  { width: 8%; }
   margin-top: 3px; line-height: 1.4; transition: color 0.1s linear;
   white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
 }
-
 .genre-tag {
   display: inline-block; font-size: 10px; font-weight: 500; letter-spacing: .06em;
   text-transform: uppercase; color: var(--ink55); border: 1px solid var(--ink30);
@@ -252,9 +270,10 @@ col.c-stock  { width: 8%; }
   transition: color 0.1s linear, border-color 0.1s linear;
 }
 .genre-tag:hover { color: var(--ink); border-color: var(--ink); }
-
-.rec-format { font-size: 11px; font-weight: 400; letter-spacing: .05em; text-transform: uppercase; color: var(--ink55); }
-
+.rec-format {
+  font-size: 11px; font-weight: 400; letter-spacing: .05em;
+  text-transform: uppercase; color: var(--ink55);
+}
 .rec-stock {
   display: flex; align-items: center; justify-content: flex-end;
   gap: 6px; font-size: 11px; font-weight: 500; letter-spacing: .06em; text-transform: uppercase;
@@ -270,74 +289,7 @@ col.c-stock  { width: 8%; }
 .tbl tbody tr.sold .rec-stock  { color: var(--ink30); }
 .tbl tbody tr.sold .sdot       { background: var(--ink30) !important; }
 
-/* ── Search ──────────────────────────────────────────────── */
-.search-row {
-  display: flex; align-items: center;
-  border-top: none;
-  border-bottom: none;
-  margin: 10px 0;
-}
-.search-input {
-  flex: 1; border: none; background: transparent;
-  font-family: 'Inter', system-ui, sans-serif;
-  font-size: 13px; font-weight: 400; color: var(--ink);
-  padding: 5px 0; outline: none; letter-spacing: .01em;
-}
-.search-input::placeholder { color: var(--ink30); }
-.search-clear {
-  border: none; background: none; padding: 0 0 0 8px;
-  font-size: 16px; color: var(--ink30); cursor: pointer;
-  line-height: 1; display: none; transition: color .1s;
-}
-.search-clear:hover { color: var(--ink); }
-.search-count {
-  font-size: 10px; font-weight: 500; letter-spacing: .08em;
-  text-transform: uppercase; color: var(--ink30);
-  padding-left: 14px; white-space: nowrap; flex-shrink: 0;
-}
-.suggestions-header {
-  display: none;
-  padding: 28px 0 16px;
-  font-size: 11px; font-weight: 500; letter-spacing: .09em;
-  text-transform: uppercase; color: var(--ink45);
-}
-.suggestions-header span { color: var(--ink); }
-.suggestions-header.is-loading::after {
-  content: ''; animation: ellipsis 1.2s steps(4, end) infinite;
-}
-@keyframes ellipsis {
-  0%   { content: ''; }
-  25%  { content: '.'; }
-  50%  { content: '..'; }
-  75%  { content: '...'; }
-}
-.no-results-empty {
-  padding: 40px 0;
-  font-size: 13px; color: var(--ink30); letter-spacing: .01em;
-  display: none;
-}
-.rec-title mark, .rec-artist mark {
-  background: var(--border-mid); color: var(--ink); padding: 0 1px; border-radius: 1px;
-}
-.tbl tbody tr.is-suggestion td:nth-child(2) {
-  border-left: 2px solid var(--border-mid); padding-left: 10px;
-}
-@media (max-width: 600px) { .search-count { display: none; } }
-
-/* ── Availability toggle ─────────────────────────────────── */
-.avail-toggle {
-  width: 14px; height: 14px;
-  border: 1.5px solid var(--ink30);
-  background: transparent;
-  cursor: pointer; flex-shrink: 0;
-  margin-left: 12px; padding: 0;
-  transition: background .12s, border-color .12s;
-}
-.avail-toggle.active {
-  background: var(--btn-bg);
-  border-color: var(--btn-bg);
-}
-
+/* ── Skeleton ────────────────────────────────────────────── */
 .sk {
   background: linear-gradient(90deg, rgba(0,0,0,.07) 25%, rgba(0,0,0,.13) 50%, rgba(0,0,0,.07) 75%);
   background-size: 200% 100%; animation: sh 1.4s infinite;
@@ -348,6 +300,86 @@ html.dark .sk {
 }
 @keyframes sh { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
 
+/* ── The Crate ───────────────────────────────────────────── */
+.crate-section {
+  margin-top: 64px;
+  border-top: 1px solid var(--border);
+}
+.crate-header {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 10px 0; border-bottom: 1px solid var(--border);
+}
+.crate-label {
+  font-size: 11px; font-weight: 500; letter-spacing: .09em;
+  text-transform: uppercase; color: var(--ink55);
+}
+.dig-btn {
+  font-size: 10px; font-weight: 500; letter-spacing: .1em;
+  text-transform: uppercase; color: var(--ink30);
+  background: none; border: 1px solid var(--border);
+  padding: 4px 10px; transition: color .1s, border-color .1s, background .1s;
+}
+.dig-btn:hover { color: var(--btn-fg); background: var(--btn-bg); border-color: var(--btn-bg); }
+.crate-grid {
+  display: grid; grid-template-columns: repeat(3, 1fr);
+  gap: 1px; background: var(--border-mid);
+}
+.crate-item {
+  background: var(--bg); padding: 18px;
+  cursor: pointer; transition: background .1s;
+}
+.crate-item:hover { background: var(--art-bg); }
+.crate-item-artist {
+  font-size: 10px; font-weight: 500; letter-spacing: .09em;
+  text-transform: uppercase; color: var(--ink30); margin-bottom: 8px;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.crate-item-title {
+  font-size: 15px; font-weight: 500; line-height: 1.25; letter-spacing: -.01em;
+  color: var(--ink); margin-bottom: 12px;
+  display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
+}
+.crate-item-footer {
+  display: flex; align-items: center; gap: 6px;
+}
+.crate-item-format {
+  font-size: 10px; font-weight: 500; letter-spacing: .07em;
+  text-transform: uppercase; color: var(--ink45);
+}
+.crate-item-tag {
+  font-size: 9px; font-weight: 500; letter-spacing: .06em;
+  text-transform: uppercase; border: 1px solid var(--border-tag);
+  padding: 2px 6px; color: var(--ink45);
+}
+.crate-item-dot {
+  width: 5px; height: 5px; border-radius: 50%;
+  background: var(--ink30); flex-shrink: 0; margin-left: auto;
+}
+.crate-item.available .crate-item-dot { background: var(--ink); }
+
+/* ── Footer ──────────────────────────────────────────────── */
+.site-footer {
+  margin-top: 80px; padding: 24px 0 48px;
+  border-top: 1px solid var(--border);
+  display: flex; align-items: flex-start; justify-content: space-between; gap: 20px;
+}
+.footer-brand {
+  font-size: 11px; font-weight: 600; letter-spacing: .1em;
+  text-transform: uppercase; color: var(--ink); display: block; margin-bottom: 6px;
+}
+.footer-tagline {
+  font-size: 11px; color: var(--ink30); letter-spacing: .01em;
+}
+.footer-right { text-align: right; }
+.footer-location {
+  font-size: 11px; color: var(--ink30); letter-spacing: .01em;
+  display: block; margin-bottom: 5px;
+}
+.footer-datetime {
+  font-size: 10px; color: var(--ink30); letter-spacing: .04em;
+  font-variant-numeric: tabular-nums;
+}
+
 /* ── Responsive ──────────────────────────────────────────── */
 @media (max-width: 900px) {
   col.c-art    { width: 44px; }
@@ -357,37 +389,19 @@ html.dark .sk {
   col.c-genre { width: auto; }
   .tbl thead th.c-genre { text-align: right; padding-right: 0; }
   .tbl tbody  td.c-genre { text-align: right; padding-right: 0; }
-  .carousel-viewport { height: 235px; }
-  .card-title  { font-size: 32px; }
-  .card-artist { font-size: 11px; }
-  .rec-title   { font-size: 14px; }
-  .rec-artist  { font-size: 11px; }
+  .nd-title   { font-size: 52px; }
+  .rec-title  { font-size: 14px; }
+  .rec-artist { font-size: 11px; }
   .rec-art-wrap { width: 32px; height: 32px; }
+  .crate-grid { grid-template-columns: repeat(2, 1fr); }
 }
 
 @media (max-width: 600px) {
-  .container    { padding: 84px 20px 80px; }
+  .container    { padding: 74px 20px 0; }
   .header-inner { padding: 0 20px; }
-  .card-inner   { padding: 10px 0 4px; }
-  .carousel-nav { right: 0; top: 0; }
-  .carousel-viewport { height: 155px; }
-  .card-top     { padding-right: 90px; }
-  .card-staff-pick { font-size: 8px; margin-bottom: 10px; }
-  .card-artist     {
-    font-size: 10px;
-    display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
-    margin-bottom: 8px;
-  }
-  .card-title      {
-    font-size: 20px; letter-spacing: -.02em;
-    display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
-    margin-bottom: 6px;
-  }
-  .card-format     { font-size: 9px; }
-  .card-tag        { font-size: 9px; padding: 2px 6px; }
-  .card-meta       { gap: 6px; }
-  .card-tags       { gap: 4px; }
-  .carousel-btn    { height: 30px; }
+  .nd-title     { font-size: 34px; letter-spacing: -.03em; margin-bottom: 18px; }
+  .nd-link      { display: none; }
+  .needle-drop  { padding: 32px 0 26px; }
   .tbl thead th { top: 74px; font-size: 10px; }
   .rec-title    { font-size: 13px; }
   .rec-artist   {
@@ -395,12 +409,13 @@ html.dark .sk {
     display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
   }
   .genre-tag    { font-size: 9px; padding: 2px 5px; }
-  col.c-art    { width: 38px; }
-  col.c-format, col.c-stock { display: none; }
-  .tbl thead th.c-format, .tbl thead th.c-stock,
-  .tbl tbody td.c-format, .tbl tbody td.c-stock { display: none; }
+  col.c-art     { width: 38px; }
   .rec-art-wrap { width: 28px; height: 28px; }
   .tbl tbody td.c-art { padding-right: 6px; }
+  .crate-grid   { grid-template-columns: 1fr; }
+  .site-footer  { flex-direction: column; gap: 12px; }
+  .footer-right { text-align: left; }
+  .search-count { display: none; }
 }
 
 </style>
@@ -437,28 +452,47 @@ html.dark .sk {
 
 <div class="container">
 
-  <section class="carousel-section">
-    <div class="carousel-viewport">
-      <div class="carousel-track" id="carouselTrack">
-        <div class="carousel-card" style="cursor:default">
-          <div class="card-inner">
-            <div class="card-top">
-              <div class="sk" style="width:8%;margin-bottom:14px"></div>
-              <div class="sk" style="width:14%;margin-bottom:10px"></div>
-              <div class="sk" style="width:40%;height:18px;margin-bottom:18px"></div>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div class="carousel-nav" id="carouselNav">
-        <button class="carousel-btn" id="prevBtn">&#8249;</button>
-        <button class="carousel-btn" id="nextBtn">&#8250;</button>
-      </div>
-    </div>
+  <!-- ── Needle Drop ─────────────────────────────────────── -->
+  <section class="needle-drop" id="needleDrop">
+    <div class="nd-eyebrow sk" style="width:120px;height:10px;margin-bottom:18px"></div>
+    <div class="nd-artist sk" style="width:160px;height:12px;margin-bottom:16px"></div>
+    <div class="sk" style="width:55%;height:54px;margin-bottom:24px"></div>
+    <div class="sk" style="width:220px;height:11px"></div>
   </section>
 
-  <hr class="section-divider">
+  <!-- ── A–Z Bar ─────────────────────────────────────────── -->
+  <nav class="az-bar" id="azBar">
+    <button class="az-btn active" data-letter="ALL" onclick="setAZFilter('ALL')">All</button>
+    <button class="az-btn" data-letter="0-9" onclick="setAZFilter('0-9')">0–9</button>
+    <button class="az-btn" data-letter="A" onclick="setAZFilter('A')">A</button>
+    <button class="az-btn" data-letter="B" onclick="setAZFilter('B')">B</button>
+    <button class="az-btn" data-letter="C" onclick="setAZFilter('C')">C</button>
+    <button class="az-btn" data-letter="D" onclick="setAZFilter('D')">D</button>
+    <button class="az-btn" data-letter="E" onclick="setAZFilter('E')">E</button>
+    <button class="az-btn" data-letter="F" onclick="setAZFilter('F')">F</button>
+    <button class="az-btn" data-letter="G" onclick="setAZFilter('G')">G</button>
+    <button class="az-btn" data-letter="H" onclick="setAZFilter('H')">H</button>
+    <button class="az-btn" data-letter="I" onclick="setAZFilter('I')">I</button>
+    <button class="az-btn" data-letter="J" onclick="setAZFilter('J')">J</button>
+    <button class="az-btn" data-letter="K" onclick="setAZFilter('K')">K</button>
+    <button class="az-btn" data-letter="L" onclick="setAZFilter('L')">L</button>
+    <button class="az-btn" data-letter="M" onclick="setAZFilter('M')">M</button>
+    <button class="az-btn" data-letter="N" onclick="setAZFilter('N')">N</button>
+    <button class="az-btn" data-letter="O" onclick="setAZFilter('O')">O</button>
+    <button class="az-btn" data-letter="P" onclick="setAZFilter('P')">P</button>
+    <button class="az-btn" data-letter="Q" onclick="setAZFilter('Q')">Q</button>
+    <button class="az-btn" data-letter="R" onclick="setAZFilter('R')">R</button>
+    <button class="az-btn" data-letter="S" onclick="setAZFilter('S')">S</button>
+    <button class="az-btn" data-letter="T" onclick="setAZFilter('T')">T</button>
+    <button class="az-btn" data-letter="U" onclick="setAZFilter('U')">U</button>
+    <button class="az-btn" data-letter="V" onclick="setAZFilter('V')">V</button>
+    <button class="az-btn" data-letter="W" onclick="setAZFilter('W')">W</button>
+    <button class="az-btn" data-letter="X" onclick="setAZFilter('X')">X</button>
+    <button class="az-btn" data-letter="Y" onclick="setAZFilter('Y')">Y</button>
+    <button class="az-btn" data-letter="Z" onclick="setAZFilter('Z')">Z</button>
+  </nav>
 
+  <!-- ── Search + Table ─────────────────────────────────── -->
   <div class="search-row">
     <input class="search-input" id="searchInput" type="search"
       autocomplete="off" spellcheck="false"
@@ -493,6 +527,27 @@ html.dark .sk {
     </tbody>
   </table>
 
+  <!-- ── The Crate ───────────────────────────────────────── -->
+  <section class="crate-section" id="crateSection">
+    <div class="crate-header">
+      <span class="crate-label">The Crate</span>
+      <button class="dig-btn" id="digBtn">Dig Again</button>
+    </div>
+    <div class="crate-grid" id="crateGrid"></div>
+  </section>
+
+  <!-- ── Footer ─────────────────────────────────────────── -->
+  <footer class="site-footer">
+    <div class="footer-left">
+      <span class="footer-brand">Late Records</span>
+      <span class="footer-tagline">Curated vinyl — rare, used, and hard to find.</span>
+    </div>
+    <div class="footer-right">
+      <span class="footer-location">Bacolod City, Philippines</span>
+      <span class="footer-datetime" id="datetime-footer"></span>
+    </div>
+  </footer>
+
 </div>
 
 <script src="script.js"></script>
@@ -506,64 +561,77 @@ function _escHTML(s) {
   return d.innerHTML;
 }
 
-function buildCarousel(albums) {
-  const featured = albums.filter(a => String(a.featured).toLowerCase() === 'yes').slice(0, 5);
-  const cards = featured.length >= 1 ? featured : albums.slice(0, 5);
-  const track = document.getElementById('carouselTrack');
-  let current = 0;
-  track.innerHTML = '';
-  cards.forEach((album) => {
-    const tags     = LR.ui.splitPipe(album.genre).slice(0, 2);
-    const albumUrl = `albums/album.html?id=${encodeURIComponent(album.album_id)}`;
-    const card     = document.createElement('div');
-    card.className = 'carousel-card';
-    card.addEventListener('click', () => location.href = albumUrl);
-    card.innerHTML = `
-      <div class="card-inner">
-        <div class="card-top">
-          <div class="card-staff-pick">Staff Pick</div>
-          <div class="card-artist">${_escHTML(album.artist)}</div>
-          <div class="card-title">${_escHTML(album.title)}</div>
-          <div class="card-meta">
-            <span class="card-format">${_escHTML(album.format || 'LP')}</span>
-            <span class="card-meta-divider"></span>
-            <div class="card-tags">${tags.map(t =>
-              `<span class="card-tag" onclick="event.stopPropagation();location.href='genre.html?g=${encodeURIComponent(t.toLowerCase())}'">${_escHTML(t)}</span>`
-            ).join('')}</div>
-          </div>
-        </div>
-      </div>`;
-    track.appendChild(card);
-  });
-  const viewport = document.querySelector('.carousel-viewport');
-
-  const progressContainer = document.createElement('div');
-  progressContainer.style.cssText = 'display:flex;gap:3px;margin-top:10px;';
-  viewport.parentNode.insertBefore(progressContainer, viewport.nextSibling);
-
-  const bars = [];
-  cards.forEach((_, i) => {
-    const b = document.createElement('div');
-    b.style.cssText = 'flex:1;height:2px;background:var(--ink15);transition:height .2s ease,background .2s ease;';
-    progressContainer.appendChild(b);
-    bars.push(b);
-  });
-
-  function goTo(index) {
-    if (index < 0) index = cards.length - 1;
-    if (index >= cards.length) index = 0;
-    current = index;
-    track.style.transform = `translateX(-${current * 100}%)`;
-    bars.forEach((b, i) => {
-      b.style.height = i === current ? '4px' : '2px';
-      b.style.background = i === current ? 'var(--ink)' : 'var(--ink15)';
-    });
-  }
-  goTo(0);
-  document.getElementById('prevBtn').addEventListener('click', (e) => { e.stopPropagation(); goTo(current - 1); });
-  document.getElementById('nextBtn').addEventListener('click', (e) => { e.stopPropagation(); goTo(current + 1); });
+/* ── Needle Drop ─────────────────────────────────────────── */
+function buildNeedleDrop(catalog) {
+  const section = document.getElementById('needleDrop');
+  if (!section) return;
+  const featured = catalog.filter(a => String(a.featured).toLowerCase() === 'yes' && a.status === 'available');
+  const pick = featured.length > 0 ? featured[0] : catalog.find(a => a.status === 'available') || catalog[0];
+  if (!pick) return;
+  const url  = `albums/album.html?id=${encodeURIComponent(pick.album_id)}`;
+  const tags = LR.ui.splitPipe(pick.genre).slice(0, 2);
+  section.onclick = () => location.href = url;
+  section.innerHTML = `
+    <div class="nd-eyebrow">The Needle Drop — Staff Pick</div>
+    <div class="nd-artist">${_escHTML(pick.artist)}</div>
+    <div class="nd-title">${_escHTML(pick.title)}</div>
+    <div class="nd-meta">
+      <span class="nd-format">${_escHTML(pick.format || 'LP')}</span>
+      ${tags.length ? '<span class="nd-divider"></span>' : ''}
+      <div class="nd-tags">${tags.map(t => `<span class="nd-tag">${_escHTML(t)}</span>`).join('')}</div>
+      <span class="nd-link">View Record →</span>
+    </div>`;
 }
 
+/* ── A–Z Filter ──────────────────────────────────────────── */
+window._azFilter = 'ALL';
+
+function setAZFilter(letter) {
+  window._azFilter = letter;
+  document.querySelectorAll('.az-btn').forEach(b => {
+    b.classList.toggle('active', b.dataset.letter === letter);
+  });
+  // Clear search state
+  const input = document.getElementById('searchInput');
+  const clear = document.getElementById('searchClear');
+  if (input) input.value = '';
+  if (clear) clear.style.display = 'none';
+  // Filter catalog and re-render
+  const catalog = window._catalogCache;
+  if (!catalog) return;
+  let filtered = catalog;
+  if (letter !== 'ALL') {
+    if (letter === '0-9') filtered = catalog.filter(a => /^[0-9]/.test(a.artist));
+    else filtered = catalog.filter(a => a.artist.trim().toUpperCase().startsWith(letter));
+  }
+  buildTable(filtered);
+}
+
+/* ── The Crate ───────────────────────────────────────────── */
+function buildCrate(catalog) {
+  const grid = document.getElementById('crateGrid');
+  if (!grid || !catalog) return;
+  const available = catalog.filter(a => a.status === 'available');
+  const pool      = available.length >= 6 ? available : catalog;
+  const shuffled  = pool.slice().sort(() => Math.random() - .5);
+  const picks     = shuffled.slice(0, 6);
+  grid.innerHTML  = picks.map(a => {
+    const url   = `albums/album.html?id=${encodeURIComponent(a.album_id)}`;
+    const genre = LR.ui.splitPipe(a.genre)[0] || '';
+    const avail = a.status === 'available';
+    return `<div class="crate-item${avail ? ' available' : ''}" onclick="location.href='${url}'">
+      <div class="crate-item-artist">${_escHTML(a.artist)}</div>
+      <div class="crate-item-title">${_escHTML(a.title)}</div>
+      <div class="crate-item-footer">
+        <span class="crate-item-format">${_escHTML(a.format || 'LP')}</span>
+        ${genre ? `<span class="crate-item-tag">${_escHTML(genre)}</span>` : ''}
+        <span class="crate-item-dot"></span>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+/* ── Availability toggle ─────────────────────────────────── */
 window.availFilterActive = false;
 
 function toggleAvail() {
@@ -572,16 +640,18 @@ function toggleAvail() {
   applyAvailToggle();
 }
 
+/* ── Boot ────────────────────────────────────────────────── */
 document.addEventListener('DOMContentLoaded', async () => {
   initSearch();
 
+  document.getElementById('digBtn').addEventListener('click', () => {
+    buildCrate(window._catalogCache);
+  });
+
   async function loadCatalog(retries) {
     for (let i = 0; i <= retries; i++) {
-      try {
-        return await LR.api.catalog();
-      } catch(e) {
-        if (i < retries) await new Promise(r => setTimeout(r, 1000 * (i + 1)));
-      }
+      try { return await LR.api.catalog(); }
+      catch(e) { if (i < retries) await new Promise(r => setTimeout(r, 1000 * (i + 1))); }
     }
     return null;
   }
@@ -589,10 +659,12 @@ document.addEventListener('DOMContentLoaded', async () => {
   const catalog = await loadCatalog(2);
   if (catalog) {
     window._catalogCache = catalog;
-    buildCarousel(catalog);
+    buildNeedleDrop(catalog);
     buildTable(catalog);
+    buildCrate(catalog);
   } else {
-    document.getElementById('carouselTrack').innerHTML = '';
+    document.getElementById('needleDrop').innerHTML =
+      `<div style="font-size:13px;color:var(--ink30)">Could not load catalog. Please refresh.</div>`;
     document.getElementById('catalogList').innerHTML =
       `<tr><td colspan="5" style="padding:40px 0;font-size:13px;color:var(--ink55)">Could not load catalog. Please refresh.</td></tr>`;
   }
