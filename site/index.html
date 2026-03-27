@@ -90,6 +90,9 @@ button { cursor: pointer; font-family: inherit; }
 .theme-toggle .icon-moon { width: 18px; height: 18px; display: block; }
 html:not(.dark) .theme-toggle .icon-moon { display: none; }
 html.dark        .theme-toggle .icon-sun  { display: none; }
+.logo-dark            { display: none; }
+html.dark .logo-light { display: none; }
+html.dark .logo-dark  { display: block; }
 
 .container {
   max-width: 1200px; margin: 0 auto; padding: 84px 30px 80px;
@@ -400,7 +403,8 @@ html.dark .sk {
 <header class="fixed-header">
   <div class="header-inner">
     <a href="index.html">
-      <img src="images/late-records-logo.png" class="header-logo" alt="LATE RECORDS">
+      <img src="images/late-records-logo.png" class="header-logo logo-light" alt="LATE RECORDS">
+      <img src="images/late-records-logo-dark.png" class="header-logo logo-dark" alt="LATE RECORDS">
     </a>
     <div class="header-right">
       <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme">

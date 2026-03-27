@@ -112,6 +112,12 @@ button { cursor: pointer; font-family: inherit; }
   gap: 16px;
 }
 
+/* ── Logo swap (CSS-only, no src change) ──────────────────── */
+
+.logo-dark              { display: none; }
+html.dark .logo-light   { display: none; }
+html.dark .logo-dark    { display: block; }
+
 /* ── Theme toggle ─────────────────────────────────────────── */
 
 .theme-toggle {

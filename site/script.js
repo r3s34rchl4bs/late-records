@@ -144,7 +144,6 @@ function applyTheme(dark) {
   var html   = document.documentElement;
   var body   = document.body;
   var header = document.querySelector('.fixed-header');
-  var logo   = document.querySelector('.header-logo');
 
   if (dark) {
     html.classList.add('dark');
@@ -157,7 +156,6 @@ function applyTheme(dark) {
       header.style.setProperty('background-image', 'radial-gradient(circle, rgba(255,255,255,.04) 0.5px, transparent 0.5px)', 'important');
       header.style.setProperty('background-size', '3px 3px', 'important');
     }
-    if (logo) logo.src = '/images/late-records-logo-dark.png';
     localStorage.setItem('lr_theme', 'dark');
   } else {
     html.classList.remove('dark');
@@ -170,7 +168,6 @@ function applyTheme(dark) {
       header.style.setProperty('background-image', 'radial-gradient(circle, rgba(0,0,0,.08) 0.5px, transparent 0.5px)', 'important');
       header.style.setProperty('background-size', '3px 3px', 'important');
     }
-    if (logo) logo.src = '/images/late-records-logo.png';
     localStorage.setItem('lr_theme', 'light');
   }
 }
