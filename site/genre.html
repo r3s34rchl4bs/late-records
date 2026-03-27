@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+<script>document.documentElement.classList.toggle('dark', localStorage.getItem('lr_theme') === 'dark')</script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Genre — LATE RECORDS</title>
@@ -9,20 +10,55 @@
 
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-:root {
-  --header-height: 74px;
-  --site-bg: #e2e2e2;
-  --site-bg-image: radial-gradient(circle, rgba(0,0,0,.08) 0.5px, transparent 0.5px);
-  --site-bg-size: 3px 3px;
+html {
+  --bg:         #e2e2e2;
+  --bg-dot:     rgba(0,0,0,.08);
+  --ink:        #1a1a14;
+  --ink55:      rgba(26,26,20,.55);
+  --ink45:      rgba(26,26,20,.45);
+  --ink30:      rgba(26,26,20,.30);
+  --ink15:      rgba(26,26,20,.15);
+  --border:     rgba(26,26,20,.22);
+  --border-mid: rgba(26,26,20,.12);
+  --btn-bg:     #1a1a14;
+  --btn-fg:     #e2e2e2;
+  --footer-bg:  rgba(226,226,226,.92);
+  --footer-border: rgba(26,26,20,.14);
+  --modal-bg:   rgba(233,233,233,.97);
 }
+html.dark {
+  --bg:         #141410;
+  --bg-dot:     rgba(255,255,255,.04);
+  --ink:        #e8e8df;
+  --ink55:      rgba(232,232,223,.55);
+  --ink45:      rgba(232,232,223,.42);
+  --ink30:      rgba(232,232,223,.26);
+  --ink15:      rgba(232,232,223,.12);
+  --border:     rgba(232,232,223,.18);
+  --border-mid: rgba(232,232,223,.1);
+  --btn-bg:     #e8e8df;
+  --btn-fg:     #141410;
+  --footer-bg:  rgba(20,20,16,.92);
+  --footer-border: rgba(232,232,223,.1);
+  --modal-bg:   rgba(22,22,18,.97);
+}
+
+html.no-transitions * { transition: none !important; }
 
 html, body {
   font-family: 'Inter', system-ui, sans-serif;
-  background-color: var(--site-bg);
-  background-image: var(--site-bg-image);
-  background-size: var(--site-bg-size);
-  color: #1a1a14;
+  background-color: var(--bg);
+  color: var(--ink);
   -webkit-font-smoothing: antialiased;
+}
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image: radial-gradient(circle, var(--bg-dot) 0.5px, transparent 0.5px);
+  background-size: 3px 3px;
+  pointer-events: none;
+  z-index: -1;
 }
 
 a { color: inherit; text-decoration: none; }
@@ -30,12 +66,10 @@ img { display: block; max-width: 100%; }
 
 .fixed-header {
   position: fixed; top: 0; left: 0; width: 100%;
-  background-color: var(--site-bg);
-  background-image: var(--site-bg-image);
-  background-size: var(--site-bg-size);
+  background-color: var(--bg);
   z-index: 1000;
-  border-bottom: 1px solid rgba(26,26,20,.22);
-  height: var(--header-height);
+  border-bottom: 1px solid var(--border);
+  height: 74px;
 }
 .header-inner {
   max-width: 1200px; margin: 0 auto; padding: 0 30px;
@@ -43,11 +77,25 @@ img { display: block; max-width: 100%; }
 }
 .header-logo { height: 44px; display: block; }
 .header-logo:hover { opacity: .5; transition: opacity .15s; }
+.logo-dark            { display: none; }
+html.dark .logo-light { display: none; }
+html.dark .logo-dark  { display: block; }
+.header-right { display: flex; align-items: center; gap: 16px; }
+.theme-toggle {
+  background: none; border: none; padding: 4px;
+  color: var(--ink); cursor: pointer;
+  transition: opacity .15s; flex-shrink: 0;
+}
+.theme-toggle:hover { opacity: .6; }
+.theme-toggle .icon-sun,
+.theme-toggle .icon-moon { width: 18px; height: 18px; display: block; }
+html:not(.dark) .theme-toggle .icon-moon { display: none; }
+html.dark .theme-toggle .icon-sun { display: none; }
 .cart-link {
   font-size: 11px; font-weight: 500; letter-spacing: .07em;
-  text-transform: uppercase; color: #1a1a14;
+  text-transform: uppercase; color: var(--ink);
 }
-.cart-link:hover { color: rgba(26,26,20,.5); }
+.cart-link:hover { color: var(--ink55); }
 
 .container {
   max-width: 1200px; margin: 0 auto; padding: 84px 30px 104px;
@@ -55,7 +103,7 @@ img { display: block; max-width: 100%; }
 
 .genre-nav-label {
   font-size: 11px; font-weight: 500; letter-spacing: .09em;
-  text-transform: uppercase; color: rgba(26,26,20,.48);
+  text-transform: uppercase; color: var(--ink45);
   margin-bottom: 10px; display: block;
 }
 
@@ -75,20 +123,20 @@ img { display: block; max-width: 100%; }
 
 .genre-pill {
   font-size: 10px; font-weight: 500; letter-spacing: .06em;
-  text-transform: uppercase; border: 1px solid rgba(26,26,20,.32);
-  padding: 3px 7px; color: rgba(26,26,20,.48); cursor: pointer;
+  text-transform: uppercase; border: 1px solid var(--ink30);
+  padding: 3px 7px; color: var(--ink45); cursor: pointer;
   transition: color 0.1s linear; text-decoration: none;
   display: inline-block; line-height: 1.4;
 }
-.genre-pill:hover { color: #1a1a14; border-color: #1a1a14; }
-.genre-pill.active { background: #1a1a14; color: #e2e2e2; border-color: #1a1a14; }
+.genre-pill:hover { color: var(--ink); border-color: var(--ink); }
+.genre-pill.active { background: var(--btn-bg); color: var(--btn-fg); border-color: var(--btn-bg); }
 
 .genre-nav-toggle {
   position: absolute; right: 0; bottom: 0;
-  background: rgba(26,26,20,.18); border: 0;
+  background: var(--ink15); border: 0;
   width: 18px; height: 18px;
   display: none; align-items: center; justify-content: center;
-  font-size: 13px; color: #1a1a14; cursor: pointer;
+  font-size: 13px; color: var(--ink); cursor: pointer;
   font-family: 'Inter', system-ui, sans-serif; font-weight: 400; line-height: 1; z-index: 2;
 }
 .genre-nav-toggle.is-visible { display: inline-flex; }
@@ -102,12 +150,10 @@ col.c-stock  { width: 8%; }
 
 .tbl thead th {
   position: sticky; top: 74px; z-index: 30;
-  background-color: var(--site-bg);
-  background-image: var(--site-bg-image);
-  background-size: var(--site-bg-size);
-  box-shadow: 0 -1px 0 rgba(26,26,20,.22), 0 1px 0 rgba(26,26,20,.26);
+  background-color: var(--bg);
+  box-shadow: 0 -1px 0 var(--border), 0 1px 0 var(--ink30);
   padding: 10px 12px 10px 0; font-size: 11px; font-weight: 500;
-  letter-spacing: .09em; text-transform: uppercase; color: rgba(26,26,20,.48);
+  letter-spacing: .09em; text-transform: uppercase; color: var(--ink45);
   text-align: left; vertical-align: bottom;
 }
 .tbl thead th:first-child { padding-left: 0; }
@@ -115,36 +161,40 @@ col.c-stock  { width: 8%; }
 
 .tbl tbody tr { cursor: pointer; transition: color 0.1s linear; }
 .tbl tbody tr:hover .rec-title,
-.tbl tbody tr:hover .rec-artist { color: #1a1a14; }
+.tbl tbody tr:hover .rec-artist { color: var(--ink); }
 
 .tbl tbody td {
   padding: 14px 12px 14px 0;
-  border-bottom: 1px solid rgba(26,26,20,.12); vertical-align: middle;
+  border-bottom: 1px solid var(--border-mid); vertical-align: middle;
 }
 .tbl tbody td:first-child { padding-left: 0; }
 .tbl tbody td:last-child  { padding-right: 0; }
 .tbl tbody td.c-stock { padding-top: 8px; padding-bottom: 8px; padding-right: 0; }
 
 .rec-title { font-size: 14px; font-weight: 400; line-height: 1.25; letter-spacing: -.01em; transition: color 0.1s linear; }
-.rec-artist { font-size: 12px; font-weight: 400; color: rgba(26,26,20,.48); margin-top: 3px; line-height: 1.4; transition: color 0.1s linear; }
-.rec-format { font-size: 11px; font-weight: 400; letter-spacing: .05em; text-transform: uppercase; color: rgba(26,26,20,.48); }
+.rec-artist { font-size: 12px; font-weight: 400; color: var(--ink45); margin-top: 3px; line-height: 1.4; transition: color 0.1s linear; }
+.rec-format { font-size: 11px; font-weight: 400; letter-spacing: .05em; text-transform: uppercase; color: var(--ink45); }
 .rec-stock { display: flex; align-items: center; justify-content: flex-end; gap: 6px; font-size: 11px; font-weight: 500; letter-spacing: .06em; text-transform: uppercase; }
 .sdot { width: 5px; height: 5px; border-radius: 50%; flex-shrink: 0; }
-.sdot.a { background: #1a1a14; }
-.sdot.s { background: rgba(26,26,20,.28); }
+.sdot.a { background: var(--ink); }
+.sdot.s { background: var(--ink30); }
 
-.tbl tbody tr.sold .rec-title  { color: rgba(26,26,20,.4); }
-.tbl tbody tr.sold .rec-artist { color: rgba(26,26,20,.28); }
-.tbl tbody tr.sold .rec-format { color: rgba(26,26,20,.28); }
-.tbl tbody tr.sold .rec-stock  { color: rgba(26,26,20,.28); }
-.tbl tbody tr.sold .sdot       { background: rgba(26,26,20,.28) !important; }
+.tbl tbody tr.sold .rec-title  { color: var(--ink30); }
+.tbl tbody tr.sold .rec-artist { color: var(--ink30); }
+.tbl tbody tr.sold .rec-format { color: var(--ink30); }
+.tbl tbody tr.sold .rec-stock  { color: var(--ink30); }
+.tbl tbody tr.sold .sdot       { background: var(--ink30) !important; }
 
-.empty-state { padding: 60px 0; font-size: 13px; color: rgba(26,26,20,.38); letter-spacing: .02em; }
+.empty-state { padding: 60px 0; font-size: 13px; color: var(--ink30); letter-spacing: .02em; }
 
 .sk {
   display: inline-block; height: 9px; border-radius: 2px;
   background: linear-gradient(90deg, rgba(0,0,0,.07) 25%, rgba(0,0,0,.13) 50%, rgba(0,0,0,.07) 75%);
   background-size: 200% 100%; animation: sh 1.4s infinite;
+}
+html.dark .sk {
+  background: linear-gradient(90deg, rgba(255,255,255,.05) 25%, rgba(255,255,255,.10) 50%, rgba(255,255,255,.05) 75%);
+  background-size: 200% 100%;
 }
 @keyframes sh { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
 
@@ -171,7 +221,7 @@ col.c-stock  { width: 8%; }
 
 .guide-footer {
   position: fixed; left: 0; right: 0; bottom: 0; height: 34px;
-  background: rgba(226,226,226,.92); border-top: 1px solid rgba(26,26,20,.14);
+  background: var(--footer-bg); border-top: 1px solid var(--footer-border);
   backdrop-filter: blur(2px); -webkit-backdrop-filter: blur(2px); z-index: 9998;
 }
 .guide-footer-inner {
@@ -179,35 +229,35 @@ col.c-stock  { width: 8%; }
   display: flex; align-items: center; justify-content: flex-end;
 }
 .guide-btn {
-  background: transparent; color: rgba(26,26,20,.58);
+  background: transparent; color: var(--ink55);
   font-family: 'Inter', system-ui, sans-serif; font-size: 9px; font-weight: 500;
   letter-spacing: .08em; text-transform: uppercase; padding: 0; border: none;
   cursor: pointer; user-select: none; display: inline-flex; align-items: center;
   border-radius: 0; opacity: .72; transition: opacity .12s linear, color .12s linear;
 }
-.guide-btn:hover { opacity: 1; color: rgba(26,26,20,.82); }
+.guide-btn:hover { opacity: 1; color: var(--ink); }
 .guide-btn-inner { display: inline-flex; align-items: center; gap: 4px; }
 .guide-btn svg { width: 14px; height: 14px; fill: none; stroke: currentColor; stroke-width: 1.25; stroke-linecap: round; stroke-linejoin: round; flex-shrink: 0; }
 
 .guide-modal {
-  position: fixed; inset: 0; background: rgba(226,226,226,.14);
+  position: fixed; inset: 0; background: rgba(0,0,0,.18);
   backdrop-filter: blur(1px); -webkit-backdrop-filter: blur(1px);
   display: none; align-items: center; justify-content: center; z-index: 9999; padding: 20px;
 }
 .guide-modal.is-open { display: flex; }
 .guide-modal-inner {
-  background: rgba(233,233,233,.97); border: 1px solid rgba(26,26,20,.35);
+  background: var(--modal-bg); border: 1px solid var(--border);
   width: 100%; max-width: 390px; font-family: 'Inter', system-ui, sans-serif;
-  position: relative; box-shadow: 0 14px 36px rgba(26,26,20,.08);
+  position: relative; box-shadow: 0 14px 36px rgba(0,0,0,.1);
 }
 .guide-modal-body { padding: 16px 20px; }
-.guide-heading-wrap { margin-bottom: 18px; padding-bottom: 12px; border-bottom: 1px solid rgba(26,26,20,.12); }
-.guide-subheading { font-size: 10px; font-weight: 500; letter-spacing: .18em; text-transform: uppercase; color: rgba(26,26,20,.34); }
-.guide-row { display: grid; grid-template-columns: 56px 1fr 22px; gap: 12px; align-items: start; padding: 12px 0; border-bottom: 1px solid rgba(26,26,20,.1); }
+.guide-heading-wrap { margin-bottom: 18px; padding-bottom: 12px; border-bottom: 1px solid var(--border-mid); }
+.guide-subheading { font-size: 10px; font-weight: 500; letter-spacing: .18em; text-transform: uppercase; color: var(--ink30); }
+.guide-row { display: grid; grid-template-columns: 56px 1fr 22px; gap: 12px; align-items: start; padding: 12px 0; border-bottom: 1px solid var(--border-mid); }
 .guide-row:last-child { border-bottom: none; }
-.guide-format { font-size: 11px; font-weight: 600; letter-spacing: .08em; color: rgba(26,26,20,.85); }
-.guide-desc { font-size: 12px; font-weight: 400; color: rgba(26,26,20,.56); line-height: 1.45; }
-.guide-index { text-align: right; font-size: 9px; letter-spacing: .18em; text-transform: uppercase; color: rgba(26,26,20,.22); }
+.guide-format { font-size: 11px; font-weight: 600; letter-spacing: .08em; color: var(--ink); }
+.guide-desc { font-size: 12px; font-weight: 400; color: var(--ink55); line-height: 1.45; }
+.guide-index { text-align: right; font-size: 9px; letter-spacing: .18em; text-transform: uppercase; color: var(--ink15); }
 
 </style>
 </head>
@@ -216,9 +266,28 @@ col.c-stock  { width: 8%; }
 <header class="fixed-header">
   <div class="header-inner">
     <a href="index.html">
-      <img src="images/late-records-logo.png" class="header-logo" alt="LATE RECORDS">
+      <img src="images/late-records-logo.png" class="header-logo logo-light" alt="LATE RECORDS">
+      <img src="images/late-records-logo-dark.png" class="header-logo logo-dark" alt="LATE RECORDS">
     </a>
-    <a href="cart.html" class="cart-link">Cart (<span class="cart-count">0</span>)</a>
+    <div class="header-right">
+      <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme">
+        <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="4"/>
+          <line x1="12" y1="2"  x2="12" y2="5"/>
+          <line x1="12" y1="19" x2="12" y2="22"/>
+          <line x1="2"  y1="12" x2="5"  y2="12"/>
+          <line x1="19" y1="12" x2="22" y2="12"/>
+          <line x1="4.93"  y1="4.93"  x2="7.05"  y2="7.05"/>
+          <line x1="16.95" y1="16.95" x2="19.07" y2="19.07"/>
+          <line x1="4.93"  y1="19.07" x2="7.05"  y2="16.95"/>
+          <line x1="16.95" y1="7.05"  x2="19.07" y2="4.93"/>
+        </svg>
+        <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+        </svg>
+      </button>
+      <a href="cart.html" class="cart-link">Cart (<span class="cart-count">0</span>)</a>
+    </div>
   </div>
 </header>
 

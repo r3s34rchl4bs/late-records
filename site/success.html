@@ -1,25 +1,21 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+<script>document.documentElement.classList.toggle('dark', localStorage.getItem('lr_theme') === 'dark')</script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Order Received — LATE RECORDS</title>
 <link rel="stylesheet" href="fonts/inter.css">
 <link rel="stylesheet" href="style.css">
 <style>
-html, body {
-  font-family: 'Inter', system-ui, sans-serif;
-  background-color: #e2e2e2;
-  background-image: radial-gradient(circle, rgba(0,0,0,.08) 0.5px, transparent 0.5px);
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image: radial-gradient(circle, var(--bg-dot) 0.5px, transparent 0.5px);
   background-size: 3px 3px;
-  color: #1a1a14;
-  -webkit-font-smoothing: antialiased;
-}
-.fixed-header {
-  background-color: #e2e2e2;
-  background-image: radial-gradient(circle, rgba(0,0,0,.08) 0.5px, transparent 0.5px);
-  background-size: 3px 3px;
-  border-bottom-color: rgba(26,26,20,.22);
+  pointer-events: none;
+  z-index: -1;
 }
 .header-logo { height: 44px; filter: none; }
 .header-logo:hover { opacity: .5; transition: opacity .15s; }
@@ -27,10 +23,9 @@ html, body {
 .fixed-footer { display: none; }
 .container { padding-bottom: 80px; }
 
-/* PAGE — single column, order summary not in grid */
 .page-title {
   font-size: 26px; font-weight: 600;
-  margin-bottom: 32px; letter-spacing: -.01em; color: #1a1a14;
+  margin-bottom: 32px; letter-spacing: -.01em; color: var(--ink);
 }
 
 .success-layout {
@@ -40,57 +35,53 @@ html, body {
   align-items: start;
 }
 
-/* META GRID */
 .order-meta {
-  border-top: 1px solid rgba(26,26,20,.12);
+  border-top: 1px solid var(--border-mid);
   display: grid; grid-template-columns: 1fr 1fr;
 }
-.meta-cell { padding: 16px 0; border-bottom: 1px solid rgba(26,26,20,.12); }
-.meta-cell.left  { padding-right: 28px; border-right: 1px solid rgba(26,26,20,.12); }
+.meta-cell { padding: 16px 0; border-bottom: 1px solid var(--border-mid); }
+.meta-cell.left  { padding-right: 28px; border-right: 1px solid var(--border-mid); }
 .meta-cell.right { padding-left: 28px; }
-.meta-label { font-size: 9px; font-weight: 500; letter-spacing: .12em; text-transform: uppercase; color: rgba(26,26,20,.38); margin-bottom: 5px; }
-.meta-value { font-size: 13px; color: #1a1a14; line-height: 1.55; }
+.meta-label { font-size: 9px; font-weight: 500; letter-spacing: .12em; text-transform: uppercase; color: var(--ink30); margin-bottom: 5px; }
+.meta-value { font-size: 13px; color: var(--ink); line-height: 1.55; }
 .meta-value.amount { font-size: 24px; font-weight: 600; letter-spacing: -.02em; line-height: 1.1; }
 
-/* View summary button — shared style for both desktop and mobile */
 .view-summary-btn {
   width: 100%;
-  background: rgba(26,26,20,.04); border: none;
-  border-bottom: 1px solid rgba(26,26,20,.1);
+  background: var(--art-bg); border: none;
+  border-bottom: 1px solid var(--ink15);
   padding: 14px 16px; cursor: pointer;
   font-family: 'Inter', system-ui, sans-serif; text-align: left;
-  box-shadow: 0 2px 8px rgba(26,26,20,.07);
+  box-shadow: 0 2px 8px var(--art-bg);
   margin-top: 20px; margin-bottom: 0;
   transition: background .15s; display: block;
 }
-.view-summary-btn:hover { background: rgba(26,26,20,.07); }
+.view-summary-btn:hover { background: var(--ink15); }
 .vsb-inner { display: flex; justify-content: space-between; align-items: center; width: 100%; }
-.vsb-label { font-size: 10px; font-weight: 500; letter-spacing: .1em; text-transform: uppercase; color: rgba(26,26,20,.55); }
-.vsb-arrow { font-size: 14px; color: rgba(26,26,20,.35); transition: transform .15s; }
+.vsb-label { font-size: 10px; font-weight: 500; letter-spacing: .1em; text-transform: uppercase; color: var(--ink55); }
+.vsb-arrow { font-size: 14px; color: var(--ink30); transition: transform .15s; }
 .vsb-arrow.open { transform: rotate(90deg); }
 
-/* PAYMENT */
 .payment-section { margin-top: 32px; }
 .payment-body {
   display: grid; grid-template-columns: 1fr auto;
   gap: 32px; align-items: start; margin-bottom: 28px;
 }
 .payment-left { display: flex; flex-direction: column; width: 40%; min-width: 180px; }
-.timer-label { font-size: 9px; font-weight: 500; letter-spacing: .12em; text-transform: uppercase; color: rgba(26,26,20,.38); margin-bottom: 8px; }
-.countdown { font-size: 36px; font-weight: 600; letter-spacing: -.02em; font-variant-numeric: tabular-nums; color: #1a1a14; line-height: 1; margin-bottom: 10px; }
-.countdown.is-expired { font-size: 16px; color: rgba(26,26,20,.5); }
-.timer-note { font-size: 11px; color: rgba(26,26,20,.42); line-height: 1.65; margin-bottom: 16px; }
+.timer-label { font-size: 9px; font-weight: 500; letter-spacing: .12em; text-transform: uppercase; color: var(--ink30); margin-bottom: 8px; }
+.countdown { font-size: 36px; font-weight: 600; letter-spacing: -.02em; font-variant-numeric: tabular-nums; color: var(--ink); line-height: 1; margin-bottom: 10px; }
+.countdown.is-expired { font-size: 16px; color: var(--ink45); }
+.timer-note { font-size: 11px; color: var(--ink45); line-height: 1.65; margin-bottom: 16px; }
 .wallet-logos-wrap { display: flex; flex-wrap: wrap; gap: 10px 14px; align-items: center; }
 .wallet-logo { display: block; width: auto; flex-shrink: 0; filter: grayscale(100%) opacity(0.38); }
 
 .qr-block { display: flex; flex-direction: column; align-items: center; gap: 6px; }
 .qr-img { width: 150px; display: block; object-fit: cover; }
-.qr-download { font-size: 9px; letter-spacing: .07em; text-transform: uppercase; color: rgba(26,26,20,.32); cursor: pointer; font-family: inherit; background: none; border: none; padding: 0; text-decoration: underline; transition: color .1s; }
-.qr-download:hover { color: rgba(26,26,20,.7); }
+.qr-download { font-size: 9px; letter-spacing: .07em; text-transform: uppercase; color: var(--ink30); cursor: pointer; font-family: inherit; background: none; border: none; padding: 0; text-decoration: underline; transition: color .1s; }
+.qr-download:hover { color: var(--ink55); }
 
-.order-note { font-size: 12px; color: rgba(26,26,20,.42); line-height: 1.8; padding-left: 12px; border-left: 1px solid rgba(26,26,20,.18); }
+.order-note { font-size: 12px; color: var(--ink45); line-height: 1.8; padding-left: 12px; border-left: 1px solid var(--ink15); }
 
-/* ORDER SUMMARY PANEL — checkout style, hidden by default on desktop */
 .summary-panel {
   display: none;
   padding-left: 30px;
@@ -99,20 +90,19 @@ html, body {
 
 .section-label {
   font-size: 11px; font-weight: 500; letter-spacing: .09em;
-  text-transform: uppercase; color: rgba(26,26,20,.5); margin-bottom: 20px;
+  text-transform: uppercase; color: var(--ink55); margin-bottom: 20px;
 }
 .order-item {
   display: flex; justify-content: space-between;
   align-items: flex-start; gap: 16px; margin-bottom: 14px;
 }
 .order-item-left  { flex: 1; min-width: 0; }
-.order-item-title { font-size: 12px; font-weight: 600; line-height: 1.35; color: #1a1a14; word-break: break-word; }
-.order-item-meta  { font-size: 11px; color: rgba(26,26,20,.5); margin-top: 2px; }
-.order-item-price { font-size: 14px; font-weight: 500; white-space: nowrap; flex-shrink: 0; color: #1a1a14; }
-.order-divider { border-top: 1px solid rgba(26,26,20,.12); margin: 14px 0; }
-.order-total { display: flex; justify-content: space-between; font-weight: 600; font-size: 18px; color: #1a1a14; }
+.order-item-title { font-size: 12px; font-weight: 600; line-height: 1.35; color: var(--ink); word-break: break-word; }
+.order-item-meta  { font-size: 11px; color: var(--ink55); margin-top: 2px; }
+.order-item-price { font-size: 14px; font-weight: 500; white-space: nowrap; flex-shrink: 0; color: var(--ink); }
+.order-divider { border-top: 1px solid var(--border-mid); margin: 14px 0; }
+.order-total { display: flex; justify-content: space-between; font-weight: 600; font-size: 18px; color: var(--ink); }
 
-/* MODAL — centered, 90s dialog */
 .modal-overlay {
   display: none; position: fixed; inset: 0; z-index: 300;
   background: rgba(10,10,8,.82);
@@ -122,10 +112,10 @@ html, body {
 .modal-overlay.is-open { display: flex; }
 .modal-dialog {
   width: 100%; max-width: 380px;
-  background: #e2e2e2;
-  background-image: radial-gradient(circle, rgba(0,0,0,.08) 0.5px, transparent 0.5px);
+  background-color: var(--bg);
+  background-image: radial-gradient(circle, var(--bg-dot) 0.5px, transparent 0.5px);
   background-size: 3px 3px;
-  border: 2px solid rgba(26,26,20,.35);
+  border: 2px solid var(--border);
   max-height: calc(100vh - 80px); overflow-y: auto;
 }
 .modal-close-row {
@@ -133,24 +123,22 @@ html, body {
   padding: 12px 16px 0;
 }
 .modal-close {
-  background: rgba(26,26,20,.18); border: 0;
+  background: var(--ink15); border: 0;
   width: 18px; height: 18px;
   display: inline-flex; align-items: center; justify-content: center;
-  font-size: 12px; color: #1a1a14; cursor: pointer;
+  font-size: 12px; color: var(--ink); cursor: pointer;
   font-family: 'Inter', system-ui, sans-serif; font-weight: 400; line-height: 1;
   transition: background .1s;
 }
-.modal-close:hover { background: #1a1a14; color: #e2e2e2; }
+.modal-close:hover { background: var(--btn-bg); color: var(--btn-fg); }
 .modal-body { padding: 20px 28px 36px; }
 
-/* RESPONSIVE */
 @media (max-width: 900px) {
   .success-layout { grid-template-columns: 1fr; }
   .summary-panel { padding-left: 0; }
   .page-title { font-size: 22px; }
 }
 @media (max-width: 860px) {
-  /* On mobile, desktop summary hidden, modal used instead */
   .summary-panel { display: none !important; }
   .countdown { font-size: 30px; }
   .qr-img { width: 140px; }
@@ -166,8 +154,27 @@ html, body {
 <header class="fixed-header">
   <div class="header-inner">
     <a href="index.html">
-      <img src="images/late-records-logo.png" class="header-logo" alt="LATE RECORDS">
+      <img src="images/late-records-logo.png" class="header-logo logo-light" alt="LATE RECORDS">
+      <img src="images/late-records-logo-dark.png" class="header-logo logo-dark" alt="LATE RECORDS">
     </a>
+    <div class="header-right">
+      <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme">
+        <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="4"/>
+          <line x1="12" y1="2"  x2="12" y2="5"/>
+          <line x1="12" y1="19" x2="12" y2="22"/>
+          <line x1="2"  y1="12" x2="5"  y2="12"/>
+          <line x1="19" y1="12" x2="22" y2="12"/>
+          <line x1="4.93"  y1="4.93"  x2="7.05"  y2="7.05"/>
+          <line x1="16.95" y1="16.95" x2="19.07" y2="19.07"/>
+          <line x1="4.93"  y1="19.07" x2="7.05"  y2="16.95"/>
+          <line x1="16.95" y1="7.05"  x2="19.07" y2="4.93"/>
+        </svg>
+        <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+        </svg>
+      </button>
+    </div>
   </div>
 </header>
 
@@ -273,8 +280,8 @@ html, body {
       <div class="section-label" style="margin-bottom:4px;">Order Summary</div>
 
       <div class="order-item" style="margin-bottom:20px;">
-        <div class="order-item-left"><div class="order-item-title" style="font-weight:400;color:rgba(26,26,20,.5);font-size:11px;">Date</div></div>
-        <div class="order-item-price" id="mDate" style="font-size:11px;font-weight:400;color:rgba(26,26,20,.5);">&#x2014;</div>
+        <div class="order-item-left"><div class="order-item-title" style="font-weight:400;color:var(--ink55);font-size:11px;">Date</div></div>
+        <div class="order-item-price" id="mDate" style="font-size:11px;font-weight:400;color:var(--ink55);">&#x2014;</div>
       </div>
 
       <div class="order-divider" style="margin-top:0;"></div>
@@ -342,7 +349,7 @@ document.getElementById('metaAmount').textContent  = orderTotal;
 if (deliveryMethod === 'pickup') {
   document.getElementById('metaBuyerLabel').textContent   = 'Pickup By';
   document.getElementById('metaAddressLabel').textContent  = 'Pickup';
-  document.getElementById('metaAddress').innerHTML = 'Message <a href="https://www.instagram.com/late.records" target="_blank" rel="noopener" style="color:#1a1a14;font-weight:600;text-decoration:underline;text-underline-offset:2px;">@late.records</a> via Instagram for pickup details.';
+  document.getElementById('metaAddress').innerHTML = 'Message <a href="https://www.instagram.com/late.records" target="_blank" rel="noopener" style="color:var(--ink);font-weight:600;text-decoration:underline;text-underline-offset:2px;">@late.records</a> via Instagram for pickup details.';
 } else if (deliveryMethod === 'local') {
   document.getElementById('metaAddressLabel').textContent = 'Local Delivery';
   document.getElementById('metaAddress').textContent = address;
@@ -352,7 +359,7 @@ if (deliveryMethod === 'pickup') {
 
 // Build items
 function buildItems(cart) {
-  if (!cart || !cart.length) return '<div style="font-size:12px;color:rgba(26,26,20,.4);padding:8px 0 14px;">No items</div>';
+  if (!cart || !cart.length) return '<div style="font-size:12px;color:var(--ink30);padding:8px 0 14px;">No items</div>';
   return cart.map(function(item) {
     return '<div class="order-item">' +
       '<div class="order-item-left">' +
