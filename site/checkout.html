@@ -341,7 +341,7 @@ document.addEventListener('DOMContentLoaded', () => {
     try {
       /* ── Normalize inputs (Postel's Law) ── */
       const normName = document.getElementById('name').value.trim().replace(/\s+/g, ' ')
-        .replace(/\b\w/g, c => c.toUpperCase());
+        .toLowerCase().replace(/\b\w/g, c => c.toUpperCase());
       const normEmail = document.getElementById('email').value.trim().toLowerCase();
       const normPhone = document.getElementById('phone').value.trim().replace(/[\s\-\.\(\)]/g, '');
       const normAddr  = document.getElementById('address').value.trim().replace(/\s+/g, ' ');
