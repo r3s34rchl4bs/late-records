@@ -184,11 +184,11 @@ html, body {
           <div class="meta-value" id="metaOrder">&#x2014;</div>
         </div>
         <div class="meta-cell right">
-          <div class="meta-label">Address</div>
+          <div class="meta-label" id="metaAddressLabel">Address</div>
           <div class="meta-value" id="metaAddress">&#x2014;</div>
         </div>
         <div class="meta-cell left">
-          <div class="meta-label">Ship To</div>
+          <div class="meta-label" id="metaBuyerLabel">Ship To</div>
           <div class="meta-value" id="metaBuyer">&#x2014;</div>
         </div>
         <div class="meta-cell right">
@@ -248,7 +248,7 @@ html, body {
       <div class="order-divider"></div>
 
       <div class="order-item">
-        <div class="order-item-left"><div class="order-item-title">Shipping</div></div>
+        <div class="order-item-left"><div class="order-item-title" id="rShipLabel">Shipping</div></div>
         <div class="order-item-price" id="rShipping">&#x2014;</div>
       </div>
 
@@ -284,7 +284,7 @@ html, body {
       <div class="order-divider"></div>
 
       <div class="order-item">
-        <div class="order-item-left"><div class="order-item-title">Shipping</div></div>
+        <div class="order-item-left"><div class="order-item-title" id="mShipLabel">Shipping</div></div>
         <div class="order-item-price" id="mShipping">&#x2014;</div>
       </div>
 
@@ -331,11 +331,24 @@ var dateStr = new Date(orderCreatedAt).toLocaleDateString('en-GB', {
   day: 'numeric', month: 'short', year: 'numeric'
 });
 
+// Delivery method
+var deliveryMethod = localStorage.getItem('lr_delivery_method') || 'ship';
+
 // Meta
 document.getElementById('metaOrder').textContent   = orderNum;
 document.getElementById('metaBuyer').textContent   = buyer;
 document.getElementById('metaAmount').textContent  = orderTotal;
-document.getElementById('metaAddress').textContent = address;
+
+if (deliveryMethod === 'pickup') {
+  document.getElementById('metaBuyerLabel').textContent   = 'Pickup By';
+  document.getElementById('metaAddressLabel').textContent  = 'Pickup';
+  document.getElementById('metaAddress').innerHTML = 'Coordinate via Instagram<br><strong>@late.records</strong>';
+} else if (deliveryMethod === 'local') {
+  document.getElementById('metaAddressLabel').textContent = 'Local Delivery';
+  document.getElementById('metaAddress').textContent = address;
+} else {
+  document.getElementById('metaAddress').textContent = address;
+}
 
 // Build items
 function buildItems(cart) {
@@ -351,16 +364,23 @@ function buildItems(cart) {
   }).join('');
 }
 
+// Delivery method labels for summary
+var shipLabel = 'Shipping';
+if (deliveryMethod === 'pickup') shipLabel = 'Pickup';
+else if (deliveryMethod === 'local') shipLabel = 'Local Delivery';
+
 // Desktop
 document.getElementById('rDate').textContent     = dateStr;
 document.getElementById('rItems').innerHTML      = buildItems(savedCart);
-document.getElementById('rShipping').textContent = LR.ui.peso(shipping);
+document.getElementById('rShipLabel').textContent = shipLabel;
+document.getElementById('rShipping').textContent = shipping === 0 ? 'Free' : LR.ui.peso(shipping);
 document.getElementById('rTotal').textContent    = LR.ui.peso(total);
 
 // Mobile
 document.getElementById('mDate').textContent     = dateStr;
 document.getElementById('mItems').innerHTML      = buildItems(savedCart);
-document.getElementById('mShipping').textContent = LR.ui.peso(shipping);
+document.getElementById('mShipLabel').textContent = shipLabel;
+document.getElementById('mShipping').textContent = shipping === 0 ? 'Free' : LR.ui.peso(shipping);
 document.getElementById('mTotal').textContent    = LR.ui.peso(total);
 
 // Countdown
