@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+<script>document.documentElement.classList.toggle('dark', localStorage.getItem('lr_theme') === 'dark')</script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>LATE RECORDS</title>
@@ -9,18 +10,14 @@
 <link rel="stylesheet" href="../style.css">
 <style>
 
-html, body {
-  font-family: 'Inter', system-ui, sans-serif;
-  background-color: #e2e2e2;
-  background-image: radial-gradient(circle, rgba(0,0,0,.08) 0.5px, transparent 0.5px);
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image: radial-gradient(circle, var(--bg-dot) 0.5px, transparent 0.5px);
   background-size: 3px 3px;
-  color: #1a1a14;
-}
-.fixed-header {
-  background-color: #e2e2e2;
-  background-image: radial-gradient(circle, rgba(0,0,0,.08) 0.5px, transparent 0.5px);
-  background-size: 3px 3px;
-  border-bottom-color: rgba(26,26,20,.22);
+  pointer-events: none;
+  z-index: -1;
 }
 .header-logo       { height: 44px; filter: none; }
 .header-logo:hover { opacity: .5; transition: opacity .15s; }
@@ -28,9 +25,9 @@ html, body {
   border: none; padding: 0; background: none;
   font-family: 'Inter', system-ui, sans-serif;
   font-size: 11px; font-weight: 500;
-  letter-spacing: .07em; text-transform: uppercase; color: #1a1a14;
+  letter-spacing: .07em; text-transform: uppercase; color: var(--ink);
 }
-.cart-link:hover { background: none; color: rgba(26,26,20,.5); }
+.cart-link:hover { background: none; color: var(--ink55); }
 .fixed-footer { display: none; }
 .container { padding-bottom: 80px; padding-top: calc(74px + 30px); }
 @media (max-width: 900px) {
@@ -54,7 +51,7 @@ html, body {
 }
 .album-placeholder {
   width: 100%; aspect-ratio: 1/1;
-  background: rgba(26,26,20,.04);
+  background: var(--art-bg);
   display: flex; align-items: center; justify-content: center;
 }
 .album-placeholder-inner {
@@ -68,7 +65,7 @@ html, body {
 @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
 .placeholder-label {
   font-size: 9px; font-weight: 500; letter-spacing: .14em;
-  text-transform: uppercase; color: rgba(26,26,20,.35);
+  text-transform: uppercase; color: var(--ink45);
 }
 .album-details {
   flex: 1;
@@ -76,60 +73,59 @@ html, body {
   min-width: 0;
 }
 
-.album-title  { font-size: 28px; font-weight: 600; line-height: 1.12; margin: 0; color: #1a1a14; letter-spacing: -.02em; }
-.album-artist { font-size: 16px; font-weight: 400; color: rgba(26,26,20,.55); margin: 0; }
+.album-title  { font-size: 28px; font-weight: 600; line-height: 1.12; margin: 0; color: var(--ink); letter-spacing: -.02em; }
+.album-artist { font-size: 16px; font-weight: 400; color: var(--ink55); margin: 0; }
 .album-genre-tags { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-top: 10px; }
-.album-format-label { font-size: 11px; font-weight: 500; letter-spacing: .08em; text-transform: uppercase; color: rgba(26,26,20,.45); }
-.album-meta-divider { width: 1px; height: 10px; background: rgba(26,26,20,.2); flex-shrink: 0; }
+.album-format-label { font-size: 11px; font-weight: 500; letter-spacing: .08em; text-transform: uppercase; color: var(--ink45); }
+.album-meta-divider { width: 1px; height: 10px; background: var(--ink30); flex-shrink: 0; }
 .album-genre-tag {
   font-size: 10px; font-weight: 500; letter-spacing: .07em;
-  text-transform: uppercase; border: 1px solid rgba(26,26,20,.24);
-  padding: 3px 8px; color: rgba(26,26,20,.45);
+  text-transform: uppercase; border: 1px solid var(--border-tag);
+  padding: 3px 8px; color: var(--ink45);
   cursor: pointer; transition: color 0.1s linear, background 0.1s linear;
   text-decoration: none; display: inline-block;
 }
-.album-genre-tag:hover { background: #1a1a14; color: #e2e2e2; border-color: #1a1a14; }
+.album-genre-tag:hover { background: var(--btn-bg); color: var(--btn-fg); border-color: var(--btn-bg); }
 
 .price-block {
-  border-top: 1px dashed rgba(26,26,20,.3);
+  border-top: 1px dashed var(--ink30);
   padding-top: 12px;
   position: relative;
 }
 .price-label {
   font-size: 9px; font-weight: 500; letter-spacing: .12em;
-  text-transform: uppercase; color: rgba(26,26,20,.4);
+  text-transform: uppercase; color: var(--ink45);
   margin-bottom: 8px; font-family: 'Inter', system-ui, sans-serif;
 }
 .album-price {
   font-family: 'Inter', system-ui, sans-serif;
-  font-size: 20px; font-weight: 400; color: #1a1a14;
+  font-size: 20px; font-weight: 400; color: var(--ink);
   letter-spacing: .02em; margin-bottom: 18px;
 }
 .add-to-cart-btn {
   font-family: 'Inter', system-ui, sans-serif;
   font-size: 11px; font-weight: 500; letter-spacing: .09em;
   text-transform: uppercase; padding: 10px 20px;
-  border: 1px solid #1a1a14; background: #1a1a14;
-  color: #e2e2e2; cursor: pointer; transition: background .15s;
+  border: 1px solid var(--btn-bg); background: var(--btn-bg);
+  color: var(--btn-fg); cursor: pointer; transition: opacity .15s;
   width: 100%;
 }
-.add-to-cart-btn:hover    { background: rgba(26,26,20,.82); }
+.add-to-cart-btn:hover    { opacity: .82; }
 .add-to-cart-btn:disabled { opacity: .35; cursor: not-allowed; }
-
 
 .description {
   font-size: 14px; line-height: 1.7; font-weight: 400;
-  margin: 0; color: rgba(26,26,20,.65);
+  margin: 0; color: var(--ink55);
 }
 .description.is-collapsed {
   display: -webkit-box; -webkit-line-clamp: 3;
   -webkit-box-orient: vertical; overflow: hidden;
 }
 .description-toggle {
-  background: rgba(26,26,20,.18); border: 0;
+  background: var(--ink15); border: 0;
   width: 18px; height: 18px;
   display: inline-flex; align-items: center; justify-content: center;
-  font-size: 13px; color: #1a1a14; cursor: pointer;
+  font-size: 13px; color: var(--ink); cursor: pointer;
   font-family: 'Inter', system-ui, sans-serif; font-weight: 400;
   vertical-align: middle; margin-left: 6px; flex-shrink: 0;
 }
@@ -142,63 +138,63 @@ html, body {
 }
 .audio-sample-label {
   font-size: 10px; letter-spacing: .1em; text-transform: uppercase;
-  color: rgba(26,26,20,.45); font-weight: 500; min-width: 60px;
+  color: var(--ink45); font-weight: 500; min-width: 60px;
 }
 .audio-nav { display: flex; align-items: center; gap: 4px; margin-left: auto; }
 .audio-arrow {
   background: none; border: none;
   font-size: 18px; line-height: 1; padding: 2px 6px;
-  cursor: pointer; color: rgba(26,26,20,.5); transition: color 0.1s linear;
+  cursor: pointer; color: var(--ink55); transition: color 0.1s linear;
 }
-.audio-arrow:hover { color: #1a1a14; }
+.audio-arrow:hover { color: var(--ink); }
 .audio-arrow:disabled { opacity: .25; cursor: not-allowed; }
-.audio-arrow:disabled:hover { color: rgba(26,26,20,.5); }
+.audio-arrow:disabled:hover { color: var(--ink55); }
 
 .audio-controls {
   display: flex; align-items: center; gap: 10px; margin-top: 8px;
 }
 .audio-play-btn {
-  width: 28px; height: 28px; border: 1px solid rgba(26,26,20,.3);
+  width: 28px; height: 28px; border: 1px solid var(--ink30);
   background: none; cursor: pointer; display: flex; align-items: center;
   justify-content: center; flex-shrink: 0; transition: all 0.1s linear;
-  color: #1a1a14; padding: 0;
+  color: var(--ink); padding: 0;
 }
-.audio-play-btn:hover { background: #1a1a14; color: #e2e2e2; border-color: #1a1a14; }
+.audio-play-btn:hover { background: var(--btn-bg); color: var(--btn-fg); border-color: var(--btn-bg); }
 .audio-play-btn svg { width: 10px; height: 10px; fill: currentColor; }
 
 .audio-progress-wrap {
-  flex: 1; height: 2px; background: rgba(26,26,20,.15); cursor: pointer; position: relative;
+  flex: 1; height: 2px; background: var(--ink15); cursor: pointer; position: relative;
 }
 .audio-progress-bar {
-  height: 100%; background: #1a1a14; width: 0%; transition: width 0.1s linear;
+  height: 100%; background: var(--ink); width: 0%; transition: width 0.1s linear;
   pointer-events: none;
 }
 .audio-time {
-  font-size: 10px; color: rgba(26,26,20,.45); letter-spacing: .03em;
+  font-size: 10px; color: var(--ink45); letter-spacing: .03em;
   white-space: nowrap; min-width: 70px; text-align: right;
 }
 
 .tracklist-block { display: flex; flex-direction: column; gap: 10px; }
 .block-heading {
   font-size: 10px; letter-spacing: .1em; text-transform: uppercase;
-  color: rgba(26,26,20,.5); font-weight: 500;
+  color: var(--ink45); font-weight: 500;
 }
 .tracklist { list-style: none; padding: 0; margin: 0; }
 .tracklist li {
   font-size: 13px; line-height: 1.5; padding: 6px 0;
-  border-bottom: 1px solid rgba(26,26,20,.1);
-  font-weight: 400; color: rgba(26,26,20,.65);
+  border-bottom: 1px solid var(--ink15);
+  font-weight: 400; color: var(--ink55);
 }
 
-.related-section { margin-top: 28px; padding-top: 24px; border-top: 1px solid rgba(26,26,20,.12); }
+.related-section { margin-top: 28px; padding-top: 24px; border-top: 1px solid var(--border-mid); }
 .related-title {
   font-size: 10px; letter-spacing: .1em; text-transform: uppercase;
-  color: rgba(26,26,20,.5); margin: 0 0 16px; font-weight: 500;
+  color: var(--ink45); margin: 0 0 16px; font-weight: 500;
 }
 .related-grid {
   display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px;
 }
-.related-card { display: block; text-decoration: none; color: #1a1a14; }
+.related-card { display: block; text-decoration: none; color: var(--ink); }
 .related-cover {
   width: 100%; aspect-ratio: 1/1; object-fit: cover;
   display: block; transition: opacity .2s;
@@ -206,13 +202,13 @@ html, body {
 .related-card:hover .related-cover { opacity: .72; }
 .related-placeholder {
   width: 100%; aspect-ratio: 1/1;
-  background: rgba(26,26,20,.04);
+  background: var(--art-bg);
   align-items: center; justify-content: center;
 }
 .related-info  { margin-top: 8px; }
 .related-name  { font-size: 12px; font-weight: 600; line-height: 1.25; margin: 0; word-break: break-word; }
 .related-artist{
-  font-size: 11px; color: rgba(26,26,20,.5); margin-top: 2px;
+  font-size: 11px; color: var(--ink45); margin-top: 2px;
 }
 
 @media (max-width: 900px) {
@@ -354,9 +350,28 @@ html, body {
 <header class="fixed-header">
   <div class="header-inner">
     <a href="../index.html">
-      <img src="../images/late-records-logo.png" class="header-logo" alt="LATE RECORDS">
+      <img src="../images/late-records-logo.png" class="header-logo logo-light" alt="LATE RECORDS">
+      <img src="../images/late-records-logo-dark.png" class="header-logo logo-dark" alt="LATE RECORDS">
     </a>
-    <a href="../cart.html" class="cart-link">Cart (<span class="cart-count">0</span>)</a>
+    <div class="header-right">
+      <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme">
+        <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="4"/>
+          <line x1="12" y1="2"  x2="12" y2="5"/>
+          <line x1="12" y1="19" x2="12" y2="22"/>
+          <line x1="2"  y1="12" x2="5"  y2="12"/>
+          <line x1="19" y1="12" x2="22" y2="12"/>
+          <line x1="4.93"  y1="4.93"  x2="7.05"  y2="7.05"/>
+          <line x1="16.95" y1="16.95" x2="19.07" y2="19.07"/>
+          <line x1="4.93"  y1="19.07" x2="7.05"  y2="16.95"/>
+          <line x1="16.95" y1="7.05"  x2="19.07" y2="4.93"/>
+        </svg>
+        <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+        </svg>
+      </button>
+      <a href="../cart.html" class="cart-link">Cart (<span class="cart-count">0</span>)</a>
+    </div>
   </div>
 </header>
 
