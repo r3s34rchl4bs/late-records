@@ -342,7 +342,7 @@ document.getElementById('metaAmount').textContent  = orderTotal;
 if (deliveryMethod === 'pickup') {
   document.getElementById('metaBuyerLabel').textContent   = 'Pickup By';
   document.getElementById('metaAddressLabel').textContent  = 'Pickup';
-  document.getElementById('metaAddress').innerHTML = 'Coordinate via Instagram<br><a href="https://www.instagram.com/late.records" target="_blank" rel="noopener" style="color:#1a1a14;font-weight:600;text-decoration:underline;text-underline-offset:2px;">@late.records</a>';
+  document.getElementById('metaAddress').innerHTML = 'Message <a href="https://www.instagram.com/late.records" target="_blank" rel="noopener" style="color:#1a1a14;font-weight:600;text-decoration:underline;text-underline-offset:2px;">@late.records</a> via Instagram for pickup details.';
 } else if (deliveryMethod === 'local') {
   document.getElementById('metaAddressLabel').textContent = 'Local Delivery';
   document.getElementById('metaAddress').textContent = address;
