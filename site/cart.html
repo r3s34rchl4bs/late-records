@@ -197,8 +197,8 @@ function renderCart() {
 </div>
       </a>
       <div class="cart-item-details">
-        <h2 class="cart-item-title">${item.title}</h2>
-        <p class="cart-item-artist">${item.artist}</p>
+        <a href="albums/album.html?id=${item.id}" style="text-decoration:none;color:inherit;"><h2 class="cart-item-title">${item.title}</h2></a>
+        <a href="albums/album.html?id=${item.id}" style="text-decoration:none;color:inherit;"><p class="cart-item-artist">${item.artist}</p></a>
         <button class="remove-btn" data-remove="${item.id}">Remove</button>
         <div class="cart-item-meta">
           <span class="cart-item-price">${LR.ui.peso(item.price)}</span>
