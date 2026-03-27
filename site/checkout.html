@@ -151,7 +151,7 @@ html, body {
   -webkit-appearance: none;
   width: 14px; height: 14px;
   border: 1px solid rgba(26,26,20,.35);
-  border-radius: 50%;
+  border-radius: 0;
   margin: 0 10px 0 0;
   flex-shrink: 0;
   position: relative;
@@ -166,7 +166,7 @@ html, body {
   top: 2px; left: 2px;
   width: 8px; height: 8px;
   background: #1a1a14;
-  border-radius: 50%;
+  border-radius: 0;
 }
 .delivery-option-left {
   display: flex;
@@ -234,6 +234,7 @@ html, body {
           <div class="delivery-option-left">
             <input type="radio" name="deliveryMethod" value="ship" checked>
             <span class="delivery-option-label">Ship</span>
+            <span class="delivery-option-desc">Domestic</span>
           </div>
           <span class="delivery-option-price" data-delivery-price="ship"></span>
         </label>
@@ -326,6 +327,14 @@ document.addEventListener('DOMContentLoaded', () => {
       if (radio.value === 'pickup') shipping = 0;
       document.querySelectorAll('.delivery-option').forEach(el => el.classList.remove('is-selected'));
       radio.closest('.delivery-option').classList.add('is-selected');
+      const addrInput = document.getElementById('address');
+      if (radio.value === 'pickup') {
+        addrInput.required = false;
+        addrInput.placeholder = 'Optional';
+      } else {
+        addrInput.required = true;
+        addrInput.placeholder = 'Street address, city, province';
+      }
       updateTotals();
     });
   });
