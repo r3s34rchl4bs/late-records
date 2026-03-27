@@ -46,10 +46,17 @@ html.dark {
 html, body {
   font-family: 'Inter', system-ui, sans-serif;
   background-color: var(--bg);
-  background-image: radial-gradient(circle, var(--bg-dot) 0.5px, transparent 0.5px);
-  background-size: 3px 3px;
   color: var(--ink);
   -webkit-font-smoothing: antialiased;
+}
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image: radial-gradient(circle, var(--bg-dot) 0.5px, transparent 0.5px);
+  background-size: 3px 3px;
+  pointer-events: none;
+  z-index: -1;
 }
 
 img { display: block; max-width: 100%; }
