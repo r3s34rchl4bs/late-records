@@ -784,38 +784,53 @@ function buildArtRotator(catalog) {
 }
 
 // ── Tag cloud ──────────────────────────────────────────────
-async function loadTagCloud() {
+function extractTagsFromCatalog(catalog) {
+  const tags = new Set();
+  catalog.forEach(a => {
+    // artists
+    if (a.artist) tags.add(a.artist.trim());
+    // genres
+    if (a.genre) a.genre.split('||').forEach(g => { const t = g.trim(); if (t) tags.add(t); });
+    // context fields (labels, places, eras, phrases)
+    if (a.context) a.context.split('||').forEach(c => { const t = c.trim(); if (t) tags.add(t); });
+  });
+  return [...tags];
+}
+
+function renderTagCloud(tags) {
   const list = document.getElementById('tagCloudList');
-  if (!list) return;
+  if (!list || !tags.length) return;
+  const shuffled = [...tags].sort(() => Math.random() - 0.5);
+  list.innerHTML = shuffled.map((tag, i) =>
+    (i > 0 ? '<span class="tag-cloud-sep"> · </span>' : '') +
+    `<span class="tag-cloud-item">${_escHTML(tag)}</span>`
+  ).join('');
+  list.querySelectorAll('.tag-cloud-item').forEach(el => {
+    el.addEventListener('click', () => {
+      const term = el.textContent;
+      const input = document.getElementById('searchInput');
+      const bar = document.getElementById('searchBar');
+      bar.classList.add('open');
+      document.body.classList.add('search-open');
+      document.body.classList.add('search-active');
+      input.value = term;
+      input.dispatchEvent(new Event('input'));
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      setTimeout(() => input.focus(), 200);
+    });
+  });
+}
+
+async function loadTagCloud(catalog) {
   try {
     const res = await fetch('/api/tags');
     const tags = await res.json();
-    if (!Array.isArray(tags) || !tags.length) {
-      document.getElementById('tagCloud').style.display = 'none';
-      return;
-    }
-    const shuffled = tags.sort(() => Math.random() - 0.5);
-    list.innerHTML = shuffled.map((tag, i) =>
-      (i > 0 ? '<span class="tag-cloud-sep"> · </span>' : '') +
-      `<span class="tag-cloud-item">${_escHTML(tag)}</span>`
-    ).join('');
-    list.querySelectorAll('.tag-cloud-item').forEach(el => {
-      el.addEventListener('click', () => {
-        const term = el.textContent;
-        const input = document.getElementById('searchInput');
-        const bar = document.getElementById('searchBar');
-        bar.classList.add('open');
-        document.body.classList.add('search-open');
-        document.body.classList.add('search-active');
-        input.value = term;
-        input.dispatchEvent(new Event('input'));
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-        setTimeout(() => input.focus(), 200);
-      });
-    });
-  } catch (e) {
-    document.getElementById('tagCloud').style.display = 'none';
-  }
+    if (Array.isArray(tags) && tags.length) { renderTagCloud(tags); return; }
+  } catch (e) { /* fall through to catalog fallback */ }
+  // fallback: extract from catalog data
+  const fallback = extractTagsFromCatalog(catalog);
+  if (fallback.length) { renderTagCloud(fallback); }
+  else { document.getElementById('tagCloud').style.display = 'none'; }
 }
 
 // ── Search bar toggle ──────────────────────────────────────
@@ -895,7 +910,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     buildTable(catalog);
     buildAZNav(catalog);
     buildArtRotator(catalog);
-    loadTagCloud();
+    loadTagCloud(catalog);
   } else {
     document.getElementById('carouselTrack').innerHTML = '';
     document.getElementById('catalogList').innerHTML =
