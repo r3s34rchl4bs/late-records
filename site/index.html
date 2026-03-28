@@ -785,106 +785,65 @@ function buildArtRotator(catalog) {
 }
 
 // ── Tag cloud ──────────────────────────────────────────────
-function cleanPhrase(s) {
-  // remove em dashes and en dashes
-  s = s.replace(/[—–]/g, ' ').replace(/\s{2,}/g, ' ');
-  // strip leading filler
-  s = s.replace(/^(and|or|but|with|from|the|a|an|its|their|into|as|that|which|where|it|making it|giving it|creating)\s+/i, '');
-  // strip trailing filler
-  s = s.replace(/\s+(and|or|but|with|from|a|an|the|into|as|that|which|where)$/i, '');
-  // reject if ends with adjective/incomplete thought
-  if (/\s(raw|warm|distinct|intimate|deep|strong|bright|heavy|subtle|rich|key|new|own|local|sonic|sparse|cosmic|both|more|most|very)$/i.test(s)) return '';
-  // shorten to max 6 words for readability
-  var words = s.split(/\s+/);
-  if (words.length > 6) {
-    s = words.slice(0, 6).join(' ');
-    // trim trailing filler words after truncation
-    s = s.replace(/\s+(and|or|but|with|from|a|an|the|into|as|of|for|by|in|on|at|to|that|has|had|is|was|its|their)$/i, '');
-    // reject if still ends with possessive, incomplete, or hyphenated fragment
-    if (/['']s?$/.test(s) || /\s(one|this|these|those|some|any|each|every|being|having)$/i.test(s)) return '';
-    if (/\w+-$/.test(s) || /-\w+$/.test(s.split(/\s+/).pop() || '')) {
-      // trailing hyphenated word like "first-hand" is ok, but "first-" is not
-      if (/-$/.test(s)) return '';
-    }
-  }
-  // reject very short fragments after cleaning
-  if (s.length < 10) return '';
-  // capitalize first letter
-  s = s.charAt(0).toUpperCase() + s.slice(1);
-  return s.trim();
-}
-
-function extractPeopleTags(desc, album) {
-  const tags = [];
-  // match "produced by X", "engineered by X", "arranged by X", etc.
-  const byPattern = /(?:produced|engineered|arranged|composed|mixed|recorded|directed|featuring|feat)\s+by\s+([A-Z][a-zA-Zé\u00C0-\u024F\s.'-]+)/g;
-  let m;
-  while ((m = byPattern.exec(desc)) !== null) {
-    tags.push({ text: m[0].trim(), albumId: album.album_id });
-  }
-  // match "including X, Y, and Z" or "with X on piano"
-  const inclPattern = /including\s+([A-Z][a-zA-Zé\u00C0-\u024F\s,.'&-]+?)(?:\.|,\s*and\s|$)/g;
-  while ((m = inclPattern.exec(desc)) !== null) {
-    const names = m[1].split(/,|and/).map(n => n.trim()).filter(n => n.length > 3 && /^[A-Z]/.test(n));
-    names.forEach(n => tags.push({ text: n, albumId: album.album_id }));
-  }
-  // match "Name on instrument" patterns
-  const onPattern = /([A-Z][a-zA-Zé\u00C0-\u024F.'-]+(?:\s[A-Z][a-zA-Zé\u00C0-\u024F.'-]+)*)\s+on\s+([\w\s]+?)(?:\.|,|and\s|$)/g;
-  while ((m = onPattern.exec(desc)) !== null) {
-    if (m[1].length > 3 && m[2].length > 2) {
-      tags.push({ text: m[1].trim() + ' on ' + m[2].trim(), albumId: album.album_id });
-    }
-  }
-  // standalone names: capitalized multi-word names
-  const namePattern = /(?:^|[,;\s]\s*)([A-Z][a-z]+(?:\s[A-Z][a-zé\u00C0-\u024F]+)+)/g;
-  while ((m = namePattern.exec(desc)) !== null) {
-    const name = m[1].trim();
-    // skip if it's the album artist or generic words
-    if (name.length > 5 && name.split(' ').length <= 4) {
-      const skip = ['The Album', 'The Record', 'The Sound', 'The Music', 'This Album', 'Staff Pick'];
-      if (!skip.some(s => s.toLowerCase() === name.toLowerCase())) {
-        tags.push({ text: name, albumId: album.album_id });
-      }
-    }
-  }
-  return tags;
-}
-
 function extractTagsFromCatalog(catalog) {
-  const tags = [];
-  const seen = new Set();
+  var tags = [];
+  var seen = new Set();
   function add(text, albumId) {
-    const t = text.trim();
-    const key = t.toLowerCase();
+    var t = text.replace(/[—–]/g, '-').trim();
+    var key = t.toLowerCase();
     if (!key || key.length < 8 || seen.has(key)) return;
-    // reject single generic words
-    if (!/\s/.test(t) && t.length < 15) return;
+    if (t.split(/\s+/).length < 2) return; // need at least 2 words
+    // reject cut-off fragments
+    if (/\s+(and|or|but|the|a|from|Mr|Mrs|Dr)$/i.test(t)) return;
+    if (/["'\u2018\u2019]$/.test(t)) return; // ends with open quote
     seen.add(key);
     tags.push({ text: t, albumId: albumId });
   }
-  catalog.forEach(a => {
+  catalog.forEach(function(a) {
     if (!a.description) return;
-    // strip em/en dashes, protect abbreviations from sentence splitting
-    const safe = a.description.replace(/[—–]/g, ', ').replace(/\b(Mr|Mrs|Dr|St|Vol|No)\./g, '$1\u2024');
-    // split on sentence boundaries
-    const sentences = safe.split(/[.!?;]+/).map(s => s.replace(/\u2024/g, '.').trim()).filter(s => s.length > 12);
-    sentences.forEach(s => {
-      const lower = s.toLowerCase();
-      if (a.artist && lower === String(a.artist).toLowerCase()) return;
-      if (a.title && lower === String(a.title).toLowerCase()) return;
-      if (s.length <= 80) {
-        const cleaned = cleanPhrase(s);
-        if (cleaned.length > 10) add(cleaned, a.album_id);
-        return;
+    var desc = a.description.replace(/[—–]/g, ', ');
+    var artist = String(a.artist || '').toLowerCase();
+    var title = String(a.title || '').toLowerCase();
+
+    // 1) Short complete sentences (2-7 words, naturally ending at period)
+    var sentences = desc.split(/\.\s+/).map(function(s) { return s.replace(/\.$/, '').trim(); });
+    sentences.forEach(function(s) {
+      var wc = s.split(/\s+/).length;
+      if (wc >= 2 && wc <= 7 && s.toLowerCase() !== artist && s.toLowerCase() !== title) {
+        add(s, a.album_id);
       }
-      // split long sentences on commas
-      s.split(/,/).map(c => c.trim()).filter(c => c.length > 12 && c.length <= 80).forEach(c => {
-        const cleaned = cleanPhrase(c);
-        if (cleaned.length > 10) add(cleaned, a.album_id);
-      });
     });
-    // extract people mentions
-    extractPeopleTags(a.description, a).forEach(t => add(t.text, t.albumId));
+
+    // 2) "produced by X", "arranged by X", "engineered by X"
+    var byMatches = desc.match(/(?:produced|engineered|arranged|mixed|recorded|composed)\s+by\s+[A-Z][A-Za-z\s.'-]+/g);
+    if (byMatches) byMatches.forEach(function(m) {
+      // trim to max 6 words
+      var trimmed = m.split(/\s+/).slice(0, 6).join(' ');
+      add(trimmed, a.album_id);
+    });
+
+    // 3) Named people: "Firstname Lastname" patterns
+    var nameMatches = desc.match(/[A-Z][a-z]+\s[A-Z][a-z]+(?:\s[A-Z][a-z]+)?/g);
+    if (nameMatches) nameMatches.forEach(function(name) {
+      if (name.toLowerCase() === artist) return;
+      var skip = ['The Album','The Record','The Sound','The Music','Staff Pick','Merry Christmas','Selected Ambient','Don Stop'];
+      if (skip.some(function(s) { return name.indexOf(s) === 0; })) return;
+      add(name, a.album_id);
+    });
+
+    // 4) Key phrases: "originally released in YEAR", "never reissued", etc.
+    var keyPhrases = desc.match(/originally released in \d{4}|never reissued|only \d+ pressed|first pressing|private press|rare [a-z]+ [a-z]+|recorded (?:at|in) [A-Za-z\s]+/gi);
+    if (keyPhrases) keyPhrases.forEach(function(p) {
+      var trimmed = p.split(/\s+/).slice(0, 6).join(' ');
+      add(trimmed, a.album_id);
+    });
+
+    // 5) Cultural context: "Xian era", "80s Y culture", place-based phrases
+    var contextPhrases = desc.match(/\d{2}s [A-Za-z\s]+culture|\b(?:golden era|sound system|crate dig[a-z]*|deep cut|analog warmth|cinematic [a-z]+|dancefloor [a-z]+)\b/gi);
+    if (contextPhrases) contextPhrases.forEach(function(p) {
+      var trimmed = p.split(/\s+/).slice(0, 5).join(' ');
+      add(trimmed, a.album_id);
+    });
   });
   return tags;
 }
