@@ -153,23 +153,22 @@ html.dark        .theme-toggle .icon-sun  { display: none; }
 /* ── Hide carousel + nav when searching ──────────────────── */
 body.search-active .carousel-section,
 body.search-active .section-divider,
-body.search-active .info-rotator,
 body.search-active .az-nav { display: none; }
 
 /* ── Info rotator (are.na style) ─────────────────────────── */
 .info-rotator {
   display: flex; align-items: center;
-  border-bottom: 1px solid var(--border-mid);
+  border-top: 1px solid var(--border-mid);
   padding: 14px 0;
   gap: 12px;
 }
 .info-rotator-btn {
   width: 28px; height: 28px; flex-shrink: 0;
-  border: 1px solid var(--ink30); background: transparent;
+  border: 1px solid transparent; background: transparent;
   cursor: pointer; display: flex; align-items: center; justify-content: center;
-  font-size: 16px; color: var(--ink); transition: color 0.1s, background 0.1s;
+  font-size: 16px; color: var(--ink45); transition: color 0.1s, border-color 0.1s;
 }
-.info-rotator-btn:hover { background: var(--btn-bg); color: var(--btn-fg); border-color: var(--btn-bg); }
+.info-rotator-btn:active { border-color: var(--ink30); color: var(--ink); }
 .info-rotator-content {
   flex: 1; min-width: 0; text-align: center;
 }
@@ -178,7 +177,7 @@ body.search-active .az-nav { display: none; }
   text-transform: uppercase; color: var(--ink45); margin-bottom: 4px;
 }
 .info-rotator-text {
-  font-size: 12px; font-weight: 400; color: var(--ink55);
+  font-size: 12px; font-weight: 300; color: var(--ink45);
   letter-spacing: .01em; line-height: 1.5;
 }
 
@@ -598,15 +597,6 @@ html.dark .sk {
 
   <hr class="section-divider">
 
-  <div class="info-rotator" id="infoRotator">
-    <button class="info-rotator-btn" id="infoPrev">&#8249;</button>
-    <div class="info-rotator-content">
-      <div class="info-rotator-title" id="infoTitle"></div>
-      <div class="info-rotator-text" id="infoText"></div>
-    </div>
-    <button class="info-rotator-btn" id="infoNext">&#8250;</button>
-  </div>
-
   <div class="az-nav" id="azNav"></div>
 
   <div class="suggestions-header" id="suggestionsHeader"></div>
@@ -633,6 +623,15 @@ html.dark .sk {
       <tr><td class="c-art"></td><td class="c-title"><div class="sk" style="width:50%;margin-bottom:8px"></div><br><div class="sk" style="width:28%"></div></td><td class="c-genre"><div class="sk" style="width:72%"></div></td><td class="c-format"><div class="sk" style="width:55%"></div></td><td class="c-stock"><div class="sk" style="width:68%;float:right"></div></td></tr>
     </tbody>
   </table>
+
+  <div class="info-rotator" id="infoRotator">
+    <button class="info-rotator-btn" id="infoPrev">&#8249;</button>
+    <div class="info-rotator-content">
+      <div class="info-rotator-title" id="infoTitle"></div>
+      <div class="info-rotator-text" id="infoText"></div>
+    </div>
+    <button class="info-rotator-btn" id="infoNext">&#8250;</button>
+  </div>
 
 </div>
 
