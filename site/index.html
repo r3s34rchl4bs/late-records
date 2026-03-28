@@ -161,6 +161,7 @@ body.search-active .az-nav { display: none; }
   border-top: 1px solid var(--border-mid);
   padding: 14px 0;
   gap: 12px;
+  max-width: 520px; margin: 0 auto;
 }
 .info-rotator-btn {
   width: 28px; height: 28px; flex-shrink: 0;
@@ -649,7 +650,7 @@ function _escHTML(s) {
 // ── Info rotator ────────────────────────────────────────────
 (function() {
   const slides = [
-    { title: 'Shop Info', text: 'Catalog updated daily. New pressings and used finds.' },
+    { title: 'Shop Info', text: 'Catalog updated daily with new pressings and used finds.' },
     { title: 'Shipping & Handling', text: 'All records ship in custom mailers. Allow 3–5 business days for domestic delivery.' },
     { title: 'Condition & Grading', text: 'All records graded visually and play-tested. Condition noted on each listing.' }
   ];
