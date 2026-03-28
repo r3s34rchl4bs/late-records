@@ -803,18 +803,26 @@ function extractTagsFromCatalog(catalog) {
     seen.add(key);
     tags.push({ text: text.trim(), albumId: album.album_id });
   }
+  // first pass: descriptions (preferred source)
   catalog.forEach(a => {
     if (!a.description) return;
-    // split into sentences/phrases
     const parts = a.description.split(/[.!?;]+/).map(s => s.trim()).filter(s => s.length > 8 && s.length < 70);
     parts.forEach(s => {
-      // skip if it's just the artist or album title restated
       const lower = s.toLowerCase();
       if (a.artist && lower === a.artist.toLowerCase()) return;
       if (a.title && lower === a.title.toLowerCase()) return;
       add(s, a);
     });
   });
+  // second pass: if descriptions yielded very little, pull from all text fields
+  if (tags.length < 10) {
+    catalog.forEach(a => {
+      // tracklist entries as discovery tags
+      if (a.tracklist) a.tracklist.split('||').forEach(t => { const v = t.trim(); if (v && v.length > 3) add(v, a); });
+      // context entries
+      if (a.context) a.context.split('||').forEach(c => add(c, a));
+    });
+  }
   return tags;
 }
 
