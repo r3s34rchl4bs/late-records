@@ -150,6 +150,11 @@ html.dark        .theme-toggle .icon-sun  { display: none; }
   max-width: 1200px; margin: 0 auto; padding: 84px 30px 80px;
 }
 
+/* ── Hide carousel + nav when searching ──────────────────── */
+body.search-active .carousel-section,
+body.search-active .section-divider,
+body.search-active .az-nav { display: none; }
+
 /* ── Carousel ────────────────────────────────────────────── */
 .carousel-section { margin-bottom: 0; }
 
@@ -414,6 +419,7 @@ col.c-stock  { width: 8%; }
 
 /* ── Availability toggle ─────────────────────────────────── */
 .avail-toggle {
+  display: none; /* hidden for now — logic kept intact */
   width: 14px; height: 14px;
   border: 1.5px solid var(--ink30);
   background: transparent;
@@ -576,7 +582,7 @@ html.dark .sk {
     </colgroup>
     <thead>
       <tr>
-        <th class="c-art"><svg class="art-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round"><circle cx="12" cy="12" r="11"/><circle cx="12" cy="12" r="8"/><circle cx="12" cy="12" r="5.5"/><circle cx="12" cy="12" r="2" fill="currentColor" stroke="none"/></svg></th>
+        <th class="c-art"><svg class="art-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="0.75" stroke-linecap="round"><circle cx="12" cy="12" r="11"/><circle cx="12" cy="12" r="2"/></svg></th>
         <th class="c-title">Title / Artist</th>
         <th class="c-genre">Genre</th>
         <th class="c-format">Format</th>
@@ -678,10 +684,15 @@ function buildCarousel(albums) {
   function closeSearch() {
     bar.classList.remove('open');
     document.body.classList.remove('search-open');
+    document.body.classList.remove('search-active');
     input.value = '';
     document.getElementById('searchClear').style.display = 'none';
     input.dispatchEvent(new Event('input'));
   }
+
+  input.addEventListener('input', function() {
+    document.body.classList.toggle('search-active', input.value.trim().length > 0);
+  });
 
   btn.addEventListener('click', function() {
     bar.classList.contains('open') ? closeSearch() : openSearch();
