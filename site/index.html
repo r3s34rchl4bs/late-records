@@ -532,14 +532,14 @@ html.dark .sk {
 .tag-cloud {
   padding: 24px 0 48px;
   border-top: 1px solid var(--border-mid);
-  text-align: center;
+  text-align: left;
   line-height: 1.7;
 }
 .tag-cloud-list {
   display: block;
 }
 .tag-cloud-list.collapsed {
-  max-height: 8.5em; /* ~5 lines at 1.7 line-height */
+  max-height: 8.5em;
   overflow: hidden;
 }
 .tag-cloud-item {
@@ -551,14 +551,13 @@ html.dark .sk {
   color: var(--ink); text-decoration: underline;
 }
 .tag-cloud-sep {
-  color: var(--ink45); margin: 0 1px;
+  color: var(--ink55); margin: 0 4px;
   font-size: 11px; user-select: none;
 }
 .tag-cloud-more {
-  display: block; margin-top: 14px;
-  font-size: 11px; font-weight: 600; color: var(--ink45);
+  font-size: 11px; font-weight: 500; color: var(--ink55);
   cursor: pointer; text-decoration: none;
-  letter-spacing: .08em; text-transform: uppercase;
+  transition: color .1s;
 }
 .tag-cloud-more:hover { color: var(--ink); text-decoration: underline; }
 
@@ -680,7 +679,6 @@ html.dark .sk {
 
   <div class="tag-cloud" id="tagCloud">
     <div class="tag-cloud-list collapsed" id="tagCloudList"></div>
-    <a class="tag-cloud-more" id="tagCloudMore">View More Links</a>
   </div>
 
 </div>
@@ -792,14 +790,29 @@ function buildArtRotator(catalog) {
 
 // ── Tag cloud ──────────────────────────────────────────────
 function cleanPhrase(s) {
-  // strip leading conjunctions/prepositions/articles
-  s = s.replace(/^(and|or|but|with|from|the|a|an|its|their|into|as)\s+/i, '');
-  // strip trailing conjunctions/articles/prepositions
-  s = s.replace(/\s+(and|or|but|with|from|a|an|the|into|as)$/i, '');
-  // reject if ends with adjective/incomplete thought (trailing "raw", "warm", "distinct", etc.)
-  if (/\s(raw|warm|distinct|intimate|deep|strong|bright|heavy|subtle|rich|key|new|own|local|sonic|sparse|cosmic)$/i.test(s)) return '';
+  // remove em dashes and en dashes
+  s = s.replace(/[—–]/g, ' ').replace(/\s{2,}/g, ' ');
+  // strip leading filler
+  s = s.replace(/^(and|or|but|with|from|the|a|an|its|their|into|as|that|which|where|it|making it|giving it|creating)\s+/i, '');
+  // strip trailing filler
+  s = s.replace(/\s+(and|or|but|with|from|a|an|the|into|as|that|which|where)$/i, '');
+  // reject if ends with adjective/incomplete thought
+  if (/\s(raw|warm|distinct|intimate|deep|strong|bright|heavy|subtle|rich|key|new|own|local|sonic|sparse|cosmic|both|more|most|very)$/i.test(s)) return '';
+  // shorten to max 6 words for readability
+  var words = s.split(/\s+/);
+  if (words.length > 6) {
+    s = words.slice(0, 6).join(' ');
+    // trim trailing filler words after truncation
+    s = s.replace(/\s+(and|or|but|with|from|a|an|the|into|as|of|for|by|in|on|at|to|that|has|had|is|was|its|their)$/i, '');
+    // reject if still ends with possessive, incomplete, or hyphenated fragment
+    if (/['']s?$/.test(s) || /\s(one|this|these|those|some|any|each|every|being|having)$/i.test(s)) return '';
+    if (/\w+-$/.test(s) || /-\w+$/.test(s.split(/\s+/).pop() || '')) {
+      // trailing hyphenated word like "first-hand" is ok, but "first-" is not
+      if (/-$/.test(s)) return '';
+    }
+  }
   // reject very short fragments after cleaning
-  if (s.length < 12) return '';
+  if (s.length < 10) return '';
   // capitalize first letter
   s = s.charAt(0).toUpperCase() + s.slice(1);
   return s.trim();
@@ -826,8 +839,8 @@ function extractPeopleTags(desc, album) {
       tags.push({ text: m[1].trim() + ' on ' + m[2].trim(), albumId: album.album_id });
     }
   }
-  // standalone names: "Chick Corea", "Ron Carter" — capitalized multi-word names
-  const namePattern = /(?:^|[,;—–]\s*)([A-Z][a-z]+(?:\s[A-Z][a-zé\u00C0-\u024F]+)+)/g;
+  // standalone names: capitalized multi-word names
+  const namePattern = /(?:^|[,;\s]\s*)([A-Z][a-z]+(?:\s[A-Z][a-zé\u00C0-\u024F]+)+)/g;
   while ((m = namePattern.exec(desc)) !== null) {
     const name = m[1].trim();
     // skip if it's the album artist or generic words
@@ -855,8 +868,8 @@ function extractTagsFromCatalog(catalog) {
   }
   catalog.forEach(a => {
     if (!a.description) return;
-    // protect abbreviations from sentence splitting
-    const safe = a.description.replace(/\b(Mr|Mrs|Dr|St|Vol|No)\./g, '$1\u2024');
+    // strip em/en dashes, protect abbreviations from sentence splitting
+    const safe = a.description.replace(/[—–]/g, ', ').replace(/\b(Mr|Mrs|Dr|St|Vol|No)\./g, '$1\u2024');
     // split on sentence boundaries
     const sentences = safe.split(/[.!?;]+/).map(s => s.replace(/\u2024/g, '.').trim()).filter(s => s.length > 12);
     sentences.forEach(s => {
@@ -883,27 +896,26 @@ function extractTagsFromCatalog(catalog) {
 function renderTagCloud(tags) {
   const list = document.getElementById('tagCloudList');
   if (!list || !tags.length) return;
-  list.innerHTML = tags.map((tag, i) => {
+  var html = tags.map((tag, i) => {
     const url = `albums/album.html?id=${encodeURIComponent(tag.albumId)}`;
     return (i > 0 ? '<span class="tag-cloud-sep"> · </span>' : '') +
       `<a class="tag-cloud-item" href="${url}">${_escHTML(tag.text)}</a>`;
   }).join('');
-  // "View More Links" toggle
-  const moreBtn = document.getElementById('tagCloudMore');
-  if (moreBtn) {
-    moreBtn.addEventListener('click', (e) => {
-      e.preventDefault();
-      const expanded = !list.classList.contains('collapsed');
-      if (!expanded) {
-        list.classList.remove('collapsed');
-        moreBtn.textContent = 'View Less';
-      } else {
-        list.classList.add('collapsed');
-        moreBtn.textContent = 'View More Links';
-        moreBtn.scrollIntoView({ behavior: 'smooth', block: 'center' });
-      }
-    });
-  }
+  // append "View more links" inline after last tag
+  html += '<span class="tag-cloud-sep"> · </span><a class="tag-cloud-more" id="tagCloudMore">View more links</a>';
+  list.innerHTML = html;
+  var moreBtn = document.getElementById('tagCloudMore');
+  moreBtn.addEventListener('click', function(e) {
+    e.preventDefault();
+    if (list.classList.contains('collapsed')) {
+      list.classList.remove('collapsed');
+      moreBtn.textContent = 'View less';
+    } else {
+      list.classList.add('collapsed');
+      moreBtn.textContent = 'View more links';
+      moreBtn.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
+  });
 }
 
 var TAG_CACHE_KEY = 'lr_tag_cloud';
