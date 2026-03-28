@@ -309,7 +309,7 @@ export default {
     if (path === '/api/tags' && request.method === 'GET') {
       try {
         const cache    = caches.default;
-        const cacheKey = new Request('https://lr-cache/tags-v3');
+        const cacheKey = new Request('https://lr-cache/tags-v4');
         const cached   = await cache.match(cacheKey);
         if (cached) return new Response(cached.body, {
           headers: { 'Content-Type': 'application/json', ...cors(origin) },
