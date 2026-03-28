@@ -232,7 +232,7 @@ html.dark        .theme-toggle .icon-sun  { display: none; }
 
 /* ── Table ───────────────────────────────────────────────── */
 .tbl { width: 100%; border-collapse: collapse; table-layout: fixed; }
-col.c-art    { width: 52px; }
+col.c-art    { width: 38px; }
 col.c-title  { width: auto; }
 col.c-genre  { width: 14%; }
 col.c-format { width: 8%; }
@@ -252,8 +252,9 @@ col.c-stock  { width: 8%; }
 }
 .tbl thead th:first-child { padding-left: 0; }
 .tbl thead th.c-stock { text-align: right; padding-right: 0; }
-.tbl thead th.c-art   { padding-right: 10px; border: 1px solid red; }
+.tbl thead th.c-art   { padding-right: 0; border: 1px solid red; }
 .tbl tbody td.c-art   { border: 1px solid blue; }
+.tbl thead th.c-title, .tbl tbody td.c-title { padding-left: 10px; }
 .art-icon { width: 14px; height: 14px; opacity: .45; vertical-align: middle; }
 
 .tbl tbody tr, .tbl tbody td { background: transparent; }
@@ -267,7 +268,7 @@ col.c-stock  { width: 8%; }
 .tbl tbody td:last-child  { padding-right: 0; }
 .tbl tbody td.c-stock { padding-top: 8px; padding-bottom: 8px; padding-right: 0; }
 .tbl thead th.c-stock { padding-bottom: 10px; padding-right: 0; }
-.tbl tbody td.c-art   { padding-right: 10px; }
+.tbl tbody td.c-art   { padding-right: 0; }
 
 /* ── Album art ───────────────────────────────────────────── */
 .rec-art-wrap {
@@ -415,7 +416,7 @@ html.dark .sk {
 
 /* ── Responsive ──────────────────────────────────────────── */
 @media (max-width: 900px) {
-  col.c-art    { width: 44px; }
+  col.c-art    { width: 32px; }
   col.c-format, col.c-stock { display: none; }
   .tbl thead th.c-format, .tbl thead th.c-stock,
   .tbl tbody td.c-format, .tbl tbody td.c-stock { display: none; }
@@ -460,13 +461,13 @@ html.dark .sk {
     display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
   }
   .genre-tag    { font-size: 9px; padding: 2px 5px; }
-  col.c-art    { width: 38px; }
+  col.c-art    { width: 28px; }
   col.c-format, col.c-stock { display: none; }
   .tbl thead th.c-format, .tbl thead th.c-stock,
   .tbl tbody td.c-format, .tbl tbody td.c-stock { display: none; }
   .rec-art-wrap { width: 28px; height: 28px; }
-  .tbl tbody td.c-art { padding-right: 6px; }
-  .tbl thead th.c-art { padding-right: 6px; }
+  .tbl tbody td.c-art { padding-right: 0; }
+  .tbl thead th.c-art { padding-right: 0; }
 }
 
 </style>
