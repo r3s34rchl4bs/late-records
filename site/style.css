@@ -82,13 +82,15 @@ button { cursor: pointer; font-family: inherit; }
 }
 
 .header-logo {
-  height: 50px;
+  height: 44px;
   display: block;
 }
 
 .logo-dark            { display: none; }
 html.dark .logo-light { display: none; }
 html.dark .logo-dark  { display: block; }
+
+.header-right { display: flex; align-items: center; gap: 16px; }
 
 .cart-link {
   font-size: 14px;
