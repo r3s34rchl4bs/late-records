@@ -245,14 +245,14 @@ col.c-stock  { width: 8%; }
   background-color: var(--bg);
   background-image: radial-gradient(circle, var(--bg-dot) 0.5px, transparent 0.5px);
   background-size: 3px 3px;
-  box-shadow: 0 -1px 0 lime, 0 1px 0 lime;
+  box-shadow: 0 -1px 0 var(--border), 0 1px 0 rgba(26,26,20,.26);
   padding: 10px 12px 10px 0; font-size: 11px; font-weight: 500;
   letter-spacing: .09em; text-transform: uppercase; color: var(--ink55);
   text-align: left; vertical-align: middle;
 }
 .tbl thead th:first-child { padding-left: 0; }
 .tbl thead th.c-stock { text-align: right; padding-right: 0; }
-.tbl thead th.c-art   { padding-right: 0; vertical-align: middle; border: 1px solid red; }
+.tbl thead th.c-art   { padding-right: 0; vertical-align: middle; }
 .tbl thead th.c-title, .tbl tbody td.c-title { padding-left: 10px; }
 .art-icon { width: 20px; height: 20px; opacity: .4; display: block; margin: 0 auto; }
 
@@ -267,7 +267,8 @@ col.c-stock  { width: 8%; }
 .tbl tbody td:last-child  { padding-right: 0; }
 .tbl tbody td.c-stock { padding-top: 8px; padding-bottom: 8px; padding-right: 0; }
 .tbl thead th.c-stock { padding-bottom: 10px; padding-right: 0; }
-.tbl tbody td.c-art   { padding-right: 0; border: 1px solid blue; }
+.tbl tbody td.c-art   { padding-right: 0; }
+.tbl tbody tr:first-child td { border-top: 1px solid var(--border-mid); }
 
 /* ── Album art ───────────────────────────────────────────── */
 .rec-art-wrap {
