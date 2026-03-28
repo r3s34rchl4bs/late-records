@@ -808,8 +808,8 @@ function extractTagsFromCatalog(catalog) {
     sentences.forEach(s => {
       // skip if it's just the artist or album title
       const lower = s.toLowerCase();
-      if (a.artist && lower === a.artist.toLowerCase()) return;
-      if (a.title && lower === a.title.toLowerCase()) return;
+      if (a.artist && lower === String(a.artist).toLowerCase()) return;
+      if (a.title && lower === String(a.title).toLowerCase()) return;
       if (s.length <= 80) { add(s, a); return; }
       // split long sentences on commas to get shorter phrases
       s.split(/,/).map(c => c.trim()).filter(c => c.length > 8 && c.length <= 80).forEach(c => add(c, a));
