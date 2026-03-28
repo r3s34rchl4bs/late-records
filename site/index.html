@@ -805,40 +805,45 @@ function extractTagsFromCatalog(catalog) {
     var artist = String(a.artist || '').toLowerCase();
     var title = String(a.title || '').toLowerCase();
 
+    // collect all artist/title words to filter them out
+    var artistWords = artist.split(/\s+/).filter(function(w) { return w.length > 2; });
+    var titleWords = title.split(/\s+/).filter(function(w) { return w.length > 2; });
+    function containsArtistOrTitle(s) {
+      var low = s.toLowerCase();
+      if (low === artist || low === title) return true;
+      // reject if most of the phrase is just the artist/title name
+      var matchCount = 0;
+      artistWords.forEach(function(w) { if (low.indexOf(w) >= 0) matchCount++; });
+      if (artistWords.length > 0 && matchCount >= artistWords.length) return true;
+      titleWords.forEach(function(w) { if (low.indexOf(w) >= 0) matchCount++; });
+      if (titleWords.length > 0 && matchCount >= titleWords.length + artistWords.length) return true;
+      return false;
+    }
+
     // 1) Short complete sentences (2-7 words, naturally ending at period)
     var sentences = desc.split(/\.\s+/).map(function(s) { return s.replace(/\.$/, '').trim(); });
     sentences.forEach(function(s) {
       var wc = s.split(/\s+/).length;
-      if (wc >= 2 && wc <= 7 && s.toLowerCase() !== artist && s.toLowerCase() !== title) {
+      if (wc >= 2 && wc <= 7 && !containsArtistOrTitle(s)) {
         add(s, a.album_id);
       }
     });
 
-    // 2) "produced by X", "arranged by X", "engineered by X"
+    // 2) "produced by X", "arranged by X" — keep the role context, not just the name
     var byMatches = desc.match(/(?:produced|engineered|arranged|mixed|recorded|composed)\s+by\s+[A-Z][A-Za-z\s.'-]+/g);
     if (byMatches) byMatches.forEach(function(m) {
-      // trim to max 6 words
       var trimmed = m.split(/\s+/).slice(0, 6).join(' ');
       add(trimmed, a.album_id);
     });
 
-    // 3) Named people: "Firstname Lastname" patterns
-    var nameMatches = desc.match(/[A-Z][a-z]+\s[A-Z][a-z]+(?:\s[A-Z][a-z]+)?/g);
-    if (nameMatches) nameMatches.forEach(function(name) {
-      if (name.toLowerCase() === artist) return;
-      var skip = ['The Album','The Record','The Sound','The Music','Staff Pick','Merry Christmas','Selected Ambient','Don Stop'];
-      if (skip.some(function(s) { return name.indexOf(s) === 0; })) return;
-      add(name, a.album_id);
-    });
-
-    // 4) Key phrases: "originally released in YEAR", "never reissued", etc.
+    // 3) Key phrases: "originally released in YEAR", "never reissued", etc.
     var keyPhrases = desc.match(/originally released in \d{4}|never reissued|only \d+ pressed|first pressing|private press|rare [a-z]+ [a-z]+|recorded (?:at|in) [A-Za-z\s]+/gi);
     if (keyPhrases) keyPhrases.forEach(function(p) {
       var trimmed = p.split(/\s+/).slice(0, 6).join(' ');
       add(trimmed, a.album_id);
     });
 
-    // 5) Cultural context: "Xian era", "80s Y culture", place-based phrases
+    // 4) Cultural context phrases
     var contextPhrases = desc.match(/\d{2}s [A-Za-z\s]+culture|\b(?:golden era|sound system|crate dig[a-z]*|deep cut|analog warmth|cinematic [a-z]+|dancefloor [a-z]+)\b/gi);
     if (contextPhrases) contextPhrases.forEach(function(p) {
       var trimmed = p.split(/\s+/).slice(0, 5).join(' ');
