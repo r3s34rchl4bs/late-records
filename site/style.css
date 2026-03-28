@@ -86,6 +86,10 @@ button { cursor: pointer; font-family: inherit; }
   display: block;
 }
 
+.logo-dark            { display: none; }
+html.dark .logo-light { display: none; }
+html.dark .logo-dark  { display: block; }
+
 .cart-link {
   font-size: 14px;
   color: var(--ink);
