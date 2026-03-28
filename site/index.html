@@ -525,6 +525,68 @@ html.dark .sk {
   .rec-art-wrap { width: 28px; height: 28px; }
 }
 
+/* ── Album art rotator (marquee) ────────────────────────── */
+.art-rotator {
+  margin-top: 48px;
+  border-top: 1px solid var(--border-mid);
+  padding: 24px 0;
+  overflow: hidden;
+  position: relative;
+}
+.art-rotator::before,
+.art-rotator::after {
+  content: ''; position: absolute; top: 0; bottom: 0; width: 60px; z-index: 2; pointer-events: none;
+}
+.art-rotator::before { left: 0; background: linear-gradient(to right, var(--bg), transparent); }
+.art-rotator::after  { right: 0; background: linear-gradient(to left, var(--bg), transparent); }
+.art-rotator-track {
+  display: flex; gap: 8px; width: max-content;
+  animation: marquee 40s linear infinite;
+}
+.art-rotator-track:hover { animation-play-state: paused; }
+.art-rotator-item {
+  width: 64px; height: 64px; flex-shrink: 0; overflow: hidden;
+  background: var(--art-bg); cursor: pointer;
+  transition: opacity .15s;
+}
+.art-rotator-item:hover { opacity: .6; }
+.art-rotator-item img { width: 100%; height: 100%; object-fit: cover; display: block; }
+@keyframes marquee {
+  0%   { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+
+/* ── Tag cloud ──────────────────────────────────────────── */
+.tag-cloud {
+  padding: 24px 0 48px;
+  border-top: 1px solid var(--border-mid);
+}
+.tag-cloud-label {
+  font-size: 10px; font-weight: 500; letter-spacing: .1em;
+  text-transform: uppercase; color: var(--ink30); margin-bottom: 16px;
+}
+.tag-cloud-list {
+  display: flex; flex-wrap: wrap; gap: 4px;
+}
+.tag-cloud-item {
+  font-size: 10px; font-weight: 500; letter-spacing: .06em;
+  text-transform: uppercase; color: var(--ink45);
+  border: 1px solid var(--border-tag); padding: 4px 10px;
+  white-space: nowrap; cursor: pointer;
+  transition: color .1s, border-color .1s, background .1s;
+  line-height: 1.4;
+}
+.tag-cloud-item:hover {
+  background: var(--btn-bg); color: var(--btn-fg); border-color: var(--btn-bg);
+}
+@media (max-width: 600px) {
+  .tag-cloud-item { font-size: 9px; padding: 3px 7px; }
+  .art-rotator-item { width: 48px; height: 48px; }
+}
+
+/* ── Footer (invisible placeholder) ─────────────────────── */
+.lr-footer { display: none; }
+
 </style>
 </head>
 <body>
@@ -634,7 +696,18 @@ html.dark .sk {
     <button class="info-rotator-btn" id="infoNext">&#8250;</button>
   </div>
 
+  <div class="art-rotator" id="artRotator">
+    <div class="art-rotator-track" id="artRotatorTrack"></div>
+  </div>
+
+  <div class="tag-cloud" id="tagCloud">
+    <div class="tag-cloud-label">Explore</div>
+    <div class="tag-cloud-list" id="tagCloudList"></div>
+  </div>
+
 </div>
+
+<footer class="lr-footer"></footer>
 
 <script src="script.js"></script>
 <script src="catalog.js"></script>
@@ -725,6 +798,54 @@ function buildCarousel(albums) {
   document.getElementById('nextBtn').addEventListener('click', (e) => { e.stopPropagation(); goTo(current + 1); });
 }
 
+// ── Art rotator (marquee) ──────────────────────────────────
+function buildArtRotator(catalog) {
+  const track = document.getElementById('artRotatorTrack');
+  if (!track) return;
+  const shuffled = [...catalog].sort(() => Math.random() - 0.5);
+  const items = shuffled.filter(a => a.album_id);
+  const all = [...items, ...items];
+  track.innerHTML = all.map(a => {
+    const src = `images/${a.album_id}.jpg`;
+    const url = `albums/album.html?id=${encodeURIComponent(a.album_id)}`;
+    return `<a class="art-rotator-item" href="${url}"><img src="${src}" alt="${_escHTML(a.title)}" loading="lazy"></a>`;
+  }).join('');
+}
+
+// ── Tag cloud ──────────────────────────────────────────────
+async function loadTagCloud() {
+  const list = document.getElementById('tagCloudList');
+  if (!list) return;
+  try {
+    const res = await fetch('/api/tags');
+    const tags = await res.json();
+    if (!Array.isArray(tags) || !tags.length) {
+      document.getElementById('tagCloud').style.display = 'none';
+      return;
+    }
+    const shuffled = tags.sort(() => Math.random() - 0.5);
+    list.innerHTML = shuffled.map(tag =>
+      `<span class="tag-cloud-item">${_escHTML(tag)}</span>`
+    ).join('');
+    list.querySelectorAll('.tag-cloud-item').forEach(el => {
+      el.addEventListener('click', () => {
+        const term = el.textContent;
+        const input = document.getElementById('searchInput');
+        const bar = document.getElementById('searchBar');
+        bar.classList.add('open');
+        document.body.classList.add('search-open');
+        document.body.classList.add('search-active');
+        input.value = term;
+        input.dispatchEvent(new Event('input'));
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+        setTimeout(() => input.focus(), 200);
+      });
+    });
+  } catch (e) {
+    document.getElementById('tagCloud').style.display = 'none';
+  }
+}
+
 // ── Search bar toggle ──────────────────────────────────────
 (function() {
   var btn   = document.getElementById('searchBtn');
@@ -801,6 +922,8 @@ document.addEventListener('DOMContentLoaded', async () => {
     buildCarousel(catalog);
     buildTable(catalog);
     buildAZNav(catalog);
+    buildArtRotator(catalog);
+    loadTagCloud();
   } else {
     document.getElementById('carouselTrack').innerHTML = '';
     document.getElementById('catalogList').innerHTML =

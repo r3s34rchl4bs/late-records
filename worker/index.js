@@ -178,6 +178,67 @@ No explanation, no markdown, just the raw JSON array.`;
   }
 }
 
+// ── Tag cloud generation (Gemini) ────────────────────────
+async function generateTags(catalog, geminiKey) {
+  const summaries = catalog.map(a =>
+    [
+      `"${a.title}" by ${a.artist}`,
+      a.genre  ? `Genre: ${a.genre}`       : '',
+      a.description ? `Desc: ${a.description}` : '',
+      a.context ? `Context: ${a.context}`   : '',
+    ].filter(Boolean).join(' | ')
+  ).join('\n');
+
+  const prompt = `You are a music expert helping curate a vinyl record shop called Late Records.
+
+From this catalog, extract a diverse mixed bag of tags — these will be displayed as a tag cloud on the shop's homepage. Mix freely between:
+- Genre names (e.g. "City Pop", "Afrobeat", "Post-Punk")
+- Artist names (e.g. "Miles Davis", "Aphex Twin")
+- Producer names, label names, songwriter names
+- Cities and countries (e.g. "Tokyo", "Lagos", "Detroit")
+- Eras and years (e.g. "1972", "late 70s", "80s")
+- Short evocative phrases pulled from descriptions (e.g. "found in a basement in Tokyo", "never reissued", "only 500 pressed")
+- Notable sample credits, cultural references
+- Mood words or scene descriptors (e.g. "rare grooves", "deep cuts", "holy grail")
+
+Rules:
+- Return 60-80 tags total
+- Keep phrases short (max 6-7 words)
+- Mix all categories together randomly — do NOT group by type
+- Pull actual details from the descriptions — don't make things up
+- Include interesting specific details over generic ones
+- Respond with ONLY a JSON array of strings, no explanation, no markdown
+
+Catalog:
+${summaries}`;
+
+  const res = await fetch(
+    `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${geminiKey}`,
+    {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        contents: [{ parts: [{ text: prompt }] }],
+        generationConfig: { temperature: 0.7, maxOutputTokens: 2048 }
+      })
+    }
+  );
+
+  if (!res.ok) return [];
+
+  const data = await res.json();
+  const raw  = data?.candidates?.[0]?.content?.parts?.[0]?.text || '';
+
+  try {
+    const cleaned = raw.replace(/```json\s*/g, '').replace(/```\s*/g, '').trim();
+    const tags = JSON.parse(cleaned);
+    if (!Array.isArray(tags)) return [];
+    return tags.filter(t => typeof t === 'string' && t.length > 0).slice(0, 80);
+  } catch {
+    return [];
+  }
+}
+
 // ── Main handler ──────────────────────────────────────────
 export default {
   async fetch(request, env) {
@@ -229,6 +290,39 @@ export default {
         return json(data, 200, origin);
       } catch (e) {
         return json({ error: 'Order failed' }, 500, origin);
+      }
+    }
+
+    // GET /api/tags
+    if (path === '/api/tags' && request.method === 'GET') {
+      try {
+        const cache    = caches.default;
+        const cacheKey = new Request('https://lr-cache/tags-v1');
+        const cached   = await cache.match(cacheKey);
+        if (cached) return new Response(cached.body, {
+          headers: { 'Content-Type': 'application/json', ...cors(origin) },
+        });
+
+        const catalog = await fetchCatalog(env);
+        if (!env.GEMINI_API_KEY) return json([], 200, origin);
+
+        const tags = await generateTags(catalog, env.GEMINI_API_KEY);
+        const body = JSON.stringify(tags);
+
+        const r = new Response(body, {
+          headers: {
+            'Content-Type': 'application/json',
+            'Cache-Control': 'public, max-age=86400',
+          },
+        });
+        await cache.put(cacheKey, r);
+
+        return new Response(body, {
+          headers: { 'Content-Type': 'application/json', ...cors(origin) },
+        });
+      } catch (e) {
+        console.error('Tags error:', e.message);
+        return json([], 200, origin);
       }
     }
 
