@@ -538,10 +538,6 @@ html.dark .sk {
 .tag-cloud-list {
   display: block;
 }
-.tag-cloud-list.collapsed {
-  max-height: 8.5em;
-  overflow: hidden;
-}
 .tag-cloud-item {
   font-size: 11px; color: var(--ink45);
   cursor: pointer; text-decoration: none;
@@ -678,7 +674,7 @@ html.dark .sk {
   </div>
 
   <div class="tag-cloud" id="tagCloud">
-    <div class="tag-cloud-list collapsed" id="tagCloudList"></div>
+    <div class="tag-cloud-list" id="tagCloudList"></div>
   </div>
 
 </div>
@@ -893,29 +889,41 @@ function extractTagsFromCatalog(catalog) {
   return tags;
 }
 
-function renderTagCloud(tags) {
-  const list = document.getElementById('tagCloudList');
-  if (!list || !tags.length) return;
-  var html = tags.map((tag, i) => {
-    const url = `albums/album.html?id=${encodeURIComponent(tag.albumId)}`;
-    return (i > 0 ? '<span class="tag-cloud-sep"> · </span>' : '') +
-      `<a class="tag-cloud-item" href="${url}">${_escHTML(tag.text)}</a>`;
+var TAG_VISIBLE_COUNT = 30; // show this many initially
+
+function buildTagHTML(tags, limit) {
+  var slice = limit ? tags.slice(0, limit) : tags;
+  return slice.map(function(tag, i) {
+    var url = 'albums/album.html?id=' + encodeURIComponent(tag.albumId);
+    return (i > 0 ? '<span class="tag-cloud-sep">&middot;</span>' : '') +
+      '<a class="tag-cloud-item" href="' + url + '">' + _escHTML(tag.text) + '</a>';
   }).join('');
-  // append "View more links" inline after last tag
-  html += '<span class="tag-cloud-sep"> · </span><a class="tag-cloud-more" id="tagCloudMore">View more links</a>';
-  list.innerHTML = html;
-  var moreBtn = document.getElementById('tagCloudMore');
-  moreBtn.addEventListener('click', function(e) {
-    e.preventDefault();
-    if (list.classList.contains('collapsed')) {
-      list.classList.remove('collapsed');
-      moreBtn.textContent = 'View less';
-    } else {
-      list.classList.add('collapsed');
-      moreBtn.textContent = 'View more links';
-      moreBtn.scrollIntoView({ behavior: 'smooth', block: 'center' });
+}
+
+function renderTagCloud(tags) {
+  var list = document.getElementById('tagCloudList');
+  if (!list || !tags.length) return;
+  var expanded = false;
+
+  function render() {
+    var html = buildTagHTML(tags, expanded ? null : TAG_VISIBLE_COUNT);
+    if (!expanded && tags.length > TAG_VISIBLE_COUNT) {
+      html += '<span class="tag-cloud-sep">&middot;</span><a class="tag-cloud-more" id="tagCloudMore">View more links</a>';
+    } else if (expanded && tags.length > TAG_VISIBLE_COUNT) {
+      html += '<span class="tag-cloud-sep">&middot;</span><a class="tag-cloud-more" id="tagCloudMore">View less</a>';
     }
-  });
+    list.innerHTML = html;
+    var btn = document.getElementById('tagCloudMore');
+    if (btn) {
+      btn.addEventListener('click', function(e) {
+        e.preventDefault();
+        expanded = !expanded;
+        render();
+        if (!expanded) list.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      });
+    }
+  }
+  render();
 }
 
 var TAG_CACHE_KEY = 'lr_tag_cloud';

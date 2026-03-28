@@ -189,27 +189,25 @@ async function generateTags(catalog, geminiKey) {
     ].filter(Boolean).join(' | ')
   ).join('\n');
 
-  const prompt = `You are a music expert helping curate a vinyl record shop called Late Records.
+  const prompt = `You are a music expert curating a vinyl record shop called Late Records.
 
-From the catalog descriptions below, extract interesting phrases, sentences, and details for a tag cloud on the homepage. Focus on:
-- Important people mentioned (producers, engineers, songwriters, session musicians) and what they did
-- Short evocative phrases or sentences from the descriptions (e.g. "recorded in a single session", "never reissued", "only 500 pressed")
-- Cities, countries, studios, or places mentioned
-- Eras, years, or time references
-- Notable sample credits, cultural references, historical context
-- Label names mentioned in descriptions
-- Mood or scene descriptors that come from the text
+From the album descriptions below, create short, culturally meaningful link tags for the shop homepage. Each tag should read naturally as a standalone phrase someone might click on.
 
-Do NOT include:
-- Artist names or album titles (these are shown elsewhere)
-- Genre names (shown separately)
+What to extract:
+- People and their roles: "produced by Mad Professor", "Chick Corea on keys", "arranged by David Axelrod"
+- Cultural context and significance: "Brazilian funk masterpiece", "80s UK sound system culture", "Ethiopian golden era"
+- Places, studios, labels: "recorded at Compass Point", "Ariwa vaults", "Blue Note classic"
+- Historical details: "originally released in 1972", "never reissued", "only 500 pressed"
+- Evocative short descriptions: "analog warmth", "cinematic orchestration", "deep crate dig"
 
 Rules:
-- Return 60-80 tags total
-- Keep phrases short (max 7-8 words)
-- Mix all categories together randomly — do NOT group by type
-- Pull actual details from the descriptions — don't make things up
-- Prefer specific, interesting details over generic ones
+- Each tag must be a complete, grammatically correct phrase (no cut-off sentences)
+- 3 to 6 words per tag (never longer)
+- Do NOT include bare artist names or album titles
+- Do NOT include genre names on their own
+- Do NOT start tags with "Featuring" or "The album"
+- Every tag should make sense if read in isolation
+- Return 60-80 tags total, mixed randomly
 - Respond with ONLY a JSON array of strings, no explanation, no markdown
 
 Catalog:
@@ -227,17 +225,28 @@ ${summaries}`;
     }
   );
 
-  if (!res.ok) return [];
+  if (!res.ok) {
+    console.error('Gemini HTTP error:', res.status, res.statusText);
+    return [];
+  }
 
   const data = await res.json();
   const raw  = data?.candidates?.[0]?.content?.parts?.[0]?.text || '';
+  console.log('Gemini raw response length:', raw.length, 'first 200:', raw.substring(0, 200));
+
+  if (!raw) {
+    console.error('Gemini returned empty text. Full response:', JSON.stringify(data).substring(0, 500));
+    return [];
+  }
 
   try {
     const cleaned = raw.replace(/```json\s*/g, '').replace(/```\s*/g, '').trim();
     const tags = JSON.parse(cleaned);
-    if (!Array.isArray(tags)) return [];
+    if (!Array.isArray(tags)) { console.error('Gemini result not array'); return []; }
+    console.log('Gemini tags count:', tags.length);
     return tags.filter(t => typeof t === 'string' && t.length > 0).slice(0, 80);
-  } catch {
+  } catch (e) {
+    console.error('Gemini JSON parse error:', e.message, 'raw:', raw.substring(0, 300));
     return [];
   }
 }
@@ -300,7 +309,7 @@ export default {
     if (path === '/api/tags' && request.method === 'GET') {
       try {
         const cache    = caches.default;
-        const cacheKey = new Request('https://lr-cache/tags-v1');
+        const cacheKey = new Request('https://lr-cache/tags-v3');
         const cached   = await cache.match(cacheKey);
         if (cached) return new Response(cached.body, {
           headers: { 'Content-Type': 'application/json', ...cors(origin) },
@@ -310,19 +319,23 @@ export default {
         if (!env.GEMINI_API_KEY) return json([], 200, origin);
 
         const tags = await generateTags(catalog, env.GEMINI_API_KEY);
-        const body = JSON.stringify(tags);
 
-        const r = new Response(body, {
-          headers: {
-            'Content-Type': 'application/json',
-            'Cache-Control': 'public, max-age=86400',
-          },
-        });
-        await cache.put(cacheKey, r);
+        // only cache non-empty results
+        if (tags.length > 0) {
+          const body = JSON.stringify(tags);
+          const r = new Response(body, {
+            headers: {
+              'Content-Type': 'application/json',
+              'Cache-Control': 'public, max-age=86400',
+            },
+          });
+          await cache.put(cacheKey, r);
+          return new Response(body, {
+            headers: { 'Content-Type': 'application/json', ...cors(origin) },
+          });
+        }
 
-        return new Response(body, {
-          headers: { 'Content-Type': 'application/json', ...cors(origin) },
-        });
+        return json([], 200, origin);
       } catch (e) {
         console.error('Tags error:', e.message);
         return json([], 200, origin);
