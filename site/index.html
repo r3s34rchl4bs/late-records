@@ -6,16 +6,49 @@
 <title>LATE RECORDS</title>
 <meta name="description" content="Curated vinyl records. Rare, used, and hard to find.">
 <link rel="stylesheet" href="fonts/inter.css">
+<script>document.documentElement.classList.toggle('dark', localStorage.getItem('lr_theme') === 'dark')</script>
 <style>
 
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
+html {
+  --bg:         #e2e2e2;
+  --bg-dot:     rgba(0,0,0,.08);
+  --ink:        #1a1a14;
+  --ink55:      rgba(26,26,20,.55);
+  --ink45:      rgba(26,26,20,.45);
+  --ink30:      rgba(26,26,20,.30);
+  --ink15:      rgba(26,26,20,.15);
+  --border:     rgba(26,26,20,.22);
+  --border-mid: rgba(26,26,20,.12);
+  --border-tag: rgba(26,26,20,.24);
+  --art-bg:     rgba(26,26,20,.07);
+  --btn-bg:     #1a1a14;
+  --btn-fg:     #e2e2e2;
+}
+
+html.dark {
+  --bg:         #141410;
+  --bg-dot:     rgba(255,255,255,.04);
+  --ink:        #e8e8df;
+  --ink55:      rgba(232,232,223,.55);
+  --ink45:      rgba(232,232,223,.42);
+  --ink30:      rgba(232,232,223,.26);
+  --ink15:      rgba(232,232,223,.12);
+  --border:     rgba(232,232,223,.18);
+  --border-mid: rgba(232,232,223,.1);
+  --border-tag: rgba(232,232,223,.2);
+  --art-bg:     rgba(232,232,223,.06);
+  --btn-bg:     #e8e8df;
+  --btn-fg:     #141410;
+}
+
 html, body {
   font-family: 'Inter', system-ui, sans-serif;
-  background-color: #e2e2e2;
-  background-image: radial-gradient(circle, rgba(0,0,0,.08) 0.5px, transparent 0.5px);
+  background-color: var(--bg);
+  background-image: radial-gradient(circle, var(--bg-dot) 0.5px, transparent 0.5px);
   background-size: 3px 3px;
-  color: #1a1a14;
+  color: var(--ink);
   -webkit-font-smoothing: antialiased;
 }
 
@@ -25,11 +58,11 @@ button { cursor: pointer; font-family: inherit; }
 
 .fixed-header {
   position: fixed; top: 0; left: 0; width: 100%;
-  background-color: #e2e2e2;
-  background-image: radial-gradient(circle, rgba(0,0,0,.08) 0.5px, transparent 0.5px);
+  background-color: var(--bg);
+  background-image: radial-gradient(circle, var(--bg-dot) 0.5px, transparent 0.5px);
   background-size: 3px 3px;
   z-index: 1000;
-  border-bottom: 1px solid rgba(26,26,20,.22);
+  border-bottom: 1px solid var(--border);
   height: 74px;
 }
 .header-inner {
@@ -38,11 +71,77 @@ button { cursor: pointer; font-family: inherit; }
 }
 .header-logo { height: 44px; display: block; }
 .header-logo:hover { opacity: .5; transition: opacity .15s; }
+.header-right { display: flex; align-items: center; gap: 16px; }
 .cart-link {
   font-size: 11px; font-weight: 500; letter-spacing: .07em;
-  text-transform: uppercase; color: #1a1a14; text-decoration: none;
+  text-transform: uppercase; color: var(--ink); text-decoration: none;
 }
-.cart-link:hover { color: rgba(26,26,20,.5); }
+.cart-link:hover { color: var(--ink55); }
+
+/* ── Search icon + drop-down bar ──────────────────────────── */
+.search-btn {
+  background: none; border: none; padding: 4px;
+  color: var(--ink); cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  transition: opacity .15s; flex-shrink: 0;
+}
+.search-btn:hover { opacity: .6; }
+.search-btn svg { width: 17px; height: 17px; }
+
+.search-bar {
+  position: fixed;
+  top: 74px; left: 0; right: 0;
+  z-index: 998;
+  background-color: var(--bg);
+  background-image: radial-gradient(circle, var(--bg-dot) 0.5px, transparent 0.5px);
+  background-size: 3px 3px;
+  border-bottom: 1px solid var(--border);
+  height: 0; overflow: hidden;
+  transition: height .18s ease;
+}
+.search-bar.open { height: 46px; }
+
+.search-bar-inner {
+  max-width: 1200px; margin: 0 auto; padding: 0 30px;
+  height: 46px; display: flex; align-items: center;
+}
+.search-input {
+  flex: 1; border: none; background: transparent;
+  font-family: 'Inter', system-ui, sans-serif;
+  font-size: 13px; font-weight: 400; color: var(--ink);
+  padding: 5px 0; outline: none; letter-spacing: .01em;
+}
+.search-input::placeholder { color: var(--ink30); }
+.search-clear {
+  border: none; background: none; padding: 0 0 0 8px;
+  font-size: 16px; color: var(--ink30); cursor: pointer;
+  line-height: 1; display: none; transition: color .1s;
+}
+.search-clear:hover { color: var(--ink); }
+.search-count {
+  font-size: 10px; font-weight: 500; letter-spacing: .08em;
+  text-transform: uppercase; color: var(--ink30);
+  padding-left: 14px; white-space: nowrap; flex-shrink: 0;
+}
+@media (max-width: 600px) {
+  .search-bar-inner { padding: 0 20px; }
+  .search-count { display: none; }
+}
+
+body.search-open .tbl thead th { top: 120px; }
+
+/* ── Theme toggle ──────────────────────────────────────────── */
+.theme-toggle {
+  background: none; border: none; padding: 4px;
+  color: var(--ink); cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  transition: opacity .15s; flex-shrink: 0;
+}
+.theme-toggle:hover { opacity: .6; }
+.theme-toggle .icon-sun,
+.theme-toggle .icon-moon { width: 18px; height: 18px; display: block; }
+html:not(.dark) .theme-toggle .icon-moon { display: none; }
+html.dark        .theme-toggle .icon-sun  { display: none; }
 
 .container {
   max-width: 1200px; margin: 0 auto; padding: 84px 30px 80px;
@@ -58,7 +157,7 @@ button { cursor: pointer; font-family: inherit; }
 
 .carousel-viewport {
   height: 235px; overflow: hidden; position: relative;
-  border-bottom: 1px solid rgba(26,26,20,.22);
+  border-bottom: 1px solid var(--border);
 }
 .carousel-track {
   display: flex; height: 100%;
@@ -82,26 +181,26 @@ button { cursor: pointer; font-family: inherit; }
 }
 .carousel-btn {
   width: 34px; height: 34px;
-  border: 1px solid rgba(26,26,20,.2); background: transparent;
+  border: 1px solid var(--ink30); background: transparent;
   cursor: pointer; display: flex; align-items: center; justify-content: center;
-  font-size: 20px; color: #1a1a14; transition: color 0.1s linear;
+  font-size: 20px; color: var(--ink); transition: color 0.1s linear;
 }
-.carousel-btn:hover { background: #1a1a14; color: #e2e2e2; border-color: #1a1a14; }
+.carousel-btn:hover { background: var(--btn-bg); color: var(--btn-fg); border-color: var(--btn-bg); }
 
 .card-top { flex: 1; min-height: 0; padding-right: 110px; }
 
 .card-staff-pick {
   font-size: 10px; font-weight: 600; letter-spacing: .12em;
-  text-transform: uppercase; color: rgba(26,26,20,.3); margin-bottom: 14px;
+  text-transform: uppercase; color: var(--ink30); margin-bottom: 14px;
 }
 .card-artist {
   font-size: 13px; font-weight: 500; letter-spacing: .07em;
-  text-transform: uppercase; color: rgba(26,26,20,.45); margin-bottom: 8px;
+  text-transform: uppercase; color: var(--ink45); margin-bottom: 8px;
 }
 .card-title {
   font-size: 42px; font-weight: 500; line-height: 1.05;
   letter-spacing: -.035em; margin-bottom: 12px; word-break: break-word;
-  color: rgba(26,26,20,.88); transition: color 0.1s linear;
+  color: var(--ink); transition: color 0.1s linear;
   display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
 }
 .card-meta {
@@ -109,24 +208,24 @@ button { cursor: pointer; font-family: inherit; }
 }
 .card-format {
   font-size: 11px; font-weight: 500; letter-spacing: .08em;
-  text-transform: uppercase; color: rgba(26,26,20,.45);
+  text-transform: uppercase; color: var(--ink45);
 }
 .card-meta-divider {
-  width: 1px; height: 10px; background: rgba(26,26,20,.2); flex-shrink: 0;
+  width: 1px; height: 10px; background: var(--ink30); flex-shrink: 0;
 }
 .card-tags { display: flex; gap: 4px; flex-wrap: wrap; align-items: center; }
 .card-tag {
   font-size: 10px; font-weight: 500; letter-spacing: .07em;
-  text-transform: uppercase; border: 1px solid rgba(26,26,20,.24);
-  padding: 3px 8px; color: rgba(26,26,20,.45);
+  text-transform: uppercase; border: 1px solid var(--border-tag);
+  padding: 3px 8px; color: var(--ink45);
   cursor: pointer; transition: color 0.1s linear;
 }
-.card-tag:hover { background: #1a1a14; color: #e2e2e2; border-color: #1a1a14; }
+.card-tag:hover { background: var(--btn-bg); color: var(--btn-fg); border-color: var(--btn-bg); }
 
 .card-bottom { display: none; }
 
 .carousel-card:hover .card-artist,
-.carousel-card:hover .card-title { color: #1a1a14; }
+.carousel-card:hover .card-title { color: var(--ink); }
 
 /* ── Table ───────────────────────────────────────────────── */
 .tbl { width: 100%; border-collapse: collapse; table-layout: fixed; }
@@ -140,23 +239,24 @@ col.c-stock  { width: 8%; }
   position: sticky;
   top: 74px;
   z-index: 30;
-  background-color: #e2e2e2;
-  background-image: radial-gradient(circle, rgba(0,0,0,.08) 0.5px, transparent 0.5px);
+  background-color: var(--bg);
+  background-image: radial-gradient(circle, var(--bg-dot) 0.5px, transparent 0.5px);
   background-size: 3px 3px;
-  box-shadow: 0 -1px 0 rgba(26,26,20,.22), 0 1px 0 rgba(26,26,20,.26);
+  box-shadow: 0 -1px 0 var(--border), 0 1px 0 rgba(26,26,20,.26);
   padding: 10px 12px 10px 0; font-size: 11px; font-weight: 500;
-  letter-spacing: .09em; text-transform: uppercase; color: rgba(26,26,20,.48);
+  letter-spacing: .09em; text-transform: uppercase; color: var(--ink55);
   text-align: left; vertical-align: bottom;
 }
 .tbl thead th:first-child { padding-left: 0; }
 .tbl thead th.c-stock { text-align: right; padding-right: 0; }
 .tbl thead th.c-art   { padding-right: 0; }
 
+.tbl tbody tr, .tbl tbody td { background: transparent; }
 .tbl tbody tr { cursor: pointer; transition: color 0.1s linear; }
 .tbl tbody tr:hover .rec-title, .tbl tbody tr:hover .rec-artist,
-.tbl tbody tr:hover .rec-stock { color: #1a1a14; }
+.tbl tbody tr:hover .rec-stock { color: var(--ink); }
 .tbl tbody td {
-  padding: 10px 12px 10px 0; border-bottom: 1px solid rgba(26,26,20,.12); vertical-align: middle;
+  padding: 10px 12px 10px 0; border-bottom: 1px solid var(--border-mid); vertical-align: middle;
 }
 .tbl tbody td:first-child { padding-left: 0; }
 .tbl tbody td:last-child  { padding-right: 0; }
@@ -168,7 +268,7 @@ col.c-stock  { width: 8%; }
 .rec-art-wrap {
   width: 38px; height: 38px;
   overflow: hidden; flex-shrink: 0;
-  background: rgba(26,26,20,.07);
+  background: var(--art-bg);
 }
 .rec-art-wrap img {
   width: 100%; height: 100%;
@@ -183,35 +283,52 @@ col.c-stock  { width: 8%; }
   white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
 }
 .rec-artist {
-  font-size: 12px; font-weight: 400; color: rgba(26,26,20,.48);
+  font-size: 12px; font-weight: 400; color: var(--ink55);
   margin-top: 3px; line-height: 1.4; transition: color 0.1s linear;
   white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
 }
 
 .genre-tag {
   display: inline-block; font-size: 10px; font-weight: 500; letter-spacing: .06em;
-  text-transform: uppercase; color: rgba(26,26,20,.48); border: 1px solid rgba(26,26,20,.32);
+  text-transform: uppercase; color: var(--ink55); border: 1px solid var(--ink30);
   padding: 3px 7px; line-height: 1.4; white-space: nowrap; cursor: pointer;
   transition: color 0.1s linear, border-color 0.1s linear;
 }
-.genre-tag:hover { color: #1a1a14; border-color: #1a1a14; }
+.genre-tag:hover { color: var(--ink); border-color: var(--ink); }
 
-.rec-format { font-size: 11px; font-weight: 400; letter-spacing: .05em; text-transform: uppercase; color: rgba(26,26,20,.48); }
+.rec-format { font-size: 11px; font-weight: 400; letter-spacing: .05em; text-transform: uppercase; color: var(--ink55); }
 
 .rec-stock {
   display: flex; align-items: center; justify-content: flex-end;
   gap: 6px; font-size: 11px; font-weight: 500; letter-spacing: .06em; text-transform: uppercase;
 }
 .sdot { width: 5px; height: 5px; border-radius: 50%; flex-shrink: 0; }
-.sdot.a { background: #1a1a14; }
-.sdot.s { background: rgba(26,26,20,.28); }
+.sdot.a { background: var(--ink); }
+.sdot.s { background: var(--ink30); }
 
-.tbl tbody tr.sold .rec-title  { color: rgba(26,26,20,.48); }
-.tbl tbody tr.sold .rec-artist { color: rgba(26,26,20,.28); }
-.tbl tbody tr.sold .genre-tag  { color: rgba(26,26,20,.28); border-color: rgba(26,26,20,.16); }
-.tbl tbody tr.sold .rec-format { color: rgba(26,26,20,.28); }
-.tbl tbody tr.sold .rec-stock  { color: rgba(26,26,20,.28); }
-.tbl tbody tr.sold .sdot       { background: rgba(26,26,20,.28) !important; }
+.tbl tbody tr.sold .rec-title  { color: var(--ink55); }
+.tbl tbody tr.sold .rec-artist { color: var(--ink30); }
+.tbl tbody tr.sold .genre-tag  { color: var(--ink30); border-color: var(--ink15); }
+.tbl tbody tr.sold .rec-format { color: var(--ink30); }
+.tbl tbody tr.sold .rec-stock  { color: var(--ink30); }
+.tbl tbody tr.sold .sdot       { background: var(--ink30) !important; }
+
+/* ── A-Z Nav ─────────────────────────────────────────────── */
+.az-nav {
+  display: flex; flex-wrap: wrap; align-items: center;
+  gap: 6px; padding: 14px 0 12px;
+  border-bottom: 1px solid var(--border-mid);
+}
+.az-letter {
+  font-size: 11px; font-weight: 500; letter-spacing: .07em;
+  text-transform: uppercase; border: none; background: none;
+  color: var(--ink45); cursor: pointer;
+  padding: 7px 13px; min-width: 34px; text-align: center;
+  line-height: 1; transition: color .1s, background .1s;
+}
+.az-letter:hover:not(:disabled) { color: var(--ink); background: var(--border-mid); }
+.az-letter.active { background: var(--btn-bg); color: var(--btn-fg); }
+.az-letter.empty, .az-letter:disabled { color: var(--ink15); cursor: default; }
 
 /* ── Search ──────────────────────────────────────────────── */
 .search-row {
@@ -223,28 +340,28 @@ col.c-stock  { width: 8%; }
 .search-input {
   flex: 1; border: none; background: transparent;
   font-family: 'Inter', system-ui, sans-serif;
-  font-size: 13px; font-weight: 400; color: #1a1a14;
+  font-size: 13px; font-weight: 400; color: var(--ink);
   padding: 5px 0; outline: none; letter-spacing: .01em;
 }
-.search-input::placeholder { color: rgba(26,26,20,.32); }
+.search-input::placeholder { color: var(--ink30); }
 .search-clear {
   border: none; background: none; padding: 0 0 0 8px;
-  font-size: 16px; color: rgba(26,26,20,.32); cursor: pointer;
+  font-size: 16px; color: var(--ink30); cursor: pointer;
   line-height: 1; display: none; transition: color .1s;
 }
-.search-clear:hover { color: #1a1a14; }
+.search-clear:hover { color: var(--ink); }
 .search-count {
   font-size: 10px; font-weight: 500; letter-spacing: .08em;
-  text-transform: uppercase; color: rgba(26,26,20,.35);
+  text-transform: uppercase; color: var(--ink30);
   padding-left: 14px; white-space: nowrap; flex-shrink: 0;
 }
 .suggestions-header {
   display: none;
   padding: 28px 0 16px;
   font-size: 11px; font-weight: 500; letter-spacing: .09em;
-  text-transform: uppercase; color: rgba(26,26,20,.4);
+  text-transform: uppercase; color: var(--ink45);
 }
-.suggestions-header span { color: #1a1a14; }
+.suggestions-header span { color: var(--ink); }
 .suggestions-header.is-loading::after {
   content: ''; animation: ellipsis 1.2s steps(4, end) infinite;
 }
@@ -256,34 +373,38 @@ col.c-stock  { width: 8%; }
 }
 .no-results-empty {
   padding: 40px 0;
-  font-size: 13px; color: rgba(26,26,20,.38); letter-spacing: .01em;
+  font-size: 13px; color: var(--ink30); letter-spacing: .01em;
   display: none;
 }
 .rec-title mark, .rec-artist mark {
-  background: rgba(26,26,20,.12); color: #1a1a14; padding: 0 1px; border-radius: 1px;
+  background: var(--border-mid); color: var(--ink); padding: 0 1px; border-radius: 1px;
 }
 .tbl tbody tr.is-suggestion td:nth-child(2) {
-  border-left: 2px solid rgba(26,26,20,.14); padding-left: 10px;
+  border-left: 2px solid var(--border-mid); padding-left: 10px;
 }
 @media (max-width: 600px) { .search-count { display: none; } }
 
 /* ── Availability toggle ─────────────────────────────────── */
 .avail-toggle {
   width: 14px; height: 14px;
-  border: 1.5px solid rgba(26,26,20,.3);
+  border: 1.5px solid var(--ink30);
   background: transparent;
   cursor: pointer; flex-shrink: 0;
   margin-left: 12px; padding: 0;
   transition: background .12s, border-color .12s;
 }
 .avail-toggle.active {
-  background: #1a1a14;
-  border-color: #1a1a14;
+  background: var(--btn-bg);
+  border-color: var(--btn-bg);
 }
 
 .sk {
   background: linear-gradient(90deg, rgba(0,0,0,.07) 25%, rgba(0,0,0,.13) 50%, rgba(0,0,0,.07) 75%);
   background-size: 200% 100%; animation: sh 1.4s infinite;
+}
+html.dark .sk {
+  background: linear-gradient(90deg, rgba(255,255,255,.05) 25%, rgba(255,255,255,.10) 50%, rgba(255,255,255,.05) 75%);
+  background-size: 200% 100%;
 }
 @keyframes sh { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
 
@@ -351,9 +472,44 @@ col.c-stock  { width: 8%; }
     <a href="index.html">
       <img src="images/late-records-logo.png" class="header-logo" alt="LATE RECORDS">
     </a>
-    <a href="cart.html" class="cart-link">Cart (<span class="cart-count">0</span>)</a>
+    <div class="header-right">
+      <button class="search-btn" id="searchBtn" aria-label="Search">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="11" cy="11" r="7"/>
+          <line x1="16.5" y1="16.5" x2="22" y2="22"/>
+        </svg>
+      </button>
+      <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme">
+        <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="4"/>
+          <line x1="12" y1="2"  x2="12" y2="5"/>
+          <line x1="12" y1="19" x2="12" y2="22"/>
+          <line x1="2"  y1="12" x2="5"  y2="12"/>
+          <line x1="19" y1="12" x2="22" y2="12"/>
+          <line x1="4.93"  y1="4.93"  x2="7.05" y2="7.05"/>
+          <line x1="16.95" y1="16.95" x2="19.07" y2="19.07"/>
+          <line x1="4.93"  y1="19.07" x2="7.05"  y2="16.95"/>
+          <line x1="16.95" y1="7.05"  x2="19.07" y2="4.93"/>
+        </svg>
+        <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+        </svg>
+      </button>
+      <a href="cart.html" class="cart-link">Cart (<span class="cart-count">0</span>)</a>
+    </div>
   </div>
 </header>
+
+<div class="search-bar" id="searchBar">
+  <div class="search-bar-inner">
+    <input class="search-input" id="searchInput" type="search"
+      autocomplete="off" spellcheck="false"
+      placeholder="Search by title, artist, genre, format…">
+    <button class="search-clear" id="searchClear" aria-label="Clear search">&#215;</button>
+    <span class="search-count" id="searchCount"></span>
+    <button class="avail-toggle" id="availToggle" aria-label="Show available only" onclick="toggleAvail()"></button>
+  </div>
+</div>
 
 <div class="container">
 
@@ -379,14 +535,7 @@ col.c-stock  { width: 8%; }
 
   <hr class="section-divider">
 
-  <div class="search-row">
-    <input class="search-input" id="searchInput" type="search"
-      autocomplete="off" spellcheck="false"
-      placeholder="Search by title, artist, genre, format…">
-    <button class="search-clear" id="searchClear" aria-label="Clear search">&#215;</button>
-    <span class="search-count" id="searchCount"></span>
-    <button class="avail-toggle" id="availToggle" aria-label="Show available only" onclick="toggleAvail()"></button>
-  </div>
+  <div class="az-nav" id="azNav"></div>
 
   <div class="suggestions-header" id="suggestionsHeader"></div>
   <div class="no-results-empty" id="noResultsEmpty">Nothing found.</div>
@@ -464,7 +613,7 @@ function buildCarousel(albums) {
   const bars = [];
   cards.forEach((_, i) => {
     const b = document.createElement('div');
-    b.style.cssText = 'flex:1;height:2px;background:rgba(26,26,20,.15);transition:height .2s ease,background .2s ease;';
+    b.style.cssText = 'flex:1;height:2px;background:var(--ink15);transition:height .2s ease,background .2s ease;';
     progressContainer.appendChild(b);
     bars.push(b);
   });
@@ -476,13 +625,56 @@ function buildCarousel(albums) {
     track.style.transform = `translateX(-${current * 100}%)`;
     bars.forEach((b, i) => {
       b.style.height = i === current ? '4px' : '2px';
-      b.style.background = i === current ? '#1a1a14' : 'rgba(26,26,20,.15)';
+      b.style.background = i === current ? 'var(--ink)' : 'var(--ink15)';
     });
   }
   goTo(0);
   document.getElementById('prevBtn').addEventListener('click', (e) => { e.stopPropagation(); goTo(current - 1); });
   document.getElementById('nextBtn').addEventListener('click', (e) => { e.stopPropagation(); goTo(current + 1); });
 }
+
+// ── Search bar toggle ──────────────────────────────────────
+(function() {
+  var btn   = document.getElementById('searchBtn');
+  var bar   = document.getElementById('searchBar');
+  var input = document.getElementById('searchInput');
+
+  function openSearch() {
+    bar.classList.add('open');
+    document.body.classList.add('search-open');
+    setTimeout(function() { input.focus(); }, 180);
+  }
+
+  function closeSearch() {
+    bar.classList.remove('open');
+    document.body.classList.remove('search-open');
+    input.value = '';
+    document.getElementById('searchClear').style.display = 'none';
+    input.dispatchEvent(new Event('input'));
+  }
+
+  btn.addEventListener('click', function() {
+    bar.classList.contains('open') ? closeSearch() : openSearch();
+  });
+
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape' && bar.classList.contains('open')) closeSearch();
+  });
+
+  document.addEventListener('click', function(e) {
+    if (
+      bar.classList.contains('open') &&
+      !e.target.closest('#searchBar') &&
+      !e.target.closest('#searchBtn') &&
+      !e.target.closest('#catalogTable') &&
+      !e.target.closest('#suggestionsHeader') &&
+      !e.target.closest('.az-nav') &&
+      !e.target.closest('.no-results-empty')
+    ) {
+      closeSearch();
+    }
+  });
+})();
 
 window.availFilterActive = false;
 
@@ -511,10 +703,11 @@ document.addEventListener('DOMContentLoaded', async () => {
     window._catalogCache = catalog;
     buildCarousel(catalog);
     buildTable(catalog);
+    buildAZNav(catalog);
   } else {
     document.getElementById('carouselTrack').innerHTML = '';
     document.getElementById('catalogList').innerHTML =
-      `<tr><td colspan="5" style="padding:40px 0;font-size:13px;color:rgba(26,26,20,.48)">Could not load catalog. Please refresh.</td></tr>`;
+      `<tr><td colspan="5" style="padding:40px 0;font-size:13px;color:var(--ink55)">Could not load catalog. Please refresh.</td></tr>`;
   }
 });
 

@@ -6,6 +6,7 @@ const LR_SEARCH = (() => {
   let _suggestTimer = null;
   let _currentSuggestions = [];
   let _isSuggestionMode = false;
+  let _activeAZLetter = null;
 
   function _esc(s) {
     const d = document.createElement('div');
@@ -35,15 +36,25 @@ const LR_SEARCH = (() => {
     }
 
     if (!q) {
-      const base = window.availFilterActive
-        ? _catalog.filter(a => String(a.status).toLowerCase() === 'available')
-        : _catalog;
+      let base = _catalog;
+      if (_activeAZLetter) {
+        base = base.filter(a =>
+          String(a.artist || '').trim()[0]?.toUpperCase() === _activeAZLetter
+        );
+      }
+      if (window.availFilterActive) {
+        base = base.filter(a => String(a.status).toLowerCase() === 'available');
+      }
       tbody.innerHTML = base.map(item => rowHTML(item, '', false)).join('');
       count.textContent = '';
       return;
     }
 
-    const matches = _catalog
+    const src = window.availFilterActive
+      ? _catalog.filter(a => String(a.status).toLowerCase() === 'available')
+      : _catalog;
+
+    const matches = src
       .map(item => {
         const artist = String(item.artist || '').toLowerCase();
         const title  = String(item.title  || '').toLowerCase();
@@ -72,13 +83,9 @@ const LR_SEARCH = (() => {
       })
       .map(x => x.item);
 
-    const filtered = window.availFilterActive
-      ? matches.filter(a => String(a.status).toLowerCase() === 'available')
-      : matches;
-
-    if (filtered.length) {
-      tbody.innerHTML = filtered.map(item => rowHTML(item, rawQuery.trim(), false)).join('');
-      count.textContent = `${filtered.length} result${filtered.length !== 1 ? 's' : ''}`;
+    if (matches.length) {
+      tbody.innerHTML = matches.map(item => rowHTML(item, rawQuery.trim(), false)).join('');
+      count.textContent = `${matches.length} result${matches.length !== 1 ? 's' : ''}`;
       return;
     }
 
@@ -160,6 +167,10 @@ const LR_SEARCH = (() => {
     input.addEventListener('input', () => {
       const v = input.value;
       clear.style.display = v ? 'block' : 'none';
+      if (v && _activeAZLetter) {
+        _activeAZLetter = null;
+        document.querySelectorAll('.az-letter').forEach(b => b.classList.remove('active'));
+      }
       clearTimeout(_debounce);
       _debounce = setTimeout(() => renderTable(v), 150);
     });
@@ -183,10 +194,12 @@ const LR_SEARCH = (() => {
 
     document.addEventListener('click', e => {
       if (
-        !e.target.closest('.search-row') &&
+        !e.target.closest('#searchBar') &&
+        !e.target.closest('#searchBtn') &&
         !e.target.closest('#catalogTable') &&
         !e.target.closest('#suggestionsHeader') &&
-        !e.target.closest('.no-results-empty')
+        !e.target.closest('.no-results-empty') &&
+        !e.target.closest('.az-nav')
       ) {
         input.value = '';
         clear.style.display = 'none';
@@ -204,6 +217,47 @@ const LR_SEARCH = (() => {
     renderTable('');
   }
 
+  function buildAZNav(albums) {
+    const nav = document.getElementById('azNav');
+    if (!nav) return;
+
+    const firstLetters = new Set();
+    albums.forEach(a => {
+      const first = String(a.artist || '').trim()[0]?.toUpperCase();
+      if (first && /[A-Z]/.test(first)) firstLetters.add(first);
+    });
+
+    const alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('');
+    nav.innerHTML = alphabet.map(l => {
+      const has = firstLetters.has(l);
+      return `<button class="az-letter${has ? '' : ' empty'}" data-letter="${l}"${has ? '' : ' disabled'}>${l}</button>`;
+    }).join('');
+
+    nav.addEventListener('click', e => {
+      const btn = e.target.closest('.az-letter');
+      if (!btn || btn.disabled) return;
+      const letter = btn.dataset.letter;
+
+      if (_activeAZLetter === letter) {
+        _activeAZLetter = null;
+        btn.classList.remove('active');
+      } else {
+        _activeAZLetter = letter;
+        nav.querySelectorAll('.az-letter').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+      }
+
+      const input   = document.getElementById('searchInput');
+      const clearBtn = document.getElementById('searchClear');
+      if (input)    input.value = '';
+      if (clearBtn) clearBtn.style.display = 'none';
+      _isSuggestionMode = false;
+      _currentSuggestions = [];
+
+      renderTable('');
+    });
+  }
+
   function applyAvailToggle() {
     if (_isSuggestionMode) {
       const query = document.getElementById('searchInput').value.trim();
@@ -213,11 +267,12 @@ const LR_SEARCH = (() => {
     }
   }
 
-  return { initSearch, buildTable, applyAvailToggle };
+  return { initSearch, buildTable, buildAZNav, applyAvailToggle };
 
 })();
 
 /* Expose for inline scripts in HTML pages */
-function initSearch()      { LR_SEARCH.initSearch(); }
-function buildTable(a)     { LR_SEARCH.buildTable(a); }
-function applyAvailToggle(){ LR_SEARCH.applyAvailToggle(); }
+function initSearch()       { LR_SEARCH.initSearch(); }
+function buildTable(a)      { LR_SEARCH.buildTable(a); }
+function buildAZNav(a)      { LR_SEARCH.buildAZNav(a); }
+function applyAvailToggle() { LR_SEARCH.applyAvailToggle(); }
