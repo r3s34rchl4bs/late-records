@@ -263,6 +263,14 @@ const LR_SEARCH = (() => {
 
       renderTable('');
     });
+
+    /* Default to letter A on page load */
+    const aBtn = nav.querySelector('.az-letter[data-letter="A"]');
+    if (aBtn && !aBtn.disabled) {
+      _activeAZLetter = 'A';
+      aBtn.classList.add('active');
+      renderTable('');
+    }
   }
 
   function applyAvailToggle() {
