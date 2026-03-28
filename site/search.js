@@ -38,9 +38,11 @@ const LR_SEARCH = (() => {
     if (!q) {
       let base = _catalog;
       if (_activeAZLetter) {
-        base = base.filter(a =>
-          String(a.artist || '').trim()[0]?.toUpperCase() === _activeAZLetter
-        );
+        base = base.filter(a => {
+          const first = String(a.artist || '').trim()[0]?.toUpperCase();
+          if (_activeAZLetter === '#') return first && /[0-9]/.test(first);
+          return first === _activeAZLetter;
+        });
       }
       if (window.availFilterActive) {
         base = base.filter(a => String(a.status).toLowerCase() === 'available');
@@ -222,16 +224,21 @@ const LR_SEARCH = (() => {
     if (!nav) return;
 
     const firstLetters = new Set();
+    let hasNumbers = false;
     albums.forEach(a => {
       const first = String(a.artist || '').trim()[0]?.toUpperCase();
-      if (first && /[A-Z]/.test(first)) firstLetters.add(first);
+      if (!first) return;
+      if (/[A-Z]/.test(first)) firstLetters.add(first);
+      else if (/[0-9]/.test(first)) hasNumbers = true;
     });
 
     const alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('');
-    nav.innerHTML = alphabet.map(l => {
+    const letters = alphabet.map(l => {
       const has = firstLetters.has(l);
       return `<button class="az-letter${has ? '' : ' empty'}" data-letter="${l}"${has ? '' : ' disabled'}>${l}</button>`;
-    }).join('');
+    });
+    letters.push(`<button class="az-letter${hasNumbers ? '' : ' empty'}" data-letter="#"${hasNumbers ? '' : ' disabled'}>#</button>`);
+    nav.innerHTML = letters.join('');
 
     nav.addEventListener('click', e => {
       const btn = e.target.closest('.az-letter');

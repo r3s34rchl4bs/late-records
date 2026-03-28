@@ -48,17 +48,11 @@ html.no-transitions * { transition: none !important; }
 html, body {
   font-family: 'Inter', system-ui, sans-serif;
   background-color: var(--bg);
-  color: var(--ink);
-  -webkit-font-smoothing: antialiased;
-}
-body::before {
-  content: '';
-  position: fixed;
-  inset: 0;
   background-image: radial-gradient(circle, var(--bg-dot) 0.5px, transparent 0.5px);
   background-size: 3px 3px;
-  pointer-events: none;
-  z-index: -1;
+  color: var(--ink);
+  -webkit-font-smoothing: antialiased;
+  min-height: 100vh;
 }
 
 a { color: inherit; text-decoration: none; }
