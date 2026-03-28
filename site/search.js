@@ -40,7 +40,7 @@ const LR_SEARCH = (() => {
       if (_activeAZLetter) {
         base = base.filter(a => {
           const first = String(a.artist || '').trim()[0]?.toUpperCase();
-          if (_activeAZLetter === '#') return first && /[0-9]/.test(first);
+          if (_activeAZLetter === '#') return first && !/[A-Z]/.test(first);
           return first === _activeAZLetter;
         });
       }
@@ -224,12 +224,12 @@ const LR_SEARCH = (() => {
     if (!nav) return;
 
     const firstLetters = new Set();
-    let hasNumbers = false;
+    let hasOther = false;
     albums.forEach(a => {
       const first = String(a.artist || '').trim()[0]?.toUpperCase();
       if (!first) return;
       if (/[A-Z]/.test(first)) firstLetters.add(first);
-      else if (/[0-9]/.test(first)) hasNumbers = true;
+      else hasOther = true;
     });
 
     const alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('');
@@ -237,7 +237,7 @@ const LR_SEARCH = (() => {
       const has = firstLetters.has(l);
       return `<button class="az-letter${has ? '' : ' empty'}" data-letter="${l}"${has ? '' : ' disabled'}>${l}</button>`;
     });
-    letters.push(`<button class="az-letter${hasNumbers ? '' : ' empty'}" data-letter="#"${hasNumbers ? '' : ' disabled'}>#</button>`);
+    letters.push(`<button class="az-letter${hasOther ? '' : ' empty'}" data-letter="#"${hasOther ? '' : ' disabled'}>#</button>`);
     nav.innerHTML = letters.join('');
 
     nav.addEventListener('click', e => {

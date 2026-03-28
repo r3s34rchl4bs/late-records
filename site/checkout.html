@@ -9,17 +9,11 @@
 <link rel="stylesheet" href="style.css">
 <style>
 
-body::before {
-  content: '';
-  position: fixed;
-  inset: 0;
-  background-image: radial-gradient(circle, var(--bg-dot) 0.5px, transparent 0.5px);
-  background-size: 3px 3px;
-  pointer-events: none;
-  z-index: -1;
-}
 .header-logo       { height: 44px; filter: none; }
 .header-logo:hover { opacity: .5; transition: opacity .15s; }
+.logo-dark            { display: none; }
+html.dark .logo-light { display: none; }
+html.dark .logo-dark  { display: block; }
 .cart-link { display: none; }
 .fixed-footer { display: none; }
 .container { padding-bottom: 80px; }
