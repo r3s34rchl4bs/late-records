@@ -536,13 +536,10 @@ html.dark .sk {
   line-height: 1.7;
 }
 .tag-cloud-list {
-  display: inline;
-  overflow: hidden;
+  display: block;
 }
 .tag-cloud-list.collapsed {
-  display: -webkit-box;
-  -webkit-line-clamp: 5;
-  -webkit-box-orient: vertical;
+  max-height: 8.5em; /* ~5 lines at 1.7 line-height */
   overflow: hidden;
 }
 .tag-cloud-item {
@@ -855,7 +852,7 @@ function renderTagCloud(tags) {
 
 async function loadTagCloud(catalog) {
   try {
-    const res = await fetch('/api/tags');
+    const res = await fetch('https://late-records.shop/api/tags');
     const data = await res.json();
     if (Array.isArray(data) && data.length) {
       // API tags don't have albumId, pick a random album for each
