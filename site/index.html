@@ -253,7 +253,9 @@ col.c-stock  { width: 8%; }
 .tbl thead th:first-child { padding-left: 0; }
 .tbl thead th.c-stock { text-align: right; padding-right: 0; }
 .tbl thead th.c-art   { padding-right: 0; vertical-align: middle; border: 1px solid red; }
-.tbl thead th { border-bottom: 1px solid lime; }
+.tbl thead th { border-top: 1px solid lime; border-bottom: 1px solid lime; }
+.tbl thead tr { position: relative; }
+.tbl thead tr::after { content: ''; position: absolute; left: 0; right: 0; top: 50%; height: 1px; background: lime; z-index: 99; }
 .tbl thead th.c-title, .tbl tbody td.c-title { padding-left: 10px; }
 .art-icon { width: 20px; height: 20px; opacity: .4; display: block; margin: 0 auto; }
 
