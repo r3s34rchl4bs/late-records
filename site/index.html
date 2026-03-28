@@ -153,7 +153,34 @@ html.dark        .theme-toggle .icon-sun  { display: none; }
 /* ── Hide carousel + nav when searching ──────────────────── */
 body.search-active .carousel-section,
 body.search-active .section-divider,
+body.search-active .info-rotator,
 body.search-active .az-nav { display: none; }
+
+/* ── Info rotator (are.na style) ─────────────────────────── */
+.info-rotator {
+  display: flex; align-items: center;
+  border-bottom: 1px solid var(--border-mid);
+  padding: 14px 0;
+  gap: 12px;
+}
+.info-rotator-btn {
+  width: 28px; height: 28px; flex-shrink: 0;
+  border: 1px solid var(--ink30); background: transparent;
+  cursor: pointer; display: flex; align-items: center; justify-content: center;
+  font-size: 16px; color: var(--ink); transition: color 0.1s, background 0.1s;
+}
+.info-rotator-btn:hover { background: var(--btn-bg); color: var(--btn-fg); border-color: var(--btn-bg); }
+.info-rotator-content {
+  flex: 1; min-width: 0; text-align: center;
+}
+.info-rotator-title {
+  font-size: 10px; font-weight: 600; letter-spacing: .1em;
+  text-transform: uppercase; color: var(--ink45); margin-bottom: 4px;
+}
+.info-rotator-text {
+  font-size: 12px; font-weight: 400; color: var(--ink55);
+  letter-spacing: .01em; line-height: 1.5;
+}
 
 /* ── Carousel ────────────────────────────────────────────── */
 .carousel-section { margin-bottom: 0; }
@@ -571,6 +598,15 @@ html.dark .sk {
 
   <hr class="section-divider">
 
+  <div class="info-rotator" id="infoRotator">
+    <button class="info-rotator-btn" id="infoPrev">&#8249;</button>
+    <div class="info-rotator-content">
+      <div class="info-rotator-title" id="infoTitle"></div>
+      <div class="info-rotator-text" id="infoText"></div>
+    </div>
+    <button class="info-rotator-btn" id="infoNext">&#8250;</button>
+  </div>
+
   <div class="az-nav" id="azNav"></div>
 
   <div class="suggestions-header" id="suggestionsHeader"></div>
@@ -610,6 +646,26 @@ function _escHTML(s) {
   d.textContent = s;
   return d.innerHTML;
 }
+
+// ── Info rotator ────────────────────────────────────────────
+(function() {
+  const slides = [
+    { title: 'Info', text: 'Catalog updated daily. New pressings and used finds.' },
+    { title: 'Shipping & Handling', text: 'All records ship in custom mailers. Allow 3–5 business days for domestic delivery.' },
+    { title: 'Condition & Grading', text: 'All records graded visually and play-tested. Condition noted on each listing.' }
+  ];
+  let idx = 0;
+  const titleEl = document.getElementById('infoTitle');
+  const textEl  = document.getElementById('infoText');
+  function show(i) {
+    idx = (i + slides.length) % slides.length;
+    titleEl.textContent = slides[idx].title;
+    textEl.textContent  = slides[idx].text;
+  }
+  show(0);
+  document.getElementById('infoPrev').addEventListener('click', () => show(idx - 1));
+  document.getElementById('infoNext').addEventListener('click', () => show(idx + 1));
+})();
 
 function buildCarousel(albums) {
   const featured = albums.filter(a => String(a.featured).toLowerCase() === 'yes').slice(0, 5);
