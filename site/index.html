@@ -147,12 +147,17 @@ html.dark        .theme-toggle .icon-sun  { display: none; }
   max-width: 1200px; margin: 0 auto; padding: 84px 30px 80px;
 }
 
+/* ── Hide carousel + nav when searching ──────────────────── */
+body.search-active .carousel-section,
+body.search-active .section-divider,
+body.search-active .az-nav { display: none; }
+
 /* ── Carousel ────────────────────────────────────────────── */
-.carousel-section { margin-bottom: 0; }
+.carousel-section { margin-bottom: 12px; }
 
 .section-divider {
   border: none;
-  margin: 3px 0;
+  margin: 10px 0;
 }
 
 .carousel-viewport {
@@ -316,8 +321,9 @@ col.c-stock  { width: 8%; }
 /* ── A-Z Nav ─────────────────────────────────────────────── */
 .az-nav {
   display: flex; flex-wrap: wrap; align-items: center;
-  gap: 6px; padding: 14px 0 12px;
+  gap: 6px; padding: 18px 0 16px;
   border-bottom: 1px solid var(--border-mid);
+  margin-bottom: 6px;
 }
 .az-letter {
   font-size: 11px; font-weight: 500; letter-spacing: .07em;
@@ -384,19 +390,6 @@ col.c-stock  { width: 8%; }
 }
 @media (max-width: 600px) { .search-count { display: none; } }
 
-/* ── Availability toggle ─────────────────────────────────── */
-.avail-toggle {
-  width: 14px; height: 14px;
-  border: 1.5px solid var(--ink30);
-  background: transparent;
-  cursor: pointer; flex-shrink: 0;
-  margin-left: 12px; padding: 0;
-  transition: background .12s, border-color .12s;
-}
-.avail-toggle.active {
-  background: var(--btn-bg);
-  border-color: var(--btn-bg);
-}
 
 .sk {
   background: linear-gradient(90deg, rgba(0,0,0,.07) 25%, rgba(0,0,0,.13) 50%, rgba(0,0,0,.07) 75%);
@@ -507,7 +500,6 @@ html.dark .sk {
       placeholder="Search by title, artist, genre, format…">
     <button class="search-clear" id="searchClear" aria-label="Clear search">&#215;</button>
     <span class="search-count" id="searchCount"></span>
-    <button class="avail-toggle" id="availToggle" aria-label="Show available only" onclick="toggleAvail()"></button>
   </div>
 </div>
 
@@ -546,7 +538,7 @@ html.dark .sk {
     </colgroup>
     <thead>
       <tr>
-        <th class="c-art"></th>
+        <th class="c-art"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="opacity:.45"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="3"/><line x1="12" y1="2" x2="12" y2="4"/><line x1="12" y1="20" x2="12" y2="22"/><line x1="2" y1="12" x2="4" y2="12"/><line x1="20" y1="12" x2="22" y2="12"/></svg></th>
         <th class="c-title">Title / Artist</th>
         <th class="c-genre">Genre</th>
         <th class="c-format">Format</th>
@@ -648,10 +640,15 @@ function buildCarousel(albums) {
   function closeSearch() {
     bar.classList.remove('open');
     document.body.classList.remove('search-open');
+    document.body.classList.remove('search-active');
     input.value = '';
     document.getElementById('searchClear').style.display = 'none';
     input.dispatchEvent(new Event('input'));
   }
+
+  input.addEventListener('input', function() {
+    document.body.classList.toggle('search-active', input.value.trim().length > 0);
+  });
 
   btn.addEventListener('click', function() {
     bar.classList.contains('open') ? closeSearch() : openSearch();
@@ -677,12 +674,6 @@ function buildCarousel(albums) {
 })();
 
 window.availFilterActive = false;
-
-function toggleAvail() {
-  window.availFilterActive = !window.availFilterActive;
-  document.getElementById('availToggle').classList.toggle('active', window.availFilterActive);
-  applyAvailToggle();
-}
 
 document.addEventListener('DOMContentLoaded', async () => {
   initSearch();
