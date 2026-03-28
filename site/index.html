@@ -157,8 +157,7 @@ body.search-active .az-nav { display: none; }
 
 /* ── Info rotator (are.na style) ─────────────────────────── */
 .info-rotator {
-  display: flex; align-items: center;
-  border-top: 1px solid var(--border-mid);
+  display: flex; align-items: center; justify-content: center;
   padding: 14px 0;
   margin: 32px auto 32px;
   gap: 12px;
@@ -562,7 +561,7 @@ html.dark .sk {
   display: block; margin-top: 14px;
   font-size: 11px; font-weight: 600; color: var(--ink45);
   cursor: pointer; text-decoration: none;
-  letter-spacing: .02em;
+  letter-spacing: .08em; text-transform: uppercase;
 }
 .tag-cloud-more:hover { color: var(--ink); text-decoration: underline; }
 
@@ -800,20 +799,21 @@ function extractTagsFromCatalog(catalog) {
   const seen = new Set();
   function add(text, album) {
     const key = text.toLowerCase().trim();
-    if (!key || seen.has(key)) return;
+    if (!key || key.length < 4 || seen.has(key)) return;
     seen.add(key);
     tags.push({ text: text.trim(), albumId: album.album_id });
   }
   catalog.forEach(a => {
-    // artist names
-    if (a.artist) add(a.artist, a);
-    // context fields (labels, places, eras, phrases) — no genres
-    if (a.context) a.context.split('||').forEach(c => add(c, a));
-    // pick phrases from description (sentences or fragments)
-    if (a.description) {
-      const sentences = a.description.split(/[.!?]+/).map(s => s.trim()).filter(s => s.length > 8 && s.length < 60);
-      sentences.slice(0, 2).forEach(s => add(s, a));
-    }
+    if (!a.description) return;
+    // split into sentences/phrases
+    const parts = a.description.split(/[.!?;]+/).map(s => s.trim()).filter(s => s.length > 8 && s.length < 70);
+    parts.forEach(s => {
+      // skip if it's just the artist or album title restated
+      const lower = s.toLowerCase();
+      if (a.artist && lower === a.artist.toLowerCase()) return;
+      if (a.title && lower === a.title.toLowerCase()) return;
+      add(s, a);
+    });
   });
   return tags;
 }
@@ -839,6 +839,7 @@ function renderTagCloud(tags) {
       } else {
         list.classList.add('collapsed');
         moreBtn.textContent = 'View More Links';
+        moreBtn.scrollIntoView({ behavior: 'smooth', block: 'center' });
       }
     });
   }

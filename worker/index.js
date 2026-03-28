@@ -191,22 +191,25 @@ async function generateTags(catalog, geminiKey) {
 
   const prompt = `You are a music expert helping curate a vinyl record shop called Late Records.
 
-From this catalog, extract a diverse mixed bag of tags — these will be displayed as a tag cloud on the shop's homepage. Mix freely between:
-- Genre names (e.g. "City Pop", "Afrobeat", "Post-Punk")
-- Artist names (e.g. "Miles Davis", "Aphex Twin")
-- Producer names, label names, songwriter names
-- Cities and countries (e.g. "Tokyo", "Lagos", "Detroit")
-- Eras and years (e.g. "1972", "late 70s", "80s")
-- Short evocative phrases pulled from descriptions (e.g. "found in a basement in Tokyo", "never reissued", "only 500 pressed")
-- Notable sample credits, cultural references
-- Mood words or scene descriptors (e.g. "rare grooves", "deep cuts", "holy grail")
+From the catalog descriptions below, extract interesting phrases, sentences, and details for a tag cloud on the homepage. Focus on:
+- Important people mentioned (producers, engineers, songwriters, session musicians) and what they did
+- Short evocative phrases or sentences from the descriptions (e.g. "recorded in a single session", "never reissued", "only 500 pressed")
+- Cities, countries, studios, or places mentioned
+- Eras, years, or time references
+- Notable sample credits, cultural references, historical context
+- Label names mentioned in descriptions
+- Mood or scene descriptors that come from the text
+
+Do NOT include:
+- Artist names or album titles (these are shown elsewhere)
+- Genre names (shown separately)
 
 Rules:
 - Return 60-80 tags total
-- Keep phrases short (max 6-7 words)
+- Keep phrases short (max 7-8 words)
 - Mix all categories together randomly — do NOT group by type
 - Pull actual details from the descriptions — don't make things up
-- Include interesting specific details over generic ones
+- Prefer specific, interesting details over generic ones
 - Respond with ONLY a JSON array of strings, no explanation, no markdown
 
 Catalog:
