@@ -7,7 +7,7 @@
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
 :root {
-  --max-w:    1200px;
+  --max-w:    960px;
   --pad-h:    30px;
   --header-h: 74px;
   --footer-h: 48px;
@@ -82,7 +82,7 @@ button { cursor: pointer; font-family: inherit; }
 }
 
 .header-logo {
-  height: 44px;
+  height: 26px;
   display: block;
 }
 
