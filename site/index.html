@@ -551,7 +551,7 @@ html.dark .sk {
   color: var(--ink); text-decoration: underline;
 }
 .tag-cloud-sep {
-  color: var(--ink15); margin: 0 1px;
+  color: var(--ink45); margin: 0 1px;
   font-size: 11px; user-select: none;
 }
 .tag-cloud-more {
@@ -791,29 +791,91 @@ function buildArtRotator(catalog) {
 }
 
 // ── Tag cloud ──────────────────────────────────────────────
+function cleanPhrase(s) {
+  // strip leading conjunctions/prepositions/articles
+  s = s.replace(/^(and|or|but|with|from|the|a|an|its|their|into|as)\s+/i, '');
+  // strip trailing conjunctions/articles/prepositions
+  s = s.replace(/\s+(and|or|but|with|from|a|an|the|into|as)$/i, '');
+  // reject if ends with adjective/incomplete thought (trailing "raw", "warm", "distinct", etc.)
+  if (/\s(raw|warm|distinct|intimate|deep|strong|bright|heavy|subtle|rich|key|new|own|local|sonic|sparse|cosmic)$/i.test(s)) return '';
+  // reject very short fragments after cleaning
+  if (s.length < 12) return '';
+  // capitalize first letter
+  s = s.charAt(0).toUpperCase() + s.slice(1);
+  return s.trim();
+}
+
+function extractPeopleTags(desc, album) {
+  const tags = [];
+  // match "produced by X", "engineered by X", "arranged by X", etc.
+  const byPattern = /(?:produced|engineered|arranged|composed|mixed|recorded|directed|featuring|feat)\s+by\s+([A-Z][a-zA-Zé\u00C0-\u024F\s.'-]+)/g;
+  let m;
+  while ((m = byPattern.exec(desc)) !== null) {
+    tags.push({ text: m[0].trim(), albumId: album.album_id });
+  }
+  // match "including X, Y, and Z" or "with X on piano"
+  const inclPattern = /including\s+([A-Z][a-zA-Zé\u00C0-\u024F\s,.'&-]+?)(?:\.|,\s*and\s|$)/g;
+  while ((m = inclPattern.exec(desc)) !== null) {
+    const names = m[1].split(/,|and/).map(n => n.trim()).filter(n => n.length > 3 && /^[A-Z]/.test(n));
+    names.forEach(n => tags.push({ text: n, albumId: album.album_id }));
+  }
+  // match "Name on instrument" patterns
+  const onPattern = /([A-Z][a-zA-Zé\u00C0-\u024F.'-]+(?:\s[A-Z][a-zA-Zé\u00C0-\u024F.'-]+)*)\s+on\s+([\w\s]+?)(?:\.|,|and\s|$)/g;
+  while ((m = onPattern.exec(desc)) !== null) {
+    if (m[1].length > 3 && m[2].length > 2) {
+      tags.push({ text: m[1].trim() + ' on ' + m[2].trim(), albumId: album.album_id });
+    }
+  }
+  // standalone names: "Chick Corea", "Ron Carter" — capitalized multi-word names
+  const namePattern = /(?:^|[,;—–]\s*)([A-Z][a-z]+(?:\s[A-Z][a-zé\u00C0-\u024F]+)+)/g;
+  while ((m = namePattern.exec(desc)) !== null) {
+    const name = m[1].trim();
+    // skip if it's the album artist or generic words
+    if (name.length > 5 && name.split(' ').length <= 4) {
+      const skip = ['The Album', 'The Record', 'The Sound', 'The Music', 'This Album', 'Staff Pick'];
+      if (!skip.some(s => s.toLowerCase() === name.toLowerCase())) {
+        tags.push({ text: name, albumId: album.album_id });
+      }
+    }
+  }
+  return tags;
+}
+
 function extractTagsFromCatalog(catalog) {
   const tags = [];
   const seen = new Set();
-  function add(text, album) {
+  function add(text, albumId) {
     const t = text.trim();
     const key = t.toLowerCase();
     if (!key || key.length < 8 || seen.has(key)) return;
+    // reject single generic words
+    if (!/\s/.test(t) && t.length < 15) return;
     seen.add(key);
-    tags.push({ text: t, albumId: album.album_id });
+    tags.push({ text: t, albumId: albumId });
   }
   catalog.forEach(a => {
     if (!a.description) return;
+    // protect abbreviations from sentence splitting
+    const safe = a.description.replace(/\b(Mr|Mrs|Dr|St|Vol|No)\./g, '$1\u2024');
     // split on sentence boundaries
-    const sentences = a.description.split(/[.!?;]+/).map(s => s.trim()).filter(s => s.length > 8);
+    const sentences = safe.split(/[.!?;]+/).map(s => s.replace(/\u2024/g, '.').trim()).filter(s => s.length > 12);
     sentences.forEach(s => {
-      // skip if it's just the artist or album title
       const lower = s.toLowerCase();
       if (a.artist && lower === String(a.artist).toLowerCase()) return;
       if (a.title && lower === String(a.title).toLowerCase()) return;
-      if (s.length <= 80) { add(s, a); return; }
-      // split long sentences on commas to get shorter phrases
-      s.split(/,/).map(c => c.trim()).filter(c => c.length > 8 && c.length <= 80).forEach(c => add(c, a));
+      if (s.length <= 80) {
+        const cleaned = cleanPhrase(s);
+        if (cleaned.length > 10) add(cleaned, a.album_id);
+        return;
+      }
+      // split long sentences on commas
+      s.split(/,/).map(c => c.trim()).filter(c => c.length > 12 && c.length <= 80).forEach(c => {
+        const cleaned = cleanPhrase(c);
+        if (cleaned.length > 10) add(cleaned, a.album_id);
+      });
     });
+    // extract people mentions
+    extractPeopleTags(a.description, a).forEach(t => add(t.text, t.albumId));
   });
   return tags;
 }
@@ -821,8 +883,7 @@ function extractTagsFromCatalog(catalog) {
 function renderTagCloud(tags) {
   const list = document.getElementById('tagCloudList');
   if (!list || !tags.length) return;
-  const shuffled = [...tags].sort(() => Math.random() - 0.5);
-  list.innerHTML = shuffled.map((tag, i) => {
+  list.innerHTML = tags.map((tag, i) => {
     const url = `albums/album.html?id=${encodeURIComponent(tag.albumId)}`;
     return (i > 0 ? '<span class="tag-cloud-sep"> · </span>' : '') +
       `<a class="tag-cloud-item" href="${url}">${_escHTML(tag.text)}</a>`;
@@ -845,19 +906,40 @@ function renderTagCloud(tags) {
   }
 }
 
+var TAG_CACHE_KEY = 'lr_tag_cloud';
+var TAG_CACHE_TTL = 86400000; // 24 hours
+
 async function loadTagCloud(catalog) {
+  // check localStorage cache
+  try {
+    var cached = JSON.parse(localStorage.getItem(TAG_CACHE_KEY));
+    if (cached && cached.tags && cached.tags.length && (Date.now() - cached.ts) < TAG_CACHE_TTL) {
+      renderTagCloud(cached.tags);
+      return;
+    }
+  } catch (e) {}
+
+  var tags = null;
   try {
     const res = await fetch('https://late-records.shop/api/tags');
     const data = await res.json();
     if (Array.isArray(data) && data.length) {
-      // API tags don't have albumId, pick a random album for each
-      const tags = data.map(t => ({ text: t, albumId: catalog[Math.floor(Math.random() * catalog.length)].album_id }));
-      renderTagCloud(tags); return;
+      tags = data.map(t => ({ text: t, albumId: catalog[Math.floor(Math.random() * catalog.length)].album_id }));
     }
-  } catch (e) { /* fall through to catalog fallback */ }
-  const fallback = extractTagsFromCatalog(catalog);
-  if (fallback.length) { renderTagCloud(fallback); }
-  else { document.getElementById('tagCloud').style.display = 'none'; }
+  } catch (e) {}
+
+  if (!tags || !tags.length) {
+    tags = extractTagsFromCatalog(catalog);
+  }
+
+  if (tags.length) {
+    // shuffle once, cache for 24hrs
+    tags = [...tags].sort(() => Math.random() - 0.5);
+    try { localStorage.setItem(TAG_CACHE_KEY, JSON.stringify({ tags: tags, ts: Date.now() })); } catch (e) {}
+    renderTagCloud(tags);
+  } else {
+    document.getElementById('tagCloud').style.display = 'none';
+  }
 }
 
 // ── Search bar toggle ──────────────────────────────────────
