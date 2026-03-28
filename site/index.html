@@ -46,17 +46,10 @@ html.dark {
 html, body {
   font-family: 'Inter', system-ui, sans-serif;
   background-color: var(--bg);
-  color: var(--ink);
-  -webkit-font-smoothing: antialiased;
-}
-body::before {
-  content: '';
-  position: fixed;
-  inset: 0;
   background-image: radial-gradient(circle, var(--bg-dot) 0.5px, transparent 0.5px);
   background-size: 3px 3px;
-  pointer-events: none;
-  z-index: -1;
+  color: var(--ink);
+  -webkit-font-smoothing: antialiased;
 }
 
 img { display: block; max-width: 100%; }
@@ -85,6 +78,58 @@ button { cursor: pointer; font-family: inherit; }
 }
 .cart-link:hover { color: var(--ink55); }
 
+/* ── Search icon + drop-down bar ──────────────────────────── */
+.search-btn {
+  background: none; border: none; padding: 4px;
+  color: var(--ink); cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  transition: opacity .15s; flex-shrink: 0;
+}
+.search-btn:hover { opacity: .6; }
+.search-btn svg { width: 17px; height: 17px; }
+
+.search-bar {
+  position: fixed;
+  top: 74px; left: 0; right: 0;
+  z-index: 998;
+  background-color: var(--bg);
+  background-image: radial-gradient(circle, var(--bg-dot) 0.5px, transparent 0.5px);
+  background-size: 3px 3px;
+  border-bottom: 1px solid var(--border);
+  height: 0; overflow: hidden;
+  transition: height .18s ease;
+}
+.search-bar.open { height: 46px; }
+
+.search-bar-inner {
+  max-width: 1200px; margin: 0 auto; padding: 0 30px;
+  height: 46px; display: flex; align-items: center;
+}
+.search-input {
+  flex: 1; border: none; background: transparent;
+  font-family: 'Inter', system-ui, sans-serif;
+  font-size: 13px; font-weight: 400; color: var(--ink);
+  padding: 5px 0; outline: none; letter-spacing: .01em;
+}
+.search-input::placeholder { color: var(--ink30); }
+.search-clear {
+  border: none; background: none; padding: 0 0 0 8px;
+  font-size: 16px; color: var(--ink30); cursor: pointer;
+  line-height: 1; display: none; transition: color .1s;
+}
+.search-clear:hover { color: var(--ink); }
+.search-count {
+  font-size: 10px; font-weight: 500; letter-spacing: .08em;
+  text-transform: uppercase; color: var(--ink30);
+  padding-left: 14px; white-space: nowrap; flex-shrink: 0;
+}
+@media (max-width: 600px) {
+  .search-bar-inner { padding: 0 20px; }
+  .search-count { display: none; }
+}
+
+body.search-open .tbl thead th { top: 120px; }
+
 /* ── Theme toggle ──────────────────────────────────────────── */
 .theme-toggle {
   background: none; border: none; padding: 4px;
@@ -97,9 +142,6 @@ button { cursor: pointer; font-family: inherit; }
 .theme-toggle .icon-moon { width: 18px; height: 18px; display: block; }
 html:not(.dark) .theme-toggle .icon-moon { display: none; }
 html.dark        .theme-toggle .icon-sun  { display: none; }
-.logo-dark            { display: none; }
-html.dark .logo-light { display: none; }
-html.dark .logo-dark  { display: block; }
 
 .container {
   max-width: 1200px; margin: 0 auto; padding: 84px 30px 80px;
@@ -209,6 +251,7 @@ col.c-stock  { width: 8%; }
 .tbl thead th.c-stock { text-align: right; padding-right: 0; }
 .tbl thead th.c-art   { padding-right: 0; }
 
+.tbl tbody tr, .tbl tbody td { background: transparent; }
 .tbl tbody tr { cursor: pointer; transition: color 0.1s linear; }
 .tbl tbody tr:hover .rec-title, .tbl tbody tr:hover .rec-artist,
 .tbl tbody tr:hover .rec-stock { color: var(--ink); }
@@ -269,6 +312,23 @@ col.c-stock  { width: 8%; }
 .tbl tbody tr.sold .rec-format { color: var(--ink30); }
 .tbl tbody tr.sold .rec-stock  { color: var(--ink30); }
 .tbl tbody tr.sold .sdot       { background: var(--ink30) !important; }
+
+/* ── A-Z Nav ─────────────────────────────────────────────── */
+.az-nav {
+  display: flex; flex-wrap: wrap; align-items: center;
+  gap: 6px; padding: 14px 0 12px;
+  border-bottom: 1px solid var(--border-mid);
+}
+.az-letter {
+  font-size: 11px; font-weight: 500; letter-spacing: .07em;
+  text-transform: uppercase; border: none; background: none;
+  color: var(--ink45); cursor: pointer;
+  padding: 7px 13px; min-width: 34px; text-align: center;
+  line-height: 1; transition: color .1s, background .1s;
+}
+.az-letter:hover:not(:disabled) { color: var(--ink); background: var(--border-mid); }
+.az-letter.active { background: var(--btn-bg); color: var(--btn-fg); }
+.az-letter.empty, .az-letter:disabled { color: var(--ink15); cursor: default; }
 
 /* ── Search ──────────────────────────────────────────────── */
 .search-row {
@@ -410,10 +470,15 @@ html.dark .sk {
 <header class="fixed-header">
   <div class="header-inner">
     <a href="index.html">
-      <img src="images/late-records-logo.png" class="header-logo logo-light" alt="LATE RECORDS">
-      <img src="images/late-records-logo-dark.png" class="header-logo logo-dark" alt="LATE RECORDS">
+      <img src="images/late-records-logo.png" class="header-logo" alt="LATE RECORDS">
     </a>
     <div class="header-right">
+      <button class="search-btn" id="searchBtn" aria-label="Search">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="11" cy="11" r="7"/>
+          <line x1="16.5" y1="16.5" x2="22" y2="22"/>
+        </svg>
+      </button>
       <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme">
         <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
           <circle cx="12" cy="12" r="4"/>
@@ -434,6 +499,17 @@ html.dark .sk {
     </div>
   </div>
 </header>
+
+<div class="search-bar" id="searchBar">
+  <div class="search-bar-inner">
+    <input class="search-input" id="searchInput" type="search"
+      autocomplete="off" spellcheck="false"
+      placeholder="Search by title, artist, genre, format…">
+    <button class="search-clear" id="searchClear" aria-label="Clear search">&#215;</button>
+    <span class="search-count" id="searchCount"></span>
+    <button class="avail-toggle" id="availToggle" aria-label="Show available only" onclick="toggleAvail()"></button>
+  </div>
+</div>
 
 <div class="container">
 
@@ -459,14 +535,7 @@ html.dark .sk {
 
   <hr class="section-divider">
 
-  <div class="search-row">
-    <input class="search-input" id="searchInput" type="search"
-      autocomplete="off" spellcheck="false"
-      placeholder="Search by title, artist, genre, format…">
-    <button class="search-clear" id="searchClear" aria-label="Clear search">&#215;</button>
-    <span class="search-count" id="searchCount"></span>
-    <button class="avail-toggle" id="availToggle" aria-label="Show available only" onclick="toggleAvail()"></button>
-  </div>
+  <div class="az-nav" id="azNav"></div>
 
   <div class="suggestions-header" id="suggestionsHeader"></div>
   <div class="no-results-empty" id="noResultsEmpty">Nothing found.</div>
@@ -564,6 +633,49 @@ function buildCarousel(albums) {
   document.getElementById('nextBtn').addEventListener('click', (e) => { e.stopPropagation(); goTo(current + 1); });
 }
 
+// ── Search bar toggle ──────────────────────────────────────
+(function() {
+  var btn   = document.getElementById('searchBtn');
+  var bar   = document.getElementById('searchBar');
+  var input = document.getElementById('searchInput');
+
+  function openSearch() {
+    bar.classList.add('open');
+    document.body.classList.add('search-open');
+    setTimeout(function() { input.focus(); }, 180);
+  }
+
+  function closeSearch() {
+    bar.classList.remove('open');
+    document.body.classList.remove('search-open');
+    input.value = '';
+    document.getElementById('searchClear').style.display = 'none';
+    input.dispatchEvent(new Event('input'));
+  }
+
+  btn.addEventListener('click', function() {
+    bar.classList.contains('open') ? closeSearch() : openSearch();
+  });
+
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape' && bar.classList.contains('open')) closeSearch();
+  });
+
+  document.addEventListener('click', function(e) {
+    if (
+      bar.classList.contains('open') &&
+      !e.target.closest('#searchBar') &&
+      !e.target.closest('#searchBtn') &&
+      !e.target.closest('#catalogTable') &&
+      !e.target.closest('#suggestionsHeader') &&
+      !e.target.closest('.az-nav') &&
+      !e.target.closest('.no-results-empty')
+    ) {
+      closeSearch();
+    }
+  });
+})();
+
 window.availFilterActive = false;
 
 function toggleAvail() {
@@ -591,6 +703,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     window._catalogCache = catalog;
     buildCarousel(catalog);
     buildTable(catalog);
+    buildAZNav(catalog);
   } else {
     document.getElementById('carouselTrack').innerHTML = '';
     document.getElementById('catalogList').innerHTML =

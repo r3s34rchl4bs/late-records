@@ -104,24 +104,6 @@ button { cursor: pointer; font-family: inherit; }
 .checkout-page .cart-link,
 .success-page  .cart-link { display: none; }
 
-/* ── Header right group ───────────────────────────────────── */
-
-.header-right {
-  display: flex;
-  align-items: center;
-  gap: 16px;
-}
-
-/* ── Freeze transitions during theme switch ───────────────── */
-
-html.no-transitions * { transition: none !important; }
-
-/* ── Logo swap (CSS-only, no src change) ──────────────────── */
-
-.logo-dark              { display: none; }
-html.dark .logo-light   { display: none; }
-html.dark .logo-dark    { display: block; }
-
 /* ── Theme toggle ─────────────────────────────────────────── */
 
 .theme-toggle {
