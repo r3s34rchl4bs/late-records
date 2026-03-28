@@ -177,7 +177,7 @@ body.search-active .az-nav { display: none; }
   text-transform: uppercase; color: var(--ink45); margin-bottom: 4px;
 }
 .info-rotator-text {
-  font-size: 12px; font-weight: 300; color: var(--ink45);
+  font-size: 11px; font-weight: 200; color: var(--ink30);
   letter-spacing: .01em; line-height: 1.5;
 }
 
@@ -649,7 +649,7 @@ function _escHTML(s) {
 // ── Info rotator ────────────────────────────────────────────
 (function() {
   const slides = [
-    { title: 'Info', text: 'Catalog updated daily. New pressings and used finds.' },
+    { title: 'Shop Info', text: 'Catalog updated daily. New pressings and used finds.' },
     { title: 'Shipping & Handling', text: 'All records ship in custom mailers. Allow 3–5 business days for domestic delivery.' },
     { title: 'Condition & Grading', text: 'All records graded visually and play-tested. Condition noted on each listing.' }
   ];
@@ -662,8 +662,8 @@ function _escHTML(s) {
     textEl.textContent  = slides[idx].text;
   }
   show(0);
-  document.getElementById('infoPrev').addEventListener('click', () => show(idx - 1));
-  document.getElementById('infoNext').addEventListener('click', () => show(idx + 1));
+  document.getElementById('infoPrev').addEventListener('click', (e) => { e.stopPropagation(); show(idx - 1); });
+  document.getElementById('infoNext').addEventListener('click', (e) => { e.stopPropagation(); show(idx + 1); });
 })();
 
 function buildCarousel(albums) {
