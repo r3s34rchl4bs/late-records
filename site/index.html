@@ -795,31 +795,26 @@ function extractTagsFromCatalog(catalog) {
   const tags = [];
   const seen = new Set();
   function add(text, album) {
-    const key = text.toLowerCase().trim();
-    if (!key || key.length < 4 || seen.has(key)) return;
+    const t = text.trim();
+    const key = t.toLowerCase();
+    if (!key || key.length < 8 || seen.has(key)) return;
     seen.add(key);
-    tags.push({ text: text.trim(), albumId: album.album_id });
+    tags.push({ text: t, albumId: album.album_id });
   }
-  // first pass: descriptions (preferred source)
   catalog.forEach(a => {
     if (!a.description) return;
-    const parts = a.description.split(/[.!?;]+/).map(s => s.trim()).filter(s => s.length > 8 && s.length < 70);
-    parts.forEach(s => {
+    // split on sentence boundaries
+    const sentences = a.description.split(/[.!?;]+/).map(s => s.trim()).filter(s => s.length > 8);
+    sentences.forEach(s => {
+      // skip if it's just the artist or album title
       const lower = s.toLowerCase();
       if (a.artist && lower === a.artist.toLowerCase()) return;
       if (a.title && lower === a.title.toLowerCase()) return;
-      add(s, a);
+      if (s.length <= 80) { add(s, a); return; }
+      // split long sentences on commas to get shorter phrases
+      s.split(/,/).map(c => c.trim()).filter(c => c.length > 8 && c.length <= 80).forEach(c => add(c, a));
     });
   });
-  // second pass: if descriptions yielded very little, pull from all text fields
-  if (tags.length < 10) {
-    catalog.forEach(a => {
-      // tracklist entries as discovery tags
-      if (a.tracklist) a.tracklist.split('||').forEach(t => { const v = t.trim(); if (v && v.length > 3) add(v, a); });
-      // context entries
-      if (a.context) a.context.split('||').forEach(c => add(c, a));
-    });
-  }
   return tags;
 }
 
