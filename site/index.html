@@ -160,8 +160,9 @@ body.search-active .az-nav { display: none; }
   display: flex; align-items: center;
   border-top: 1px solid var(--border-mid);
   padding: 14px 0;
+  margin: 32px auto 32px;
   gap: 12px;
-  max-width: 520px; margin: 0 auto;
+  max-width: 520px;
 }
 .info-rotator-btn {
   width: 28px; height: 28px; flex-shrink: 0;
@@ -530,17 +531,20 @@ html.dark .sk {
 
 /* ── Tag cloud (YouTube 2005 style) ─────────────────────── */
 .tag-cloud {
-  padding: 32px 0 48px;
+  padding: 24px 0 48px;
   border-top: 1px solid var(--border-mid);
   text-align: center;
-  line-height: 2;
-}
-.tag-cloud-label {
-  font-size: 10px; font-weight: 500; letter-spacing: .1em;
-  text-transform: uppercase; color: var(--ink30); margin-bottom: 14px;
+  line-height: 1.7;
 }
 .tag-cloud-list {
   display: inline;
+  overflow: hidden;
+}
+.tag-cloud-list.collapsed {
+  display: -webkit-box;
+  -webkit-line-clamp: 5;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
 }
 .tag-cloud-item {
   font-size: 11px; color: var(--ink45);
@@ -551,9 +555,16 @@ html.dark .sk {
   color: var(--ink); text-decoration: underline;
 }
 .tag-cloud-sep {
-  color: var(--ink15); margin: 0 2px;
+  color: var(--ink15); margin: 0 1px;
   font-size: 11px; user-select: none;
 }
+.tag-cloud-more {
+  display: block; margin-top: 14px;
+  font-size: 11px; font-weight: 600; color: var(--ink45);
+  cursor: pointer; text-decoration: none;
+  letter-spacing: .02em;
+}
+.tag-cloud-more:hover { color: var(--ink); text-decoration: underline; }
 
 /* ── Footer (invisible placeholder) ─────────────────────── */
 .lr-footer { display: none; }
@@ -672,8 +683,8 @@ html.dark .sk {
   </div>
 
   <div class="tag-cloud" id="tagCloud">
-    <div class="tag-cloud-label">Explore</div>
-    <div class="tag-cloud-list" id="tagCloudList"></div>
+    <div class="tag-cloud-list collapsed" id="tagCloudList"></div>
+    <a class="tag-cloud-more" id="tagCloudMore">View More Links</a>
   </div>
 
 </div>
@@ -785,49 +796,64 @@ function buildArtRotator(catalog) {
 
 // ── Tag cloud ──────────────────────────────────────────────
 function extractTagsFromCatalog(catalog) {
-  const tags = new Set();
+  const tags = [];
+  const seen = new Set();
+  function add(text, album) {
+    const key = text.toLowerCase().trim();
+    if (!key || seen.has(key)) return;
+    seen.add(key);
+    tags.push({ text: text.trim(), albumId: album.album_id });
+  }
   catalog.forEach(a => {
-    // artists
-    if (a.artist) tags.add(a.artist.trim());
-    // genres
-    if (a.genre) a.genre.split('||').forEach(g => { const t = g.trim(); if (t) tags.add(t); });
-    // context fields (labels, places, eras, phrases)
-    if (a.context) a.context.split('||').forEach(c => { const t = c.trim(); if (t) tags.add(t); });
+    // artist names
+    if (a.artist) add(a.artist, a);
+    // context fields (labels, places, eras, phrases) — no genres
+    if (a.context) a.context.split('||').forEach(c => add(c, a));
+    // pick phrases from description (sentences or fragments)
+    if (a.description) {
+      const sentences = a.description.split(/[.!?]+/).map(s => s.trim()).filter(s => s.length > 8 && s.length < 60);
+      sentences.slice(0, 2).forEach(s => add(s, a));
+    }
   });
-  return [...tags];
+  return tags;
 }
 
 function renderTagCloud(tags) {
   const list = document.getElementById('tagCloudList');
   if (!list || !tags.length) return;
   const shuffled = [...tags].sort(() => Math.random() - 0.5);
-  list.innerHTML = shuffled.map((tag, i) =>
-    (i > 0 ? '<span class="tag-cloud-sep"> · </span>' : '') +
-    `<span class="tag-cloud-item">${_escHTML(tag)}</span>`
-  ).join('');
-  list.querySelectorAll('.tag-cloud-item').forEach(el => {
-    el.addEventListener('click', () => {
-      const term = el.textContent;
-      const input = document.getElementById('searchInput');
-      const bar = document.getElementById('searchBar');
-      bar.classList.add('open');
-      document.body.classList.add('search-open');
-      document.body.classList.add('search-active');
-      input.value = term;
-      input.dispatchEvent(new Event('input'));
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-      setTimeout(() => input.focus(), 200);
+  list.innerHTML = shuffled.map((tag, i) => {
+    const url = `albums/album.html?id=${encodeURIComponent(tag.albumId)}`;
+    return (i > 0 ? '<span class="tag-cloud-sep"> · </span>' : '') +
+      `<a class="tag-cloud-item" href="${url}">${_escHTML(tag.text)}</a>`;
+  }).join('');
+  // "View More Links" toggle
+  const moreBtn = document.getElementById('tagCloudMore');
+  if (moreBtn) {
+    moreBtn.addEventListener('click', (e) => {
+      e.preventDefault();
+      const expanded = !list.classList.contains('collapsed');
+      if (!expanded) {
+        list.classList.remove('collapsed');
+        moreBtn.textContent = 'View Less';
+      } else {
+        list.classList.add('collapsed');
+        moreBtn.textContent = 'View More Links';
+      }
     });
-  });
+  }
 }
 
 async function loadTagCloud(catalog) {
   try {
     const res = await fetch('/api/tags');
-    const tags = await res.json();
-    if (Array.isArray(tags) && tags.length) { renderTagCloud(tags); return; }
+    const data = await res.json();
+    if (Array.isArray(data) && data.length) {
+      // API tags don't have albumId, pick a random album for each
+      const tags = data.map(t => ({ text: t, albumId: catalog[Math.floor(Math.random() * catalog.length)].album_id }));
+      renderTagCloud(tags); return;
+    }
   } catch (e) { /* fall through to catalog fallback */ }
-  // fallback: extract from catalog data
   const fallback = extractTagsFromCatalog(catalog);
   if (fallback.length) { renderTagCloud(fallback); }
   else { document.getElementById('tagCloud').style.display = 'none'; }
