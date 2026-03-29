@@ -111,7 +111,7 @@ function extractTagsFromCatalog(catalog) {
     if (helmMatches) helmMatches.forEach(function(m) { add(m.split(/\s+/).slice(0, 6).join(' '), a.album_id); });
 
     // 3) Key phrases — release history, studio, location
-    var keyPhrases = desc.match(/originally released in \d{4}|dating back to \d{4}|first issued in \d{4}|first time on vinyl since \d{4}|never reissued|only \d+ pressed|first pressing|early pressing|private press|limited press|long out of print|rare [a-z]+ [a-z]+|recorded (?:at|in) [A-Za-z\s]+|pressed at [A-Za-z\s]+|cut at [A-Za-z\s]+|tracked at [A-Za-z\s]+/gi);
+    var keyPhrases = desc.match(/originally released in \d{4}|dating back to \d{4}|first issued in \d{4}|first time on vinyl since \d{4}|never reissued|only \d+ pressed|first pressing|early pressing|private press|limited press|long out of print|rare [a-z]+ [a-z]+|(?:recorded |cut |tracked |pressed |laid down )(?:at|in) [A-Z][A-Za-z.'-]+(?:\s+[A-Z][A-Za-z.'-]+)?/g);
     if (keyPhrases) keyPhrases.forEach(function(p) { add(p.split(/\s+/).slice(0, 6).join(' '), a.album_id); });
 
     // 4) Pressing / format / mastering
