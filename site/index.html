@@ -375,7 +375,7 @@ col.c-stock  { width: 8%; }
 
 /* ── A-Z Nav ─────────────────────────────────────────────── */
 .az-nav {
-  display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between;
+  display: flex; flex-wrap: wrap; align-items: center;
   gap: 8px 6px; padding: 24px 0 22px;
   border-bottom: 1px solid var(--border-mid);
 }
@@ -517,6 +517,7 @@ html.dark .sk {
     display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
   }
   .genre-tag    { font-size: 9px; padding: 2px 5px; }
+  .az-nav       { justify-content: space-between; }
   /* table: art column shrinks to match rec-art-wrap at this breakpoint */
   col.c-art    { width: 28px; }  /* must match .rec-art-wrap below */
   col.c-format, col.c-stock { display: none; }
