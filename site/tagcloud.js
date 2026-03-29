@@ -52,13 +52,13 @@ function dedupeByPhrasePrefix(tags) {
   });
 }
 
-// ── One-per-album dedup ──────────────────────────────────
+// ── Two-per-album cap ────────────────────────────────────
+var MAX_TAGS_PER_ALBUM = 2;
 function dedupeByAlbum(tags) {
-  var seen = new Set();
+  var counts = {};
   return tags.filter(function(tag) {
-    if (seen.has(tag.albumId)) return false;
-    seen.add(tag.albumId);
-    return true;
+    counts[tag.albumId] = (counts[tag.albumId] || 0) + 1;
+    return counts[tag.albumId] <= MAX_TAGS_PER_ALBUM;
   });
 }
 
