@@ -162,15 +162,35 @@ function renderTagCloud(tags) {
   render();
 }
 
+// ── Catalog hash (detect sheet changes) ──────────────────
+function catalogHash(catalog) {
+  // Build a fingerprint from album count + all descriptions
+  var str = catalog.length + ':';
+  catalog.forEach(function(a) {
+    str += (a.album_id || '') + '|' + (a.description || '') + ';';
+  });
+  // Simple fast hash (djb2)
+  var hash = 5381;
+  for (var i = 0; i < str.length; i++) {
+    hash = ((hash << 5) + hash) + str.charCodeAt(i);
+    hash = hash & hash; // Convert to 32-bit int
+  }
+  return hash.toString(36);
+}
+
 // ── Loading (API → fallback → cache) ─────────────────────
-var TAG_CACHE_KEY = 'lr_tag_cloud_v3';
+var TAG_CACHE_KEY = 'lr_tag_cloud_v4';
 var TAG_CACHE_TTL = 86400000; // 24 hours
 
 async function loadTagCloud(catalog) {
-  // check localStorage cache
+  var currentHash = catalogHash(catalog);
+
+  // Check localStorage cache — serve if hash matches AND within TTL
   try {
     var cached = JSON.parse(localStorage.getItem(TAG_CACHE_KEY));
-    if (cached && cached.tags && cached.tags.length && (Date.now() - cached.ts) < TAG_CACHE_TTL) {
+    if (cached && cached.tags && cached.tags.length
+        && cached.hash === currentHash
+        && (Date.now() - cached.ts) < TAG_CACHE_TTL) {
       renderTagCloud(cached.tags);
       return;
     }
@@ -197,7 +217,7 @@ async function loadTagCloud(catalog) {
     tags = [...tags].sort(function() { return Math.random() - 0.5; });
     tags = dedupeByPhrasePrefix(tags);
     tags = dedupeByAlbum(tags);
-    try { localStorage.setItem(TAG_CACHE_KEY, JSON.stringify({ tags: tags, ts: Date.now() })); } catch (e) {}
+    try { localStorage.setItem(TAG_CACHE_KEY, JSON.stringify({ tags: tags, ts: Date.now(), hash: currentHash })); } catch (e) {}
     renderTagCloud(tags);
   } else {
     document.getElementById('tagCloud').style.display = 'none';
