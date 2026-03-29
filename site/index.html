@@ -871,6 +871,18 @@ document.addEventListener('DOMContentLoaded', async () => {
   }
 });
 
+// Fix broken/lazy images when restoring page from back-forward cache
+window.addEventListener('pageshow', function(e) {
+  if (e.persisted) {
+    document.querySelectorAll('.rec-art-wrap img').forEach(function(img) {
+      img.parentNode.style.opacity = '';
+      var src = img.src;
+      img.src = '';
+      img.src = src;
+    });
+  }
+});
+
 </script>
 
 </body>
