@@ -193,21 +193,30 @@ async function generateTags(catalog, geminiKey) {
 
 From the album descriptions below, create short, culturally meaningful link tags for the shop homepage. Each tag should read naturally as a standalone phrase someone might click on.
 
-What to extract:
-- People and their roles: "produced by Mad Professor", "Chick Corea on keys", "arranged by David Axelrod"
-- Cultural context and significance: "Brazilian funk masterpiece", "80s UK sound system culture", "Ethiopian golden era"
-- Places, studios, labels: "recorded at Compass Point", "Ariwa vaults", "Blue Note classic"
-- Historical details: "originally released in 1972", "never reissued", "only 500 pressed"
-- Evocative short descriptions: "analog warmth", "cinematic orchestration", "deep crate dig"
+Categories to extract from (vary across all of them — do not over-represent any single category):
+- Credits: "produced by Mad Professor", "arranged by David Axelrod", "Tony Allen on drums"
+- Labels: "Blue Note classic", "Ariwa vaults", "Stones Throw release"
+- Release history: "originally released in 1972", "never reissued", "first pressing"
+- Studios / locations: "recorded at Compass Point", "pressed at RTI"
+- Pressing / format: "180g virgin vinyl", "half-speed mastered", "gatefold sleeve"
+- Scene / movement: "80s UK sound system culture", "Ethiopian golden era", "1970s Lagos"
+- Sampling legacy: "sampled by J Dilla", "sampled on Endtroducing"
+- Rarity / collector signals: "only 500 pressed", "private press", "test pressing"
+- Cultural impact: "defined the Philly sound", "a cornerstone of UK bass"
 
-Rules:
+Diversity rules:
+- Maximum 3 tags per category — spread evenly across categories
+- Each album should contribute at most 1-2 tags to the total pool
+- Do not repeat the same phrasing pattern (e.g. avoid multiple "originally released in..." tags)
+
+Tag rules:
 - Each tag must be a complete, grammatically correct phrase (no cut-off sentences)
 - 3 to 6 words per tag (never longer)
 - Do NOT include bare artist names or album titles
 - Do NOT include genre names on their own
 - Do NOT start tags with "Featuring" or "The album"
 - Every tag should make sense if read in isolation
-- Return 60-80 tags total, mixed randomly
+- Return 60-80 tags total, mixed across categories
 - Respond with ONLY a JSON array of strings, no explanation, no markdown
 
 Catalog:

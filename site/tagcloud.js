@@ -4,6 +4,42 @@
  * Depends on: _escHTML() from index.html inline script.
  */
 
+// ── Category detection & caps ────────────────────────────
+var TAG_CATEGORY_CAP = 3;
+
+function classifyTag(text) {
+  var t = text.toLowerCase();
+  if (/(?:produced|engineered|arranged|mixed|composed)\s+by/.test(t)) return 'credits';
+  if (/\bon\s+(?:keys|drums|bass|guitar|piano|sax|trumpet|vocals|percussion|flute|organ|synth)\b/.test(t)) return 'session';
+  if (/(?:originally\s+released|first\s+pressing|reissue|private\s+press|never\s+reissued|limited\s+press|early\s+pressing)/.test(t)) return 'history';
+  if (/(?:recorded\s+(?:at|in)|pressed\s+at)/.test(t)) return 'studio';
+  if (/(?:180g|half-speed|gatefold|remastered\s+from)/.test(t)) return 'format';
+  if (/(?:sampled\s+by)/.test(t)) return 'sampling';
+  if (/(?:only\s+\d+\s+pressed|test\s+pressing|promo\s+copy|limited\s+run)/.test(t)) return 'rarity';
+  if (/(?:dancefloor|analog\s+warmth|cinematic|golden\s+era|sound\s+system|crate\s+dig)/.test(t)) return 'vibes';
+  return 'other';
+}
+
+function capByCategory(tags) {
+  var counts = {};
+  return tags.filter(function(tag) {
+    var cat = classifyTag(tag.text);
+    if (cat === 'other') return true;
+    counts[cat] = (counts[cat] || 0) + 1;
+    return counts[cat] <= TAG_CATEGORY_CAP;
+  });
+}
+
+// ── One-per-album dedup ──────────────────────────────────
+function dedupeByAlbum(tags) {
+  var seen = new Set();
+  return tags.filter(function(tag) {
+    if (seen.has(tag.albumId)) return false;
+    seen.add(tag.albumId);
+    return true;
+  });
+}
+
 // ── Extraction (client-side fallback) ─────────────────────
 function extractTagsFromCatalog(catalog) {
   var tags = [];
@@ -37,35 +73,38 @@ function extractTagsFromCatalog(catalog) {
       return false;
     }
 
-    // 1) Short complete sentences (2-7 words, naturally ending at period)
+    // 1) Short complete sentences (2-7 words)
     var sentences = desc.split(/\.\s+/).map(function(s) { return s.replace(/\.$/, '').trim(); });
     sentences.forEach(function(s) {
       var wc = s.split(/\s+/).length;
-      if (wc >= 2 && wc <= 7 && !containsArtistOrTitle(s)) {
-        add(s, a.album_id);
-      }
+      if (wc >= 2 && wc <= 7 && !containsArtistOrTitle(s)) add(s, a.album_id);
     });
 
-    // 2) "produced by X", "arranged by X" — keep the role context
+    // 2) "produced by X", "arranged by X", "[Name] on [instrument]"
     var byMatches = desc.match(/(?:produced|engineered|arranged|mixed|recorded|composed)\s+by\s+[A-Z][A-Za-z\s.'-]+/g);
-    if (byMatches) byMatches.forEach(function(m) {
-      var trimmed = m.split(/\s+/).slice(0, 6).join(' ');
-      add(trimmed, a.album_id);
-    });
+    if (byMatches) byMatches.forEach(function(m) { add(m.split(/\s+/).slice(0, 6).join(' '), a.album_id); });
+    var onMatches = desc.match(/[A-Z][A-Za-z.'-]+\s+(?:[A-Z][A-Za-z.'-]+\s+)?on\s+(?:keys|drums|bass|guitar|piano|sax|trumpet|vocals|percussion|flute|organ|synth)/g);
+    if (onMatches) onMatches.forEach(function(m) { add(m.split(/\s+/).slice(0, 5).join(' '), a.album_id); });
 
-    // 3) Key phrases
-    var keyPhrases = desc.match(/originally released in \d{4}|never reissued|only \d+ pressed|first pressing|private press|rare [a-z]+ [a-z]+|recorded (?:at|in) [A-Za-z\s]+/gi);
-    if (keyPhrases) keyPhrases.forEach(function(p) {
-      var trimmed = p.split(/\s+/).slice(0, 6).join(' ');
-      add(trimmed, a.album_id);
-    });
+    // 3) Key phrases — release history, studio, location
+    var keyPhrases = desc.match(/originally released in \d{4}|never reissued|only \d+ pressed|first pressing|early pressing|private press|limited press|rare [a-z]+ [a-z]+|recorded (?:at|in) [A-Za-z\s]+|pressed at [A-Za-z\s]+/gi);
+    if (keyPhrases) keyPhrases.forEach(function(p) { add(p.split(/\s+/).slice(0, 6).join(' '), a.album_id); });
 
-    // 4) Cultural context phrases
-    var contextPhrases = desc.match(/\d{2}s [A-Za-z\s]+culture|\b(?:golden era|sound system|crate dig[a-z]*|deep cut|analog warmth|cinematic [a-z]+|dancefloor [a-z]+)\b/gi);
-    if (contextPhrases) contextPhrases.forEach(function(p) {
-      var trimmed = p.split(/\s+/).slice(0, 5).join(' ');
-      add(trimmed, a.album_id);
-    });
+    // 4) Pressing / format
+    var formatPhrases = desc.match(/180g vinyl|half-speed mastered|gatefold sleeve|remastered from original tapes/gi);
+    if (formatPhrases) formatPhrases.forEach(function(p) { add(p, a.album_id); });
+
+    // 5) Sampling legacy
+    var sampledBy = desc.match(/sampled by [A-Z][A-Za-z\s.'-]+/g);
+    if (sampledBy) sampledBy.forEach(function(m) { add(m.split(/\s+/).slice(0, 5).join(' '), a.album_id); });
+
+    // 6) Rarity / collector signals
+    var rarityPhrases = desc.match(/test pressing|promo copy|limited run/gi);
+    if (rarityPhrases) rarityPhrases.forEach(function(p) { add(p, a.album_id); });
+
+    // 7) Cultural context phrases
+    var contextPhrases = desc.match(/\d{2}s [A-Za-z\s]+culture|\d{4}s [A-Z][A-Za-z]+|\b(?:golden era|sound system|crate dig[a-z]*|deep cut|analog warmth|cinematic [a-z]+|dancefloor [a-z]+)\b/gi);
+    if (contextPhrases) contextPhrases.forEach(function(p) { add(p.split(/\s+/).slice(0, 5).join(' '), a.album_id); });
   });
   return tags;
 }
@@ -90,9 +129,9 @@ function renderTagCloud(tags) {
   function render() {
     var html = buildTagHTML(tags, expanded ? null : TAG_VISIBLE_COUNT);
     if (!expanded && tags.length > TAG_VISIBLE_COUNT) {
-      html += '<span class="tag-cloud-sep">&middot;</span><a class="tag-cloud-more" id="tagCloudMore">View more links</a>';
+      html += '<span class="tag-cloud-sep">&middot;</span><a class="tag-cloud-more" id="tagCloudMore">VIEW MORE LINKS</a>';
     } else if (expanded && tags.length > TAG_VISIBLE_COUNT) {
-      html += '<span class="tag-cloud-sep">&middot;</span><a class="tag-cloud-more" id="tagCloudMore">View less</a>';
+      html += '<span class="tag-cloud-sep">&middot;</span><a class="tag-cloud-more" id="tagCloudMore">VIEW LESS</a>';
     }
     list.innerHTML = html;
     var btn = document.getElementById('tagCloudMore');
@@ -109,7 +148,7 @@ function renderTagCloud(tags) {
 }
 
 // ── Loading (API → fallback → cache) ─────────────────────
-var TAG_CACHE_KEY = 'lr_tag_cloud';
+var TAG_CACHE_KEY = 'lr_tag_cloud_v2';
 var TAG_CACHE_TTL = 86400000; // 24 hours
 
 async function loadTagCloud(catalog) {
@@ -138,7 +177,10 @@ async function loadTagCloud(catalog) {
   }
 
   if (tags.length) {
+    // Pipeline: cap categories → shuffle → one-per-album
+    tags = capByCategory(tags);
     tags = [...tags].sort(function() { return Math.random() - 0.5; });
+    tags = dedupeByAlbum(tags);
     try { localStorage.setItem(TAG_CACHE_KEY, JSON.stringify({ tags: tags, ts: Date.now() })); } catch (e) {}
     renderTagCloud(tags);
   } else {
