@@ -158,7 +158,7 @@ function extractTagsFromCatalog(catalog) {
 }
 
 // ── Rendering ─────────────────────────────────────────────
-var TAG_VISIBLE_COUNT = 15;
+var TAG_VISIBLE_COUNT = 12;
 
 function buildTagHTML(tags, limit) {
   var slice = limit ? tags.slice(0, limit) : tags;
@@ -177,9 +177,9 @@ function renderTagCloud(tags) {
   function render() {
     var html = buildTagHTML(tags, expanded ? null : TAG_VISIBLE_COUNT);
     if (!expanded && tags.length > TAG_VISIBLE_COUNT) {
-      html += '<span class="tag-cloud-sep">&middot;</span><a class="tag-cloud-more" id="tagCloudMore">VIEW MORE LINKS</a>';
+      html += '<span class="tag-cloud-sep">&middot;</span><a class="tag-cloud-more" id="tagCloudMore">Read more</a>';
     } else if (expanded && tags.length > TAG_VISIBLE_COUNT) {
-      html += '<span class="tag-cloud-sep">&middot;</span><a class="tag-cloud-more" id="tagCloudMore">VIEW LESS</a>';
+      html += '<span class="tag-cloud-sep">&middot;</span><a class="tag-cloud-more" id="tagCloudMore">Read less</a>';
     }
     list.innerHTML = html;
     var btn = document.getElementById('tagCloudMore');
