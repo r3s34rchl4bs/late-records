@@ -158,7 +158,7 @@ function extractTagsFromCatalog(catalog) {
 }
 
 // ── Rendering ─────────────────────────────────────────────
-var TAG_VISIBLE_COUNT = 30;
+var TAG_VISIBLE_COUNT = 15;
 
 function buildTagHTML(tags, limit) {
   var slice = limit ? tags.slice(0, limit) : tags;
