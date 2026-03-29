@@ -560,7 +560,11 @@ html.dark .sk {
 .tag-cloud-more:hover { color: var(--ink); text-decoration: underline; }
 
 /* ── Footer (invisible placeholder) ─────────────────────── */
-.lr-footer { padding: 24px 0; border-top: 1px solid var(--border-mid); }
+.lr-footer {
+  padding: 24px 0 32px; border-top: 1px solid var(--border-mid);
+  font-size: 10px; color: var(--ink25); text-align: left; line-height: 1.8;
+}
+.footer-line { letter-spacing: .03em; }
 
 </style>
 </head>
@@ -681,7 +685,10 @@ html.dark .sk {
 
 </div>
 
-<footer class="lr-footer"></footer>
+<footer class="lr-footer">
+  <div class="footer-line">made by r3s34rchl4bs &middot; &copy; Late Records 2026</div>
+  <div class="footer-line" id="footerUpdated"></div>
+</footer>
 
 <script src="script.js"></script>
 <script src="catalog.js"></script>
@@ -871,6 +878,22 @@ document.addEventListener('DOMContentLoaded', async () => {
       `<tr><td colspan="5" style="padding:40px 0;font-size:13px;color:var(--ink55)">Could not load catalog. Please refresh.</td></tr>`;
   }
 });
+
+// Footer timestamp (PST)
+(function() {
+  var el = document.getElementById('footerUpdated');
+  if (!el) return;
+  var now = new Date();
+  var pst = new Date(now.toLocaleString('en-US', { timeZone: 'America/Los_Angeles' }));
+  var mm = String(pst.getMonth() + 1).padStart(2, '0');
+  var dd = String(pst.getDate()).padStart(2, '0');
+  var yyyy = pst.getFullYear();
+  var h = pst.getHours();
+  var ampm = h >= 12 ? 'PM' : 'AM';
+  h = h % 12 || 12;
+  var min = String(pst.getMinutes()).padStart(2, '0');
+  el.textContent = 'Last Updated ' + mm + '/' + dd + '/' + yyyy + ' ' + h + ':' + min + ' ' + ampm + ' PST';
+})();
 
 // Fix broken/lazy images when restoring page from back-forward cache
 window.addEventListener('pageshow', function(e) {
