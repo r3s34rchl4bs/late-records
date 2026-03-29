@@ -193,15 +193,24 @@ async function generateTags(catalog, geminiKey) {
 
 From the album descriptions below, create short, culturally meaningful link tags for the shop homepage. Each tag should read naturally as a standalone phrase someone might click on.
 
-Categories to extract from (vary across all of them — do not over-represent any single category):
-- Credits: "produced by Mad Professor", "arranged by David Axelrod", "Tony Allen on drums"
-- Labels: "Blue Note classic", "Ariwa vaults", "Stones Throw release"
-- Release history: "originally released in 1972", "never reissued", "first pressing"
-- Studios / locations: "recorded at Compass Point", "pressed at RTI"
-- Pressing / format: "180g virgin vinyl", "half-speed mastered", "gatefold sleeve"
+Categories to extract from (vary across ALL of them — you have 20+ categories, use them):
+- Credits: "produced by Mad Professor", "arranged by David Axelrod", "Quincy Jones at the helm"
+- Session musicians: "Tony Allen on drums", "Herbie Hancock on electric piano"
+- Labels: "Blue Note classic", "Ariwa vaults", "from the Stones Throw catalog"
+- Release history: "a 1972 recording", "dating back to 1968", "first issued in 1981"
+- Studios / locations: "cut at Electric Lady Studios", "a Compass Point session"
+- Pressing / mastering: "pressed at RTI", "mastered by Kevin Gray", "remastered from original tapes"
 - Scene / movement: "80s UK sound system culture", "Ethiopian golden era", "1970s Lagos"
-- Sampling legacy: "sampled by J Dilla", "sampled on Endtroducing"
-- Rarity / collector signals: "only 500 pressed", "private press", "test pressing"
+- Sampling legacy: "sampled by J Dilla", "a breakbeat staple since the '90s"
+- Rarity / collector signals: "only 500 pressed", "private press", "long out of print"
+- Technique / process: "recorded in one take", "no overdubs", "built on a four-track"
+- Cover art / design: "sleeve by Vaughan Oliver", "photography by Mick Rock"
+- Live context: "captured live at Montreux", "a Peel Session recording"
+- Lineage / collaboration: "the only album to feature this lineup", "before forming Parliament"
+- Reissue provenance: "licensed from the family estate", "first time on vinyl since 1974"
+- Gear / instruments: "all sounds from a TR-808", "Fender Rhodes Mark I", "Juno-106 textures"
+- DJ / selector culture: "crate digger staple", "Northern Soul box essential", "Sound System exclusive"
+- Influence / covers: "later covered by Amy Winehouse", "banned from radio on release"
 - Cultural impact: "defined the Philly sound", "a cornerstone of UK bass"
 
 Diversity rules:
