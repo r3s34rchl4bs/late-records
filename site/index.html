@@ -562,9 +562,9 @@ html.dark .sk {
 /* ── Footer (invisible placeholder) ─────────────────────── */
 .lr-footer {
   padding: 24px 0 32px; border-top: 1px solid var(--border-mid);
-  font-size: 10px; color: var(--ink25); text-align: left; line-height: 1.8;
+  font-size: 10px; color: var(--ink30); text-align: left; line-height: 1.8;
+  letter-spacing: .04em; text-transform: uppercase; font-weight: 400;
 }
-.footer-line { letter-spacing: .03em; }
 
 </style>
 </head>
@@ -683,12 +683,12 @@ html.dark .sk {
     <div class="tag-cloud-list" id="tagCloudList"></div>
   </div>
 
-</div>
+  <footer class="lr-footer">
+    <div class="footer-line">made by r3s34rchl4bs &middot; &copy; Late Records 2026</div>
+    <div class="footer-line" id="footerUpdated"></div>
+  </footer>
 
-<footer class="lr-footer">
-  <div class="footer-line">made by r3s34rchl4bs &middot; &copy; Late Records 2026</div>
-  <div class="footer-line" id="footerUpdated"></div>
-</footer>
+</div>
 
 <script src="script.js"></script>
 <script src="catalog.js"></script>
