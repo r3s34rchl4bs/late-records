@@ -207,7 +207,11 @@ Categories to extract from (vary across all of them — do not over-represent an
 Diversity rules:
 - Maximum 3 tags per category — spread evenly across categories
 - Each album should contribute at most 1-2 tags to the total pool
-- Do not repeat the same phrasing pattern (e.g. avoid multiple "originally released in..." tags)
+- NEVER start two tags with the same words. Vary your phrasing:
+  - Instead of two "produced by X" tags, use "produced by X" once, then "an X production" or "X behind the board"
+  - Instead of two "originally released in" tags, use it once, then "dating back to 1974" or "a 1974 recording" or "first issued in 1974"
+  - Instead of two "recorded at" tags, use it once, then "cut at Electric Lady" or "a Compass Point session"
+- Write like a music journalist, not a database. Each tag should feel like a different person wrote it.
 
 Tag rules:
 - Each tag must be a complete, grammatically correct phrase (no cut-off sentences)

@@ -30,6 +30,21 @@ function capByCategory(tags) {
   });
 }
 
+// ── Phrase-prefix dedup (no two tags start the same way) ─
+function dedupeByPhrasePrefix(tags) {
+  var seenPrefixes = new Set();
+  return tags.filter(function(tag) {
+    var words = tag.text.toLowerCase().split(/\s+/);
+    // Check first 2 words as prefix (e.g. "originally released", "produced by", "recorded at")
+    var prefix = words.slice(0, 2).join(' ');
+    // Skip generic prefixes that are fine to repeat
+    if (/^(a |the |one |deep |rare )/.test(prefix)) return true;
+    if (seenPrefixes.has(prefix)) return false;
+    seenPrefixes.add(prefix);
+    return true;
+  });
+}
+
 // ── One-per-album dedup ──────────────────────────────────
 function dedupeByAlbum(tags) {
   var seen = new Set();
@@ -148,7 +163,7 @@ function renderTagCloud(tags) {
 }
 
 // ── Loading (API → fallback → cache) ─────────────────────
-var TAG_CACHE_KEY = 'lr_tag_cloud_v2';
+var TAG_CACHE_KEY = 'lr_tag_cloud_v3';
 var TAG_CACHE_TTL = 86400000; // 24 hours
 
 async function loadTagCloud(catalog) {
@@ -177,9 +192,10 @@ async function loadTagCloud(catalog) {
   }
 
   if (tags.length) {
-    // Pipeline: cap categories → shuffle → one-per-album
+    // Pipeline: cap categories → shuffle → no repeated phrasing → one-per-album
     tags = capByCategory(tags);
     tags = [...tags].sort(function() { return Math.random() - 0.5; });
+    tags = dedupeByPhrasePrefix(tags);
     tags = dedupeByAlbum(tags);
     try { localStorage.setItem(TAG_CACHE_KEY, JSON.stringify({ tags: tags, ts: Date.now() })); } catch (e) {}
     renderTagCloud(tags);
