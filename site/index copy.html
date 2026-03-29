@@ -150,12 +150,10 @@ html.dark        .theme-toggle .icon-sun  { display: none; }
   max-width: 890px; margin: 0 auto; padding: 84px 30px 80px;
 }
 
-/* ── Hide carousel + nav + rotator + tag cloud when searching ── */
+/* ── Hide carousel + nav when searching ──────────────────── */
 body.search-active .carousel-section,
 body.search-active .section-divider,
-body.search-active .az-nav,
-body.search-active .info-rotator,
-body.search-active .tag-cloud { display: none; }
+body.search-active .az-nav { display: none; }
 
 /* ── Info rotator (are.na style) ─────────────────────────── */
 .info-rotator {
@@ -282,7 +280,7 @@ body.search-active .tag-cloud { display: none; }
  * so they sit centered in the header row.
  */
 .tbl { width: 100%; border-collapse: collapse; table-layout: fixed; }
-col.c-art    { width: 38px; }
+col.c-art    { width: 38px; }  /* must match .rec-art-wrap */
 col.c-title  { width: auto; }
 col.c-genre  { width: 14%; }
 col.c-format { width: 8%; }
@@ -302,11 +300,13 @@ col.c-stock  { width: 8%; }
   text-align: left; vertical-align: middle;
 }
 .tbl thead th:first-child { padding-left: 0; }
-.tbl thead th.c-art   { padding-right: 0; }
+.tbl thead th.c-art   { padding-right: 0; }  /* no gap — art column edge = art edge */
 .tbl thead th.c-stock { text-align: right; padding-right: 0; }
 
+/* gap between art column and title is here, not on c-art */
 .tbl thead th.c-title, .tbl tbody td.c-title { padding-left: 10px; }
 
+/* vinyl icon in the art column header */
 .art-icon { width: 20px; height: 20px; opacity: .4; display: block; margin: 0 auto; }
 
 /* ── Data rows ────────────────────────────────────────────── */
@@ -319,7 +319,7 @@ col.c-stock  { width: 8%; }
 }
 .tbl tbody td:first-child { padding-left: 0; }
 .tbl tbody td:last-child  { padding-right: 0; }
-.tbl tbody td.c-art   { padding-right: 0; }
+.tbl tbody td.c-art   { padding-right: 0; }  /* no gap — matches th.c-art */
 .tbl tbody td.c-stock { padding-top: 8px; padding-bottom: 8px; padding-right: 0; }
 .tbl thead th.c-stock { padding-bottom: 10px; padding-right: 0; }
 .tbl tbody tr:first-child td { border-top: 1px solid var(--border-mid); }
@@ -393,8 +393,27 @@ col.c-stock  { width: 8%; }
 /* ── Search ──────────────────────────────────────────────── */
 .search-row {
   display: flex; align-items: center;
-  border-top: none; border-bottom: none;
+  border-top: none;
+  border-bottom: none;
   margin: 10px 0;
+}
+.search-input {
+  flex: 1; border: none; background: transparent;
+  font-family: 'Inter', system-ui, sans-serif;
+  font-size: 13px; font-weight: 400; color: var(--ink);
+  padding: 5px 0; outline: none; letter-spacing: .01em;
+}
+.search-input::placeholder { color: var(--ink30); }
+.search-clear {
+  border: none; background: none; padding: 0 0 0 8px;
+  font-size: 16px; color: var(--ink30); cursor: pointer;
+  line-height: 1; display: none; transition: color .1s;
+}
+.search-clear:hover { color: var(--ink); }
+.search-count {
+  font-size: 10px; font-weight: 500; letter-spacing: .08em;
+  text-transform: uppercase; color: var(--ink30);
+  padding-left: 14px; white-space: nowrap; flex-shrink: 0;
 }
 .suggestions-header {
   display: none;
@@ -416,17 +435,18 @@ col.c-stock  { width: 8%; }
   padding: 40px 0;
   font-size: 13px; color: var(--ink30); letter-spacing: .01em;
   display: none;
-  position: relative; z-index: 1;
 }
 .rec-title mark, .rec-artist mark {
   background: var(--border-mid); color: var(--ink); padding: 0 1px; border-radius: 1px;
 }
-.tbl tbody tr.is-suggestion td:nth-child(2) { padding-left: 10px; }
+.tbl tbody tr.is-suggestion td:nth-child(2) {
+  padding-left: 10px;
+}
 @media (max-width: 600px) { .search-count { display: none; } }
 
 /* ── Availability toggle ─────────────────────────────────── */
 .avail-toggle {
-  display: none;
+  display: none; /* hidden for now — logic kept intact */
   width: 14px; height: 14px;
   border: 1.5px solid var(--ink30);
   background: transparent;
@@ -451,7 +471,8 @@ html.dark .sk {
 
 /* ── Responsive ──────────────────────────────────────────── */
 @media (max-width: 900px) {
-  col.c-art    { width: 32px; }
+  /* table: art column shrinks to match rec-art-wrap at this breakpoint */
+  col.c-art    { width: 32px; }  /* must match .rec-art-wrap below */
   col.c-format, col.c-stock { display: none; }
   .tbl thead th.c-format, .tbl thead th.c-stock,
   .tbl tbody td.c-format, .tbl tbody td.c-stock { display: none; }
@@ -497,7 +518,8 @@ html.dark .sk {
   }
   .genre-tag    { font-size: 9px; padding: 2px 5px; }
   .az-nav       { justify-content: space-between; }
-  col.c-art    { width: 28px; }
+  /* table: art column shrinks to match rec-art-wrap at this breakpoint */
+  col.c-art    { width: 28px; }  /* must match .rec-art-wrap below */
   col.c-format, col.c-stock { display: none; }
   .tbl thead th.c-format, .tbl thead th.c-stock,
   .tbl tbody td.c-format, .tbl tbody td.c-stock { display: none; }
@@ -514,14 +536,18 @@ html.dark .sk {
   text-align: left;
   line-height: 1.7;
 }
-.tag-cloud-list { display: block; }
+.tag-cloud-list {
+  display: block;
+}
 .tag-cloud-item {
   font-size: 11px; color: var(--ink45);
   cursor: pointer; text-decoration: none;
   transition: color .1s;
 }
 .tag-cloud-item:visited, .tag-cloud-item:active, .tag-cloud-item:focus { color: var(--ink45); text-decoration: none !important; outline: none; }
-.tag-cloud-item:hover { color: var(--ink); text-decoration: underline; }
+.tag-cloud-item:hover {
+  color: var(--ink); text-decoration: underline;
+}
 .tag-cloud-sep {
   color: var(--ink55); margin: 0 4px;
   font-size: 11px; user-select: none;
@@ -533,7 +559,7 @@ html.dark .sk {
 }
 .tag-cloud-more:hover { color: var(--ink); text-decoration: underline; }
 
-/* ── Footer ─────────────────────────────────────────────── */
+/* ── Footer (invisible placeholder) ─────────────────────── */
 .lr-footer { display: none; }
 
 </style>
@@ -846,6 +872,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   }
 });
 
+// Fix broken/lazy images when restoring page from back-forward cache
 window.addEventListener('pageshow', function(e) {
   if (e.persisted) {
     document.querySelectorAll('.rec-art-wrap img').forEach(function(img) {
