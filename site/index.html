@@ -538,7 +538,12 @@ html.dark .sk {
 /* ── Footer ─────────────────────────────────────────────── */
 .lr-footer { display: block; padding: 40px 30px 32px; }
 .lr-footer-inner { max-width: 890px; margin: 0 auto; }
-.lr-update-row { display: flex; justify-content: space-between; align-items: baseline; }
+.lr-update-row {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 4px;
+}
 .lr-updated {
   font-size: 9px;
   font-weight: 500;
@@ -546,10 +551,10 @@ html.dark .sk {
   color: var(--ink30);
 }
 .lr-handle {
-  font-size: 8px;
-  font-weight: 400;
-  letter-spacing: .04em;
-  color: var(--ink15);
+  font-size: 9px;
+  font-weight: 450;
+  letter-spacing: .06em;
+  color: var(--ink30);
 }
 
 </style>
@@ -674,9 +679,9 @@ html.dark .sk {
 <footer class="lr-footer">
   <div class="lr-footer-inner">
     <div class="lr-update-row">
-      <span class="lr-updated" id="footerUpdated"></span>
-      <span class="lr-handle">r3s34rchl4bs</span>
-    </div>
+  <span class="lr-updated" id="footerUpdated"></span>
+  <span class="lr-handle">r3s34rchl4bs</span>
+</div>
   </div>
 </footer>
 
