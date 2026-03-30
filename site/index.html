@@ -536,7 +536,21 @@ html.dark .sk {
 .tag-cloud-more:hover { color: var(--ink); text-decoration: underline; }
 
 /* ── Footer ─────────────────────────────────────────────── */
-.lr-footer { display: none; }
+.lr-footer { display: block; padding: 40px 30px 32px; }
+.lr-footer-inner { max-width: 890px; margin: 0 auto; }
+.lr-update-row { display: flex; justify-content: space-between; align-items: baseline; }
+.lr-updated {
+  font-size: 9px;
+  font-weight: 500;
+  letter-spacing: .04em;
+  color: var(--ink30);
+}
+.lr-handle {
+  font-size: 8px;
+  font-weight: 400;
+  letter-spacing: .04em;
+  color: var(--ink15);
+}
 
 </style>
 </head>
@@ -657,7 +671,14 @@ html.dark .sk {
 
 </div>
 
-<footer class="lr-footer"></footer>
+<footer class="lr-footer">
+  <div class="lr-footer-inner">
+    <div class="lr-update-row">
+      <span class="lr-updated" id="footerUpdated"></span>
+      <span class="lr-handle">r3s34rchl4bs</span>
+    </div>
+  </div>
+</footer>
 
 <script src="script.js"></script>
 <script src="catalog.js"></script>
@@ -859,6 +880,26 @@ window.addEventListener('pageshow', function(e) {
   }
 });
 
+</script>
+
+<script>
+  (function() {
+    var now = new Date();
+
+    var pad = function(n){ return String(n).padStart(2,'0'); };
+
+    // Detect user's timezone
+    var timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+
+    var d = now.getFullYear() + '-' +
+            pad(now.getMonth() + 1) + '-' +
+            pad(now.getDate());
+
+    var t = pad(now.getHours()) + ':' + pad(now.getMinutes());
+
+    document.getElementById('footerUpdated').textContent =
+      'Last updated ' + d + ' ' + t + ' (' + timezone + ')';
+  })();
 </script>
 
 </body>
