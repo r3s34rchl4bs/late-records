@@ -535,8 +535,14 @@ html.dark .sk {
 }
 .tag-cloud-more:hover { color: var(--ink); text-decoration: underline; }
 
-/* ── Footer ─────────────────────────────────────────────── */
-.lr-footer { display: none; }
+.lr-footer { display: block; padding: 40px 30px 32px; }
+.lr-footer-inner { max-width: 890px; margin: 0 auto; }
+.lr-copy { display: block; font-size: 9px; font-weight: 600; letter-spacing: .14em; text-transform: uppercase; color: rgba(26,26,20,.38); line-height: 1.3; margin-bottom: 1px; }
+.lr-update-row { display: flex; justify-content: space-between; align-items: baseline; }
+.lr-updated { font-size: 9px; font-weight: 500; letter-spacing: .04em; color: rgba(26,26,20,.28); line-height: 1.3; }
+.lr-handle { font-size: 8px; font-weight: 400; letter-spacing: .04em; color: rgba(26,26,20,.22); line-height: 1.3; }
+@media (max-width: 600px) { .lr-footer { padding: 32px 20px 28px; } }
+
 
 </style>
 </head>
@@ -657,7 +663,25 @@ html.dark .sk {
 
 </div>
 
-<footer class="lr-footer"></footer>
+<footer class="lr-footer">
+  <div class="lr-footer-inner">
+    <span class="lr-copy" id="footerCopy"></span>
+    <div class="lr-update-row">
+      <span class="lr-updated" id="footerUpdated"></span>
+      <span class="lr-handle">r3s34rchl4bs</span>
+    </div>
+  </div>
+</footer>
+<script>
+  document.getElementById('footerCopy').textContent =
+    '\u00a9 Late Records ' + new Date().getFullYear();
+  var now = new Date();
+  var pad = function(n){ return String(n).padStart(2,'0'); };
+  var d = now.getFullYear()+'-'+pad(now.getMonth()+1)+'-'+pad(now.getDate());
+  var t = pad(now.getHours())+':'+pad(now.getMinutes())+' PST';
+  document.getElementById('footerUpdated').textContent = 'Last updated ' + d + ' ' + t;
+</script>
+
 
 <script src="script.js"></script>
 <script src="catalog.js"></script>
