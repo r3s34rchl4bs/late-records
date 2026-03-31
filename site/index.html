@@ -285,20 +285,6 @@ body.search-active .tag-cloud { display: none; }
 
 /*
  * ── Table layout ────────────────────────────────────────────
- *
- * IMPORTANT: col.c-art width must ALWAYS match .rec-art-wrap width.
- * The art column is sized to exactly fit the album cover with zero
- * right padding, so the column edge = album art edge.
- * The gap between art and title is handled by padding-left on c-title,
- * NOT by padding-right on c-art. This keeps the art column tight.
- *
- * Column sizes at each breakpoint:
- *   Desktop:  col.c-art = 38px,  .rec-art-wrap = 38px
- *   ≤900px:   col.c-art = 32px,  .rec-art-wrap = 32px
- *   ≤600px:   col.c-art = 28px,  .rec-art-wrap = 28px
- *
- * All header text and the vinyl icon use vertical-align: middle
- * so they sit centered in the header row.
  */
 .tbl { width: 100%; border-collapse: collapse; table-layout: fixed; }
 col.c-art    { width: 38px; }
@@ -410,26 +396,11 @@ col.c-stock  { width: 8%; }
 .az-letter.empty, .az-letter:disabled { color: var(--ink15); cursor: default; }
 
 /* ── Search ──────────────────────────────────────────────── */
-.search-row {
-  display: flex; align-items: center;
-  border-top: none; border-bottom: none;
-  margin: 10px 0;
-}
 .suggestions-header {
   display: none;
   padding: 28px 0 16px;
   font-size: 11px; font-weight: 500; letter-spacing: .09em;
   text-transform: uppercase; color: var(--ink45);
-}
-.suggestions-header span { color: var(--ink); }
-.suggestions-header.is-loading::after {
-  content: ''; animation: ellipsis 1.2s steps(4, end) infinite;
-}
-@keyframes ellipsis {
-  0%   { content: ''; }
-  25%  { content: '.'; }
-  50%  { content: '..'; }
-  75%  { content: '...'; }
 }
 .no-results-empty {
   padding: 40px 0;
@@ -437,11 +408,6 @@ col.c-stock  { width: 8%; }
   display: none;
   position: relative; z-index: 1;
 }
-.rec-title mark, .rec-artist mark {
-  background: var(--border-mid); color: var(--ink); padding: 0 1px; border-radius: 1px;
-}
-.tbl tbody tr.is-suggestion td:nth-child(2) { padding-left: 10px; }
-@media (max-width: 600px) { .search-count { display: none; } }
 
 /* ── Availability toggle ─────────────────────────────────── */
 .avail-toggle {
@@ -524,61 +490,83 @@ html.dark .sk {
   .rec-art-wrap { width: 28px; height: 28px; }
 }
 
-/* ── Album art rotator (marquee) — hidden for now ───────── */
-.art-rotator { display: none; }
-
-
-
-/* ── Sold log ────────────────────────────────────────────── */
-.sold-log { background: rgba(26,26,20,.03); padding: 8px 0 6px; margin-top: 32px; }
+/* ── Sold log (FIXED) ────────────────────────────────────── */
+.sold-log { 
+  background: rgba(26,26,20,.03); 
+  padding: 8px 0; 
+  margin-top: 32px; 
+}
 .sold-log-row {
-  display: flex; align-items: baseline; gap: 10px;
-  padding: 5px 10px; cursor: pointer; text-decoration: none;
+  display: flex; 
+  align-items: flex-start; 
+  gap: 8px;
+  padding: 4px 10px; 
+  cursor: pointer; 
+  text-decoration: none;
+}
+.sold-log-tag { 
+  font-size: 10px; 
+  color: var(--ink30); 
+  flex-shrink: 0; 
+  margin-top: 1px;
+}
+.sold-log-content { 
+  flex: 1; 
+  display: block; 
+  min-width: 0; 
+  font-size: 11px; 
+  line-height: 1.4;
+}
+.sold-log-artist { 
+  color: var(--ink45); 
+  transition: color .1s; 
+}
+.sold-log-sep { 
+  color: var(--ink30); 
+  margin: 0 4px; 
+}
+.sold-log-title { 
+  color: var(--ink45); 
+  transition: color .1s; 
 }
 .sold-log-row:hover .sold-log-artist,
-.sold-log-row:hover .sold-log-title { color: var(--ink); }
-.sold-log-tag { font-size: 10px; color: var(--ink30); flex-shrink: 0; }
-.sold-log-artist { font-size: 11px; color: var(--ink45); flex-shrink: 0; transition: color .1s; }
-.sold-log-sep { font-size: 11px; color: var(--ink30); flex-shrink: 0; }
-.sold-log-title { font-size: 11px; color: var(--ink45); transition: color .1s; word-break: break-word; white-space: normal; min-width: 0; }
-.sold-log-row { flex-wrap: nowrap; align-items: flex-start; }
-.sold-log-row .sold-log-title-wrap { display: flex; flex-wrap: wrap; flex: 1; min-width: 0; gap: 10px; }
-.sold-log-footer { padding: 4px 10px 2px; }
+.sold-log-row:hover .sold-log-title { 
+  color: var(--ink); 
+}
+
+/* Updated footer to position toggle on the right */
+.sold-log-footer { 
+  padding: 2px 10px 4px; 
+  display: flex; 
+  justify-content: flex-end; 
+}
 .sold-log-toggle {
-  background: var(--ink15); border: 0;
-  width: 18px; height: 18px;
-  display: inline-flex; align-items: center; justify-content: center;
-  font-size: 13px; color: var(--ink); cursor: pointer;
-  font-family: 'Inter', system-ui, sans-serif; font-weight: 400;
+  background: var(--ink15); 
+  border: 0;
+  width: 18px; 
+  height: 18px;
+  display: inline-flex; 
+  align-items: center; 
+  justify-content: center;
+  font-size: 13px; 
+  color: var(--ink); 
+  cursor: pointer;
 }
 .sold-log-toggle:hover { opacity: .6; }
 html.dark .sold-log { background: rgba(232,232,223,.03); }
 
-/* ── Tag cloud (YouTube 2005 style) ─────────────────────── */
+/* ── Tag cloud ─────────────────────────────────────────── */
 .tag-cloud {
   padding: 24px 0 48px;
   border-top: 1px solid var(--border-mid);
   text-align: left;
   line-height: 1.7;
 }
-.tag-cloud-list { display: block; }
 .tag-cloud-item {
   font-size: 11px; color: var(--ink45);
   cursor: pointer; text-decoration: none;
-  transition: color .1s;
 }
-.tag-cloud-item:visited, .tag-cloud-item:active, .tag-cloud-item:focus { color: var(--ink45); text-decoration: none !important; outline: none; }
 .tag-cloud-item:hover { color: var(--ink); text-decoration: underline; }
-.tag-cloud-sep {
-  color: var(--ink55); margin: 0 4px;
-  font-size: 11px; user-select: none;
-}
-.tag-cloud-more {
-  font-size: 11px; font-weight: 475; color: var(--ink45);
-  cursor: pointer; text-decoration: none;
-  transition: color .1s;
-}
-.tag-cloud-more:hover { color: var(--ink); text-decoration: underline; }
 
 /* ── Footer ─────────────────────────────────────────────── */
 .lr-footer { display: block; padding: 0; }
@@ -596,25 +584,12 @@ html.dark .sold-log { background: rgba(232,232,223,.03); }
     <div class="header-right">
       <button class="search-btn" id="searchBtn" aria-label="Search">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-          <circle cx="11" cy="11" r="7"/>
-          <line x1="16.5" y1="16.5" x2="22" y2="22"/>
+          <circle cx="11" cy="11" r="7"/><line x1="16.5" y1="16.5" x2="22" y2="22"/>
         </svg>
       </button>
       <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme">
-        <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-          <circle cx="12" cy="12" r="4"/>
-          <line x1="12" y1="2"  x2="12" y2="5"/>
-          <line x1="12" y1="19" x2="12" y2="22"/>
-          <line x1="2"  y1="12" x2="5"  y2="12"/>
-          <line x1="19" y1="12" x2="22" y2="12"/>
-          <line x1="4.93"  y1="4.93"  x2="7.05" y2="7.05"/>
-          <line x1="16.95" y1="16.95" x2="19.07" y2="19.07"/>
-          <line x1="4.93"  y1="19.07" x2="7.05"  y2="16.95"/>
-          <line x1="16.95" y1="7.05"  x2="19.07" y2="4.93"/>
-        </svg>
-        <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
-        </svg>
+        <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><line x1="12" y1="2"  x2="12" y2="5"/><line x1="12" y1="19" x2="12" y2="22"/><line x1="2"  y1="12" x2="5"  y2="12"/><line x1="19" y1="12" x2="22" y2="12"/><line x1="4.93"  y1="4.93"  x2="7.05" y2="7.05"/><line x1="16.95" y1="16.95" x2="19.07" y2="19.07"/><line x1="4.93"  y1="19.07" x2="7.05"  y2="16.95"/><line x1="16.95" y1="7.05"  x2="19.07" y2="4.93"/></svg>
+        <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
       </button>
       <a href="cart.html" class="cart-link">Cart (<span class="cart-count">0</span>)</a>
     </div>
@@ -623,9 +598,7 @@ html.dark .sold-log { background: rgba(232,232,223,.03); }
 
 <div class="search-bar" id="searchBar">
   <div class="search-bar-inner">
-    <input class="search-input" id="searchInput" type="text"
-      autocomplete="off" spellcheck="false"
-      placeholder="Search by title, artist, genre, format…">
+    <input class="search-input" id="searchInput" type="text" autocomplete="off" spellcheck="false" placeholder="Search by title, artist, genre, format…">
     <button class="search-clear" id="searchClear" aria-label="Clear search">&#215;</button>
     <span class="search-count" id="searchCount"></span>
     <button class="avail-toggle" id="availToggle" aria-label="Show available only" onclick="toggleAvail()"></button>
@@ -633,38 +606,21 @@ html.dark .sold-log { background: rgba(232,232,223,.03); }
 </div>
 
 <div class="container">
-
   <section class="carousel-section">
     <div class="carousel-viewport">
-      <div class="carousel-track" id="carouselTrack">
-        <div class="carousel-card" style="cursor:default">
-          <div class="card-inner">
-            <div class="card-top">
-              <div class="sk" style="width:8%;margin-bottom:14px"></div>
-              <div class="sk" style="width:14%;margin-bottom:10px"></div>
-              <div class="sk" style="width:40%;height:18px;margin-bottom:18px"></div>
-            </div>
-          </div>
-        </div>
-      </div>
+      <div class="carousel-track" id="carouselTrack"></div>
       <div class="carousel-nav" id="carouselNav">
         <button class="carousel-btn" id="prevBtn">&#8249;</button>
         <button class="carousel-btn" id="nextBtn">&#8250;</button>
       </div>
     </div>
   </section>
-
   <hr class="section-divider">
-
   <div class="az-nav" id="azNav"></div>
-
   <div class="suggestions-header" id="suggestionsHeader"></div>
   <div class="no-results-empty" id="noResultsEmpty">Nothing found.</div>
-
   <table class="tbl" id="catalogTable">
-    <colgroup>
-      <col class="c-art"><col class="c-title"><col class="c-genre"><col class="c-format"><col class="c-stock">
-    </colgroup>
+    <colgroup><col class="c-art"><col class="c-title"><col class="c-genre"><col class="c-format"><col class="c-stock"></colgroup>
     <thead>
       <tr>
         <th class="c-art"><svg class="art-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="0.75" stroke-linecap="round"><circle cx="12" cy="12" r="11"/><circle cx="12" cy="12" r="2"/></svg></th>
@@ -674,18 +630,12 @@ html.dark .sold-log { background: rgba(232,232,223,.03); }
         <th class="c-stock">Stock</th>
       </tr>
     </thead>
-    <tbody id="catalogList">
-      <tr><td class="c-art"></td><td class="c-title"><div class="sk" style="width:55%;margin-bottom:8px"></div><br><div class="sk" style="width:30%"></div></td><td class="c-genre"><div class="sk" style="width:70%"></div></td><td class="c-format"><div class="sk" style="width:55%"></div></td><td class="c-stock"><div class="sk" style="width:68%;float:right"></div></td></tr>
-      <tr><td class="c-art"></td><td class="c-title"><div class="sk" style="width:68%;margin-bottom:8px"></div><br><div class="sk" style="width:38%"></div></td><td class="c-genre"><div class="sk" style="width:60%"></div></td><td class="c-format"><div class="sk" style="width:55%"></div></td><td class="c-stock"><div class="sk" style="width:68%;float:right"></div></td></tr>
-      <tr><td class="c-art"></td><td class="c-title"><div class="sk" style="width:44%;margin-bottom:8px"></div><br><div class="sk" style="width:24%"></div></td><td class="c-genre"><div class="sk" style="width:78%"></div></td><td class="c-format"><div class="sk" style="width:55%"></div></td><td class="c-stock"><div class="sk" style="width:68%;float:right"></div></td></tr>
-      <tr><td class="c-art"></td><td class="c-title"><div class="sk" style="width:60%;margin-bottom:8px"></div><br><div class="sk" style="width:34%"></div></td><td class="c-genre"><div class="sk" style="width:63%"></div></td><td class="c-format"><div class="sk" style="width:55%"></div></td><td class="c-stock"><div class="sk" style="width:68%;float:right"></div></td></tr>
-      <tr><td class="c-art"></td><td class="c-title"><div class="sk" style="width:50%;margin-bottom:8px"></div><br><div class="sk" style="width:28%"></div></td><td class="c-genre"><div class="sk" style="width:72%"></div></td><td class="c-format"><div class="sk" style="width:55%"></div></td><td class="c-stock"><div class="sk" style="width:68%;float:right"></div></td></tr>
-    </tbody>
+    <tbody id="catalogList"></tbody>
   </table>
+</div>
 
-  </div>
-  <div class="bottom-section">
-<div class="info-rotator" id="infoRotator">
+<div class="bottom-section">
+  <div class="info-rotator" id="infoRotator">
     <button class="info-rotator-btn" id="infoPrev">&#8249;</button>
     <div class="info-rotator-content">
       <div class="info-rotator-title" id="infoTitle"></div>
@@ -702,18 +652,13 @@ html.dark .sold-log { background: rgba(232,232,223,.03); }
     </div>
   </div>
 
-  <div class="art-rotator" id="artRotator">
-    <div class="art-rotator-track" id="artRotatorTrack"></div>
-  </div>
-
   <div class="tag-cloud" id="tagCloud">
     <div class="tag-cloud-list" id="tagCloudList"></div>
   </div>
+  <footer class="lr-footer"></footer>
+</div>
 
- <footer class="lr-footer"></footer>
-  <script src="last-updated.js"></script>
-  </div>
-
+<script src="last-updated.js"></script>
 <script src="script.js"></script>
 <script src="catalog.js"></script>
 <script src="search.js"></script>
@@ -759,43 +704,21 @@ function buildCarousel(albums) {
     card.className = 'carousel-card';
     card.addEventListener('click', () => location.href = albumUrl);
     card.innerHTML = `
-  <div class="card-inner">
-    <div class="card-top">
-      <div class="card-staff-pick">Staff Pick</div>
-      <div class="card-artist">${_escHTML(album.artist)}</div>
-      <div class="card-title">${_escHTML(album.title)}</div>
-      <div class="card-meta">
-        <div class="card-tags">
-          ${tags.map(t => `
-            <span class="card-tag" onclick="event.stopPropagation();location.href='genre.html?g=${encodeURIComponent(t.toLowerCase())}'">
-              ${_escHTML(t)}
-            </span>
-          `).join('')}
+      <div class="card-inner">
+        <div class="card-top">
+          <div class="card-staff-pick">Staff Pick</div>
+          <div class="card-artist">${_escHTML(album.artist)}</div>
+          <div class="card-title">${_escHTML(album.title)}</div>
+          <div class="card-meta">
+            <div class="card-tags">
+              ${tags.map(t => `<span class="card-tag" onclick="event.stopPropagation();location.href='genre.html?g=${encodeURIComponent(t.toLowerCase())}'">${_escHTML(t)}</span>`).join('')}
+            </div>
+            <span class="card-format">${_escHTML(album.format || 'LP')}</span>
+            ${album.condition ? `<span class="card-meta-divider"></span><span class="card-format">${_escHTML(album.condition)}</span>` : ''}
+          </div>
         </div>
-        
-        <span class="card-format">${_escHTML(album.format || 'LP')}</span>
-        
-        ${album.condition ? `
-          <span class="card-meta-divider"></span>
-          <span class="card-format">${_escHTML(album.condition)}</span>
-        ` : ''}
-      </div>
-    </div>
-  </div>`;
+      </div>`;
     track.appendChild(card);
-  });
-  const viewport = document.querySelector('.carousel-viewport');
-
-  const progressContainer = document.createElement('div');
-  progressContainer.style.cssText = 'display:flex;gap:3px;margin-top:10px;';
-  viewport.parentNode.insertBefore(progressContainer, viewport.nextSibling);
-
-  const bars = [];
-  cards.forEach((_, i) => {
-    const b = document.createElement('div');
-    b.style.cssText = 'flex:1;height:2px;background:var(--ink15);transition:height .2s ease,background .2s ease;';
-    progressContainer.appendChild(b);
-    bars.push(b);
   });
 
   function goTo(index) {
@@ -803,10 +726,6 @@ function buildCarousel(albums) {
     if (index >= cards.length) index = 0;
     current = index;
     track.style.transform = `translateX(-${current * 100}%)`;
-    bars.forEach((b, i) => {
-      b.style.height = i === current ? '4px' : '2px';
-      b.style.background = i === current ? 'var(--ink)' : 'var(--ink15)';
-    });
   }
   goTo(0);
   document.getElementById('prevBtn').addEventListener('click', (e) => { e.stopPropagation(); goTo(current - 1); });
@@ -829,11 +748,11 @@ function buildSoldLog(catalog) {
     const url = `albums/album.html?id=${encodeURIComponent(a.album_id)}`;
     return `<a class="sold-log-row" href="${url}">
       <span class="sold-log-tag">[SOLD]</span>
-      <span class="sold-log-title-wrap">
+      <div class="sold-log-content">
         <span class="sold-log-artist">${_escHTML(a.artist)}</span>
         <span class="sold-log-sep">—</span>
         <span class="sold-log-title">${_escHTML(a.title)}</span>
-      </span>
+      </div>
     </a>`;
   }
 
@@ -848,19 +767,6 @@ function buildSoldLog(catalog) {
   });
 
   log.style.display = '';
-}
-
-function buildArtRotator(catalog) {
-  const track = document.getElementById('artRotatorTrack');
-  if (!track) return;
-  const shuffled = [...catalog].sort(() => Math.random() - 0.5);
-  const items = shuffled.filter(a => a.album_id);
-  const all = [...items, ...items];
-  track.innerHTML = all.map(a => {
-    const src = `images/${a.album_id}.jpg`;
-    const url = `albums/album.html?id=${encodeURIComponent(a.album_id)}`;
-    return `<a class="art-rotator-item" href="${url}"><img src="${src}" alt="${_escHTML(a.title)}" loading="lazy"></a>`;
-  }).join('');
 }
 
 // ── Search bar toggle ──────────────────────────────────────
@@ -880,7 +786,6 @@ function buildArtRotator(catalog) {
     document.body.classList.remove('search-open');
     document.body.classList.remove('search-active');
     input.value = '';
-    document.getElementById('searchClear').style.display = 'none';
     input.dispatchEvent(new Event('input'));
   }
 
@@ -891,77 +796,21 @@ function buildArtRotator(catalog) {
   btn.addEventListener('click', function() {
     bar.classList.contains('open') ? closeSearch() : openSearch();
   });
-
-  document.addEventListener('keydown', function(e) {
-    if (e.key === 'Escape' && bar.classList.contains('open')) closeSearch();
-  });
-
-  document.addEventListener('click', function(e) {
-    if (
-      bar.classList.contains('open') &&
-      !e.target.closest('#searchBar') &&
-      !e.target.closest('#searchBtn') &&
-      !e.target.closest('#catalogTable') &&
-      !e.target.closest('#suggestionsHeader') &&
-      !e.target.closest('.az-nav') &&
-      !e.target.closest('.no-results-empty')
-    ) {
-      closeSearch();
-    }
-  });
 })();
-
-window.availFilterActive = false;
-
-function toggleAvail() {
-  window.availFilterActive = !window.availFilterActive;
-  document.getElementById('availToggle').classList.toggle('active', window.availFilterActive);
-  applyAvailToggle();
-}
 
 document.addEventListener('DOMContentLoaded', async () => {
   initSearch();
-
-  async function loadCatalog(retries) {
-    for (let i = 0; i <= retries; i++) {
-      try {
-        return await LR.api.catalog();
-      } catch(e) {
-        if (i < retries) await new Promise(r => setTimeout(r, 1000 * (i + 1)));
-      }
-    }
-    return null;
-  }
-
-  const catalog = await loadCatalog(2);
+  const catalog = await LR.api.catalog();
   if (catalog) {
     window._catalogCache = catalog;
-    if (typeof LR_setLastUpdated === 'function') LR_setLastUpdated(new Date().toISOString());
     buildCarousel(catalog);
     buildTable(catalog);
     buildAZNav(catalog);
-   buildSoldLog(catalog);
-    buildArtRotator(catalog);
+    buildSoldLog(catalog);
     loadTagCloud(catalog);
-  } else {
-    document.getElementById('carouselTrack').innerHTML = '';
-    document.getElementById('catalogList').innerHTML =
-      `<tr><td colspan="5" style="padding:40px 0;font-size:13px;color:var(--ink55)">Could not load catalog. Please refresh.</td></tr>`;
-  }
-});
-
-window.addEventListener('pageshow', function(e) {
-  if (e.persisted) {
-    document.querySelectorAll('.rec-art-wrap img').forEach(function(img) {
-      img.parentNode.style.opacity = '';
-      var src = img.src;
-      img.src = '';
-      img.src = src;
-    });
   }
 });
 
 </script>
-
 </body>
 </html>
