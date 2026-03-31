@@ -82,7 +82,7 @@ button { cursor: pointer; font-family: inherit; }
 }
 
 .header-logo {
-  height: 31px;
+  height: 38px;
   display: block;
 }
 
@@ -318,6 +318,7 @@ html.dark .sk {
     font-size: 12px;
   }
 
+  .header-logo { height: 31px; }
   .footer-inner { font-size: 11px; padding: 0 20px; }
   .footer-links  { gap: 12px; }
 }
