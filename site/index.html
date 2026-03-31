@@ -540,7 +540,8 @@ html.dark .sk {
 .sold-log-tag { font-size: 10px; color: var(--ink30); flex-shrink: 0; }
 .sold-log-artist { font-size: 11px; color: var(--ink45); flex-shrink: 0; transition: color .1s; }
 .sold-log-sep { font-size: 11px; color: var(--ink30); flex-shrink: 0; }
-.sold-log-title { font-size: 11px; color: var(--ink45); transition: color .1s; }
+.sold-log-title { font-size: 11px; color: var(--ink45); transition: color .1s; word-break: break-word; white-space: normal; }
+.sold-log-row { flex-wrap: wrap; align-items: flex-start; }
 .sold-log-footer { padding: 4px 10px 2px; }
 .sold-log-toggle {
   background: var(--ink15); border: 0;
@@ -682,21 +683,21 @@ html.dark .sk {
 
   </div>
   <div class="bottom-section">
-<div class="sold-log" id="soldLog" style="display:none;">
-    <div id="soldLogVisible"></div>
-    <div id="soldLogHidden" style="display:none;"></div>
-    <div class="sold-log-footer">
-      <button class="sold-log-toggle" id="soldLogToggle">+</button>
-    </div>
-  </div>
-
-  <div class="info-rotator" id="infoRotator">
+<div class="info-rotator" id="infoRotator">
     <button class="info-rotator-btn" id="infoPrev">&#8249;</button>
     <div class="info-rotator-content">
       <div class="info-rotator-title" id="infoTitle"></div>
       <div class="info-rotator-text" id="infoText"></div>
     </div>
     <button class="info-rotator-btn" id="infoNext">&#8250;</button>
+  </div>
+
+  <div class="sold-log" id="soldLog" style="display:none;">
+    <div id="soldLogVisible"></div>
+    <div id="soldLogHidden" style="display:none;"></div>
+    <div class="sold-log-footer">
+      <button class="sold-log-toggle" id="soldLogToggle">+</button>
+    </div>
   </div>
 
   <div class="art-rotator" id="artRotator">
