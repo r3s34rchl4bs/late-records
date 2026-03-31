@@ -527,6 +527,27 @@ html.dark .sk {
 /* ── Album art rotator (marquee) — hidden for now ───────── */
 .art-rotator { display: none; }
 
+/* ── Sold log ────────────────────────────────────────────── */
+.sold-log { border: 1px solid var(--border); margin-bottom: 32px; }
+.sold-log-rows { }
+.sold-log-row {
+  display: flex; align-items: baseline; gap: 10px;
+  padding: 5px 10px; cursor: pointer; text-decoration: none;
+}
+.sold-log-row:hover .sold-log-artist,
+.sold-log-row:hover .sold-log-title { color: var(--ink); }
+.sold-log-tag { font-size: 10px; color: var(--ink30); font-family: monospace; flex-shrink: 0; }
+.sold-log-artist { font-size: 11px; color: var(--ink45); font-family: monospace; flex-shrink: 0; transition: color .1s; }
+.sold-log-sep { font-size: 11px; color: var(--ink30); font-family: monospace; flex-shrink: 0; }
+.sold-log-title { font-size: 11px; color: var(--ink45); font-family: monospace; transition: color .1s; }
+.sold-log-footer { border-top: 1px solid var(--border); padding: 6px 10px; }
+.sold-log-more {
+  font-size: 10px; letter-spacing: .08em; text-transform: uppercase;
+  color: var(--ink30); font-family: monospace; text-decoration: none;
+  transition: color .1s;
+}
+.sold-log-more:hover { color: var(--ink); }
+
 /* ── Tag cloud (YouTube 2005 style) ─────────────────────── */
 .tag-cloud {
   padding: 24px 0 48px;
@@ -658,6 +679,13 @@ html.dark .sk {
 
   </div>
   <div class="bottom-section">
+ <div class="sold-log" id="soldLog">
+    <div class="sold-log-rows" id="soldLogRows"></div>
+    <div class="sold-log-footer">
+      <a class="sold-log-more" id="soldLogMore" href="#">view all</a>
+    </div>
+  </div>
+
   <div class="info-rotator" id="infoRotator">
     <button class="info-rotator-btn" id="infoPrev">&#8249;</button>
     <div class="info-rotator-content">
@@ -779,6 +807,39 @@ function buildCarousel(albums) {
 }
 
 // ── Art rotator (marquee) ──────────────────────────────────
+function buildSoldLog(catalog) {
+  const sold = catalog.filter(a => String(a.status).toLowerCase() === 'sold_out');
+  const rows = document.getElementById('soldLogRows');
+  const more = document.getElementById('soldLogMore');
+  if (!rows || !sold.length) { document.getElementById('soldLog').style.display = 'none'; return; }
+  const LIMIT = 5;
+  let expanded = false;
+
+  function render() {
+    const list = expanded ? sold : sold.slice(0, LIMIT);
+    rows.innerHTML = list.map(a => {
+      const url = `albums/album.html?id=${encodeURIComponent(a.album_id)}`;
+      return `<a class="sold-log-row" href="${url}">
+        <span class="sold-log-tag">[SOLD]</span>
+        <span class="sold-log-artist">${_escHTML(a.artist)}</span>
+        <span class="sold-log-sep">—</span>
+        <span class="sold-log-title">${_escHTML(a.title)}</span>
+      </a>`;
+    }).join('');
+    if (more) more.style.display = sold.length > LIMIT ? '' : 'none';
+  }
+
+  if (more) {
+    more.addEventListener('click', (e) => {
+      e.preventDefault();
+      expanded = !expanded;
+      more.textContent = expanded ? 'collapse' : 'view all';
+      render();
+    });
+  }
+  render();
+}
+
 function buildArtRotator(catalog) {
   const track = document.getElementById('artRotatorTrack');
   if (!track) return;
@@ -869,6 +930,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     buildCarousel(catalog);
     buildTable(catalog);
     buildAZNav(catalog);
+    buildSoldLog(catalog);
     buildArtRotator(catalog);
     loadTagCloud(catalog);
   } else {

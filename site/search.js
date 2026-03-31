@@ -36,7 +36,7 @@ const LR_SEARCH = (() => {
     }
 
     if (!q) {
-      let base = _catalog;
+      let base = _catalog.filter(a => String(a.status).toLowerCase() !== 'sold_out');
       if (_activeAZLetter) {
         base = base.filter(a => {
           const first = String(a.artist || '').trim()[0]?.toUpperCase();
