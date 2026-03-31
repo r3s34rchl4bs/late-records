@@ -529,15 +529,17 @@ html.dark .sk {
 
 
 
-/* ── Sold log ────────────────────────────────────────────── */
-.sold-log { background: rgba(26,26,20,.03); padding: 8px 0 6px; margin-top: 32px; }
+/* ── Sold log ── */
+.sold-log { background: rgba(26,26,20,.03); padding: 4px 0; margin-top: 32px; }
 
 .sold-log-row {
-  display: block;             /* Changed to block to allow natural text flow */
-  padding: 6px 12px;
+  display: grid;
+  grid-template-columns: 52px 1fr; 
+  padding: 2px 12px;           /* Tight vertical spacing */
   cursor: pointer;
   text-decoration: none;
-  line-height: 1.6;           /* Better spacing for wrapped text */
+  line-height: 1.4;            
+  align-items: start;
 }
 
 .sold-log-row:hover .sold-log-artist,
@@ -545,30 +547,31 @@ html.dark .sk {
   color: var(--ink); 
 }
 
-/* We force all elements inside to be 'inline' so they act like a single sentence */
-.sold-log-tag, 
-.sold-log-artist, 
-.sold-log-sep, 
-.sold-log-title,
-.sold-log-title-wrap {
-  display: inline; 
-  font-size: 11px;
-  vertical-align: baseline;
+.sold-log-tag { 
+  grid-column: 1; 
+  font-size: 10px; 
+  color: var(--ink30); 
+  text-transform: uppercase;
+  margin-top: 1px;             
 }
 
-.sold-log-tag { color: var(--ink30); margin-right: 8px; text-transform: uppercase; }
-.sold-log-artist { color: var(--ink45); transition: color .1s; }
-.sold-log-sep { color: var(--ink30); margin: 0 4px; }
-.sold-log-title { color: var(--ink45); transition: color .1s; word-break: normal; }
+.sold-log-title-wrap { 
+  grid-column: 2; 
+  display: block; 
+  font-size: 11px;
+}
+
+.sold-log-artist { color: var(--ink45); transition: color .1s; display: inline; }
+.sold-log-sep { color: var(--ink30); margin: 0 4px; display: inline; }
+.sold-log-title { color: var(--ink45); transition: color .1s; word-break: break-word; display: inline; }
+
 .sold-log-footer { padding: 4px 10px 2px; }
 .sold-log-toggle {
   background: var(--ink15); border: 0;
   width: 18px; height: 18px;
   display: inline-flex; align-items: center; justify-content: center;
   font-size: 13px; color: var(--ink); cursor: pointer;
-  font-family: 'Inter', system-ui, sans-serif; font-weight: 400;
 }
-.sold-log-toggle:hover { opacity: .6; }
 html.dark .sold-log { background: rgba(232,232,223,.03); }
 
 /* ── Tag cloud (YouTube 2005 style) ─────────────────────── */
