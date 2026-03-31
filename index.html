@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LATE RECORDS</title>
+<link rel="stylesheet" href="fonts/inter.css">
+<script>document.documentElement.classList.toggle('dark', localStorage.getItem('lr_theme') === 'dark')</script>
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html {
+  --bg: #e2e2e2; --bg-dot: rgba(0,0,0,.08); --ink: #1a1a14;
+  --ink55: rgba(26,26,20,.55); --ink45: rgba(26,26,20,.45);
+  --ink30: rgba(26,26,20,.30); --ink15: rgba(26,26,20,.15);
+  --border: rgba(26,26,20,.22); --border-mid: rgba(26,26,20,.12);
+  --border-tag: rgba(26,26,20,.24); --art-bg: rgba(26,26,20,.07);
+}
+
+html.dark {
+  --bg: #141410; --bg-dot: rgba(255,255,255,.04); --ink: #e8e8df;
+  --ink55: rgba(232,232,223,.55); --ink45: rgba(232,232,223,.42);
+  --ink30: rgba(232,232,223,.26); --ink15: rgba(232,232,223,.12);
+  --border: rgba(232,232,223,.18); --border-mid: rgba(232,232,223,.1);
+}
+
+body { font-family: 'Inter', sans-serif; background: var(--bg); background-image: radial-gradient(circle, var(--bg-dot) 0.5px, transparent 0.5px); background-size: 3px 3px; color: var(--ink); display: flex; flex-direction: column; min-height: 100vh; }
+.container { flex: 1; max-width: 890px; margin: 0 auto; padding: 84px 30px 0; width: 100%; }
+.bottom-section { width: 100%; max-width: 890px; margin: 0 auto; padding: 0 30px 32px; }
+
+/* Table Styles */
+.tbl { width: 100%; border-collapse: collapse; }
+.tbl thead th { position: sticky; top: 74px; background: var(--bg); padding: 10px 12px 10px 0; font-size: 11px; text-transform: uppercase; color: var(--ink55); text-align: left; border-bottom: 1px solid var(--ink30); }
+.tbl tbody td { padding: 10px 12px 10px 0; border-bottom: 1px solid var(--border-mid); vertical-align: middle; }
+
+/* ── SOLD LOG: Tight & Right-Aligned ── */
+.sold-log { background: rgba(26,26,20,.04); padding: 8px 0; margin-top: 32px; border-radius: 2px; }
+html.dark .sold-log { background: rgba(232,232,223,.03); }
+
+.sold-log-row {
+  display: grid;
+  grid-template-columns: 54px 1fr; /* Fixed space for [SOLD] */
+  padding: 4px 12px;
+  text-decoration: none;
+  align-items: start;
+}
+
+.sold-log-tag { font-size: 10px; color: var(--ink30); text-transform: uppercase; margin-top: 2px; }
+
+.sold-log-title-wrap { font-size: 11px; line-height: 1.4; color: var(--ink45); }
+.sold-log-artist { font-weight: 500; }
+.sold-log-sep { color: var(--ink30); margin: 0 4px; }
+
+.sold-log-footer { padding: 4px 12px; display: flex; justify-content: flex-end; }
+.sold-log-toggle { background: var(--ink15); border: 0; width: 20px; height: 20px; display: flex; align-items: center; justify-content: center; font-size: 14px; cursor: pointer; }
+
+/* Header/Carousel skipped for brevity - assume standard styles here */
+</style>
+</head>
+<body>
+
+<div class="container">
+  <table class="tbl">
+    <tbody id="catalogList"></tbody>
+  </table>
+</div>
+
+<div class="bottom-section">
+  <div class="sold-log" id="soldLog" style="display:none;">
+    <div id="soldLogVisible"></div>
+    <div id="soldLogHidden" style="display:none;"></div>
+    <div class="sold-log-footer">
+      <button class="sold-log-toggle" id="soldLogToggle">+</button>
+    </div>
+  </div>
+</div>
+
+<script src="catalog.js"></script>
+<script>
+function buildSoldLog(catalog) {
+  const sold = catalog.filter(a => String(a.status).toLowerCase() === 'sold_out');
+  const log = document.getElementById('soldLog');
+  const visEl = document.getElementById('soldLogVisible');
+  const hidEl = document.getElementById('soldLogHidden');
+  const toggle = document.getElementById('soldLogToggle');
+  
+  if (!sold.length) return;
+
+  const rowHTML = (a) => `
+    <a class="sold-log-row" href="albums/album.html?id=${encodeURIComponent(a.album_id)}">
+      <span class="sold-log-tag">[SOLD]</span>
+      <span class="sold-log-title-wrap">
+        <span class="sold-log-artist">${a.artist}</span>
+        <span class="sold-log-sep">—</span>
+        <span class="sold-log-title">${a.title}</span>
+      </span>
+    </a>`;
+
+  visEl.innerHTML = sold.slice(0, 5).map(rowHTML).join('');
+  hidEl.innerHTML = sold.slice(5).map(rowHTML).join('');
+  
+  if (sold.length <= 5) toggle.style.display = 'none';
+
+  toggle.onclick = () => {
+    const isHidden = hidEl.style.display === 'none';
+    hidEl.style.display = isHidden ? 'block' : 'none';
+    toggle.textContent = isHidden ? '−' : '+';
+  };
+  log.style.display = 'block';
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  if (window.LR && LR.catalog) {
+    buildSoldLog(LR.catalog);
+    // ... build other parts ...
+  }
+});
+</script>
+</body>
+</html>
