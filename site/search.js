@@ -52,9 +52,9 @@ const LR_SEARCH = (() => {
       return;
     }
 
-    const src = window.availFilterActive
-      ? _catalog.filter(a => String(a.status).toLowerCase() === 'available')
-      : _catalog;
+    const src = _catalog.filter(a => String(a.status).toLowerCase() !== 'sold_out' && (
+      !window.availFilterActive || String(a.status).toLowerCase() === 'available'
+    ));
 
     const matches = src
       .map(item => {

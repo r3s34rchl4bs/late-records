@@ -548,6 +548,28 @@ html.dark .sk {
 }
 .sold-log-more:hover { color: var(--ink); }
 
+/* ── Sold log ────────────────────────────────────────────── */
+.sold-log { background: var(--art-bg); padding: 8px 0 6px; margin-top: 32px; }
+.sold-log-row {
+  display: flex; align-items: baseline; gap: 10px;
+  padding: 5px 10px; cursor: pointer; text-decoration: none;
+}
+.sold-log-row:hover .sold-log-artist,
+.sold-log-row:hover .sold-log-title { color: var(--ink); }
+.sold-log-tag { font-size: 10px; color: var(--ink30); flex-shrink: 0; }
+.sold-log-artist { font-size: 11px; color: var(--ink45); flex-shrink: 0; transition: color .1s; }
+.sold-log-sep { font-size: 11px; color: var(--ink30); flex-shrink: 0; }
+.sold-log-title { font-size: 11px; color: var(--ink45); transition: color .1s; }
+.sold-log-footer { padding: 4px 10px 2px; }
+.sold-log-toggle {
+  background: var(--ink15); border: 0;
+  width: 18px; height: 18px;
+  display: inline-flex; align-items: center; justify-content: center;
+  font-size: 13px; color: var(--ink); cursor: pointer;
+  font-family: 'Inter', system-ui, sans-serif; font-weight: 400;
+}
+.sold-log-toggle:hover { opacity: .6; }
+
 /* ── Tag cloud (YouTube 2005 style) ─────────────────────── */
 .tag-cloud {
   padding: 24px 0 48px;
@@ -683,6 +705,14 @@ html.dark .sk {
     <div class="sold-log-rows" id="soldLogRows"></div>
     <div class="sold-log-footer">
       <a class="sold-log-more" id="soldLogMore" href="#">view all</a>
+    </div>
+  </div>
+
+  <div class="sold-log" id="soldLog" style="display:none;">
+    <div id="soldLogVisible"></div>
+    <div id="soldLogHidden" style="display:none;"></div>
+    <div class="sold-log-footer">
+      <button class="sold-log-toggle" id="soldLogToggle">+</button>
     </div>
   </div>
 
@@ -840,6 +870,41 @@ function buildSoldLog(catalog) {
   render();
 }
 
+function buildSoldLog(catalog) {
+  const sold = catalog.filter(a => String(a.status).toLowerCase() === 'sold_out');
+  const log = document.getElementById('soldLog');
+  const visEl = document.getElementById('soldLogVisible');
+  const hidEl = document.getElementById('soldLogHidden');
+  const toggle = document.getElementById('soldLogToggle');
+  if (!sold.length || !log) return;
+
+  const LIMIT = 5;
+  const visible = sold.slice(0, LIMIT);
+  const hidden  = sold.slice(LIMIT);
+
+  function rowHTML(a) {
+    const url = `albums/album.html?id=${encodeURIComponent(a.album_id)}`;
+    return `<a class="sold-log-row" href="${url}">
+      <span class="sold-log-tag">[SOLD]</span>
+      <span class="sold-log-artist">${_escHTML(a.artist)}</span>
+      <span class="sold-log-sep">—</span>
+      <span class="sold-log-title">${_escHTML(a.title)}</span>
+    </a>`;
+  }
+
+  visEl.innerHTML = visible.map(rowHTML).join('');
+  hidEl.innerHTML = hidden.map(rowHTML).join('');
+  if (!hidden.length) toggle.style.display = 'none';
+
+  toggle.addEventListener('click', () => {
+    const expanded = hidEl.style.display === 'none';
+    hidEl.style.display = expanded ? '' : 'none';
+    toggle.textContent = expanded ? '−' : '+';
+  });
+
+  log.style.display = '';
+}
+
 function buildArtRotator(catalog) {
   const track = document.getElementById('artRotatorTrack');
   if (!track) return;
@@ -930,6 +995,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     buildCarousel(catalog);
     buildTable(catalog);
     buildAZNav(catalog);
+    buildSoldLog(catalog);
     buildSoldLog(catalog);
     buildArtRotator(catalog);
     loadTagCloud(catalog);
