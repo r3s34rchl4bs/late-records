@@ -57,16 +57,19 @@ async function fetchCatalog(env) {
 
   const res  = await fetch(env.APPS_SCRIPT_URL + '?action=catalog');
   const data = await res.json();
-  const items = Array.isArray(data) ? data : (data.items || []);
+  const items        = Array.isArray(data) ? data : (data.items || []);
+  const last_modified = data.last_modified || new Date().toISOString();
 
-  const r = new Response(JSON.stringify(items), {
+  const payload = { items, last_modified };
+
+  const r = new Response(JSON.stringify(payload), {
     headers: {
       'Content-Type': 'application/json',
       'Cache-Control': `public, max-age=${CACHE_TTL}`,
     },
   });
   await cache.put(cacheKey, r);
-  return items;
+  return payload;
 }
 
 // ── MusicBrainz suggestion ────────────────────────────────
@@ -178,6 +181,101 @@ No explanation, no markdown, just the raw JSON array.`;
   }
 }
 
+// ── Tag cloud generation (Gemini) ────────────────────────
+async function generateTags(catalog, geminiKey) {
+  const summaries = catalog.map(a =>
+    [
+      `"${a.title}" by ${a.artist}`,
+      a.genre  ? `Genre: ${a.genre}`       : '',
+      a.description ? `Desc: ${a.description}` : '',
+      a.context ? `Context: ${a.context}`   : '',
+    ].filter(Boolean).join(' | ')
+  ).join('\n');
+
+  const prompt = `You are a music expert curating a vinyl record shop called Late Records.
+
+From the album descriptions below, create short, culturally meaningful link tags for the shop homepage. Each tag should read naturally as a standalone phrase someone might click on.
+
+Categories to extract from (vary across ALL of them — you have 20+ categories, use them):
+- Credits: "produced by Mad Professor", "arranged by David Axelrod", "Quincy Jones at the helm"
+- Session musicians: "Tony Allen on drums", "Herbie Hancock on electric piano"
+- Labels: "Blue Note classic", "Ariwa vaults", "from the Stones Throw catalog"
+- Release history: "a 1972 recording", "dating back to 1968", "first issued in 1981"
+- Studios / locations: "cut at Electric Lady Studios", "a Compass Point session"
+- Pressing / mastering: "pressed at RTI", "mastered by Kevin Gray", "remastered from original tapes"
+- Scene / movement: "80s UK sound system culture", "Ethiopian golden era", "1970s Lagos"
+- Sampling legacy: "sampled by J Dilla", "a breakbeat staple since the '90s"
+- Rarity / collector signals: "only 500 pressed", "private press", "long out of print"
+- Technique / process: "recorded in one take", "no overdubs", "built on a four-track"
+- Cover art / design: "sleeve by Vaughan Oliver", "photography by Mick Rock"
+- Live context: "captured live at Montreux", "a Peel Session recording"
+- Lineage / collaboration: "the only album to feature this lineup", "before forming Parliament"
+- Reissue provenance: "licensed from the family estate", "first time on vinyl since 1974"
+- Gear / instruments: "all sounds from a TR-808", "Fender Rhodes Mark I", "Juno-106 textures"
+- DJ / selector culture: "crate digger staple", "Northern Soul box essential", "Sound System exclusive"
+- Influence / covers: "later covered by Amy Winehouse", "banned from radio on release"
+- Cultural impact: "defined the Philly sound", "a cornerstone of UK bass"
+
+Diversity rules:
+- Maximum 3 tags per category — spread evenly across categories
+- Each album should contribute at most 1-2 tags to the total pool
+- NEVER start two tags with the same words. Vary your phrasing:
+  - Instead of two "produced by X" tags, use "produced by X" once, then "an X production" or "X behind the board"
+  - Instead of two "originally released in" tags, use it once, then "dating back to 1974" or "a 1974 recording" or "first issued in 1974"
+  - Instead of two "recorded at" tags, use it once, then "cut at Electric Lady" or "a Compass Point session"
+- Write like a music journalist, not a database. Each tag should feel like a different person wrote it.
+
+Tag rules:
+- Each tag must be a complete, grammatically correct phrase (no cut-off sentences)
+- 3 to 6 words per tag (never longer)
+- Do NOT include bare artist names or album titles
+- Do NOT include genre names on their own
+- Do NOT start tags with "Featuring" or "The album"
+- Every tag should make sense if read in isolation
+- Return 60-80 tags total, mixed across categories
+- Respond with ONLY a JSON array of strings, no explanation, no markdown
+
+Catalog:
+${summaries}`;
+
+  const res = await fetch(
+    `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${geminiKey}`,
+    {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        contents: [{ parts: [{ text: prompt }] }],
+        generationConfig: { temperature: 0.7, maxOutputTokens: 2048 }
+      })
+    }
+  );
+
+  if (!res.ok) {
+    console.error('Gemini HTTP error:', res.status, res.statusText);
+    return [];
+  }
+
+  const data = await res.json();
+  const raw  = data?.candidates?.[0]?.content?.parts?.[0]?.text || '';
+  console.log('Gemini raw response length:', raw.length, 'first 200:', raw.substring(0, 200));
+
+  if (!raw) {
+    console.error('Gemini returned empty text. Full response:', JSON.stringify(data).substring(0, 500));
+    return [];
+  }
+
+  try {
+    const cleaned = raw.replace(/```json\s*/g, '').replace(/```\s*/g, '').trim();
+    const tags = JSON.parse(cleaned);
+    if (!Array.isArray(tags)) { console.error('Gemini result not array'); return []; }
+    console.log('Gemini tags count:', tags.length);
+    return tags.filter(t => typeof t === 'string' && t.length > 0).slice(0, 80);
+  } catch (e) {
+    console.error('Gemini JSON parse error:', e.message, 'raw:', raw.substring(0, 300));
+    return [];
+  }
+}
+
 // ── Main handler ──────────────────────────────────────────
 export default {
   async fetch(request, env) {
@@ -204,7 +302,7 @@ export default {
       const id = url.searchParams.get('id');
       if (!id) return json({ error: 'Missing id' }, 400, origin);
       try {
-        const catalog = await fetchCatalog(env);
+        const { items: catalog } = await fetchCatalog(env);
         const album   = catalog.find(a => a.album_id === id);
         if (!album) return json({ error: 'Not found' }, 404, origin);
         return json(album, 200, origin);
@@ -232,13 +330,50 @@ export default {
       }
     }
 
+    // GET /api/tags
+    if (path === '/api/tags' && request.method === 'GET') {
+      try {
+        const cache    = caches.default;
+        const cacheKey = new Request('https://lr-cache/tags-v4');
+        const cached   = await cache.match(cacheKey);
+        if (cached) return new Response(cached.body, {
+          headers: { 'Content-Type': 'application/json', ...cors(origin) },
+        });
+
+        const { items: catalog } = await fetchCatalog(env);
+        if (!env.GEMINI_API_KEY) return json([], 200, origin);
+
+        const tags = await generateTags(catalog, env.GEMINI_API_KEY);
+
+        // only cache non-empty results
+        if (tags.length > 0) {
+          const body = JSON.stringify(tags);
+          const r = new Response(body, {
+            headers: {
+              'Content-Type': 'application/json',
+              'Cache-Control': 'public, max-age=86400',
+            },
+          });
+          await cache.put(cacheKey, r);
+          return new Response(body, {
+            headers: { 'Content-Type': 'application/json', ...cors(origin) },
+          });
+        }
+
+        return json([], 200, origin);
+      } catch (e) {
+        console.error('Tags error:', e.message);
+        return json([], 200, origin);
+      }
+    }
+
     // GET /api/suggest?q=...
     if (path === '/api/suggest' && request.method === 'GET') {
       const q = (url.searchParams.get('q') || '').trim();
       if (!q) return json([], 200, origin);
 
       try {
-        const catalog = await fetchCatalog(env);
+        const { items: catalog } = await fetchCatalog(env);
         let results   = await musicBrainzSuggest(q, catalog);
         if (results.length < 4 && env.GEMINI_API_KEY) {
           results = await geminiSuggest(q, catalog, env.GEMINI_API_KEY);

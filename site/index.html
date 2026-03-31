@@ -795,9 +795,13 @@ document.addEventListener('DOMContentLoaded', async () => {
     return null;
   }
 
-  const catalog = await loadCatalog(2);
+  const data = await loadCatalog(2);
+  const catalog = data ? (data.items || data) : null;
   if (catalog) {
     window._catalogCache = catalog;
+    if (typeof LR_setLastUpdated === 'function' && data.last_modified) {
+      LR_setLastUpdated(data.last_modified);
+    }
     buildCarousel(catalog);
     buildTable(catalog);
     buildAZNav(catalog);

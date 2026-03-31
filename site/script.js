@@ -14,7 +14,10 @@ const LR = (() => {
     async catalog() {
       const res = await fetch(`${API_BASE}/api/catalog`);
       if (!res.ok) throw new Error('Failed to load catalog');
-      return res.json();
+      const data = await res.json();
+      // Handle both old shape (plain array) and new shape ({ items, last_modified })
+      if (Array.isArray(data)) return { items: data, last_modified: null };
+      return data;
     },
 
     async album(id) {
