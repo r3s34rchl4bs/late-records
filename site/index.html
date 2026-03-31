@@ -530,7 +530,7 @@ html.dark .sk {
 
 
 /* ── Sold log ────────────────────────────────────────────── */
-.sold-log { background: var(--art-bg); padding: 8px 0 6px; margin-top: 32px; }
+.sold-log { background: rgba(26,26,20,.03); padding: 8px 0 6px; margin-top: 32px; }
 .sold-log-row {
   display: flex; align-items: baseline; gap: 10px;
   padding: 5px 10px; cursor: pointer; text-decoration: none;
@@ -540,8 +540,9 @@ html.dark .sk {
 .sold-log-tag { font-size: 10px; color: var(--ink30); flex-shrink: 0; }
 .sold-log-artist { font-size: 11px; color: var(--ink45); flex-shrink: 0; transition: color .1s; }
 .sold-log-sep { font-size: 11px; color: var(--ink30); flex-shrink: 0; }
-.sold-log-title { font-size: 11px; color: var(--ink45); transition: color .1s; word-break: break-word; white-space: normal; }
-.sold-log-row { flex-wrap: wrap; align-items: flex-start; }
+.sold-log-title { font-size: 11px; color: var(--ink45); transition: color .1s; word-break: break-word; white-space: normal; min-width: 0; }
+.sold-log-row { flex-wrap: nowrap; align-items: flex-start; }
+.sold-log-row .sold-log-title-wrap { display: flex; flex-wrap: wrap; flex: 1; min-width: 0; gap: 10px; }
 .sold-log-footer { padding: 4px 10px 2px; }
 .sold-log-toggle {
   background: var(--ink15); border: 0;
@@ -551,6 +552,7 @@ html.dark .sk {
   font-family: 'Inter', system-ui, sans-serif; font-weight: 400;
 }
 .sold-log-toggle:hover { opacity: .6; }
+html.dark .sold-log { background: rgba(232,232,223,.03); }
 
 /* ── Tag cloud (YouTube 2005 style) ─────────────────────── */
 .tag-cloud {
@@ -827,9 +829,11 @@ function buildSoldLog(catalog) {
     const url = `albums/album.html?id=${encodeURIComponent(a.album_id)}`;
     return `<a class="sold-log-row" href="${url}">
       <span class="sold-log-tag">[SOLD]</span>
-      <span class="sold-log-artist">${_escHTML(a.artist)}</span>
-      <span class="sold-log-sep">—</span>
-      <span class="sold-log-title">${_escHTML(a.title)}</span>
+      <span class="sold-log-title-wrap">
+        <span class="sold-log-artist">${_escHTML(a.artist)}</span>
+        <span class="sold-log-sep">—</span>
+        <span class="sold-log-title">${_escHTML(a.title)}</span>
+      </span>
     </a>`;
   }
 
