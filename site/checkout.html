@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<script>document.documentElement.classList.toggle('dark', localStorage.getItem('lr_theme') === 'dark')</script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Checkout — LATE RECORDS</title>
+<link rel="stylesheet" href="fonts/inter.css">
+<link rel="stylesheet" href="style.css">
+<style>
+
+.header-logo       { height: 31px; filter: none; }
+.header-logo:hover { opacity: .5; transition: opacity .15s; }
+.logo-dark            { display: none; }
+html.dark .logo-light { display: none; }
+html.dark .logo-dark  { display: block; }
+.cart-link { display: none; }
+.fixed-footer { display: none; }
+.container { padding-bottom: 80px; }
+
+.form-group label {
+  font-size: 11px; font-weight: 500;
+  letter-spacing: .07em; text-transform: uppercase;
+  color: var(--ink55);
+}
+.form-group input {
+  border: none;
+  border-bottom: 1px solid var(--ink30);
+  background: transparent;
+  color: var(--ink);
+  font-family: 'Inter', system-ui, sans-serif;
+  font-size: 14px; padding: 9px 0;
+}
+.form-group input::placeholder { color: var(--ink30); }
+.form-group input:focus { border-bottom-color: var(--ink); outline: none; }
+
+.page-title {
+  font-size: 26px; font-weight: 600; margin-bottom: 32px;
+  letter-spacing: -.01em; color: var(--ink);
+}
+
+.section-label {
+  font-size: 11px; font-weight: 500; letter-spacing: .09em;
+  text-transform: uppercase; color: var(--ink55); margin-bottom: 20px;
+}
+
+.checkout-grid {
+  display: grid;
+  grid-template-columns: 1fr 380px;
+  column-gap: 60px;
+  align-items: start;
+  position: relative;
+}
+.checkout-grid::after {
+  content: '';
+  position: absolute;
+  top: 0; bottom: 0;
+  right: 380px;
+  width: 1px;
+  background: var(--ink15);
+}
+
+.payment-note {
+  border-left: 2px solid var(--ink45);
+  padding-left: 14px;
+  margin-top: 10px;
+  font-size: 13px;
+  line-height: 1.7;
+  color: var(--ink55);
+}
+
+.order-summary { padding-left: 30px; }
+
+.order-item {
+  display: flex; justify-content: space-between;
+  align-items: flex-start; gap: 16px; margin-bottom: 14px;
+}
+.order-item-left  { flex: 1; min-width: 0; }
+.order-item-title { font-size: 12px; font-weight: 600; line-height: 1.35; color: var(--ink); word-break: break-word; }
+.order-item-meta  { font-size: 11px; color: var(--ink55); margin-top: 2px; }
+.order-item-price { font-size: 14px; font-weight: 500; white-space: nowrap; flex-shrink: 0; color: var(--ink); }
+
+.order-divider { border-top: 1px solid var(--border-mid); margin: 14px 0; }
+.order-total   { display: flex; justify-content: space-between; font-weight: 600; font-size: 18px; color: var(--ink); }
+
+.complete-btn {
+  margin-top: 18px; padding: 14px 18px;
+  border: 1px solid var(--btn-bg); background: var(--btn-bg); color: var(--btn-fg);
+  cursor: pointer; font-family: 'Inter', system-ui, sans-serif;
+  font-size: 11px; font-weight: 500; letter-spacing: .09em; text-transform: uppercase;
+  width: 100%; transition: opacity .15s;
+}
+.complete-btn:hover    { opacity: .82; }
+.complete-btn:disabled { opacity: .5; cursor: not-allowed; }
+.complete-btn:disabled:hover { opacity: .5; }
+
+.delivery-methods {
+  margin: 24px 0 20px;
+}
+.delivery-methods .section-label { margin-bottom: 12px; }
+.delivery-option {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 9px 0;
+  border: none;
+  border-bottom: 1px solid var(--ink15);
+  cursor: pointer;
+  transition: none;
+}
+.delivery-option:first-of-type { border-top: 1px solid var(--ink15); }
+.delivery-option:hover { }
+.delivery-option.is-selected { }
+.delivery-option input[type="radio"] {
+  appearance: none;
+  -webkit-appearance: none;
+  width: 10px; height: 10px;
+  border: 1px solid var(--ink30);
+  border-radius: 0;
+  margin: 0 10px 0 0;
+  flex-shrink: 0;
+  position: relative;
+  cursor: pointer;
+  background: transparent;
+}
+.delivery-option input[type="radio"]:checked {
+  border-color: var(--ink);
+  background: var(--ink);
+}
+.delivery-option-left {
+  display: flex;
+  align-items: center;
+  flex: 1;
+  min-width: 0;
+}
+.delivery-option-label {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--ink);
+}
+.delivery-option-desc {
+  font-size: 11px;
+  color: var(--ink45);
+  margin-left: 8px;
+}
+.delivery-option-price {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--ink);
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+@media (max-width: 900px) {
+  .checkout-grid { grid-template-columns: 1fr; gap: 40px; }
+  .checkout-grid::after { display: none; }
+  .order-summary { padding-left: 0; }
+}
+@media (max-width: 600px) {
+  .page-title { font-size: 22px; }
+}
+
+</style>
+</head>
+<body>
+
+<header class="fixed-header">
+  <div class="header-inner">
+    <a href="index.html">
+      <img src="images/late-records-logo.png" class="header-logo logo-light" alt="LATE RECORDS">
+      <img src="images/late-records-logo-dark.png" class="header-logo logo-dark" alt="LATE RECORDS">
+    </a>
+    <div class="header-right">
+      <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme">
+        <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="4"/>
+          <line x1="12" y1="2"  x2="12" y2="5"/>
+          <line x1="12" y1="19" x2="12" y2="22"/>
+          <line x1="2"  y1="12" x2="5"  y2="12"/>
+          <line x1="19" y1="12" x2="22" y2="12"/>
+          <line x1="4.93"  y1="4.93"  x2="7.05"  y2="7.05"/>
+          <line x1="16.95" y1="16.95" x2="19.07" y2="19.07"/>
+          <line x1="4.93"  y1="19.07" x2="7.05"  y2="16.95"/>
+          <line x1="16.95" y1="7.05"  x2="19.07" y2="4.93"/>
+        </svg>
+        <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+        </svg>
+      </button>
+      <a href="cart.html" class="cart-link">Cart (<span class="cart-count">0</span>)</a>
+    </div>
+  </div>
+</header>
+
+<div class="container">
+  <h1 class="page-title">Checkout</h1>
+
+  <div class="checkout-grid">
+
+    <form id="checkoutForm">
+      <div class="section-label">Shipping Details</div>
+      <div class="form-group">
+        <label>Name</label>
+        <input type="text" id="name" required placeholder="Full name">
+      </div>
+      <div class="form-group">
+        <label>Email</label>
+        <input type="email" id="email" required placeholder="your@email.com">
+      </div>
+      <div class="form-group">
+        <label>Phone</label>
+        <input type="tel" id="phone" required placeholder="+63 xxx xxx xxxx">
+      </div>
+      <div class="form-group">
+        <label>Shipping Address</label>
+        <input type="text" id="address" required placeholder="Street address, city, province">
+      </div>
+      <div class="delivery-methods">
+        <div class="section-label">Delivery Method</div>
+        <label class="delivery-option is-selected">
+          <div class="delivery-option-left">
+            <input type="radio" name="deliveryMethod" value="ship" checked>
+            <span class="delivery-option-label">Standard Shipping</span>
+            <span class="delivery-option-desc">Domestic</span>
+          </div>
+          <span class="delivery-option-price" data-delivery-price="ship"></span>
+        </label>
+        <label class="delivery-option">
+          <div class="delivery-option-left">
+            <input type="radio" name="deliveryMethod" value="local">
+            <span class="delivery-option-label">Local Delivery</span>
+            <span class="delivery-option-desc">Within Bacolod City only</span>
+          </div>
+          <span class="delivery-option-price">₱100</span>
+        </label>
+        <label class="delivery-option">
+          <div class="delivery-option-left">
+            <input type="radio" name="deliveryMethod" value="pickup">
+            <span class="delivery-option-label">Local Pickup</span>
+            <span class="delivery-option-desc">Bacolod City pickup, details provided after checkout</span>
+          </div>
+          <span class="delivery-option-price">Free</span>
+        </label>
+      </div>
+
+      <div class="payment-note">
+        <strong>E-Wallet / QR PH</strong><br><br>
+        Payments accepted via <strong>GoTyme, GCash, or Maya</strong>.<br>
+        Payment instructions and QR code will appear on the next page.
+      </div>
+    </form>
+
+    <div class="order-summary">
+      <div class="section-label">Order Summary</div>
+      <div id="orderItems"></div>
+      <div class="order-divider"></div>
+      <div class="order-item">
+        <div class="order-item-left"><div class="order-item-title">Shipping</div></div>
+        <div class="order-item-price" id="shippingFee">₱0</div>
+      </div>
+      <div class="order-divider"></div>
+      <div class="order-total">
+        <span>Total</span>
+        <span id="orderTotal">₱0</span>
+      </div>
+      <button class="complete-btn" id="completeBtn">Complete Order</button>
+    </div>
+
+  </div>
+</div>
+
+<script src="script.js"></script>
+<script src="turnstile.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+  const cart = LR.cart.get();
+  if (!cart.length) { window.location.href = 'cart.html'; return; }
+  const subtotal    = LR.cart.subtotal();
+  const shipDefault = LR.cart.shipping();
+  let shipping      = shipDefault;
+  let deliveryMethod = 'ship';
+
+  /* ── Show default ship price in the delivery selector ── */
+  document.querySelector('[data-delivery-price="ship"]').textContent = LR.ui.peso(shipDefault);
+
+  /* ── Render cart items ── */
+  const itemsEl = document.getElementById('orderItems');
+  cart.forEach(item => {
+    const div = document.createElement('div');
+    div.className = 'order-item';
+    div.innerHTML = `
+      <div class="order-item-left">
+        <div class="order-item-title">${item.title}</div>
+        <div class="order-item-meta">by ${item.artist} × ${item.qty}</div>
+      </div>
+      <div class="order-item-price">${LR.ui.peso(item.price * item.qty)}</div>
+    `;
+    itemsEl.appendChild(div);
+  });
+
+  function updateTotals() {
+    const total = subtotal + shipping;
+    document.getElementById('shippingFee').textContent = shipping === 0 ? 'Free' : LR.ui.peso(shipping);
+    document.getElementById('orderTotal').textContent  = LR.ui.peso(total);
+  }
+  updateTotals();
+
+  /* ── Delivery method toggle ── */
+  document.querySelectorAll('input[name="deliveryMethod"]').forEach(radio => {
+    radio.addEventListener('change', () => {
+      deliveryMethod = radio.value;
+      if (radio.value === 'ship')   shipping = shipDefault;
+      if (radio.value === 'local')  shipping = 100;
+      if (radio.value === 'pickup') shipping = 0;
+      document.querySelectorAll('.delivery-option').forEach(el => el.classList.remove('is-selected'));
+      radio.closest('.delivery-option').classList.add('is-selected');
+      const addrInput = document.getElementById('address');
+      if (radio.value === 'pickup') {
+        addrInput.required = false;
+        addrInput.placeholder = 'Optional';
+      } else {
+        addrInput.required = true;
+        addrInput.placeholder = 'Street address, city, province';
+      }
+      updateTotals();
+    });
+  });
+
+  document.getElementById('completeBtn').addEventListener('click', async () => {
+    const form = document.getElementById('checkoutForm');
+    if (!form.checkValidity()) { form.reportValidity(); return; }
+    if (!cart.length) { alert('Your cart is empty.'); return; }
+
+    const btn = document.getElementById('completeBtn');
+    btn.disabled    = true;
+    btn.textContent = 'Processing…';
+
+    const total = subtotal + shipping;
+
+    try {
+      /* ── Normalize inputs (Postel's Law) ── */
+      const normName = document.getElementById('name').value.trim().replace(/\s+/g, ' ')
+        .toLowerCase().replace(/\b\w/g, c => c.toUpperCase());
+      const normEmail = document.getElementById('email').value.trim().toLowerCase();
+      const normPhone = document.getElementById('phone').value.trim().replace(/[\s\-\.\(\)]/g, '');
+      const normAddr  = document.getElementById('address').value.trim().replace(/\s+/g, ' ')
+        .toLowerCase().replace(/\b\w/g, c => c.toUpperCase());
+
+      const turnstileToken = await LR_TURNSTILE.getToken();
+      const result = await LR.api.order({
+        name:          normName,
+        email:         normEmail,
+        phone:         normPhone,
+        address:       normAddr,
+        deliveryMethod,
+        subtotal, shipping, total,
+        items:         cart.map(i => ({ album_id: i.id, quantity: i.qty })),
+        turnstileToken: turnstileToken
+      });
+
+      if (!result.ok && !result.success) {
+        const detail = result.debug ? ` [${result.debug}${result.codes?.length ? ': ' + result.codes.join(', ') : ''}]` : '';
+        throw new Error((result.error || 'Order failed') + detail);
+      }
+
+      localStorage.setItem('lr_buyer',            normName);
+      localStorage.setItem('lr_order_total',      LR.ui.peso(total));
+      localStorage.setItem('lr_order_created_at', String(Date.now()));
+      localStorage.setItem('lr_address',          normAddr);
+      localStorage.setItem('lr_order_items',      JSON.stringify(cart));
+      localStorage.setItem('lr_order_subtotal',   String(subtotal));
+      localStorage.setItem('lr_order_shipping',   String(shipping));
+      localStorage.setItem('lr_delivery_method',  deliveryMethod);
+      LR.cart.clear();
+      window.location.href = 'success.html';
+    } catch (err) {
+      console.error(err);
+      alert('There was a problem processing your order. Please try again.\n\nError: ' + err.message);
+      btn.disabled    = false;
+      btn.textContent = 'Complete Order';
+      LR_TURNSTILE.reset();
+    }
+  });
+});
+</script>
+
+</body>
+</html>

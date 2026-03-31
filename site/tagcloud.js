@@ -1,0 +1,258 @@
+/**
+ * Late Records — Tag Cloud
+ * Fetches tags from /api/tags (Gemini) with client-side fallback.
+ * Depends on: _escHTML() from index.html inline script.
+ */
+
+// ── Category detection & caps ────────────────────────────
+var TAG_CATEGORY_CAP = 3;
+
+function classifyTag(text) {
+  var t = text.toLowerCase();
+  if (/(?:produced|engineered|arranged|mixed|composed)\s+by|production$|behind the boards|at the helm|handled the production/.test(t)) return 'credits';
+  if (/\bon\s+(?:keys|drums|bass|guitar|piano|sax|trumpet|vocals|percussion|flute|organ|synth|vibes|vibraphone|cello|violin|harmonica|clarinet|trombone|congas|turntables)\b/.test(t)) return 'session';
+  if (/(?:originally\s+released|first\s+pressing|reissue|private\s+press|never\s+reissued|limited\s+press|early\s+pressing|dating\s+back\s+to|first\s+issued|first\s+time\s+on\s+vinyl)/.test(t)) return 'history';
+  if (/(?:recorded\s+(?:at|in)|pressed\s+at|cut\s+at|tracked\s+at|laid\s+down\s+at|captured\s+live)/.test(t)) return 'studio';
+  if (/(?:180g|half-speed|gatefold|remastered\s+from|mastered\s+by|remastered\s+by)/.test(t)) return 'format';
+  if (/(?:sampled\s+by|sampled\s+on|breakbeat\s+staple)/.test(t)) return 'sampling';
+  if (/(?:only\s+\d+\s+pressed|test\s+pressing|promo\s+copy|limited\s+run|long\s+out\s+of\s+print)/.test(t)) return 'rarity';
+  if (/(?:recorded\s+in\s+one\s+take|no\s+overdubs|built\s+on\s+a\s+four-track|built\s+entirely)/.test(t)) return 'technique';
+  if (/(?:sleeve\s+by|photography\s+by|artwork\s+by|cover\s+by)/.test(t)) return 'artwork';
+  if (/(?:live\s+at|peel\s+session|captured\s+live|recorded\s+live)/.test(t)) return 'live';
+  if (/(?:only\s+album\s+to\s+feature|last\s+session\s+before|before\s+forming|pre-[A-Za-z])/.test(t)) return 'lineage';
+  if (/(?:TR-808|TR-909|Juno-106|Fender\s+Rhodes|Minimoog|SP-1200|MPC|Roland|Moog|Wurlitzer)/i.test(t)) return 'gear';
+  if (/(?:crate\s+dig|sound\s+system|northern\s+soul|dancefloor|analog\s+warmth|cinematic|golden\s+era)/.test(t)) return 'culture';
+  if (/(?:later\s+covered|the\s+bassline\s+that|banned\s+from\s+radio|billboard)/.test(t)) return 'influence';
+  if (/(?:licensed\s+from|family\s+estate)/.test(t)) return 'provenance';
+  return 'other';
+}
+
+function capByCategory(tags) {
+  var counts = {};
+  return tags.filter(function(tag) {
+    var cat = classifyTag(tag.text);
+    if (cat === 'other') return true;
+    counts[cat] = (counts[cat] || 0) + 1;
+    return counts[cat] <= TAG_CATEGORY_CAP;
+  });
+}
+
+// ── Phrase-prefix dedup (no two tags start the same way) ─
+function dedupeByPhrasePrefix(tags) {
+  var seenPrefixes = new Set();
+  return tags.filter(function(tag) {
+    var words = tag.text.toLowerCase().split(/\s+/);
+    // Check first 2 words as prefix (e.g. "originally released", "produced by", "recorded at")
+    var prefix = words.slice(0, 2).join(' ');
+    // Skip generic prefixes that are fine to repeat
+    if (/^(a |the |one |deep |rare )/.test(prefix)) return true;
+    if (seenPrefixes.has(prefix)) return false;
+    seenPrefixes.add(prefix);
+    return true;
+  });
+}
+
+// ── Two-per-album cap ────────────────────────────────────
+var MAX_TAGS_PER_ALBUM = 2;
+function dedupeByAlbum(tags) {
+  var counts = {};
+  return tags.filter(function(tag) {
+    counts[tag.albumId] = (counts[tag.albumId] || 0) + 1;
+    return counts[tag.albumId] <= MAX_TAGS_PER_ALBUM;
+  });
+}
+
+// ── Extraction (client-side fallback) ─────────────────────
+function extractTagsFromCatalog(catalog) {
+  var tags = [];
+  var seen = new Set();
+  function add(text, albumId) {
+    var t = text.replace(/[—–]/g, '-').trim();
+    var key = t.toLowerCase();
+    if (!key || key.length < 8 || seen.has(key)) return;
+    if (t.split(/\s+/).length < 2) return;
+    if (/\s+(and|or|but|the|a|from|Mr|Mrs|Dr)$/i.test(t)) return;
+    if (/["'\u2018\u2019]$/.test(t)) return;
+    seen.add(key);
+    tags.push({ text: t, albumId: albumId });
+  }
+  catalog.forEach(function(a) {
+    if (!a.description) return;
+    var desc = a.description.replace(/[—–]/g, ', ');
+    var artist = String(a.artist || '').toLowerCase();
+    var title = String(a.title || '').toLowerCase();
+
+    var artistWords = artist.split(/\s+/).filter(function(w) { return w.length > 2; });
+    var titleWords = title.split(/\s+/).filter(function(w) { return w.length > 2; });
+    function containsArtistOrTitle(s) {
+      var low = s.toLowerCase();
+      if (low === artist || low === title) return true;
+      var matchCount = 0;
+      artistWords.forEach(function(w) { if (low.indexOf(w) >= 0) matchCount++; });
+      if (artistWords.length > 0 && matchCount >= artistWords.length) return true;
+      titleWords.forEach(function(w) { if (low.indexOf(w) >= 0) matchCount++; });
+      if (titleWords.length > 0 && matchCount >= titleWords.length + artistWords.length) return true;
+      return false;
+    }
+
+    // 1) Short complete sentences (2-7 words)
+    var sentences = desc.split(/\.\s+/).map(function(s) { return s.replace(/\.$/, '').trim(); });
+    sentences.forEach(function(s) {
+      var wc = s.split(/\s+/).length;
+      if (wc >= 2 && wc <= 7 && !containsArtistOrTitle(s)) add(s, a.album_id);
+    });
+
+    // 2) Credits — "produced by X", "arranged by X", "[Name] on [instrument]"
+    var byMatches = desc.match(/(?:produced|engineered|arranged|mixed|recorded|composed|mastered|remastered)\s+by\s+[A-Z][A-Za-z\s.'-]+/g);
+    if (byMatches) byMatches.forEach(function(m) { add(m.split(/\s+/).slice(0, 6).join(' '), a.album_id); });
+    var onMatches = desc.match(/[A-Z][A-Za-z.'-]+\s+(?:[A-Z][A-Za-z.'-]+\s+)?on\s+(?:keys|drums|bass|guitar|piano|sax|trumpet|vocals|percussion|flute|organ|synth|vibes|vibraphone|cello|violin|harmonica|clarinet|trombone|congas|turntables|electric\s+piano)/g);
+    if (onMatches) onMatches.forEach(function(m) { add(m.split(/\s+/).slice(0, 5).join(' '), a.album_id); });
+    var helmMatches = desc.match(/[A-Z][A-Za-z.'-]+\s+(?:[A-Z][A-Za-z.'-]+\s+)?(?:at the helm|behind the boards|handled the production)/g);
+    if (helmMatches) helmMatches.forEach(function(m) { add(m.split(/\s+/).slice(0, 6).join(' '), a.album_id); });
+
+    // 3) Key phrases — release history, studio, location
+    var keyPhrases = desc.match(/originally released in \d{4}|dating back to \d{4}|first issued in \d{4}|first time on vinyl since \d{4}|never reissued|only \d+ pressed|first pressing|early pressing|private press|limited press|long out of print|rare [a-z]+ [a-z]+|(?:recorded |cut |tracked |pressed |laid down )(?:at|in) [A-Z][A-Za-z.'-]+(?:\s+[A-Z][A-Za-z.'-]+)?/g);
+    if (keyPhrases) keyPhrases.forEach(function(p) { add(p.split(/\s+/).slice(0, 6).join(' '), a.album_id); });
+
+    // 4) Pressing / format / mastering
+    var formatPhrases = desc.match(/180g vinyl|half-speed mastered|gatefold sleeve|remastered from original tapes|mastered from the original analog/gi);
+    if (formatPhrases) formatPhrases.forEach(function(p) { add(p.split(/\s+/).slice(0, 6).join(' '), a.album_id); });
+
+    // 5) Sampling legacy
+    var sampledBy = desc.match(/sampled by [A-Z][A-Za-z\s.'-]+|sampled on [A-Z][A-Za-z\s.'-]+|breakbeat staple/gi);
+    if (sampledBy) sampledBy.forEach(function(m) { add(m.split(/\s+/).slice(0, 5).join(' '), a.album_id); });
+
+    // 6) Rarity / collector signals
+    var rarityPhrases = desc.match(/test pressing|promo copy|limited run|long out of print|licensed (?:from|directly)/gi);
+    if (rarityPhrases) rarityPhrases.forEach(function(p) { add(p.split(/\s+/).slice(0, 5).join(' '), a.album_id); });
+
+    // 7) Technique / process
+    var techPhrases = desc.match(/recorded in one take|no overdubs|built (?:entirely )?on a four-track|built entirely/gi);
+    if (techPhrases) techPhrases.forEach(function(p) { add(p, a.album_id); });
+
+    // 8) Cover art / design
+    var artMatches = desc.match(/(?:sleeve|photography|artwork|cover)\s+by\s+[A-Z][A-Za-z\s.'-]+/g);
+    if (artMatches) artMatches.forEach(function(m) { add(m.split(/\s+/).slice(0, 5).join(' '), a.album_id); });
+
+    // 9) Live context
+    var liveMatches = desc.match(/(?:captured |recorded )?live at [A-Z][A-Za-z\s.'-]+|(?:a )?Peel Session(?: recording)?/gi);
+    if (liveMatches) liveMatches.forEach(function(m) { add(m.split(/\s+/).slice(0, 6).join(' '), a.album_id); });
+
+    // 10) Lineage / collaboration
+    var lineageMatches = desc.match(/before forming [A-Z][A-Za-z\s.'-]+|(?:the )?only album to feature this lineup|last session before the group split/gi);
+    if (lineageMatches) lineageMatches.forEach(function(m) { add(m.split(/\s+/).slice(0, 7).join(' '), a.album_id); });
+
+    // 11) Gear / instruments
+    var gearMatches = desc.match(/(?:Roland )?TR-808|(?:Roland )?TR-909|Juno-106|Fender Rhodes[A-Za-z\s]*|Minimoog|SP-1200|MPC\s*\d*|Moog\s+[A-Za-z]+|Wurlitzer/gi);
+    if (gearMatches) gearMatches.forEach(function(m) { add(m.trim(), a.album_id); });
+
+    // 12) Influence / covers / chart
+    var influenceMatches = desc.match(/later covered by [A-Z][A-Za-z\s.'-]+|banned from radio/gi);
+    if (influenceMatches) influenceMatches.forEach(function(m) { add(m.split(/\s+/).slice(0, 6).join(' '), a.album_id); });
+
+    // 13) Cultural context phrases
+    var contextPhrases = desc.match(/\d{2}s [A-Za-z\s]+culture|\d{4}s [A-Z][A-Za-z]+|\b(?:golden era|sound system|crate dig[a-z]*|deep cut|analog warmth|cinematic [a-z]+|dancefloor [a-z]+|northern soul|sound system exclusive)\b/gi);
+    if (contextPhrases) contextPhrases.forEach(function(p) { add(p.split(/\s+/).slice(0, 5).join(' '), a.album_id); });
+  });
+  return tags;
+}
+
+// ── Rendering ─────────────────────────────────────────────
+var TAG_VISIBLE_COUNT = 12;
+
+function buildTagHTML(tags, limit) {
+  var slice = limit ? tags.slice(0, limit) : tags;
+  return slice.map(function(tag, i) {
+    var url = 'albums/album.html?id=' + encodeURIComponent(tag.albumId);
+    return (i > 0 ? '<span class="tag-cloud-sep">&middot;</span>' : '') +
+      '<a class="tag-cloud-item" href="' + url + '">' + _escHTML(tag.text) + '</a>';
+  }).join('');
+}
+
+function renderTagCloud(tags) {
+  var list = document.getElementById('tagCloudList');
+  if (!list || !tags.length) return;
+  var expanded = false;
+
+  function render() {
+    var html = buildTagHTML(tags, expanded ? null : TAG_VISIBLE_COUNT);
+    if (!expanded && tags.length > TAG_VISIBLE_COUNT) {
+      html += '<span class="tag-cloud-sep">&middot;</span><a class="tag-cloud-more" id="tagCloudMore">Read more</a>';
+    } else if (expanded && tags.length > TAG_VISIBLE_COUNT) {
+      html += '<span class="tag-cloud-sep">&middot;</span><a class="tag-cloud-more" id="tagCloudMore">Read less</a>';
+    }
+    list.innerHTML = html;
+    var btn = document.getElementById('tagCloudMore');
+    if (btn) {
+      btn.addEventListener('click', function(e) {
+        e.preventDefault();
+        expanded = !expanded;
+        render();
+        if (!expanded) list.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      });
+    }
+  }
+  render();
+}
+
+// ── Catalog hash (detect sheet changes) ──────────────────
+function catalogHash(catalog) {
+  // Build a fingerprint from album count + all descriptions
+  var str = catalog.length + ':';
+  catalog.forEach(function(a) {
+    str += (a.album_id || '') + '|' + (a.description || '') + ';';
+  });
+  // Simple fast hash (djb2)
+  var hash = 5381;
+  for (var i = 0; i < str.length; i++) {
+    hash = ((hash << 5) + hash) + str.charCodeAt(i);
+    hash = hash & hash; // Convert to 32-bit int
+  }
+  return hash.toString(36);
+}
+
+// ── Loading (API → fallback → cache) ─────────────────────
+var TAG_CACHE_KEY = 'lr_tag_cloud_v5';
+var TAG_CACHE_TTL = 86400000; // 24 hours
+
+async function loadTagCloud(catalog) {
+  var currentHash = catalogHash(catalog);
+
+  // Check localStorage cache — serve if hash matches AND within TTL
+  try {
+    var cached = JSON.parse(localStorage.getItem(TAG_CACHE_KEY));
+    if (cached && cached.tags && cached.tags.length
+        && cached.hash === currentHash
+        && (Date.now() - cached.ts) < TAG_CACHE_TTL) {
+      renderTagCloud(cached.tags);
+      return;
+    }
+  } catch (e) {}
+
+  var tags = null;
+  try {
+    var res = await fetch('https://late-records.shop/api/tags');
+    var data = await res.json();
+    if (Array.isArray(data) && data.length) {
+      tags = data.map(function(t) {
+        return { text: t, albumId: catalog[Math.floor(Math.random() * catalog.length)].album_id };
+      });
+    }
+  } catch (e) {}
+
+  if (!tags || !tags.length) {
+    tags = extractTagsFromCatalog(catalog);
+  }
+
+  if (tags.length) {
+    // Pipeline: cap categories → shuffle → no repeated phrasing → one-per-album
+    tags = capByCategory(tags);
+    tags = [...tags].sort(function() { return Math.random() - 0.5; });
+    tags = dedupeByPhrasePrefix(tags);
+    tags = dedupeByAlbum(tags);
+    try { localStorage.setItem(TAG_CACHE_KEY, JSON.stringify({ tags: tags, ts: Date.now(), hash: currentHash })); } catch (e) {}
+    renderTagCloud(tags);
+  } else {
+    document.getElementById('tagCloud').style.display = 'none';
+  }
+}

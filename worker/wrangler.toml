@@ -1,0 +1,25 @@
+name            = "late-records-api"
+main            = "index.js"
+compatibility_date = "2024-09-23"
+
+# ── Routes ────────────────────────────────────────────────────────────────────
+# Attach the Worker to your Pages domain under /api/*
+# Set this up in the Cloudflare Dashboard:
+#   Workers & Pages → your Pages project → Settings → Functions
+# Or add a route manually:
+#   Workers → Routes → late-records.shop/api/*
+
+[[routes]]
+pattern = "late-records.shop/api/*"
+zone_name = "late-records.shop"
+
+# ── Environment variables ─────────────────────────────────────────────────────
+# APPS_SCRIPT_URL and TURNSTILE_SECRET must be set as secrets:
+#   wrangler secret put APPS_SCRIPT_URL
+#   wrangler secret put TURNSTILE_SECRET
+#
+# Never put secrets in this file.
+
+# ── Observability ─────────────────────────────────────────────────────────────
+[observability]
+enabled = true

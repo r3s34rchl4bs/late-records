@@ -1,0 +1,459 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<script>document.documentElement.classList.toggle('dark', localStorage.getItem('lr_theme') === 'dark')</script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Order Received — LATE RECORDS</title>
+<link rel="stylesheet" href="fonts/inter.css">
+<link rel="stylesheet" href="style.css">
+<style>
+.header-logo { height: 31px; filter: none; }
+.header-logo:hover { opacity: .5; transition: opacity .15s; }
+.logo-dark            { display: none; }
+html.dark .logo-light { display: none; }
+html.dark .logo-dark  { display: block; }
+.cart-link { display: none; }
+.fixed-footer { display: none; }
+.container { padding-bottom: 80px; }
+
+.page-title {
+  font-size: 26px; font-weight: 600;
+  margin-bottom: 32px; letter-spacing: -.01em; color: var(--ink);
+}
+
+.success-layout {
+  display: grid;
+  grid-template-columns: 1fr 380px;
+  column-gap: 60px;
+  align-items: start;
+}
+
+.order-meta {
+  border-top: 1px solid var(--border-mid);
+  display: grid; grid-template-columns: 1fr 1fr;
+}
+.meta-cell { padding: 16px 0; border-bottom: 1px solid var(--border-mid); }
+.meta-cell.left  { padding-right: 28px; border-right: 1px solid var(--border-mid); }
+.meta-cell.right { padding-left: 28px; }
+.meta-label { font-size: 9px; font-weight: 500; letter-spacing: .12em; text-transform: uppercase; color: var(--ink30); margin-bottom: 5px; }
+.meta-value { font-size: 13px; color: var(--ink); line-height: 1.55; }
+.meta-value.amount { font-size: 24px; font-weight: 600; letter-spacing: -.02em; line-height: 1.1; }
+
+.view-summary-btn {
+  width: 100%;
+  background: var(--art-bg); border: none;
+  border-bottom: 1px solid var(--ink15);
+  padding: 14px 16px; cursor: pointer;
+  font-family: 'Inter', system-ui, sans-serif; text-align: left;
+  box-shadow: 0 2px 8px var(--art-bg);
+  margin-top: 20px; margin-bottom: 0;
+  transition: background .15s; display: block;
+}
+.view-summary-btn:hover { background: var(--ink15); }
+.vsb-inner { display: flex; justify-content: space-between; align-items: center; width: 100%; }
+.vsb-label { font-size: 10px; font-weight: 500; letter-spacing: .1em; text-transform: uppercase; color: var(--ink55); }
+.vsb-arrow { font-size: 14px; color: var(--ink30); transition: transform .15s; }
+.vsb-arrow.open { transform: rotate(90deg); }
+
+.payment-section { margin-top: 32px; }
+.payment-body {
+  display: grid; grid-template-columns: 1fr auto;
+  gap: 32px; align-items: start; margin-bottom: 28px;
+}
+.payment-left { display: flex; flex-direction: column; width: 40%; min-width: 180px; }
+.timer-label { font-size: 9px; font-weight: 500; letter-spacing: .12em; text-transform: uppercase; color: var(--ink30); margin-bottom: 8px; }
+.countdown { font-size: 36px; font-weight: 600; letter-spacing: -.02em; font-variant-numeric: tabular-nums; color: var(--ink); line-height: 1; margin-bottom: 10px; }
+.countdown.is-expired { font-size: 16px; color: var(--ink45); }
+.timer-note { font-size: 11px; color: var(--ink45); line-height: 1.65; margin-bottom: 16px; }
+.wallet-logos-wrap { display: flex; flex-wrap: wrap; gap: 10px 14px; align-items: center; }
+.wallet-logo { display: block; width: auto; flex-shrink: 0; filter: grayscale(100%) opacity(0.38); }
+
+.qr-block { display: flex; flex-direction: column; align-items: center; gap: 6px; }
+.qr-img { width: 150px; display: block; object-fit: cover; }
+.qr-download { font-size: 9px; letter-spacing: .07em; text-transform: uppercase; color: var(--ink30); cursor: pointer; font-family: inherit; background: none; border: none; padding: 0; text-decoration: underline; transition: color .1s; }
+.qr-download:hover { color: var(--ink55); }
+
+.order-note { font-size: 12px; color: var(--ink45); line-height: 1.8; padding-left: 12px; border-left: 1px solid var(--ink15); }
+
+.summary-panel {
+  display: none;
+  padding-left: 30px;
+}
+.summary-panel.is-open { display: block; }
+
+.section-label {
+  font-size: 11px; font-weight: 500; letter-spacing: .09em;
+  text-transform: uppercase; color: var(--ink55); margin-bottom: 20px;
+}
+.order-item {
+  display: flex; justify-content: space-between;
+  align-items: flex-start; gap: 16px; margin-bottom: 14px;
+}
+.order-item-left  { flex: 1; min-width: 0; }
+.order-item-title { font-size: 12px; font-weight: 600; line-height: 1.35; color: var(--ink); word-break: break-word; }
+.order-item-meta  { font-size: 11px; color: var(--ink55); margin-top: 2px; }
+.order-item-price { font-size: 14px; font-weight: 500; white-space: nowrap; flex-shrink: 0; color: var(--ink); }
+.order-divider { border-top: 1px solid var(--border-mid); margin: 14px 0; }
+.order-total { display: flex; justify-content: space-between; font-weight: 600; font-size: 18px; color: var(--ink); }
+
+.modal-overlay {
+  display: none; position: fixed; inset: 0; z-index: 300;
+  background: rgba(10,10,8,.82);
+  align-items: center; justify-content: center;
+  padding: 40px 24px;
+}
+.modal-overlay.is-open { display: flex; }
+.modal-dialog {
+  width: 100%; max-width: 380px;
+  background-color: var(--bg);
+  background-image: radial-gradient(circle, var(--bg-dot) 0.5px, transparent 0.5px);
+  background-size: 3px 3px;
+  border: 2px solid var(--border);
+  max-height: calc(100vh - 80px); overflow-y: auto;
+}
+.modal-close-row {
+  display: flex; align-items: center; justify-content: flex-end;
+  padding: 12px 16px 0;
+}
+.modal-close {
+  background: var(--ink15); border: 0;
+  width: 18px; height: 18px;
+  display: inline-flex; align-items: center; justify-content: center;
+  font-size: 12px; color: var(--ink); cursor: pointer;
+  font-family: 'Inter', system-ui, sans-serif; font-weight: 400; line-height: 1;
+  transition: background .1s;
+}
+.modal-close:hover { background: var(--btn-bg); color: var(--btn-fg); }
+.modal-body { padding: 20px 28px 36px; }
+
+@media (max-width: 900px) {
+  .success-layout { grid-template-columns: 1fr; }
+  .summary-panel { padding-left: 0; }
+  .page-title { font-size: 22px; }
+}
+@media (max-width: 860px) {
+  .summary-panel { display: none !important; }
+  .countdown { font-size: 30px; }
+  .qr-img { width: 140px; }
+  .payment-left { width: auto; min-width: 0; }
+}
+@media (max-width: 600px) {
+  .countdown { font-size: 26px; }
+}
+</style>
+</head>
+<body>
+
+<header class="fixed-header">
+  <div class="header-inner">
+    <a href="index.html">
+      <img src="images/late-records-logo.png" class="header-logo logo-light" alt="LATE RECORDS">
+      <img src="images/late-records-logo-dark.png" class="header-logo logo-dark" alt="LATE RECORDS">
+    </a>
+    <div class="header-right">
+      <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme">
+        <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="4"/>
+          <line x1="12" y1="2"  x2="12" y2="5"/>
+          <line x1="12" y1="19" x2="12" y2="22"/>
+          <line x1="2"  y1="12" x2="5"  y2="12"/>
+          <line x1="19" y1="12" x2="22" y2="12"/>
+          <line x1="4.93"  y1="4.93"  x2="7.05"  y2="7.05"/>
+          <line x1="16.95" y1="16.95" x2="19.07" y2="19.07"/>
+          <line x1="4.93"  y1="19.07" x2="7.05"  y2="16.95"/>
+          <line x1="16.95" y1="7.05"  x2="19.07" y2="4.93"/>
+        </svg>
+        <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+        </svg>
+      </button>
+    </div>
+  </div>
+</header>
+
+<div class="container">
+  <h1 class="page-title">Order Received</h1>
+
+  <div class="success-layout">
+
+    <!-- LEFT COL -->
+    <div>
+      <div class="order-meta">
+        <div class="meta-cell left">
+          <div class="meta-label">Order</div>
+          <div class="meta-value" id="metaOrder">&#x2014;</div>
+        </div>
+        <div class="meta-cell right">
+          <div class="meta-label" id="metaAddressLabel">Address</div>
+          <div class="meta-value" id="metaAddress">&#x2014;</div>
+        </div>
+        <div class="meta-cell left">
+          <div class="meta-label" id="metaBuyerLabel">Ship To</div>
+          <div class="meta-value" id="metaBuyer">&#x2014;</div>
+        </div>
+        <div class="meta-cell right">
+          <div class="meta-label">Amount Due</div>
+          <div class="meta-value amount" id="metaAmount">&#x2014;</div>
+        </div>
+      </div>
+
+      <!-- View summary trigger — shows modal on mobile, toggles panel on desktop -->
+      <button class="view-summary-btn" id="viewSummaryBtn" onclick="toggleSummary()">
+        <div class="vsb-inner">
+          <span class="vsb-label">View Order Summary</span>
+          <span class="vsb-arrow" id="vsbArrow">&#x2192;</span>
+        </div>
+      </button>
+
+      <div class="payment-section">
+        <div class="payment-body">
+          <div class="payment-left">
+            <div class="timer-label">Pay Within</div>
+            <div class="countdown" id="countdown">24:00:00</div>
+            <div class="timer-note" id="timerNote">Scan or download the QR code and pay using any QR PH&#x2013;enabled app. Order is held until the window closes.</div>
+            <div class="wallet-logos-wrap">
+              <img src="images/late-records-payment-qrph.png"      class="wallet-logo" style="height:14px;" alt="QR PH">
+              <img src="images/late-records-payment-bdo.png"       class="wallet-logo" style="height:13px;" alt="BDO">
+              <img src="images/late-records-payment-gotyme.png"    class="wallet-logo" style="height:15px;" alt="GoTyme">
+              <img src="images/late-records-payment-gcash.png"     class="wallet-logo" style="height:15px;" alt="GCash">
+              <img src="images/late-records-payment-maya.png"      class="wallet-logo" style="height:13px;" alt="Maya">
+              <img src="images/late-records-payment-shopeepay.png?v=2" class="wallet-logo" style="height:14px;" alt="ShopeePay">
+            </div>
+          </div>
+          <div class="qr-block">
+            <img src="images/late-records-qr-payment.jpg" class="qr-img" alt="Payment QR">
+            <button class="qr-download" onclick="downloadQR()">&#x2193; download</button>
+          </div>
+        </div>
+      </div>
+
+      <p class="order-note">
+        Orders unpaid after the payment window may be cancelled and released back to stock. Contact us at info.late.records@gmail.com with any questions.
+      </p>
+    </div>
+
+    <!-- RIGHT COL — order summary panel, desktop only, toggled -->
+    <div class="summary-panel" id="summaryPanel">
+      <div class="section-label">Order Summary</div>
+
+      <div class="order-item">
+        <div class="order-item-left"><div class="order-item-title">Date</div></div>
+        <div class="order-item-price" id="rDate" style="font-size:12px;font-weight:400;">&#x2014;</div>
+      </div>
+
+      <div class="order-divider"></div>
+
+      <div id="rItems"></div>
+
+      <div class="order-divider"></div>
+
+      <div class="order-item">
+        <div class="order-item-left"><div class="order-item-title" id="rShipLabel">Shipping</div></div>
+        <div class="order-item-price" id="rShipping">&#x2014;</div>
+      </div>
+
+      <div class="order-divider"></div>
+
+      <div class="order-total">
+        <span>Total</span>
+        <span id="rTotal">&#x2014;</span>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- MOBILE MODAL -->
+<div class="modal-overlay" id="modalOverlay" onclick="handleOverlay(event)">
+  <div class="modal-dialog">
+    <div class="modal-close-row">
+      <button class="modal-close" onclick="closeModal()">&#x2715;</button>
+    </div>
+    <div class="modal-body">
+      <div class="section-label" style="margin-bottom:4px;">Order Summary</div>
+
+      <div class="order-item" style="margin-bottom:20px;">
+        <div class="order-item-left"><div class="order-item-title" style="font-weight:400;color:var(--ink55);font-size:11px;">Date</div></div>
+        <div class="order-item-price" id="mDate" style="font-size:11px;font-weight:400;color:var(--ink55);">&#x2014;</div>
+      </div>
+
+      <div class="order-divider" style="margin-top:0;"></div>
+
+      <div id="mItems"></div>
+
+      <div class="order-divider"></div>
+
+      <div class="order-item">
+        <div class="order-item-left"><div class="order-item-title" id="mShipLabel">Shipping</div></div>
+        <div class="order-item-price" id="mShipping">&#x2014;</div>
+      </div>
+
+      <div class="order-divider"></div>
+
+      <div class="order-total">
+        <span>Total</span>
+        <span id="mTotal">&#x2014;</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="script.js"></script>
+<script>
+
+var buyer      = localStorage.getItem('lr_buyer');
+var orderTotal = localStorage.getItem('lr_order_total');
+if (!buyer || !orderTotal) { window.location.href = 'index.html'; }
+
+var orderCreatedAt = localStorage.getItem('lr_order_created_at');
+if (!orderCreatedAt) {
+  orderCreatedAt = String(Date.now());
+  localStorage.setItem('lr_order_created_at', orderCreatedAt);
+}
+orderCreatedAt = Number(orderCreatedAt);
+
+var orderNum = localStorage.getItem('lr_order_number');
+if (!orderNum) {
+  orderNum = '#LR-' + String(Math.floor(Math.random() * 90000) + 10000);
+  localStorage.setItem('lr_order_number', orderNum);
+}
+
+var address     = localStorage.getItem('lr_address') || '&#x2014;';
+var rawItems    = localStorage.getItem('lr_order_items');
+var rawSubtotal = localStorage.getItem('lr_order_subtotal');
+var rawShipping = localStorage.getItem('lr_order_shipping');
+var savedCart   = rawItems ? JSON.parse(rawItems) : [];
+var subtotal    = rawSubtotal ? Number(rawSubtotal) : 0;
+var shipping    = rawShipping ? Number(rawShipping) : 0;
+var total       = subtotal + shipping;
+
+var dateStr = new Date(orderCreatedAt).toLocaleDateString('en-GB', {
+  day: 'numeric', month: 'short', year: 'numeric'
+});
+
+// Delivery method
+var deliveryMethod = localStorage.getItem('lr_delivery_method') || 'ship';
+
+// Meta
+document.getElementById('metaOrder').textContent   = orderNum;
+document.getElementById('metaBuyer').textContent   = buyer;
+document.getElementById('metaAmount').textContent  = orderTotal;
+
+if (deliveryMethod === 'pickup') {
+  document.getElementById('metaBuyerLabel').textContent   = 'Pickup By';
+  document.getElementById('metaAddressLabel').textContent  = 'Pickup';
+  document.getElementById('metaAddress').innerHTML = 'Message <a href="https://www.instagram.com/late.records" target="_blank" rel="noopener" style="color:var(--ink);font-weight:600;text-decoration:underline;text-underline-offset:2px;">@late.records</a> via Instagram for pickup details.';
+} else if (deliveryMethod === 'local') {
+  document.getElementById('metaAddressLabel').textContent = 'Local Delivery';
+  document.getElementById('metaAddress').textContent = address;
+} else {
+  document.getElementById('metaAddress').textContent = address;
+}
+
+// Build items
+function buildItems(cart) {
+  if (!cart || !cart.length) return '<div style="font-size:12px;color:var(--ink30);padding:8px 0 14px;">No items</div>';
+  return cart.map(function(item) {
+    return '<div class="order-item">' +
+      '<div class="order-item-left">' +
+        '<div class="order-item-title">' + item.title + '</div>' +
+        '<div class="order-item-meta">by ' + (item.artist || '') + ' \xd7 ' + item.qty + '</div>' +
+      '</div>' +
+      '<div class="order-item-price">' + LR.ui.peso(item.price * item.qty) + '</div>' +
+    '</div>';
+  }).join('');
+}
+
+// Delivery method labels for summary
+var shipLabel = 'Shipping';
+if (deliveryMethod === 'pickup') shipLabel = 'Pickup';
+else if (deliveryMethod === 'local') shipLabel = 'Local Delivery';
+
+// Desktop
+document.getElementById('rDate').textContent     = dateStr;
+document.getElementById('rItems').innerHTML      = buildItems(savedCart);
+document.getElementById('rShipLabel').textContent = shipLabel;
+document.getElementById('rShipping').textContent = shipping === 0 ? 'Free' : LR.ui.peso(shipping);
+document.getElementById('rTotal').textContent    = LR.ui.peso(total);
+
+// Mobile
+document.getElementById('mDate').textContent     = dateStr;
+document.getElementById('mItems').innerHTML      = buildItems(savedCart);
+document.getElementById('mShipLabel').textContent = shipLabel;
+document.getElementById('mShipping').textContent = shipping === 0 ? 'Free' : LR.ui.peso(shipping);
+document.getElementById('mTotal').textContent    = LR.ui.peso(total);
+
+// Countdown
+var deadline = orderCreatedAt + (24 * 60 * 60 * 1000);
+var cdEl     = document.getElementById('countdown');
+var noteEl   = document.getElementById('timerNote');
+
+function fmt(ms) {
+  var s   = Math.max(0, Math.floor(ms / 1000));
+  var h   = Math.floor(s / 3600);
+  var m   = Math.floor((s % 3600) / 60);
+  var sec = s % 60;
+  return String(h).padStart(2,'0') + ':' + String(m).padStart(2,'0') + ':' + String(sec).padStart(2,'0');
+}
+
+function tick() {
+  var remaining = deadline - Date.now();
+  if (remaining <= 0) {
+    cdEl.textContent = 'Window Expired';
+    cdEl.classList.add('is-expired');
+    noteEl.textContent = 'The payment window has expired. Please contact us at info.late.records@gmail.com before sending payment.';
+    clearInterval(timerInterval);
+    return;
+  }
+  cdEl.textContent = fmt(remaining);
+}
+
+tick();
+var timerInterval = setInterval(tick, 1000);
+
+localStorage.removeItem('lr_buyer');
+localStorage.removeItem('lr_order_total');
+
+function downloadQR() {
+  var a = document.createElement('a');
+  a.href = 'images/late-records-qr-payment.jpg';
+  a.download = 'late-records-payment-qr.jpg';
+  a.click();
+}
+
+var summaryOpen = false;
+
+function toggleSummary() {
+  var isMobile = window.innerWidth <= 860;
+  if (isMobile) {
+    openModal();
+    return;
+  }
+  summaryOpen = !summaryOpen;
+  var panel = document.getElementById('summaryPanel');
+  var arrow = document.getElementById('vsbArrow');
+  if (summaryOpen) {
+    panel.classList.add('is-open');
+    arrow.classList.add('open');
+  } else {
+    panel.classList.remove('is-open');
+    arrow.classList.remove('open');
+  }
+}
+
+function openModal() {
+  document.getElementById('modalOverlay').classList.add('is-open');
+  document.body.style.overflow = 'hidden';
+}
+function closeModal() {
+  document.getElementById('modalOverlay').classList.remove('is-open');
+  document.body.style.overflow = '';
+}
+function handleOverlay(e) {
+  if (e.target === document.getElementById('modalOverlay')) closeModal();
+}
+
+</script>
+</body>
+</html>
