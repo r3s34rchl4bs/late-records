@@ -164,7 +164,7 @@ function buildTagHTML(tags, limit) {
   var slice = limit ? tags.slice(0, limit) : tags;
   return slice.map(function(tag, i) {
     var url = 'albums/album.html?id=' + encodeURIComponent(tag.albumId);
-    return (i > 0 ? '<span class="tag-cloud-sep">&middot;</span>' : '') +
+    return (i > 0 ? '<span class="tag-cloud-sep">\u00b7</span>' : '') +
       '<a class="tag-cloud-item" href="' + url + '">' + _escHTML(tag.text) + '</a>';
   }).join('');
 }

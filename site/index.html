@@ -536,9 +536,10 @@ html.dark .sk {
 
 /* Updated footer to position toggle on the right */
 .sold-log-footer { 
-  padding: 2px 10px 4px; 
+  padding: 0 10px 4px; 
   display: flex; 
-  justify-content: flex-end; 
+  justify-content: flex-end;
+  align-items: center;
 }
 .sold-log-toggle {
   background: var(--ink15); 
@@ -551,6 +552,7 @@ html.dark .sk {
   font-size: 13px; 
   color: var(--ink); 
   cursor: pointer;
+  flex-shrink: 0;
 }
 .sold-log-toggle:hover { opacity: .6; }
 html.dark .sold-log { background: rgba(232,232,223,.03); }
@@ -567,6 +569,15 @@ html.dark .sold-log { background: rgba(232,232,223,.03); }
   cursor: pointer; text-decoration: none;
 }
 .tag-cloud-item:hover { color: var(--ink); text-decoration: underline; }
+.tag-cloud-sep {
+  font-size: 11px; color: var(--ink30);
+  margin: 0 3px;
+}
+.tag-cloud-more {
+  font-size: 11px; font-weight: 500; color: var(--ink45);
+  cursor: pointer; text-decoration: none;
+}
+.tag-cloud-more:hover { color: var(--ink); text-decoration: underline; }
 
 /* ── Footer ─────────────────────────────────────────────── */
 .lr-footer { display: block; padding: 0; }
@@ -647,7 +658,7 @@ html.dark .sold-log { background: rgba(232,232,223,.03); }
   <div class="sold-log" id="soldLog" style="display:none;">
     <div id="soldLogVisible"></div>
     <div id="soldLogHidden" style="display:none;"></div>
-    <div class="sold-log-footer">
+    <div class="sold-log-footer" id="soldLogFooter" style="display:none;">
       <button class="sold-log-toggle" id="soldLogToggle">+</button>
     </div>
   </div>
@@ -758,7 +769,9 @@ function buildSoldLog(catalog) {
 
   visEl.innerHTML = visible.map(rowHTML).join('');
   hidEl.innerHTML = hidden.map(rowHTML).join('');
-  if (!hidden.length) toggle.style.display = 'none';
+  const footer = document.getElementById('soldLogFooter');
+  if (!hidden.length) { if (footer) footer.style.display = 'none'; }
+  else { if (footer) footer.style.display = 'flex'; }
 
   toggle.addEventListener('click', () => {
     const expanded = hidEl.style.display === 'none';
