@@ -498,7 +498,7 @@ html.dark .sk {
 }
 .sold-log-row {
   display: flex; 
-  align-items: center; 
+  align-items: flex-start; 
   gap: 8px;
   padding: 4px 10px; 
   cursor: pointer; 
@@ -658,7 +658,9 @@ html.dark .sold-log { background: rgba(232,232,223,.03); }
   <div class="sold-log" id="soldLog" style="display:none;">
     <div id="soldLogVisible"></div>
     <div id="soldLogHidden" style="display:none;"></div>
-   <div id="soldLogHiddenEl" style="display:none;"></div>
+    <div class="sold-log-footer" id="soldLogFooter" style="display:none;">
+      <button class="sold-log-toggle" id="soldLogToggle">+</button>
+    </div>
   </div>
 
   <div class="tag-cloud" id="tagCloud">
@@ -753,7 +755,7 @@ function buildSoldLog(catalog) {
   const visible = sold.slice(0, LIMIT);
   const hidden  = sold.slice(LIMIT);
 
- function rowHTML(a, withToggle) {
+  function rowHTML(a) {
     const url = `albums/album.html?id=${encodeURIComponent(a.album_id)}`;
     return `<a class="sold-log-row" href="${url}">
       <span class="sold-log-tag">[SOLD]</span>
@@ -762,30 +764,22 @@ function buildSoldLog(catalog) {
         <span class="sold-log-sep">—</span>
         <span class="sold-log-title">${_escHTML(a.title)}</span>
       </div>
-      ${withToggle ? '<button class="sold-log-toggle" id="soldLogToggle">+</button>' : ''}
     </a>`;
   }
 
-  function renderVisible(expanded) {
-    const shown = expanded ? [...visible, ...hidden] : visible;
-    const lastIdx = shown.length - 1;
-    visEl.innerHTML = shown.map((a, i) => rowHTML(a, i === lastIdx && hidden.length > 0)).join('');
-    const t = document.getElementById('soldLogToggle');
-    if (t) {
-      t.textContent = expanded ? '−' : '+';
-      t.onclick = (e) => {
-        e.preventDefault();
-        e.stopPropagation();
-        expanded = !expanded;
-        renderVisible(expanded);
-      };
-    }
-  }
-
-  renderVisible(false);
+  visEl.innerHTML = visible.map(rowHTML).join('');
+  hidEl.innerHTML = hidden.map(rowHTML).join('');
+  const footer = document.getElementById('soldLogFooter');
+  if (!hidden.length) { if (footer) footer.style.display = 'none'; }
   else { if (footer) footer.style.display = 'flex'; }
 
- log.style.display = '';
+  toggle.addEventListener('click', () => {
+    const expanded = hidEl.style.display === 'none';
+    hidEl.style.display = expanded ? '' : 'none';
+    toggle.textContent = expanded ? '−' : '+';
+  });
+
+  log.style.display = '';
 }
 
 // ── Search bar toggle ──────────────────────────────────────
