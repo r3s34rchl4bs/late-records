@@ -82,7 +82,7 @@ button { cursor: pointer; font-family: inherit; }
 }
 
 .header-logo {
-  height: 40px;
+  height: 31px;
   display: block;
   transition: opacity .15s;
 }
