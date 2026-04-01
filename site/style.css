@@ -82,7 +82,8 @@ button { cursor: pointer; font-family: inherit; }
 }
 
 .header-logo {
-  height: 31px;
+  height: 31px; /* CHANGE THIS ONE VALUE TO RESIZE ALL LOGOS GLOBALLY */
+  width: auto;
   display: block;
   transition: opacity .15s;
 }
