@@ -159,14 +159,22 @@ document.addEventListener('DOMContentLoaded', function() {
 // ── Nav: Cart ↔ Checkout label ────────────────────────────
 // Runs on every page. Swaps the header nav link label between
 // "Cart" and "Checkout" based on whether items exist in the cart.
-// Fires on DOMContentLoaded and after any cart mutation (lr:cart:updated).
+// Uses root-relative hrefs (/cart.html, /checkout.html) so the link
+// works correctly from any page depth (e.g. /albums/album.html).
+// Fires on:
+//   - DOMContentLoaded      (normal page load)
+//   - lr:cart:updated        (after any cart add/remove/clear)
+//   - pageshow + persisted   (iOS Safari back/forward from bfcache)
 function updateNav() {
   var count    = LR.cart.count();
-  var label    = count > 0 ? 'Checkout' : 'Cart';
+  var hasItems = count > 0;
+  var label    = hasItems ? 'Checkout' : 'Cart';
+  var href     = hasItems ? '/checkout.html' : '/cart.html';
   document.querySelectorAll('.cart-link').forEach(function(el) {
+    el.href = href; // root-relative — safe from any directory depth
     var badge = el.querySelector('.cart-count');
     if (badge) {
-      // Rebuild the link content, keeping the live count badge in sync
+      // innerHTML only replaces children — el.href set above is preserved
       el.innerHTML = label + ' (<span class="cart-count">' + count + '</span>)';
     } else {
       el.textContent = label;
@@ -176,3 +184,9 @@ function updateNav() {
 
 window.addEventListener('lr:cart:updated', updateNav);
 document.addEventListener('DOMContentLoaded', updateNav);
+
+// iOS Safari restores pages from bfcache on back/forward navigation.
+// DOMContentLoaded does NOT re-fire in this case — only pageshow does.
+window.addEventListener('pageshow', function(e) {
+  if (e.persisted) updateNav();
+});
