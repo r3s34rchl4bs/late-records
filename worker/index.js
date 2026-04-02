@@ -13,9 +13,11 @@ const PROD_ORIGIN = 'https://late-records.shop';
 // ── CORS headers ──────────────────────────────────────────
 // Only PROD_ORIGIN and localhost (any port, for wrangler dev) are whitelisted.
 function getAllowedOrigin(origin) {
-  if (!origin)                                           return PROD_ORIGIN;
-  if (origin === PROD_ORIGIN)                            return PROD_ORIGIN;
-  if (/^https?:\/\/localhost(:\d+)?$/.test(origin))     return origin;
+  if (!origin)                                                       return PROD_ORIGIN;
+  if (origin === PROD_ORIGIN)                                        return PROD_ORIGIN;
+  if (/^https?:\/\/localhost(:\d+)?$/.test(origin))                 return origin;
+  // Cloudflare Pages preview deployments for this project only
+  if (/^https:\/\/[a-z0-9-]+\.late-records\.pages\.dev$/.test(origin)) return origin;
   return PROD_ORIGIN; // browser will reject mismatched origin — correct behaviour
 }
 
