@@ -20,6 +20,11 @@ zone_name = "late-records.shop"
 #
 # Never put secrets in this file.
 
+# ── R2 Buckets ────────────────────────────────────────────────────────────────
+[[r2_buckets]]
+binding  = "MEDIA"
+bucket_name = "late-records-media"
+
 # ── Observability ─────────────────────────────────────────────────────────────
 [observability]
 enabled = true
