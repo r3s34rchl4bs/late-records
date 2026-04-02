@@ -8,11 +8,6 @@
 <link rel="stylesheet" href="fonts/inter.css">
 <link rel="stylesheet" href="style.css">
 <style>
-.header-logo { height: 31px; filter: none; }
-.header-logo:hover { opacity: .5; transition: opacity .15s; }
-.logo-dark            { display: none; }
-html.dark .logo-light { display: none; }
-html.dark .logo-dark  { display: block; }
 .cart-link { display: none; }
 .fixed-footer { display: none; }
 .container { padding-bottom: 80px; }
@@ -68,6 +63,7 @@ html.dark .logo-dark  { display: block; }
 .timer-note { font-size: 11px; color: var(--ink45); line-height: 1.65; margin-bottom: 16px; }
 .wallet-logos-wrap { display: flex; flex-wrap: wrap; gap: 10px 14px; align-items: center; }
 .wallet-logo { display: block; width: auto; flex-shrink: 0; filter: grayscale(100%) opacity(0.38); }
+html.dark .wallet-logo { filter: grayscale(100%) invert(1) opacity(0.6); }
 
 .qr-block { display: flex; flex-direction: column; align-items: center; gap: 6px; }
 .qr-img { width: 150px; display: block; object-fit: cover; }

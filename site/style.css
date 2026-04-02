@@ -56,7 +56,7 @@ body {
 }
 
 img { display: block; max-width: 100%; }
-a   { color: inherit; }
+a   { color: inherit; text-decoration: none; }
 button { cursor: pointer; font-family: inherit; }
 
 /* ── Header ───────────────────────────────────────────────── */
@@ -65,7 +65,9 @@ button { cursor: pointer; font-family: inherit; }
   position: fixed;
   top: 0; left: 0;
   width: 100%;
-  background: var(--bg);
+  background-color: var(--bg);
+  background-image: radial-gradient(circle, var(--bg-dot) 0.5px, transparent 0.5px);
+  background-size: 3px 3px;
   z-index: 1000;
   border-bottom: 1px solid var(--border-mid);
   height: var(--header-h);
@@ -82,7 +84,7 @@ button { cursor: pointer; font-family: inherit; }
 }
 
 .header-logo {
-  height: 31px; /* CHANGE THIS ONE VALUE TO RESIZE ALL LOGOS GLOBALLY */
+  height: 37px; /* CHANGE THIS ONE VALUE TO RESIZE ALL LOGOS GLOBALLY */
   width: auto;
   display: block;
   transition: opacity .15s;
@@ -324,7 +326,7 @@ html.dark .sk {
     font-size: 12px;
   }
 
-  .header-logo { height: 31px; }
+  .header-logo { height: 37px; }
   .footer-inner { font-size: 11px; padding: 0 20px; }
   .footer-links  { gap: 12px; }
 }

@@ -6,90 +6,28 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Genre — LATE RECORDS</title>
 <link rel="stylesheet" href="fonts/inter.css">
+<link rel="stylesheet" href="style.css">
 <style>
 
-*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
+/* Genre-page unique variables */
 html {
-  --bg:         #e2e2e2;
-  --bg-dot:     rgba(0,0,0,.08);
-  --ink:        #1a1a14;
-  --ink55:      rgba(26,26,20,.55);
-  --ink45:      rgba(26,26,20,.45);
-  --ink30:      rgba(26,26,20,.30);
-  --ink15:      rgba(26,26,20,.15);
-  --border:     rgba(26,26,20,.22);
-  --border-mid: rgba(26,26,20,.12);
-  --btn-bg:     #1a1a14;
-  --btn-fg:     #e2e2e2;
-  --footer-bg:  rgba(226,226,226,.92);
+  --footer-bg:     rgba(226,226,226,.92);
   --footer-border: rgba(26,26,20,.14);
-  --modal-bg:   rgba(233,233,233,.97);
+  --modal-bg:      rgba(233,233,233,.97);
 }
 html.dark {
-  --bg:         #141410;
-  --bg-dot:     rgba(255,255,255,.04);
-  --ink:        #e8e8df;
-  --ink55:      rgba(232,232,223,.55);
-  --ink45:      rgba(232,232,223,.42);
-  --ink30:      rgba(232,232,223,.26);
-  --ink15:      rgba(232,232,223,.12);
-  --border:     rgba(232,232,223,.18);
-  --border-mid: rgba(232,232,223,.1);
-  --btn-bg:     #e8e8df;
-  --btn-fg:     #141410;
-  --footer-bg:  rgba(20,20,16,.92);
+  --footer-bg:     rgba(20,20,16,.92);
   --footer-border: rgba(232,232,223,.1);
-  --modal-bg:   rgba(22,22,18,.97);
+  --modal-bg:      rgba(22,22,18,.97);
 }
 
 html.no-transitions * { transition: none !important; }
 
+/* Dot background for page body */
 html, body {
-  font-family: 'Inter', system-ui, sans-serif;
-  background-color: var(--bg);
   background-image: radial-gradient(circle, var(--bg-dot) 0.5px, transparent 0.5px);
   background-size: 3px 3px;
-  color: var(--ink);
-  -webkit-font-smoothing: antialiased;
-  min-height: 100vh;
 }
-
-a { color: inherit; text-decoration: none; }
-img { display: block; max-width: 100%; }
-
-.fixed-header {
-  position: fixed; top: 0; left: 0; width: 100%;
-  background-color: var(--bg);
-  z-index: 1000;
-  border-bottom: 1px solid var(--border);
-  height: 74px;
-}
-.header-inner {
-  max-width: 890px; margin: 0 auto; padding: 0 30px;
-  display: flex; align-items: center; justify-content: space-between; height: 100%;
-}
-.header-logo { height: 31px; display: block; }
-.header-logo:hover { opacity: .5; transition: opacity .15s; }
-.logo-dark            { display: none; }
-html.dark .logo-light { display: none; }
-html.dark .logo-dark  { display: block; }
-.header-right { display: flex; align-items: center; gap: 16px; }
-.theme-toggle {
-  background: none; border: none; padding: 4px;
-  color: var(--ink); cursor: pointer;
-  transition: opacity .15s; flex-shrink: 0;
-}
-.theme-toggle:hover { opacity: .6; }
-.theme-toggle .icon-sun,
-.theme-toggle .icon-moon { width: 18px; height: 18px; display: block; }
-html:not(.dark) .theme-toggle .icon-moon { display: none; }
-html.dark .theme-toggle .icon-sun { display: none; }
-.cart-link {
-  font-size: 11px; font-weight: 500; letter-spacing: .07em;
-  text-transform: uppercase; color: var(--ink);
-}
-.cart-link:hover { color: var(--ink55); }
 
 .container {
   max-width: 890px; margin: 0 auto; padding: 84px 30px 104px;
@@ -202,7 +140,6 @@ html.dark .sk {
 
 @media (max-width: 600px) {
   .container { padding: 84px 20px 98px; }
-  .header-inner { padding: 0 20px; }
   col.c-stock { display: none; }
   .tbl thead th.c-stock, .tbl tbody td.c-stock { display: none; }
   col.c-format { width: 22%; }
