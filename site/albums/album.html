@@ -709,7 +709,7 @@ function showCartToast(item, isDuplicate) {
   toast.setAttribute('role', 'status');
   const message = isDuplicate ? 'Already in cart' : 'Added to cart';
   toast.innerHTML = `
-    <img class="cart-toast-img" src="/images/${encodeURIComponent(item.album_id)}.jpg" alt=""
+    <img class="cart-toast-img" src="https://media.late-records.shop/images/${encodeURIComponent(item.album_id)}.jpg" alt=""
       onerror="this.style.display='none';this.nextElementSibling.style.display='block';">
     <div class="cart-toast-img-placeholder" style="display:none;"></div>
     <div class="cart-toast-text">

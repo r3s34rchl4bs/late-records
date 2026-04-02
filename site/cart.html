@@ -176,7 +176,7 @@ function renderCart() {
   container.innerHTML = items.map(item => `
     <div class="cart-item" data-id="${item.id}">
       <a href="albums/album.html?id=${item.id}" class="cart-item-img-link">
-        <img src="images/${item.id}.jpg" class="cart-item-img" alt="${item.title}"
+        <img src="https://media.late-records.shop/images/${item.id}.jpg" class="cart-item-img" alt="${item.title}"
   onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">
 <div class="cart-item-img cart-img-placeholder" style="display:none;align-items:center;justify-content:center;flex-direction:column;gap:6px;background:var(--art-bg);">
   <svg viewBox="0 0 80 80" style="width:36px;height:36px;opacity:.4;" xmlns="http://www.w3.org/2000/svg">
