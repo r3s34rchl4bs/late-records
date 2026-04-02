@@ -1,0 +1,11 @@
+name = "late-records-pricer-bouncer"
+main = "index.js"
+compatibility_date = "2024-01-01"
+
+[[routes]]
+pattern = "https://late-records.shop/pricer.html"
+zone_name = "late-records.shop"
+
+# THIS IS THE FIX: It points this worker to your actual website files
+[assets]
+directory = "../site"
