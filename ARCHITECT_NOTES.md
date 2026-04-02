@@ -2,6 +2,82 @@
 
 ---
 
+## Section 0: R2 Media — Operational Reference
+
+### 0.1 How Media Is Served
+
+All album images and audio samples live in the Cloudflare R2 bucket `late-records-media`, served via the custom domain `https://media.late-records.shop`.
+
+| Media type | URL pattern |
+|---|---|
+| Album cover | `https://media.late-records.shop/images/{album_id}.jpg` |
+| Audio sample | `https://media.late-records.shop/audio/{album_id}-{n}.mp3` |
+
+The `album_id` is the slug from Google Sheets (e.g. `self-titled-by-arthur-verocai`). Filename must match exactly — case-sensitive.
+
+### 0.2 Adding a New Album — Full Workflow
+
+**Every new album needs 3 things. Do them in this order:**
+
+1. **Upload image to R2** — open Mac Terminal (any directory):
+   ```bash
+   wrangler r2 object put late-records-media/images/{album_id}.jpg \
+     --file="/Users/a4144/path/to/image.jpg" \
+     --content-type="image/jpeg"
+   ```
+
+2. **Upload audio sample(s) to R2** — one command per sample file:
+   ```bash
+   wrangler r2 object put late-records-media/audio/{album_id}-1.mp3 \
+     --file="/Users/a4144/path/to/sample.mp3" \
+     --content-type="audio/mpeg"
+   ```
+
+3. **Update Google Sheets** — add a new row with the `album_id` slug matching the filenames above. Set `status` to `available`.
+
+No git commit or Cloudflare Pages deploy is needed for media uploads — R2 is live immediately.
+
+### 0.3 Image Spec
+
+- Format: JPEG
+- Width: 600px (height proportional)
+- Quality: 80
+- Quick batch resize (Mac Terminal, from the folder containing images):
+  ```bash
+  mogrify -resize 600x -quality 80 *.jpg
+  ```
+
+### 0.4 Diagnosing a Missing or Broken Image
+
+If an album shows a broken image or "Image Pending" placeholder:
+
+1. **Find the album_id** — check the Google Sheets catalog row
+2. **Test the URL directly** — paste into browser:
+   `https://media.late-records.shop/images/{album_id}.jpg`
+   - Returns image → file is there, check the album_id in Sheets matches exactly
+   - Returns 404 → file not in R2, upload it (see 0.2)
+   - Returns 403 → file may exist but has wrong permissions, re-upload it
+
+3. **Re-upload** from Mac Terminal (any directory):
+   ```bash
+   wrangler r2 object put late-records-media/images/{album_id}.jpg \
+     --file="/Users/a4144/path/to/image.jpg" \
+     --content-type="image/jpeg"
+   ```
+
+### 0.5 Known Missing Images (as of 2026-04-03)
+
+These three albums are in the catalog but have no matching image in R2.
+Upload them using the commands in 0.3 above:
+
+| Artist | album_id | File to upload |
+|---|---|---|
+| Arthur Verocai | `self-titled-by-arthur-verocai` | `self-titled-by-arthur-verocai.jpg` |
+| ANRI | `catseye-by-anri` | `catseye-by-anri.jpg` |
+| Abdou El Omari | `nuits-d-ete-avec-abdou-el-omari-by-abdou-el-omari` | `nuits-d-ete-avec-abdou-el-omari-by-abdou-el-omari.jpg` |
+
+---
+
 ## Section 1: Security Layer
 
 **Status: COMPLETED**
