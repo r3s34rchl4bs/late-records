@@ -7,14 +7,24 @@
  *   GET  /api/suggest?q=...  — smart suggestions (MusicBrainz → Gemini fallback)
  */
 
-const CACHE_TTL = 120; // seconds
+const CACHE_TTL   = 120; // seconds
+const PROD_ORIGIN = 'https://late-records.shop';
 
 // ── CORS headers ──────────────────────────────────────────
+// Only PROD_ORIGIN and localhost (any port, for wrangler dev) are whitelisted.
+function getAllowedOrigin(origin) {
+  if (!origin)                                           return PROD_ORIGIN;
+  if (origin === PROD_ORIGIN)                            return PROD_ORIGIN;
+  if (/^https?:\/\/localhost(:\d+)?$/.test(origin))     return origin;
+  return PROD_ORIGIN; // browser will reject mismatched origin — correct behaviour
+}
+
 function cors(origin) {
   return {
-    'Access-Control-Allow-Origin':  origin || '*',
+    'Access-Control-Allow-Origin':  getAllowedOrigin(origin),
     'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
     'Access-Control-Allow-Headers': 'Content-Type',
+    'Vary': 'Origin',
   };
 }
 
@@ -311,14 +321,64 @@ export default {
     // POST /api/order
     if (path === '/api/order' && request.method === 'POST') {
       try {
-        const body  = await request.json();
-        const ip    = request.headers.get('CF-Connecting-IP') || '';
+        const body = await request.json();
+        const ip   = request.headers.get('CF-Connecting-IP') || '';
+
+        // ── Payload validation ────────────────────────────
+        const { items, deliveryMethod, total } = body;
+        if (!Array.isArray(items) || items.length === 0) {
+          return json({ error: 'Invalid order: items array is empty or missing.' }, 400, origin);
+        }
+        const VALID_DELIVERY = new Set(['ship', 'local', 'pickup']);
+        if (!VALID_DELIVERY.has(deliveryMethod)) {
+          return json({ error: 'Invalid delivery method.' }, 400, origin);
+        }
+
+        // ── Turnstile ─────────────────────────────────────
         const check = await verifyTurnstile(body.turnstileToken, ip, env.TURNSTILE_SECRET);
         if (!check.ok) return json({ error: 'Security check failed. Please refresh and try again.', debug: check.reason, codes: check.codes || [], raw: check.raw || null }, 403, origin);
+
+        // ── Server-side price recalculation ───────────────
+        const catalog = await fetchCatalog(env);
+        let serverSubtotal = 0;
+        let totalQty       = 0;
+
+        for (const item of items) {
+          const qty = item.quantity;
+          if (!item.album_id || !Number.isInteger(qty) || qty < 1) {
+            return json({ error: 'Malformed item in order.' }, 400, origin);
+          }
+          const record = catalog.find(a => a.album_id === item.album_id);
+          if (!record) {
+            return json({ error: `Album not found: ${item.album_id}` }, 400, origin);
+          }
+          const price = Number(record.price);
+          if (!Number.isFinite(price) || price <= 0) {
+            return json({ error: `Invalid price for album: ${item.album_id}` }, 500, origin);
+          }
+          serverSubtotal += price * qty;
+          totalQty       += qty;
+        }
+
+        let serverShipping;
+        if      (deliveryMethod === 'pickup') serverShipping = 0;
+        else if (deliveryMethod === 'local')  serverShipping = 100;
+        else if (totalQty <= 2)               serverShipping = 250;
+        else if (totalQty <= 5)               serverShipping = 350;
+        else                                  serverShipping = 450;
+
+        const serverTotal = Math.round(serverSubtotal + serverShipping);
+
+        if (serverTotal !== Math.round(Number(total))) {
+          console.warn(`Price mismatch — client: ${total}, server: ${serverTotal}`);
+          return json({ error: 'Order total mismatch. Please refresh and try again.' }, 400, origin);
+        }
+
+        // ── Forward to Apps Script ────────────────────────
         const res  = await fetch(env.APPS_SCRIPT_URL, {
           method:  'POST',
           headers: { 'Content-Type': 'application/json' },
-          body:    JSON.stringify({ action: 'order', ...body }),
+          body:    JSON.stringify({ action: 'order', ...body, serverTotal }),
         });
         const data = await res.json();
         return json(data, 200, origin);

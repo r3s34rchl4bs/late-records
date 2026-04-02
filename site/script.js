@@ -155,3 +155,24 @@ document.addEventListener('DOMContentLoaded', function() {
     });
   }
 });
+
+// ── Nav: Cart ↔ Checkout label ────────────────────────────
+// Runs on every page. Swaps the header nav link label between
+// "Cart" and "Checkout" based on whether items exist in the cart.
+// Fires on DOMContentLoaded and after any cart mutation (lr:cart:updated).
+function updateNav() {
+  var count    = LR.cart.count();
+  var label    = count > 0 ? 'Checkout' : 'Cart';
+  document.querySelectorAll('.cart-link').forEach(function(el) {
+    var badge = el.querySelector('.cart-count');
+    if (badge) {
+      // Rebuild the link content, keeping the live count badge in sync
+      el.innerHTML = label + ' (<span class="cart-count">' + count + '</span>)';
+    } else {
+      el.textContent = label;
+    }
+  });
+}
+
+window.addEventListener('lr:cart:updated', updateNav);
+document.addEventListener('DOMContentLoaded', updateNav);

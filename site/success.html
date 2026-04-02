@@ -7,6 +7,7 @@
 <title>Order Received — LATE RECORDS</title>
 <link rel="stylesheet" href="fonts/inter.css">
 <link rel="stylesheet" href="style.css">
+<script defer src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon='{"token": "PASTE_CF_TOKEN_HERE"}'></script>
 <style>
 .cart-link { display: none; }
 .fixed-footer { display: none; }
@@ -408,8 +409,15 @@ function tick() {
 tick();
 var timerInterval = setInterval(tick, 1000);
 
-localStorage.removeItem('lr_buyer');
-localStorage.removeItem('lr_order_total');
+// ── Full order wipe — data already rendered into DOM above ──
+// Clears every order key so the next visit starts clean
+// (empty cart, "Cart" label, no stale delivery/address data).
+[
+  'lr_buyer', 'lr_order_total', 'lr_order_created_at',
+  'lr_order_number', 'lr_address', 'lr_order_items',
+  'lr_order_subtotal', 'lr_order_shipping', 'lr_delivery_method'
+].forEach(function(k) { localStorage.removeItem(k); });
+LR.cart.clear(); // removes lr_cart and fires lr:cart:updated → updateNav()
 
 function downloadQR() {
   var a = document.createElement('a');

@@ -1,0 +1,10 @@
+User-agent: *
+Allow: /
+
+# No SEO value — exclude transactional and internal pages
+Disallow: /checkout.html
+Disallow: /success.html
+Disallow: /hidden-pricer.html
+Disallow: /cart.html
+
+Sitemap: https://late-records.shop/sitemap.xml

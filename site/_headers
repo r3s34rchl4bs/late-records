@@ -1,0 +1,31 @@
+/*
+  # Block browsers from guessing content types (MIME sniffing attacks)
+  X-Content-Type-Options: nosniff
+
+  # Prevent the site from being embedded in iframes on other domains
+  X-Frame-Options: SAMEORIGIN
+
+  # Only send the origin (no path/query) in Referer headers to third parties
+  Referrer-Policy: strict-origin-when-cross-origin
+
+  # Disable browser features the site does not use
+  Permissions-Policy: camera=(), microphone=(), geolocation=(), payment=()
+
+  # Content Security Policy
+  # ── What each directive covers ──────────────────────────────────────────────
+  # default-src 'none'          — deny everything not explicitly listed below
+  # script-src                  — local JS files + Turnstile widget + CF Analytics beacon
+  #                               'unsafe-inline' is required for:
+  #                                 • dark-mode toggle inline <script> on every page
+  #                                 • checkout form submission inline <script>
+  #                                 • onclick= handlers emitted by catalog.js rowHTML()
+  # style-src                   — local style.css + inline <style> blocks on every page
+  # img-src                     — local logos (self) + R2 album covers
+  # media-src                   — R2 audio samples
+  # font-src                    — self-hosted Inter (.woff2 in site/fonts/)
+  # connect-src                 — Worker API (same origin) + Turnstile + CF Analytics ping
+  # frame-src                   — Turnstile renders a hidden iframe for its challenge UI
+  # base-uri 'self'             — block <base> tag injection attacks
+  # form-action 'self'          — forms may only submit to same origin
+  # ────────────────────────────────────────────────────────────────────────────
+  Content-Security-Policy: default-src 'none'; script-src 'self' 'unsafe-inline' https://challenges.cloudflare.com https://static.cloudflareinsights.com; style-src 'self' 'unsafe-inline'; img-src 'self' https://media.late-records.shop; media-src https://media.late-records.shop; font-src 'self'; connect-src 'self' https://challenges.cloudflare.com https://cloudflareinsights.com; frame-src https://challenges.cloudflare.com; base-uri 'self'; form-action 'self';
