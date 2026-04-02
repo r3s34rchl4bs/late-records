@@ -1,6 +1,24 @@
+# OS Metadata
 .DS_Store
-.claude/
-.tmp.driveupload/
+Thumbs.db
 
-.wrangler
+# IDES and Editors
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Environment Secrets (CRITICAL)
+.env
+.env.local
 .dev.vars
+
+# Cloudflare & Wrangler
+.wrangler/
+dist/
+node_modules/
+
+# Temporary Files
+.claude/
+.tmp.drivedownload/
+.tmp.driveupload/
