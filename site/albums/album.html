@@ -128,8 +128,12 @@
   color: var(--btn-fg); cursor: pointer; transition: opacity .15s;
   width: 100%;
 }
-.add-to-cart-btn:hover    { opacity: .82; }
-.add-to-cart-btn:disabled { opacity: .35; cursor: not-allowed; }
+.add-to-cart-btn:hover                    { opacity: .82; }
+.add-to-cart-btn:disabled                 { opacity: .35; cursor: not-allowed; }
+/* Already in cart — lighter ghost style, distinct from Sold Out */
+.add-to-cart-btn.is-in-cart,
+.add-to-cart-btn.is-in-cart:disabled      { background: transparent; border-color: var(--ink15); color: var(--ink30); opacity: 1; cursor: default; }
+.add-to-cart-btn.is-in-cart:hover         { opacity: 1; }
 
 .description {
   font-size: 14px; line-height: 1.7; font-weight: 400;
@@ -243,131 +247,10 @@
   .album-artist { font-size: 14px; }
 }
 
-/* ── Cart Toast ──────────────────────────────────────────── */
-.cart-toast-container {
-  position: fixed;
-  top: calc(74px + 14px);
-  left: 50%;
-  transform: translateX(-50%);
-  width: 100%;
-  max-width: 890px;
-  padding: 0 20px;
-  z-index: 1500;
-  display: flex;
-  flex-direction: column;
-  align-items: flex-end;
-  gap: 8px;
-  pointer-events: none;
-  box-sizing: border-box;
-}
-.cart-toast {
-  pointer-events: auto;
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  background: #1a1a14;
-  color: #e2e2e2;
-  padding: 12px 16px;
-  max-width: 320px;
-  border: 1px solid rgba(226,226,226,.25);
-  opacity: 0;
-  transition: none;
-}
-.cart-toast.is-visible {
-  opacity: 1;
-}
-.cart-toast.is-leaving {
-  opacity: 0;
-  transition: opacity .1s steps(3);
-}
-.cart-toast.is-duplicate {
-  background: #252520;
-  border: 1px dashed rgba(226,226,226,.2);
-}
-.cart-toast.is-duplicate .cart-toast-label {
-  color: rgba(226,226,226,.45);
-}
-.cart-toast.is-duplicate .cart-toast-title,
-.cart-toast.is-duplicate .cart-toast-artist {
-  color: rgba(226,226,226,.45);
-}
-.cart-toast.is-duplicate .cart-toast-img {
-  opacity: .5;
-}
-.cart-toast-checkout {
-  flex-shrink: 0;
-  font-size: 9px;
-  font-weight: 500;
-  letter-spacing: .08em;
-  text-transform: uppercase;
-  color: #e2e2e2;
-  text-decoration: none;
-  padding: 6px 10px;
-  border: 1px solid rgba(226,226,226,.25);
-}
-.cart-toast-checkout:hover {
-  background: rgba(226,226,226,.1);
-}
-.cart-toast-img {
-  width: 40px;
-  height: 40px;
-  object-fit: cover;
-  flex-shrink: 0;
-}
-.cart-toast-img-placeholder {
-  width: 40px;
-  height: 40px;
-  background: rgba(226,226,226,.1);
-  flex-shrink: 0;
-}
-.cart-toast-text {
-  flex: 1;
-  min-width: 0;
-}
-.cart-toast-label {
-  font-size: 9px;
-  font-weight: 500;
-  letter-spacing: .1em;
-  text-transform: uppercase;
-  color: rgba(226,226,226,.5);
-  margin-bottom: 3px;
-}
-.cart-toast-title {
-  font-size: 12px;
-  font-weight: 600;
-  line-height: 1.3;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-.cart-toast-artist {
-  font-size: 11px;
-  color: rgba(226,226,226,.5);
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-@media (max-width: 600px) {
-  .cart-toast-container {
-    top: auto;
-    bottom: 16px;
-    left: 0;
-    right: 0;
-    transform: none;
-    padding: 0 12px;
-    max-width: none;
-    align-items: stretch;
-  }
-  .cart-toast {
-    max-width: none;
-  }
-}
 
 </style>
 </head>
 <body>
-
-<div class="cart-toast-container" id="toastContainer" aria-live="polite" aria-atomic="false"></div>
 
 <header class="fixed-header">
   <div class="header-inner">
@@ -702,41 +585,27 @@ function setupAudio(albumId) {
   });
 }
 
-function showCartToast(item, isDuplicate) {
-  const container = document.getElementById('toastContainer');
-  const toast = document.createElement('div');
-  toast.className = 'cart-toast' + (isDuplicate ? ' is-duplicate' : '');
-  toast.setAttribute('role', 'status');
-  const message = isDuplicate ? 'Already in cart' : 'Added to cart';
-  toast.innerHTML = `
-    <img class="cart-toast-img" src="https://media.late-records.shop/images/${encodeURIComponent(item.album_id)}.jpg" alt=""
-      onerror="this.style.display='none';this.nextElementSibling.style.display='block';">
-    <div class="cart-toast-img-placeholder" style="display:none;"></div>
-    <div class="cart-toast-text">
-      <div class="cart-toast-label">${_escHTML(message)}</div>
-      <div class="cart-toast-title">${_escHTML(item.title)}</div>
-      <div class="cart-toast-artist">${_escHTML(item.artist)}</div>
-    </div>
-    <a href="../checkout.html" class="cart-toast-checkout">Checkout</a>
-  `;
-  container.appendChild(toast);
-  requestAnimationFrame(() => toast.classList.add('is-visible'));
-  setTimeout(() => {
-    toast.classList.remove('is-visible');
-    toast.classList.add('is-leaving');
-    setTimeout(() => toast.remove(), 200);
-  }, 2500);
-}
-
 function setupAddToCart(item) {
   const btn = document.getElementById('addToCartBtn');
   if (!btn) return;
+
+  function setInCartState() {
+    btn.textContent = 'Added to Cart';
+    btn.classList.add('is-in-cart');
+    btn.disabled = true;
+  }
+
+  // Restore state from localStorage on every page load
+  if (LR.cart.get().find(i => i.id === item.album_id)) {
+    setInCartState();
+  }
+
   btn.addEventListener('click', () => {
-    const result = LR.cart.add({
+    LR.cart.add({
       id: item.album_id, title: item.title,
       artist: item.artist, price: item.price, stock: item.stock
     });
-    showCartToast(item, result === 'exists');
+    setInCartState();
   });
 }
 
