@@ -23,9 +23,9 @@
   # img-src                     — local logos (self) + R2 album covers
   # media-src                   — R2 audio samples
   # font-src                    — self-hosted Inter (.woff2 in site/fonts/)
-  # connect-src                 — Worker API (same origin) + Turnstile + CF Analytics ping
+  # connect-src                 — Worker API (late-records.shop explicit — required for staging/preview domains) + Turnstile + CF Analytics ping
   # frame-src                   — Turnstile renders a hidden iframe for its challenge UI
   # base-uri 'self'             — block <base> tag injection attacks
   # form-action 'self'          — forms may only submit to same origin
   # ────────────────────────────────────────────────────────────────────────────
-  Content-Security-Policy: default-src 'none'; script-src 'self' 'unsafe-inline' https://challenges.cloudflare.com https://static.cloudflareinsights.com; style-src 'self' 'unsafe-inline'; img-src 'self' https://media.late-records.shop; media-src https://media.late-records.shop; font-src 'self'; connect-src 'self' https://challenges.cloudflare.com https://cloudflareinsights.com; frame-src https://challenges.cloudflare.com; base-uri 'self'; form-action 'self';
+  Content-Security-Policy: default-src 'none'; script-src 'self' 'unsafe-inline' https://challenges.cloudflare.com https://static.cloudflareinsights.com; style-src 'self' 'unsafe-inline'; img-src 'self' https://media.late-records.shop; media-src https://media.late-records.shop; font-src 'self'; connect-src 'self' https://late-records.shop https://challenges.cloudflare.com https://cloudflareinsights.com; frame-src https://challenges.cloudflare.com; base-uri 'self'; form-action 'self';
