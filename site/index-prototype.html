@@ -4,11 +4,17 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
 <title>LATE RECORDS (PROTOTYPE)</title>
-<link rel="preload" as="font" type="font/woff2" crossorigin href="fonts/inter-latin.woff2">
 <link rel="stylesheet" href="fonts/inter.css">
 <link rel="stylesheet" href="style.css">
+<script>document.documentElement.classList.toggle('dark', localStorage.getItem('lr_theme') === 'dark')</script>
 <style>
-  /* 1. The Breather: Equal spacing for all major sections */
+  /* Dot background - matches your brand */
+  html, body {
+    background-image: radial-gradient(circle, var(--bg-dot) 0.5px, transparent 0.5px);
+    background-size: 3px 3px;
+  }
+
+  /* 1. The Breather: 5rem spacing between major blocks */
   .carousel-section, 
   .nav-section, 
   .catalog-table, 
@@ -18,142 +24,124 @@
     margin-top: 5rem !important;
   }
 
-  /* 2. Minimalist Table: Remove headers and top borders */
-  .catalog-table thead {
-    display: none;
+  /* 2. A-Z Nav: Ensure [ ] is inline and first */
+  .a-z-nav {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    align-items: center;
   }
-  .catalog-table {
-    border-top: none !important;
+
+  /* 3. Minimalist Table: No headers, no bold, fixed alignment */
+  .catalog-table thead { display: none; }
+  .catalog-table { border-top: none !important; }
+  
+  table { 
+    width: 100%; 
+    border-collapse: collapse; 
+    table-layout: fixed; /* Ensures columns line up without headers */
   }
-  .catalog-table table {
-    border-collapse: collapse;
-  }
-  .catalog-table tr {
+
+  td {
+    padding: 12px 0;
     border-bottom: 1px solid var(--border-subtle);
-  }
-
-  /* 3. Typography: Uniform weight for Artist and Title */
-  .cell-artist, .cell-title {
-    font-weight: 400 !important; /* Standard Inter weight */
+    font-weight: 400 !important; /* Flat weight as requested */
     text-transform: uppercase;
-    letter-spacing: 0.02em;
+    font-size: 0.85rem;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
   }
 
-  /* 4. Navigation Styling */
-  .nav-item[data-letter="root"] {
-    font-family: monospace;
-    letter-spacing: 0;
+  /* Column Widths */
+  .cell-artist { width: 30%; }
+  .cell-title  { width: 40%; }
+  .cell-genre  { width: 15%; }
+  .cell-price  { width: 15%; text-align: right; }
+
+  .nav-item.active {
+    text-decoration: underline;
+    color: var(--text-main);
   }
 </style>
 </head>
 <body>
 
 <div id="app">
-  <section class="carousel-section">
-    <div id="carousel-container"></div>
-  </section>
+  <section class="carousel-section"><div id="carousel-container"></div></section>
 
   <section class="nav-section">
     <div class="a-z-nav" id="azNav">
       <button class="nav-item active" data-letter="root">[&nbsp;&nbsp;]</button>
-      <button class="nav-item" data-letter="A">A</button>
-      <button class="nav-item" data-letter="B">B</button>
-      <button class="nav-item" data-letter="C">C</button>
-      <button class="nav-item" data-letter="D">D</button>
-      <button class="nav-item" data-letter="E">E</button>
-      <button class="nav-item" data-letter="F">F</button>
-      <button class="nav-item" data-letter="G">G</button>
-      <button class="nav-item" data-letter="H">H</button>
-      <button class="nav-item" data-letter="I">I</button>
-      <button class="nav-item" data-letter="J">J</button>
-      <button class="nav-item" data-letter="K">K</button>
-      <button class="nav-item" data-letter="L">L</button>
-      <button class="nav-item" data-letter="M">M</button>
-      <button class="nav-item" data-letter="N">N</button>
-      <button class="nav-item" data-letter="O">O</button>
-      <button class="nav-item" data-letter="P">P</button>
-      <button class="nav-item" data-letter="Q">Q</button>
-      <button class="nav-item" data-letter="R">R</button>
-      <button class="nav-item" data-letter="S">S</button>
-      <button class="nav-item" data-letter="T">T</button>
-      <button class="nav-item" data-letter="U">U</button>
-      <button class="nav-item" data-letter="V">V</button>
-      <button class="nav-item" data-letter="W">W</button>
-      <button class="nav-item" data-letter="X">X</button>
-      <button class="nav-item" data-letter="Y">Y</button>
-      <button class="nav-item" data-letter="Z">Z</button>
+      <script>
+        const letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("");
+        document.write(letters.map(l => `<button class="nav-item" data-letter="${l}">${l}</button>`).join(""));
+      </script>
     </div>
   </section>
 
   <section class="catalog-table">
-    <table id="catalogTable">
+    <table>
       <tbody id="catalogBody"></tbody>
     </table>
   </section>
 
-  <section class="rotator-section">
-    <div id="rotator-container"></div>
-  </section>
-
-  <section class="solds-area" id="soldLog" style="display:none"></section>
-
+  <section class="rotator-section"><div id="rotator-container"></div></section>
+  <section class="solds-area" id="soldLog"></section>
   <section class="tag-cloud" id="tagCloud"></section>
 </div>
 
 <script src="js/api.js"></script>
+
 <script>
-// ── DATA FILTERING LOGIC ────────────────────────────────────
-function filterCatalog(catalog, criterion) {
-  if (criterion === 'root') {
-    // Show items marked 'idx' OR items starting with a number
-    return catalog.filter(item => {
-      const isIdx = item.Featured && item.Featured.toLowerCase() === 'idx';
-      const startsWithNum = /^\d/.test(item.Title);
-      return isIdx || startsWithNum;
-    });
-  }
-  // Standard A-Z filtering
-  return catalog.filter(item => item.Artist.toUpperCase().startsWith(criterion));
-}
+async function initPrototype() {
+  // Use your actual production API helper
+  const catalog = await LR.api.catalog();
+  if (!catalog) return;
 
-// ── TABLE RENDERER ──────────────────────────────────────────
-function renderTable(data) {
-  const body = document.getElementById('catalogBody');
-  body.innerHTML = data.map(item => `
-    <tr>
-      <td class="cell-artist">${item.Artist}</td>
-      <td class="cell-title">${item.Title}</td>
-      <td class="cell-genre">${item.Genre}</td>
-      <td class="cell-format">${item.Format}</td>
-      <td class="cell-price">₱${item.Price}</td>
-    </tr>
-  `).join('');
-}
+  const render = (data) => {
+    const body = document.getElementById('catalogBody');
+    body.innerHTML = data.map(item => `
+      <tr>
+        <td class="cell-artist">${item.Artist}</td>
+        <td class="cell-title">${item.Title}</td>
+        <td class="cell-genre">${item.Genre || ''}</td>
+        <td class="cell-price">₱${item.Price}</td>
+      </tr>
+    `).join('');
+  };
 
-// ── INITIALIZATION ──────────────────────────────────────────
-document.addEventListener('DOMContentLoaded', async () => {
-  const catalog = await fetch('/api/catalog').then(res => res.json());
-  
-  // 1. Initial Load: Root View [ ]
-  const initialData = filterCatalog(catalog, 'root');
-  renderTable(initialData);
+  const filterData = (criterion) => {
+    if (criterion === 'root') {
+      return catalog.filter(item => {
+        const isIdx = item.Featured && item.Featured.toLowerCase() === 'idx';
+        const isNum = /^\d/.test(item.Title);
+        return isIdx || isNum;
+      });
+    }
+    return catalog.filter(item => item.Artist.toUpperCase().startsWith(criterion));
+  };
 
-  // 2. Nav Click Handler
+  // Initial Render ([ ])
+  render(filterData('root'));
+
+  // Nav Logic
   document.getElementById('azNav').addEventListener('click', (e) => {
     if (e.target.classList.contains('nav-item')) {
-      document.querySelectorAll('.nav-item').forEach(btn => btn.classList.remove('active'));
+      document.querySelectorAll('.nav-item').forEach(b => b.classList.remove('active'));
       e.target.classList.add('active');
-      
-      const letter = e.target.getAttribute('data-letter');
-      const filtered = filterCatalog(catalog, letter);
-      renderTable(filtered);
+      render(filterData(e.target.getAttribute('data-letter')));
     }
   });
 
-  // 3. Carousel (Existing Logic - show if Featured is "yes")
-  const carouselData = catalog.filter(item => item.Featured && item.Featured.toLowerCase() === 'yes');
-  // ... call your existing buildCarousel(carouselData) function here ...
-});
+  // Carousel Logic (Featured: yes)
+  if (window.buildCarousel) {
+    const carouselItems = catalog.filter(item => item.Featured && item.Featured.toLowerCase() === 'yes');
+    buildCarousel(carouselItems);
+  }
+}
+
+document.addEventListener('DOMContentLoaded', initPrototype);
 </script>
 </body>
 </html>
