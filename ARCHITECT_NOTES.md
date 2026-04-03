@@ -334,7 +334,7 @@ Last updated: 2026-04-03
 | Task | Why | Effort | Status |
 |---|---|---|---|
 | ~~Add Cloudflare Analytics token to all 6 HTML files~~ | ~~Every day without it is lost traffic data.~~ | ~~5 min~~ | ✅ Done |
-| Add `sample_count` column to Google Sheet | Eliminates 5 audio metadata requests per album page load. Code is already done — user just needs to fill the column. | 10 min (user fills sheet) | ⏳ User action needed |
+| ~~Add `sample_count` column to Google Sheet~~ | ~~Eliminates 5 audio metadata requests per album page load.~~ | ~~10 min~~ | ✅ Done — 70/74 albums populated; 3 remaining have no audio in R2 yet |
 
 ### 🟠 Next sprint (high impact, medium effort)
 
@@ -348,11 +348,12 @@ Last updated: 2026-04-03
 
 | Task | Why | Effort | Status |
 |---|---|---|---|
-| `fetchpriority="high"` on first 2 catalog images | First two images are almost always in viewport on load — LCP win with zero cost. | 15 min | **Approved — next** |
-| `font-display: swap` + `<link rel="preload">` on Inter | Eliminates invisible-text flash during font load. Measurable FCP/LCP improvement. | 20 min | **Approved — next** |
-| `defer` on `cart.html`, `success.html`, `album.html` | Requires wrapping inline scripts in `DOMContentLoaded` first. Minor parse performance gain. | 1 hr | **Approved — next** |
+| ~~`fetchpriority="high"` on first 2 catalog images~~ | ~~LCP win with zero cost.~~ | ~~15 min~~ | ✅ Done |
+| ~~`font-display: swap` + `<link rel="preload">` on Inter~~ | ~~Eliminates invisible-text flash during font load.~~ | ~~20 min~~ | ✅ Done |
+| ~~`defer` on `cart.html`, `success.html`, `album.html`~~ | ~~Minor parse performance gain.~~ | ~~1 hr~~ | ✅ Done |
 | ~~GitHub Actions: auto-deploy Worker on push to main~~ | ~~Worker required manual `wrangler deploy`.~~ | ~~1 hr~~ | ✅ Done — `.github/workflows/deploy-worker.yml` |
-| Name magic numbers as constants (shipping tiers, commission %) | Code quality / maintainability only. No user-facing impact. | 30 min | Backlog |
+| ~~Name magic numbers as constants (shipping tiers)~~ | ~~Code quality / maintainability.~~ | ~~30 min~~ | ✅ Done — `worker/index.js` |
+| ~~`/api/order` input validation hardened~~ | ~~Max items, string type guards, album_id length limit.~~ | ~~1 hr~~ | ✅ Done |
 
 ### 🔵 SPA Phase (future — do not start until current site is stable)
 

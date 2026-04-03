@@ -121,16 +121,15 @@ All routes at `late-records.shop/api/*`.
 - **`fetchpriority="high"` on first 2 catalog images** (LCP improvement)
 - **`font-display: swap` already set; `<link rel="preload">` for `inter-latin.woff2` on all 6 pages** (FCP/CLS improvement)
 - **`defer` + `DOMContentLoaded` wrapper on `cart.html`, `success.html`, `album.html`**
+- **Shipping magic numbers named as constants** in `worker/index.js` (`SHIPPING_PICKUP`, `SHIPPING_LOCAL`, `SHIPPING_TIER_1/2/3`, `SHIPPING_QTY_T1/T2`)
+- **`/api/order` input validation hardened** — max 50 items, `typeof string` guards on `deliveryMethod` and `album_id`, `album_id` max length 128
 
 ---
 
 ## What Is Still Pending
 
 ### User action needed (no code)
-- **Add `sample_count` column to Google Sheet** — integer, number of audio samples per album. Code already supports it via `item.sample_count`. Without it, `setupAudio()` falls back to 5 sequential HEAD requests per album page load.
-
-### Approved for next session
-- **Name magic numbers as constants** in `worker/index.js` (shipping tier amounts, commission %)
+- **Upload audio samples to R2 for 3 albums** — `altered-state-by-maldwyn-pope`, `10-by-various-artists`, `phase-iii-by-iao` have no audio in R2 and no `sample_count`. Add files then set `sample_count` in the Sheet.
 
 ### Parked — do not implement yet
 - **Sentry** (`@sentry/cloudflare`, `withSentry` wrapper, `SENTRY_DSN` via `wrangler secret put`). GitHub Actions is now set up (source maps auto-upload). Revisit when order volume makes crash reports worth the setup.
