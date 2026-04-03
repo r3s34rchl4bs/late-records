@@ -2,6 +2,19 @@
 
 ---
 
+## Standing Rule: Staging Before Main
+
+**All code changes must be verified on staging before merging to main.**
+
+1. Work happens on a feature branch (e.g. `claude/infallible-lichterman`)
+2. Push branch → Cloudflare Pages auto-deploys a preview URL (e.g. `claude-infallible-lichterman.late-records.pages.dev`)
+3. Test on staging — mobile and desktop
+4. Only merge to `main` after visual confirmation
+
+No exceptions, even for small fixes.
+
+---
+
 ## Section 0: R2 Media — Operational Reference
 
 ### 0.1 How Media Is Served
@@ -255,3 +268,54 @@ This ensures the next visit starts with an empty cart and "Cart" label — not "
 A user could manually edit `localStorage` to change a record's price before checkout (e.g., set a ₱1,200 record to ₱1).
 
 **This is already blocked.** The Worker's `POST /api/order` handler (Section 1.2) independently re-fetches prices from the catalog and recalculates the total server-side. The client-sent total is compared against the server total — any mismatch returns `400`. The client price in localStorage is irrelevant to what gets charged.
+
+---
+
+## Section 5: Master Task Backlog (Priority Order)
+
+Last updated: 2026-04-03
+
+### 🔴 Do immediately (high impact, low effort)
+
+| Task | Why | Effort |
+|---|---|---|
+| Add Cloudflare Analytics token to all 6 HTML files | Every day without it is lost traffic data. Zero code — just paste the token. | 5 min |
+| Add `sample_count` column to Google Sheet | Eliminates 5 audio metadata requests per album page load. Code is already done — user just needs to fill the column. | 10 min (user fills sheet) |
+
+### 🟠 Next sprint (high impact, medium effort)
+
+| Task | Why | Effort |
+|---|---|---|
+| Canonical `<link>` tags on album pages | Album pages use `?id=` query params. Without canonical tags Google may treat them as duplicate or low-value URLs. | 30 min |
+| catalog.json snapshot on R2 (replaces live Sheets fetch in Worker) | Worker currently hits Google Sheets on every `/api/catalog` call. R2 JSON would be faster, more reliable, and survives Sheets downtime. Needs a sync script (Apps Script or scheduled Worker). | 2–3 hrs |
+| Error monitoring for Worker exceptions | Currently flying blind on backend errors. Add Cloudflare Logpush or a simple error counter. | 1 hr |
+
+### 🟡 Polish (medium impact, low–medium effort)
+
+| Task | Why | Effort |
+|---|---|---|
+| `defer` on `cart.html`, `success.html`, `album.html` | Requires wrapping inline scripts in `DOMContentLoaded` first. Minor parse performance gain. | 1 hr |
+| GitHub Actions: auto-deploy Worker on push to main | Currently Worker must be deployed manually via `wrangler publish`. | 1 hr |
+| Name magic numbers as constants (shipping tiers, commission %) | Code quality / maintainability only. No user-facing impact. | 30 min |
+
+### 🔵 SPA Phase (future — do not start until current site is stable)
+
+Full plan in Section 3. Key constraint: audio player must live outside `#app-root`.
+
+| Task | Notes |
+|---|---|
+| SPA shell (`app.html` + router) | New entry point. Old HTML files deleted after all routes covered. |
+| History API routing | `pushState` for clean URLs (`/album/:id`, `/cart`, etc.) |
+| Persistent audio player | Initialized once, survives all route transitions |
+| catalog.json as SPA data source | R2 snapshot replaces live Worker fetch entirely on the client |
+| Lazy-render album images | Only render images in viewport — already have `loading="lazy"`, may want IntersectionObserver for more control |
+
+### ❌ Rejected / Deferred
+
+| Idea | Reason |
+|---|---|
+| Global Activity Feed (Durable Objects + WebSockets) | Over-engineered for current scale. Ghost logs are fake social proof — off-brand for a curated shop. Revisit if/when there's real concurrent traffic to broadcast. |
+| Flash invert on header actions | Gimmick. Clashes with current clean aesthetic. |
+| Roboto Mono / terminal design split | Not the current brand direction. Revisit only if a deliberate brutalist pivot is decided. |
+| USR_[ID] session broadcasting | Requires privacy disclosure / consent. Not worth complexity at this stage. |
+| Disable all animations | Current animations are subtle and intentional. Removing them hurts UX with no meaningful gain. |
