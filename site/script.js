@@ -10,11 +10,23 @@ const LR = (() => {
   const API_BASE = 'https://late-records.shop';
 
   // ── API ───────────────────────────────────────────────────
+  const CATALOG_CACHE_KEY = 'lr_catalog_cache';
+  const CATALOG_TTL_MS    = 2 * 60 * 1000; // 2 minutes
+
   const api = {
     async catalog() {
+      try {
+        const raw = localStorage.getItem(CATALOG_CACHE_KEY);
+        if (raw) {
+          const { ts, data } = JSON.parse(raw);
+          if (Date.now() - ts < CATALOG_TTL_MS) return data;
+        }
+      } catch {}
       const res = await fetch(`${API_BASE}/api/catalog`);
       if (!res.ok) throw new Error('Failed to load catalog');
-      return res.json();
+      const data = await res.json();
+      try { localStorage.setItem(CATALOG_CACHE_KEY, JSON.stringify({ ts: Date.now(), data })); } catch {}
+      return data;
     },
 
     async album(id) {

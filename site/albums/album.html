@@ -330,7 +330,56 @@ function renderAlbum(item, all) {
     .sort((a, b) => b.s - a.s)
     .slice(0, 4);
 
-  document.title = item.title + ' by ' + item.artist;
+  document.title = item.title + ' by ' + item.artist + ' — LATE RECORDS';
+
+  // OG / Twitter meta
+  const pageUrl  = 'https://late-records.shop/albums/album.html?id=' + encodeURIComponent(item.album_id);
+  const imageUrl = 'https://media.late-records.shop/images/' + encodeURIComponent(item.album_id) + '.jpg';
+  const ogDesc   = item.description
+    ? item.description.slice(0, 160)
+    : [(item.format || 'LP').trim(), item.condition, LR.ui.splitPipe(item.genre).slice(0,2).join(', ')].filter(Boolean).join(' · ');
+  [
+    ['property', 'og:type',        'product'],
+    ['property', 'og:url',         pageUrl],
+    ['property', 'og:title',       item.title + ' by ' + item.artist + ' — LATE RECORDS'],
+    ['property', 'og:description', ogDesc],
+    ['property', 'og:image',       imageUrl],
+    ['name',     'twitter:card',        'summary_large_image'],
+    ['name',     'twitter:title',       item.title + ' by ' + item.artist],
+    ['name',     'twitter:description', ogDesc],
+    ['name',     'twitter:image',       imageUrl],
+  ].forEach(([attr, name, content]) => {
+    let el = document.querySelector(`meta[${attr}="${name}"]`);
+    if (!el) { el = document.createElement('meta'); el.setAttribute(attr, name); document.head.appendChild(el); }
+    el.content = content;
+  });
+
+  // JSON-LD structured data
+  const existingLd = document.getElementById('album-jsonld');
+  if (existingLd) existingLd.remove();
+  const ld = document.createElement('script');
+  ld.id   = 'album-jsonld';
+  ld.type = 'application/ld+json';
+  ld.text = JSON.stringify({
+    '@context': 'https://schema.org',
+    '@type':    'Product',
+    name:        item.title,
+    description: ogDesc,
+    image:       imageUrl,
+    brand:       { '@type': 'Brand', name: item.artist },
+    offers: {
+      '@type':        'Offer',
+      price:          String(item.price),
+      priceCurrency:  'PHP',
+      availability:   item.status === 'available'
+        ? 'https://schema.org/InStock'
+        : 'https://schema.org/OutOfStock',
+      url:            pageUrl,
+      seller:         { '@type': 'Organization', name: 'Late Records' },
+    },
+  });
+  document.head.appendChild(ld);
+
 const favLink = document.querySelector("link[rel*='icon']") || document.createElement('link');
 favLink.type = 'image/png';
 favLink.rel  = 'shortcut icon';
@@ -467,7 +516,7 @@ document.head.appendChild(favLink);
 
   setupDescToggle();
   setupTracklist();
-  setupAudio(item.album_id);
+  setupAudio(item.album_id, item.sample_count);
   setupAddToCart(item);
 }
 
@@ -499,7 +548,7 @@ function setupTracklist() {
   });
 }
 
-function setupAudio(albumId) {
+function setupAudio(albumId, sampleCount) {
   const block    = document.getElementById('audioBlock');
   const audio    = document.getElementById('albumAudio');
   const label    = document.getElementById('audioLabel');
@@ -567,22 +616,30 @@ function setupAudio(albumId) {
   prev.addEventListener('click', () => { if (cur > 0) setTrack(cur - 1); });
   next.addEventListener('click', () => { if (cur < valid.length - 1) setTrack(cur + 1); });
 
-  function probeOne(url) {
-    return new Promise(resolve => {
-      const a = new Audio(); a.preload = 'metadata';
-      a.addEventListener('loadedmetadata', () => resolve(url), { once: true });
-      a.addEventListener('error', () => resolve(null), { once: true });
-      a.src = url;
+  const n = parseInt(sampleCount, 10);
+  if (n > 0) {
+    // sample_count known — skip probing, load directly
+    for (let i = 1; i <= n; i++) valid.push(`${AUDIO_BASE}${albumId}/sample${i}.mp3`);
+    block.classList.add('is-visible');
+    setTrack(0);
+  } else {
+    // fallback: probe up to 5 samples via metadata load
+    function probeOne(url) {
+      return new Promise(resolve => {
+        const a = new Audio(); a.preload = 'metadata';
+        a.addEventListener('loadedmetadata', () => resolve(url), { once: true });
+        a.addEventListener('error', () => resolve(null), { once: true });
+        a.src = url;
+      });
+    }
+    const probes = [1, 2, 3, 4, 5].map(i =>
+      probeOne(`${AUDIO_BASE}${albumId}/sample${i}.mp3`)
+    );
+    Promise.all(probes).then(results => {
+      results.forEach(url => { if (url) valid.push(url); });
+      if (valid.length) { block.classList.add('is-visible'); setTrack(0); }
     });
   }
-
-  const probes = [1, 2, 3, 4, 5].map(i =>
-    probeOne(`${AUDIO_BASE}${albumId}/sample${i}.mp3`)
-  );
-  Promise.all(probes).then(results => {
-    results.forEach(url => { if (url) valid.push(url); });
-    if (valid.length) { block.classList.add('is-visible'); setTrack(0); }
-  });
 }
 
 function setupAddToCart(item) {
