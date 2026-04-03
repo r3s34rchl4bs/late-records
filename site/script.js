@@ -202,3 +202,14 @@ document.addEventListener('DOMContentLoaded', updateNav);
 window.addEventListener('pageshow', function(e) {
   if (e.persisted) updateNav();
 });
+
+// ── Pinch-to-zoom lock ────────────────────────────────────
+// iOS Safari ignores user-scalable=no since iOS 10. JS interception
+// is the only reliable way to prevent pinch zoom on modern iPhones.
+// gesturestart/gesturechange are Safari-only events for multi-touch.
+// touchmove with >1 touch catches the pinch on all browsers.
+document.addEventListener('gesturestart',  function(e) { e.preventDefault(); }, { passive: false });
+document.addEventListener('gesturechange', function(e) { e.preventDefault(); }, { passive: false });
+document.addEventListener('touchmove', function(e) {
+  if (e.touches.length > 1) e.preventDefault();
+}, { passive: false });
