@@ -14,6 +14,15 @@ const TAGS_R2_KEY = 'data/tags.json';
 const TAGS_TTL_MS = 24 * 60 * 60 * 1000; // 24 hours
 const PROD_ORIGIN = 'https://late-records.shop';
 
+// ── Shipping rates ────────────────────────────────────────
+const SHIPPING_PICKUP  = 0;    // in-store pickup — no charge
+const SHIPPING_LOCAL   = 100;  // local delivery (Metro Manila)
+const SHIPPING_TIER_1  = 250;  // standard: 1–2 records
+const SHIPPING_TIER_2  = 350;  // standard: 3–5 records
+const SHIPPING_TIER_3  = 450;  // standard: 6+ records
+const SHIPPING_QTY_T1  = 2;    // qty threshold: tier 1 → tier 2
+const SHIPPING_QTY_T2  = 5;    // qty threshold: tier 2 → tier 3
+
 // ── CORS headers ──────────────────────────────────────────
 // Only PROD_ORIGIN and localhost (any port, for wrangler dev) are whitelisted.
 function getAllowedOrigin(origin) {
@@ -391,11 +400,11 @@ export default {
         }
 
         let serverShipping;
-        if      (deliveryMethod === 'pickup') serverShipping = 0;
-        else if (deliveryMethod === 'local')  serverShipping = 100;
-        else if (totalQty <= 2)               serverShipping = 250;
-        else if (totalQty <= 5)               serverShipping = 350;
-        else                                  serverShipping = 450;
+        if      (deliveryMethod === 'pickup')          serverShipping = SHIPPING_PICKUP;
+        else if (deliveryMethod === 'local')            serverShipping = SHIPPING_LOCAL;
+        else if (totalQty <= SHIPPING_QTY_T1)          serverShipping = SHIPPING_TIER_1;
+        else if (totalQty <= SHIPPING_QTY_T2)          serverShipping = SHIPPING_TIER_2;
+        else                                            serverShipping = SHIPPING_TIER_3;
 
         const serverTotal = Math.round(serverSubtotal + serverShipping);
 
