@@ -34,3 +34,4 @@ crons = ["*/10 * * * *"]
 # ── Observability ─────────────────────────────────────────────────────────────
 [observability]
 enabled = true
+head_sampling_rate = 1
