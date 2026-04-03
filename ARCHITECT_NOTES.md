@@ -354,6 +354,7 @@ Last updated: 2026-04-03
 | ~~GitHub Actions: auto-deploy Worker on push to main~~ | ~~Worker required manual `wrangler deploy`.~~ | ~~1 hr~~ | ✅ Done — `.github/workflows/deploy-worker.yml` |
 | ~~Name magic numbers as constants (shipping tiers)~~ | ~~Code quality / maintainability.~~ | ~~30 min~~ | ✅ Done — `worker/index.js` |
 | ~~`/api/order` input validation hardened~~ | ~~Max items, string type guards, album_id length limit.~~ | ~~1 hr~~ | ✅ Done |
+| ~~Mobile UX stabilization~~ | ~~Viewport lock, touch-action, 16px inputs, JS pinch-zoom kill.~~ | ~~1 hr~~ | ✅ Done |
 
 ### 🔵 SPA Phase (future — do not start until current site is stable)
 

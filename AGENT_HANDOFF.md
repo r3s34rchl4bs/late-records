@@ -123,6 +123,7 @@ All routes at `late-records.shop/api/*`.
 - **`defer` + `DOMContentLoaded` wrapper on `cart.html`, `success.html`, `album.html`**
 - **Shipping magic numbers named as constants** in `worker/index.js` (`SHIPPING_PICKUP`, `SHIPPING_LOCAL`, `SHIPPING_TIER_1/2/3`, `SHIPPING_QTY_T1/T2`)
 - **`/api/order` input validation hardened** — max 50 items, `typeof string` guards on `deliveryMethod` and `album_id`, `album_id` max length 128
+- **Mobile UX stabilization** — viewport hard-locked on all 7 pages (`maximum-scale=1.0, user-scalable=no, viewport-fit=cover`); `touch-action: manipulation` on all interactive elements; 16px input floor on mobile (prevents iOS auto-zoom); pinch-to-zoom killed via JS (`gesturestart`, `gesturechange`, `touchmove` interception) — required because iOS 10+ ignores the viewport meta tag
 
 ---
 
