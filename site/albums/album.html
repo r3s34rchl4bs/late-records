@@ -396,7 +396,7 @@ document.head.appendChild(favLink);
   document.getElementById('mainContainer').innerHTML = `
     <div class="album-page">
       <div class="album-image-wrap">
-        <img src="https://media.late-records.shop/images/${encodeURIComponent(item.album_id)}.jpg" class="album-image" id="albumImg" alt="${_escHTML(item.title)}" width="600" height="600"
+        <img src="https://media.late-records.shop/images/${encodeURIComponent(item.album_id)}.jpg" class="album-image" id="albumImg" alt="${_escHTML(item.title)}"
           onerror="this.style.display='none';document.getElementById('albumPlaceholder').style.display='flex';">
         <div id="albumPlaceholder" class="album-placeholder" style="display:none;">
           <div class="album-placeholder-inner">
@@ -496,7 +496,7 @@ document.head.appendChild(favLink);
       <div class="related-grid">
         ${related.map(({ i }) => `
           <a class="related-card" href="album.html?id=${encodeURIComponent(i.album_id)}">
-            <img src="https://media.late-records.shop/images/${encodeURIComponent(i.album_id)}.jpg" class="related-cover" alt="${_escHTML(i.title)}" width="600" height="600" loading="lazy"
+            <img src="https://media.late-records.shop/images/${encodeURIComponent(i.album_id)}.jpg" class="related-cover" alt="${_escHTML(i.title)}" loading="lazy"
               onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">
             <div class="related-placeholder" style="display:none;">
               <div class="album-placeholder-inner">

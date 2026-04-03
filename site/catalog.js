@@ -24,7 +24,7 @@ function rowHTML(item, query, isSuggestion, eager) {
   const artist = query ? highlight(item.artist, query) : _escHTML(item.artist);
   return `<tr class="${sold ? 'sold' : ''}${isSuggestion ? ' is-suggestion' : ''}"
     onclick="location.href='albums/album.html?id=${encodeURIComponent(item.album_id)}'">
-    <td class="c-art"><div class="rec-art-wrap"><img src="https://media.late-records.shop/images/${encodeURIComponent(item.album_id)}.jpg" alt="" width="600" height="600" ${eager ? 'fetchpriority="high"' : 'loading="lazy"'} onerror="this.parentNode.style.opacity='0'"></div></td>
+    <td class="c-art"><div class="rec-art-wrap"><img src="https://media.late-records.shop/images/${encodeURIComponent(item.album_id)}.jpg" alt="" ${eager ? 'fetchpriority="high"' : 'loading="lazy"'} onerror="this.parentNode.style.opacity='0'"></div></td>
     <td class="c-title"><div class="rec-title">${title}</div><div class="rec-artist">${artist}</div></td>
     <td class="c-genre"><span class="genre-tag"
       onclick="event.stopPropagation();location.href='genre.html?g=${encodeURIComponent(genre.toLowerCase())}'">${_escHTML(genre)}</span></td>
