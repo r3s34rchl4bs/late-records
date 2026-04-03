@@ -7,6 +7,7 @@
 <title>LATE RECORDS</title>
 <meta name="description" content="Shop rare and used vinyl at Late Records. Browse curated records across jazz, soul, funk, reggae, and more — shipped anywhere in the Philippines.">
 <link rel="canonical" href="https://late-records.shop/albums/album.html">
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../fonts/inter-latin.woff2">
 <link rel="stylesheet" href="../fonts/inter.css">
 <link rel="stylesheet" href="../style.css">
 
@@ -283,8 +284,9 @@
 
 <div class="container" id="mainContainer"></div>
 
-<script src="../script.js"></script>
+<script src="../script.js" defer></script>
 <script>
+document.addEventListener('DOMContentLoaded', function() {
 
 const ALBUM_ID   = new URLSearchParams(location.search).get('id') || '';
 const AUDIO_BASE = 'https://media.late-records.shop/audio/';
@@ -683,6 +685,7 @@ function setupAddToCart(item) {
   }
 })();
 
+}); // DOMContentLoaded
 </script>
 </body>
 </html>

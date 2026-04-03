@@ -5,6 +5,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Cart — LATE RECORDS</title>
+<link rel="preload" as="font" type="font/woff2" crossorigin href="fonts/inter-latin.woff2">
 <link rel="stylesheet" href="fonts/inter.css">
 <link rel="stylesheet" href="style.css">
 
@@ -158,8 +159,9 @@
   </div>
 </div>
 
-<script src="script.js"></script>
+<script src="script.js" defer></script>
 <script>
+document.addEventListener('DOMContentLoaded', function() {
 function renderCart() {
   const items     = LR.cart.get();
   const container = document.getElementById('cartItems');
@@ -236,6 +238,7 @@ document.getElementById('guideModal').addEventListener('click', e => {
   if (e.target === e.currentTarget) e.currentTarget.classList.remove('is-open');
 });
 renderCart();
+}); // DOMContentLoaded
 </script>
 </body>
 </html>

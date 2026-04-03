@@ -277,26 +277,28 @@ Last updated: 2026-04-03
 
 ### 🔴 Do immediately (high impact, low effort)
 
-| Task | Why | Effort |
-|---|---|---|
-| Add Cloudflare Analytics token to all 6 HTML files | Every day without it is lost traffic data. Zero code — just paste the token. | 5 min |
-| Add `sample_count` column to Google Sheet | Eliminates 5 audio metadata requests per album page load. Code is already done — user just needs to fill the column. | 10 min (user fills sheet) |
+| Task | Why | Effort | Status |
+|---|---|---|---|
+| ~~Add Cloudflare Analytics token to all 6 HTML files~~ | ~~Every day without it is lost traffic data.~~ | ~~5 min~~ | ✅ Done |
+| Add `sample_count` column to Google Sheet | Eliminates 5 audio metadata requests per album page load. Code is already done — user just needs to fill the column. | 10 min (user fills sheet) | ⏳ User action needed |
 
 ### 🟠 Next sprint (high impact, medium effort)
 
-| Task | Why | Effort |
-|---|---|---|
-| Canonical `<link>` tags on album pages | Album pages use `?id=` query params. Without canonical tags Google may treat them as duplicate or low-value URLs. | 30 min |
-| catalog.json snapshot on R2 (replaces live Sheets fetch in Worker) | Worker currently hits Google Sheets on every `/api/catalog` call. R2 JSON would be faster, more reliable, and survives Sheets downtime. Needs a sync script (Apps Script or scheduled Worker). | 2–3 hrs |
-| Error monitoring for Worker exceptions | Currently flying blind on backend errors. Add Cloudflare Logpush or a simple error counter. | 1 hr |
+| Task | Why | Effort | Status |
+|---|---|---|---|
+| ~~Canonical `<link>` tags on album pages~~ | ~~Album pages use `?id=` query params.~~ | ~~30 min~~ | ✅ Done |
+| ~~catalog.json snapshot on R2~~ | ~~Worker was hitting Google Sheets on every `/api/catalog` call.~~ | ~~2–3 hrs~~ | ✅ Done — R2 cache with 10-min TTL + cron refresh |
+| ~~Error monitoring for Worker exceptions~~ | ~~Flying blind on backend errors.~~ | ~~1 hr~~ | ✅ Done — Cloudflare Observability enabled (`head_sampling_rate = 1`) |
 
 ### 🟡 Polish (medium impact, low–medium effort)
 
-| Task | Why | Effort |
-|---|---|---|
-| `defer` on `cart.html`, `success.html`, `album.html` | Requires wrapping inline scripts in `DOMContentLoaded` first. Minor parse performance gain. | 1 hr |
-| GitHub Actions: auto-deploy Worker on push to main | Currently Worker must be deployed manually via `wrangler publish`. | 1 hr |
-| Name magic numbers as constants (shipping tiers, commission %) | Code quality / maintainability only. No user-facing impact. | 30 min |
+| Task | Why | Effort | Status |
+|---|---|---|---|
+| `fetchpriority="high"` on first 2 catalog images | First two images are almost always in viewport on load — LCP win with zero cost. | 15 min | **Approved — next** |
+| `font-display: swap` + `<link rel="preload">` on Inter | Eliminates invisible-text flash during font load. Measurable FCP/LCP improvement. | 20 min | **Approved — next** |
+| `defer` on `cart.html`, `success.html`, `album.html` | Requires wrapping inline scripts in `DOMContentLoaded` first. Minor parse performance gain. | 1 hr | **Approved — next** |
+| ~~GitHub Actions: auto-deploy Worker on push to main~~ | ~~Worker required manual `wrangler deploy`.~~ | ~~1 hr~~ | ✅ Done — `.github/workflows/deploy-worker.yml` |
+| Name magic numbers as constants (shipping tiers, commission %) | Code quality / maintainability only. No user-facing impact. | 30 min | Backlog |
 
 ### 🔵 SPA Phase (future — do not start until current site is stable)
 
@@ -316,11 +318,11 @@ Full plan in Section 3. Key constraint: audio player must live outside `#app-roo
 |---|---|---|
 | Sentry error monitoring (`@sentry/cloudflare`) | When order volume grows and line-by-line crash reports are needed | Set up GitHub Actions auto-deploy first — source maps upload automatically on each deploy, making Sentry much more useful. DSN goes in `wrangler secret put SENTRY_DSN`. Use `withSentry` wrapper on the fetch handler. |
 
-### ❌ Rejected / Deferred
+### ❌ Rejected — Permanent
 
 | Idea | Reason |
 |---|---|
-| Global Activity Feed (Durable Objects + WebSockets) | Over-engineered for current scale. Ghost logs are fake social proof — off-brand for a curated shop. Revisit if/when there's real concurrent traffic to broadcast. |
+| Global Activity Feed (Durable Objects + WebSockets) | **Permanently closed.** Fake social proof is off-brand for a curated record shop. Durable Objects + WebSockets adds infra complexity and cost for zero real benefit. Evaluated twice — rejected both times. Do not reopen. |
 | Flash invert on header actions | Gimmick. Clashes with current clean aesthetic. |
 | Roboto Mono / terminal design split | Not the current brand direction. Revisit only if a deliberate brutalist pivot is decided. |
 | USR_[ID] session broadcasting | Requires privacy disclosure / consent. Not worth complexity at this stage. |

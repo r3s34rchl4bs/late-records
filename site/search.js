@@ -47,7 +47,7 @@ const LR_SEARCH = (() => {
       if (window.availFilterActive) {
         base = base.filter(a => String(a.status).toLowerCase() === 'available');
       }
-      tbody.innerHTML = base.map(item => rowHTML(item, '', false)).join('');
+      tbody.innerHTML = base.map((item, i) => rowHTML(item, '', false, i < 2)).join('');
       count.textContent = '';
       return;
     }

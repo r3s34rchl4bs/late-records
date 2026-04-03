@@ -5,6 +5,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Order Received — LATE RECORDS</title>
+<link rel="preload" as="font" type="font/woff2" crossorigin href="fonts/inter-latin.woff2">
 <link rel="stylesheet" href="fonts/inter.css">
 <link rel="stylesheet" href="style.css">
 
@@ -296,8 +297,9 @@ html.dark .wallet-logo { filter: grayscale(100%) invert(1) opacity(0.6); }
   </div>
 </div>
 
-<script src="script.js"></script>
+<script src="script.js" defer></script>
 <script>
+document.addEventListener('DOMContentLoaded', function() {
 
 var buyer      = localStorage.getItem('lr_buyer');
 var orderTotal = localStorage.getItem('lr_order_total');
@@ -458,6 +460,7 @@ function handleOverlay(e) {
   if (e.target === document.getElementById('modalOverlay')) closeModal();
 }
 
+}); // DOMContentLoaded
 </script>
 </body>
 </html>
