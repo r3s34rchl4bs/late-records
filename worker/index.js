@@ -368,8 +368,11 @@ export default {
         if (!Array.isArray(items) || items.length === 0) {
           return json({ error: 'Invalid order: items array is empty or missing.' }, 400, origin);
         }
+        if (items.length > 50) {
+          return json({ error: 'Invalid order: too many items.' }, 400, origin);
+        }
         const VALID_DELIVERY = new Set(['ship', 'local', 'pickup']);
-        if (!VALID_DELIVERY.has(deliveryMethod)) {
+        if (typeof deliveryMethod !== 'string' || !VALID_DELIVERY.has(deliveryMethod)) {
           return json({ error: 'Invalid delivery method.' }, 400, origin);
         }
 
@@ -384,7 +387,7 @@ export default {
 
         for (const item of items) {
           const qty = item.quantity;
-          if (!item.album_id || !Number.isInteger(qty) || qty < 1) {
+          if (!item.album_id || typeof item.album_id !== 'string' || item.album_id.length > 128 || !Number.isInteger(qty) || qty < 1) {
             return json({ error: 'Malformed item in order.' }, 400, origin);
           }
           const record = catalog.find(a => a.album_id === item.album_id);
