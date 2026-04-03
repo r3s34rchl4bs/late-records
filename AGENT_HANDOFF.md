@@ -143,11 +143,12 @@ All routes at `late-records.shop/api/*`.
 ## Hard Constraints — Never Break These
 
 1. **Staging before main** — every change goes to a feature branch first. Cloudflare Pages auto-deploys a preview. Merge to `main` only after visual confirmation on staging. No exceptions.
-2. **No SPA work yet** — do not touch routing or create `app.html`.
-3. **No payment processor** — do not add Stripe, PayMongo, or any gateway.
-4. **No secrets in `wrangler.toml`** — use `wrangler secret put`.
-5. **Never trust client cart total** — always recalculate server-side in the Worker.
-6. **Never use `git push --force` on main**.
+2. **Atomic Release Sync** — when the user says "Go live", "Push to main", "Deploy", or "Ship it": merge the code AND update all three `.md` files in the same commit. Never mark a task complete while still on staging. Full protocol in `ARCHITECT_NOTES.md` → *Standing Rule: Atomic Release Sync*.
+3. **No SPA work yet** — do not touch routing or create `app.html`.
+4. **No payment processor** — do not add Stripe, PayMongo, or any gateway.
+5. **No secrets in `wrangler.toml`** — use `wrangler secret put`.
+6. **Never trust client cart total** — always recalculate server-side in the Worker.
+7. **Never use `git push --force` on main**.
 
 ---
 

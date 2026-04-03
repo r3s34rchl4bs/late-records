@@ -15,6 +15,48 @@ No exceptions, even for small fixes.
 
 ---
 
+## Standing Rule: Atomic Release Sync
+
+**Documentation must always match production exactly. Updates are tied to the deploy — never before, never after.**
+
+### The Two States
+
+| State | Meaning | Doc status |
+|---|---|---|
+| Staging / iterating | Code is on a branch, being tested | Tasks stay in "Approved / pending" — do NOT mark complete |
+| Merged to main | Code is live in production | **Trigger the Release Sync immediately** |
+
+### What Triggers a Release Sync
+
+Any of these phrases from the user means "merge to main AND sync docs in the same action":
+- "Go live"
+- "Push to main" / "Merge to main"
+- "Deploy"
+- "Ship it"
+
+### What the Release Sync Does (all three in the same commit)
+
+1. **`AGENT_HANDOFF.md`** — move deployed features from "Pending" → "Completed"; record updated PageSpeed scores if they changed
+2. **`ARCHITECT_NOTES.md`** — log the release date on the relevant tasks; move them to ✅ in the backlog
+3. **`ARCHITECTURE.md`** — update only if this release changed how R2, Workers, or the Sheets API interact (new endpoints, new bindings, changed cache behaviour, etc.)
+
+### Post-Deploy Confirmation
+
+After every merge to main, output:
+
+```
+RELEASE SYNC COMPLETE
+Live URL: https://late-records.shop
+Docs updated: AGENT_HANDOFF.md · ARCHITECT_NOTES.md · ARCHITECTURE.md (if applicable)
+[Summary of what moved from Pending → Completed]
+```
+
+### Why This Exists
+
+Without this rule, docs drift from production. A future AI agent reading stale docs will repeat work that's done, or miss constraints that are live. The sync keeps every file trustworthy as a source of truth.
+
+---
+
 ## Section 0: R2 Media — Operational Reference
 
 ### 0.1 How Media Is Served
