@@ -9,6 +9,9 @@
 
 const CATALOG_R2_KEY = 'data/catalog.json';
 const CATALOG_TTL_MS = 10 * 60 * 1000; // 10 minutes
+
+const TAGS_R2_KEY = 'data/tags.json';
+const TAGS_TTL_MS = 24 * 60 * 60 * 1000; // 24 hours
 const PROD_ORIGIN = 'https://late-records.shop';
 
 // ── CORS headers ──────────────────────────────────────────
@@ -417,33 +420,41 @@ export default {
     // GET /api/tags
     if (path === '/api/tags' && request.method === 'GET') {
       try {
-        const cache    = caches.default;
-        const cacheKey = new Request('https://lr-cache/tags-v4');
-        const cached   = await cache.match(cacheKey);
-        if (cached) return new Response(cached.body, {
-          headers: { 'Content-Type': 'application/json', ...cors(origin) },
-        });
+        // L1: R2 cache — serve stale tags rather than hammering Gemini
+        const obj = await env.MEDIA.get(TAGS_R2_KEY).catch(() => null);
+        if (obj) {
+          const age = Date.now() - Number(obj.customMetadata?.updated || 0);
+          if (age < TAGS_TTL_MS) {
+            return new Response(obj.body, {
+              headers: { 'Content-Type': 'application/json', ...cors(origin) },
+            });
+          }
+        }
 
+        // Cache miss or stale — regenerate via Gemini
         const catalog = await fetchCatalog(env);
         if (!env.GEMINI_API_KEY) return json([], 200, origin);
 
         const tags = await generateTags(catalog, env.GEMINI_API_KEY);
 
-        // only cache non-empty results
         if (tags.length > 0) {
+          // Write fresh tags to R2
           const body = JSON.stringify(tags);
-          const r = new Response(body, {
-            headers: {
-              'Content-Type': 'application/json',
-              'Cache-Control': 'public, max-age=86400',
-            },
-          });
-          await cache.put(cacheKey, r);
+          env.MEDIA.put(TAGS_R2_KEY, body, {
+            httpMetadata:   { contentType: 'application/json' },
+            customMetadata: { updated: String(Date.now()) },
+          }).catch(() => {});
           return new Response(body, {
             headers: { 'Content-Type': 'application/json', ...cors(origin) },
           });
         }
 
+        // Gemini failed — serve stale R2 if available, otherwise empty
+        if (obj) {
+          return new Response(obj.body, {
+            headers: { 'Content-Type': 'application/json', ...cors(origin) },
+          });
+        }
         return json([], 200, origin);
       } catch (e) {
         console.error('Tags error:', e.message);
