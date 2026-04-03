@@ -1,110 +1,111 @@
-# Late Records — Architecture & Implementation Notes
+# Late Records — Architecture
+
+> This file describes the live production system. It is updated only when a release changes infrastructure — new/removed endpoints, cache strategy, R2 bindings, Worker triggers, or Sheets schema. Not updated for frontend-only releases.
+>
+> Last updated: 2026-04-03
+
+---
 
 ## Stack
 
-| Layer | Tool |
-|---|---|
-| Hosting | Cloudflare Pages |
-| API / Cache | Cloudflare Worker |
-| Data source | Google Sheets via Apps Script |
-| Spam protection | Cloudflare Turnstile |
-| DNS / Domain | Namecheap → Cloudflare nameservers |
+| Layer | Technology | Notes |
+|---|---|---|
+| Frontend hosting | Cloudflare Pages | Static files in `site/` |
+| API layer | Cloudflare Worker | `worker/index.js` — routes all `/api/*` |
+| Media storage | Cloudflare R2 | Bucket: `late-records-media` → `media.late-records.shop` |
+| Catalog + tags cache | Cloudflare R2 | `data/catalog.json` (10-min TTL), `data/tags.json` (24-hr TTL) |
+| Catalog data source | Google Sheets + Apps Script | Single source of truth for all album records |
+| Tag generation | Google Gemini API | Called from Worker; result cached in R2 |
+| Spam protection | Cloudflare Turnstile | Invisible widget on checkout |
+| DNS / Domain | Namecheap → Cloudflare nameservers | |
+| CI/CD | GitHub Actions | Auto-deploys Worker on push to `worker/**` on `main` |
+| Analytics | Cloudflare Web Analytics | Beacon in all HTML files |
+| Error visibility | Cloudflare Observability | `head_sampling_rate = 1` in `wrangler.toml` |
 
 ---
 
-## File Structure
+## Repository Structure
 
 ```
 late-records/
-├── site/                        ← deployed to Cloudflare Pages
-│   ├── index.html
+├── site/                          ← deployed to Cloudflare Pages
+│   ├── index.html                 ← main catalog page
+│   ├── genre.html                 ← genre filter view
 │   ├── cart.html
 │   ├── checkout.html
 │   ├── success.html
-│   ├── style.css                ← single shared stylesheet
-│   ├── script.js                ← shared cart + API + utils
-│   ├── images/                  ← optimised album covers (.jpg, max 600px wide)
+│   ├── hidden-pricer.html
+│   ├── style.css                  ← single shared stylesheet
+│   ├── script.js                  ← shared: LR.api, LR.cart, LR.ui
+│   ├── catalog.js                 ← rowHTML() catalog row renderer
+│   ├── search.js                  ← buildTable(), renderTable(), AZ nav
+│   ├── tagcloud.js                ← tag cloud component
+│   ├── last-updated.js            ← footer timestamp
+│   ├── robots.txt                 ← transactional pages excluded
+│   ├── sitemap.xml
+│   ├── fonts/
+│   │   ├── inter.css              ← @font-face, font-display: swap
+│   │   ├── inter-latin.woff2
+│   │   └── inter-latin-ext.woff2
+│   ├── images/                    ← logo, static assets
 │   └── albums/
-│       └── album.html
+│       └── album.html             ← album detail (?id= query param)
 │
-└── worker/                      ← deployed to Cloudflare Workers
-    ├── index.js                 ← API handler
-    └── wrangler.toml            ← Worker config
+└── worker/
+    ├── index.js                   ← Worker API + cron handler
+    ├── wrangler.toml              ← config, R2 bindings, cron, observability
+    └── package.json
 ```
 
 ---
 
-## API Endpoints (Worker)
+## API Endpoints
 
-| Method | Endpoint | Cache | Description |
+| Method | Path | Cache | Description |
 |---|---|---|---|
-| GET | /api/catalog | 5 min edge cache | Full inventory from Sheets |
-| GET | /api/album?id= | 5 min edge cache | Single album (filtered from catalog) |
-| POST | /api/order | Never | Submit order → Apps Script |
+| `GET` | `/api/catalog` | R2 `data/catalog.json`, 10-min TTL | Full catalog. Falls back to Apps Script on R2 miss. Async write-back to R2. |
+| `GET` | `/api/album?id=` | None | Single album lookup from catalog. |
+| `GET` | `/api/tags?id=` | R2 `data/tags.json`, 24-hr TTL | Gemini-generated genre/mood tags. Stale served on Gemini failure. |
+| `GET` | `/api/suggest?q=` | None | Search suggestions. |
+| `POST` | `/api/order` | Never | Validates order, recalculates price server-side, submits to Apps Script. |
+| cron | `*/10 * * * *` | — | Proactively refreshes `data/catalog.json` in R2. |
 
 ---
 
 ## Caching Strategy
 
-- **Catalog + Album reads**: Cached at the Cloudflare edge via Cache API for 5 minutes.  
-  On a cache hit the Apps Script is not called at all — the Worker returns instantly.  
-  On a cache miss the Worker fetches from Apps Script, stores the response, and returns it.
+### R2 Catalog Cache (`data/catalog.json`)
+- TTL: 10 minutes
+- On request: Worker reads R2 first. If fresh → return immediately (~1–10ms). If stale/missing → fetch Apps Script, write back to R2 asynchronously, return result.
+- Cron (`*/10 * * * *`): proactively refreshes before TTL expires, keeping R2 warm even with no traffic.
+- Replaced the old `caches.default` edge cache, which was unreliable and couldn't be invalidated.
 
-- **Order submissions**: Always fresh — no cache, direct pass-through to Apps Script after Turnstile verification.
+### R2 Tags Cache (`data/tags.json`)
+- TTL: 24 hours
+- On Gemini 429 or failure: stale data served rather than retrying (prevents infinite retry loops).
 
-- **Frontend**: `style.css` and `script.js` are served by Pages with long-lived cache headers (`Cache-Control: public, max-age=31536000, immutable`). Add a query string version bump (e.g. `?v=2`) when deploying changes.
+### Client-side Catalog Cache
+- `localStorage` key `lr_catalog_cache`, TTL 2 minutes.
+- Checked before every `/api/catalog` call in `LR.api.catalog()`.
 
----
-
-## Worker Deployment
-
-1. Install Wrangler: `npm install -g wrangler`
-2. Login: `wrangler login`
-3. Set secrets:
-   ```
-   wrangler secret put TURNSTILE_SECRET
-   wrangler secret put APPS_SCRIPT_URL
-   ```
-4. Deploy: `wrangler deploy` from the `worker/` directory
-5. In Cloudflare Dashboard → Workers → Routes, add:
-   `late-records.shop/api/*` → your Worker
+### Static Assets
+- Cloudflare Pages serves `style.css`, `script.js`, and font files with long-lived cache headers.
+- When deploying changes to these files, Cloudflare Pages handles cache busting automatically via content hashing.
 
 ---
 
-## Turnstile Setup
+## Order Validation Rules
 
-1. Go to Cloudflare Dashboard → Turnstile → Add Site
-2. Domain: `late-records.shop`
-3. Widget type: **Managed** (invisible, auto-solves for real users)
-4. Copy the **Site Key** → paste into `checkout.html` where noted
-5. Copy the **Secret Key** → `wrangler secret put TURNSTILE_SECRET`
+Server-side in `worker/index.js` — client values are never trusted:
 
----
+1. `album_id` must exist in live catalog
+2. `quantity` must be integer ≥ 1
+3. `deliveryMethod` must be `ship`, `local`, or `pickup`
+4. Server independently recalculates subtotal + shipping from catalog prices
+5. Mismatch between client total and server total → `400 Bad Request`
+6. CORS locked to `https://late-records.shop` and `http://localhost:<any>`
 
-## Google Sheets Column Order
-
-`album_id | title | artist | price | stock | status | description | tracklist | genre | context`
-
-- `tracklist`: values separated by `||`
-- `genre`: values separated by `||`
-- `context`: values separated by `||`
-- `status`: `available` or `sold_out`
-
----
-
-## Image Optimisation
-
-Target: **600px wide, JPEG, quality 80**.  
-Filename must match `album_id` exactly, e.g. `self-titled-by-guilherme-coutinho-e-o-grupo-stalo.jpg`.
-
-Quick batch resize with ImageMagick:
-```bash
-mogrify -resize 600x -quality 80 images/*.jpg
-```
-
----
-
-## Shipping Rates (hardcoded in checkout.html and worker)
+### Shipping Rates (hardcoded in Worker)
 
 | Qty | Rate |
 |---|---|
@@ -114,14 +115,102 @@ mogrify -resize 600x -quality 80 images/*.jpg
 
 ---
 
+## Google Sheets Schema
+
+Column order matters — Apps Script reads by position.
+
+```
+album_id | title | artist | price | stock | status | format | condition |
+description | tracklist | genre | context | featured | sample_count
+```
+
+| Column | Notes |
+|---|---|
+| `album_id` | URL-safe slug, e.g. `self-titled-by-arthur-verocai`. Must match R2 filenames exactly. |
+| `status` | `available` or `sold_out` |
+| `format` | `LP`, `7"`, `12"`, etc. |
+| `tracklist` | Values separated by `\|\|` |
+| `genre` | Values separated by `\|\|` |
+| `context` | Values separated by `\|\|` |
+| `featured` | `yes` to appear in homepage carousel |
+| `sample_count` | Integer. Number of audio samples in R2. If set, skips HEAD-request probing in `setupAudio()`. **User must fill this column.** |
+
+---
+
+## R2 Media Storage
+
+Bucket: `late-records-media` → served at `https://media.late-records.shop`
+
+| Type | Path pattern |
+|---|---|
+| Album cover | `images/{album_id}.jpg` |
+| Audio sample | `audio/{album_id}/sample{n}.mp3` |
+| Catalog cache | `data/catalog.json` |
+| Tags cache | `data/tags.json` |
+
+Filenames are case-sensitive and must match `album_id` exactly.
+
+**Upload commands:**
+```bash
+# Image
+wrangler r2 object put late-records-media/images/{album_id}.jpg \
+  --file="/path/to/image.jpg" --content-type="image/jpeg"
+
+# Audio sample
+wrangler r2 object put late-records-media/audio/{album_id}/sample1.mp3 \
+  --file="/path/to/sample.mp3" --content-type="audio/mpeg"
+```
+
+**Image spec:** 600px wide, JPEG, quality 80.
+```bash
+mogrify -resize 600x -quality 80 *.jpg
+```
+
+---
+
+## Worker Deployment
+
+**Automatic (normal workflow):**
+Push changes in `worker/**` to `main` → GitHub Actions runs `wrangler deploy`.
+
+**Manual:**
+```bash
+cd worker
+wrangler deploy
+```
+
+**Secrets (set once, never in `wrangler.toml`):**
+```bash
+wrangler secret put APPS_SCRIPT_URL
+wrangler secret put TURNSTILE_SECRET
+wrangler secret put GEMINI_API_KEY
+```
+
+---
+
+## Turnstile Setup
+
+1. Cloudflare Dashboard → Turnstile → Add Site
+2. Domain: `late-records.shop`, Widget type: **Managed** (invisible)
+3. Site Key → paste into `checkout.html`
+4. Secret Key → `wrangler secret put TURNSTILE_SECRET`
+
+---
+
 ## Local Development
 
-Open `site/` files directly in a browser. API calls will fail locally (no Worker).  
-For local API testing, use `wrangler dev` in the `worker/` directory.
+```bash
+# Frontend: open site/ files directly in browser
+# API calls will fail — Worker not running locally
 
-Set a local override in `script.js` during dev:
+# Worker only:
+cd worker
+wrangler dev
+```
+
+Set a local API override in `script.js` during dev:
 ```js
 const API_BASE = window.location.hostname === 'localhost'
   ? 'http://localhost:8787'
-  : '';
+  : 'https://late-records.shop';
 ```

@@ -38,7 +38,19 @@ Any of these phrases from the user means "merge to main AND sync docs in the sam
 
 1. **`AGENT_HANDOFF.md`** — move deployed features from "Pending" → "Completed"; record updated PageSpeed scores if they changed
 2. **`ARCHITECT_NOTES.md`** — log the release date on the relevant tasks; move them to ✅ in the backlog
-3. **`ARCHITECTURE.md`** — update only if this release changed how R2, Workers, or the Sheets API interact (new endpoints, new bindings, changed cache behaviour, etc.)
+3. **`ARCHITECTURE.md`** — update **only if** the release changed infrastructure. Use this checklist:
+
+| Changed? | Update ARCHITECTURE.md? |
+|---|---|
+| New or removed API endpoint | ✅ Yes |
+| Cache strategy or TTL changed | ✅ Yes |
+| New R2 binding or bucket path | ✅ Yes |
+| New Worker cron trigger | ✅ Yes |
+| Google Sheets schema changed (new column) | ✅ Yes |
+| New Worker secret required | ✅ Yes |
+| Frontend-only (HTML, CSS, JS logic, fonts) | ❌ No |
+| Documentation-only change | ❌ No |
+| PageSpeed / performance tuning | ❌ No |
 
 ### Post-Deploy Confirmation
 
