@@ -310,6 +310,12 @@ Full plan in Section 3. Key constraint: audio player must live outside `#app-roo
 | catalog.json as SPA data source | R2 snapshot replaces live Worker fetch entirely on the client |
 | Lazy-render album images | Only render images in viewport — already have `loading="lazy"`, may want IntersectionObserver for more control |
 
+### ⏸ Parked — revisit when site grows
+
+| Idea | When to revisit | Notes |
+|---|---|---|
+| Sentry error monitoring (`@sentry/cloudflare`) | When order volume grows and line-by-line crash reports are needed | Set up GitHub Actions auto-deploy first — source maps upload automatically on each deploy, making Sentry much more useful. DSN goes in `wrangler secret put SENTRY_DSN`. Use `withSentry` wrapper on the fetch handler. |
+
 ### ❌ Rejected / Deferred
 
 | Idea | Reason |
