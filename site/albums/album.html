@@ -6,9 +6,10 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>LATE RECORDS</title>
 <meta name="description" content="Shop rare and used vinyl at Late Records. Browse curated records across jazz, soul, funk, reggae, and more — shipped anywhere in the Philippines.">
+<link rel="canonical" href="https://late-records.shop/albums/album.html">
 <link rel="stylesheet" href="../fonts/inter.css">
 <link rel="stylesheet" href="../style.css">
-<script defer src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon='{"token": "PASTE_CF_TOKEN_HERE"}'></script>
+
 <style>
 
 .cart-link {
@@ -332,8 +333,12 @@ function renderAlbum(item, all) {
 
   document.title = item.title + ' by ' + item.artist + ' — LATE RECORDS';
 
-  // OG / Twitter meta
+  // Canonical URL
   const pageUrl  = 'https://late-records.shop/albums/album.html?id=' + encodeURIComponent(item.album_id);
+  const canonical = document.querySelector("link[rel='canonical']");
+  if (canonical) canonical.href = pageUrl;
+
+  // OG / Twitter meta
   const imageUrl = 'https://media.late-records.shop/images/' + encodeURIComponent(item.album_id) + '.jpg';
   const ogDesc   = item.description
     ? item.description.slice(0, 160)
