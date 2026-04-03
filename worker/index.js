@@ -7,7 +7,8 @@
  *   GET  /api/suggest?q=...  — smart suggestions (MusicBrainz → Gemini fallback)
  */
 
-const CACHE_TTL   = 120; // seconds
+const CATALOG_R2_KEY = 'data/catalog.json';
+const CATALOG_TTL_MS = 10 * 60 * 1000; // 10 minutes
 const PROD_ORIGIN = 'https://late-records.shop';
 
 // ── CORS headers ──────────────────────────────────────────
@@ -62,23 +63,43 @@ async function verifyTurnstile(token, ip, secret) {
 
 // ── Catalog helpers ───────────────────────────────────────
 async function fetchCatalog(env) {
-  const cache    = caches.default;
-  const cacheKey = new Request('https://lr-cache/catalog-v4');
-  const cached   = await cache.match(cacheKey);
-  if (cached) return cached.json();
+  // L1: R2 persistent cache — ~1–10ms read, survives cache eviction
+  try {
+    const obj = await env.MEDIA.get(CATALOG_R2_KEY);
+    if (obj) {
+      const age = Date.now() - Number(obj.customMetadata?.updated || 0);
+      if (age < CATALOG_TTL_MS) return obj.json();
+    }
+  } catch {}
 
-  const res  = await fetch(env.APPS_SCRIPT_URL + '?action=catalog');
-  const data = await res.json();
+  // Cache miss or stale — fetch from Apps Script
+  const res   = await fetch(env.APPS_SCRIPT_URL + '?action=catalog');
+  const data  = await res.json();
   const items = Array.isArray(data) ? data : (data.items || []);
 
-  const r = new Response(JSON.stringify(items), {
-    headers: {
-      'Content-Type': 'application/json',
-      'Cache-Control': `public, max-age=${CACHE_TTL}`,
-    },
-  });
-  await cache.put(cacheKey, r);
+  // Write back to R2 (fire and forget — don't block the response)
+  env.MEDIA.put(CATALOG_R2_KEY, JSON.stringify(items), {
+    httpMetadata:   { contentType: 'application/json' },
+    customMetadata: { updated: String(Date.now()) },
+  }).catch(() => {});
+
   return items;
+}
+
+// ── Scheduled catalog refresh ─────────────────────────────
+async function refreshCatalog(env) {
+  try {
+    const res   = await fetch(env.APPS_SCRIPT_URL + '?action=catalog');
+    const data  = await res.json();
+    const items = Array.isArray(data) ? data : (data.items || []);
+    await env.MEDIA.put(CATALOG_R2_KEY, JSON.stringify(items), {
+      httpMetadata:   { contentType: 'application/json' },
+      customMetadata: { updated: String(Date.now()) },
+    });
+    console.log(`Catalog refreshed: ${items.length} items`);
+  } catch (e) {
+    console.error('Catalog refresh failed:', e.message);
+  }
 }
 
 // ── MusicBrainz suggestion ────────────────────────────────
@@ -287,6 +308,10 @@ ${summaries}`;
 
 // ── Main handler ──────────────────────────────────────────
 export default {
+  async scheduled(event, env) {
+    await refreshCatalog(env);
+  },
+
   async fetch(request, env) {
     const url    = new URL(request.url);
     const origin = request.headers.get('Origin');

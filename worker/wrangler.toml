@@ -25,6 +25,12 @@ zone_name = "late-records.shop"
 binding  = "MEDIA"
 bucket_name = "late-records-media"
 
+# ── Cron Triggers ─────────────────────────────────────────────────────────────
+# Refreshes catalog.json in R2 every 10 minutes so the R2 cache stays warm.
+# Even if this misses, fetchCatalog() falls back to Apps Script automatically.
+[triggers]
+crons = ["*/10 * * * *"]
+
 # ── Observability ─────────────────────────────────────────────────────────────
 [observability]
 enabled = true
