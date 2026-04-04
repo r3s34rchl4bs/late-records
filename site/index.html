@@ -617,7 +617,7 @@ html.dark .sk { background: linear-gradient(90deg, rgba(255,255,255,.05) 25%, rg
 </div>
 
 <!-- SPA mount point — router swaps innerHTML here only -->
-<div id="app-root"></div>
+<main id="app-root"></main>
 
 <!-- Guide modal — shell element shared by cart + genre views -->
 <div class="modal" id="guideModal">
@@ -683,7 +683,8 @@ function rowHTML(item, query, isSuggestion, eager) {
     + ' data-album-id="' + encodeURIComponent(item.album_id) + '">'
     + '<td class="c-art"><div class="rec-art-wrap"><img'
     + ' src="https://media.late-records.shop/images/' + encodeURIComponent(item.album_id) + '.webp"'
-    + ' alt="" ' + (eager ? 'fetchpriority="high"' : 'loading="lazy"')
+    + ' alt="" width="38" height="38"'
+    + ' ' + (eager ? 'fetchpriority="high"' : 'loading="lazy"')
     + ' onerror="_wf(this,function(e){e.parentNode.style.opacity=\'0\'})"></div></td>'
     + '<td class="c-title"><div class="rec-title">' + title + '</div>'
     + '<div class="rec-artist">' + artist + '</div></td>'
@@ -1336,6 +1337,7 @@ async function renderAlbum(albumId) {
     // Slide 1
     + '<div class="album-img-slide">'
     + '<img src="' + imageUrl + '" class="album-image" id="albumImg" alt="' + _escHTML(item.title) + '"'
+    + ' width="1200" height="1200" fetchpriority="high"'
     + ' onerror="_wf(this,function(e){e.style.display=\'none\';var p=document.getElementById(\'albumPlaceholder\');if(p)p.style.display=\'flex\';})">'
     + '<div id="albumPlaceholder" class="album-placeholder" style="display:none;">'
     + '<div class="album-placeholder-inner">' + vinylSVG + '<span class="placeholder-label">Image Pending</span></div></div>'
@@ -1344,6 +1346,7 @@ async function renderAlbum(albumId) {
     + '<div class="album-img-slide" id="albumImgSlide2" style="display:none;">'
     + '<img src="https://media.late-records.shop/images/' + encodeURIComponent(item.album_id) + '-1.webp"'
     + ' class="album-image" alt="' + _escHTML(item.title) + '"'
+    + ' width="1200" height="1200" loading="lazy"'
     + ' onload="this.closest(\'.album-image-wrap\').classList.add(\'has-second-img\');this.parentNode.style.display=\'\';"'
     + ' onerror="_wf(this,function(e){e.parentNode.remove();})">'
     + '</div>'

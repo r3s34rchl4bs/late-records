@@ -10,7 +10,7 @@
 
   <!-- Genre browser — updated whenever catalog changes -->
   <url>
-    <loc>https://late-records.shop/genre.html</loc>
+    <loc>https://late-records.shop/genre/</loc>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
   </url>

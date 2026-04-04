@@ -11,6 +11,12 @@
   # Disable browser features the site does not use
   Permissions-Policy: camera=(), microphone=(), geolocation=(), payment=()
 
+  # Force HTTPS — tells browsers to only connect via HTTPS for 1 year
+  Strict-Transport-Security: max-age=31536000; includeSubDomains; preload
+
+  # Prevent window.opener leaks when navigating to external links
+  Cross-Origin-Opener-Policy: same-origin
+
   # Content Security Policy
   # ── What each directive covers ──────────────────────────────────────────────
   # default-src 'none'          — deny everything not explicitly listed below
