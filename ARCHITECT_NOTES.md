@@ -6,12 +6,19 @@
 
 **All code changes must be verified on staging before merging to main.**
 
-1. Work happens on a feature branch (e.g. `claude/infallible-lichterman`)
-2. Push branch → Cloudflare Pages auto-deploys a preview URL (e.g. `claude-infallible-lichterman.late-records.pages.dev`)
+1. Work happens on a feature branch (e.g. `fix/lighthouse-seo-accessibility`)
+2. Deploy to staging: `wrangler pages deploy site --project-name=late-records --branch staging --commit-dirty=true`
 3. Test on staging — mobile and desktop
-4. Only merge to `main` after visual confirmation
+4. **Ask the user explicitly before merging to main. Never push to main without confirmation.**
 
 No exceptions, even for small fixes.
+
+### Deploy command (staging)
+```bash
+export PATH="$PATH:/usr/local/bin"
+cd /Users/a4144/Documents/late-records
+wrangler pages deploy site --project-name=late-records --branch staging --commit-dirty=true
+```
 
 ---
 

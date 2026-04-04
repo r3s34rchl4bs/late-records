@@ -100,22 +100,37 @@ node --check /tmp/lr_check.js
 
 ## Hard Constraints
 
-1. **Staging before main** — always test on staging first, never push untested code to main
-2. **Never trust client cart total** — Worker recalculates server-side, mismatches → 400
-3. **No payment processor** — no Stripe, PayMongo, or any gateway
-4. **No secrets in `wrangler.toml`** — use `wrangler secret put`
-5. **Never `git push --force` on main`**
-6. **No React / no build step** — hard constraint from day one
+1. **Never push to main without explicit user confirmation** — stage first, show the user, wait for "yes, push to main" before touching main. No exceptions.
+2. **Staging before main** — always deploy to staging first and confirm it looks right
+3. **Never trust client cart total** — Worker recalculates server-side, mismatches → 400
+4. **No payment processor** — no Stripe, PayMongo, or any gateway
+5. **No secrets in `wrangler.toml`** — use `wrangler secret put`
+6. **Never `git push --force` on main`**
+7. **No React / no build step** — hard constraint from day one
 
 ---
 
 ## Pending Work
 
-| Item | Priority | Notes |
+| Item | Priority | Branch | Notes |
+|---|---|---|---|
+| **Lighthouse fixes** | Medium | `fix/lighthouse-seo-accessibility` | Tested on staging, approved, waiting for user to say merge. See details below. |
+| Upload audio samples | Medium | — | `altered-state-by-maldwyn-pope`, `10-by-various-artists`, `phase-iii-by-iao` — add to R2, set `sample_count` in Sheet |
+| Revisit Worker catalog TTL | Low | — | Currently 2 min. Decide final value. |
+| `sample_count` missing for 3 albums | Low | — | Fill in Sheet once audio uploaded |
+
+### Branch: `fix/lighthouse-seo-accessibility` — ready to merge to main
+
+Tested on staging (`https://staging.late-records.pages.dev`), confirmed working. **Do not merge until user says so.**
+
+| File | Change | Why |
 |---|---|---|
-| Upload audio samples | Medium | `altered-state-by-maldwyn-pope`, `10-by-various-artists`, `phase-iii-by-iao` — add to R2, set `sample_count` in Sheet |
-| Revisit Worker catalog TTL | Low | Currently 2 min (changed from 10 min in v1.1 for testing). Decide final value — 2 min is safe but cron runs every 10 min anyway. |
-| `sample_count` missing for 3 albums | Low | Once audio is uploaded to R2, fill `sample_count` column in Sheet for those albums |
+| `site/robots.txt` | Removed `Allow: /`, updated Disallow to SPA routes (`/cart`, `/checkout`, `/success`) | Fixes "robots.txt not valid" Lighthouse SEO flag |
+| `site/sitemap.xml` | `/genre.html` → `/genre/` | Old .html URL 404s on the SPA |
+| `site/_headers` | Added `Strict-Transport-Security` and `Cross-Origin-Opener-Policy` | Fixes Lighthouse Best Practices security flags |
+| `site/index.html` | `<div id="app-root">` → `<main id="app-root">` | Accessibility landmark |
+| `site/index.html` | `width="38" height="38"` on catalog thumbnails | Prevents layout shift on catalog load |
+| `site/index.html` | `fetchpriority="high"` on album cover | Faster LCP on album page |
 
 ---
 
