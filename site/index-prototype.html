@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<title>LATE RECORDS (PROTOTYPE)</title>
+<link rel="stylesheet" href="fonts/inter.css">
+<link rel="stylesheet" href="style.css">
+<script>document.documentElement.classList.toggle('dark', localStorage.getItem('lr_theme') === 'dark')</script>
+<style>
+  /* Dot background - matches your brand */
+  html, body {
+    background-image: radial-gradient(circle, var(--bg-dot) 0.5px, transparent 0.5px);
+    background-size: 3px 3px;
+  }
+
+  /* 1. The Breather: 5rem spacing between major blocks */
+  .carousel-section, 
+  .nav-section, 
+  .catalog-table, 
+  .rotator-section, 
+  .solds-area, 
+  .tag-cloud {
+    margin-top: 5rem !important;
+  }
+
+  /* 2. A-Z Nav: Ensure [ ] is inline and first */
+  .a-z-nav {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    align-items: center;
+  }
+
+  /* 3. Minimalist Table: No headers, no bold, fixed alignment */
+  .catalog-table thead { display: none; }
+  .catalog-table { border-top: none !important; }
+  
+  table { 
+    width: 100%; 
+    border-collapse: collapse; 
+    table-layout: fixed; /* Ensures columns line up without headers */
+  }
+
+  td {
+    padding: 12px 0;
+    border-bottom: 1px solid var(--border-subtle);
+    font-weight: 400 !important; /* Flat weight as requested */
+    text-transform: uppercase;
+    font-size: 0.85rem;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  /* Column Widths */
+  .cell-artist { width: 30%; }
+  .cell-title  { width: 40%; }
+  .cell-genre  { width: 15%; }
+  .cell-price  { width: 15%; text-align: right; }
+
+  .nav-item.active {
+    text-decoration: underline;
+    color: var(--text-main);
+  }
+</style>
+</head>
+<body>
+
+<div id="app">
+  <section class="carousel-section"><div id="carousel-container"></div></section>
+
+  <section class="nav-section">
+    <div class="a-z-nav" id="azNav">
+      <button class="nav-item active" data-letter="root">[&nbsp;&nbsp;]</button>
+      <script>
+        const letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("");
+        document.write(letters.map(l => `<button class="nav-item" data-letter="${l}">${l}</button>`).join(""));
+      </script>
+    </div>
+  </section>
+
+  <section class="catalog-table">
+    <table>
+      <tbody id="catalogBody"></tbody>
+    </table>
+  </section>
+
+  <section class="rotator-section"><div id="rotator-container"></div></section>
+  <section class="solds-area" id="soldLog"></section>
+  <section class="tag-cloud" id="tagCloud"></section>
+</div>
+
+<script src="js/api.js"></script>
+
+<script>
+async function initPrototype() {
+  // Use your actual production API helper
+  const catalog = await LR.api.catalog();
+  if (!catalog) return;
+
+  const render = (data) => {
+    const body = document.getElementById('catalogBody');
+    body.innerHTML = data.map(item => `
+      <tr>
+        <td class="cell-artist">${item.Artist}</td>
+        <td class="cell-title">${item.Title}</td>
+        <td class="cell-genre">${item.Genre || ''}</td>
+        <td class="cell-price">₱${item.Price}</td>
+      </tr>
+    `).join('');
+  };
+
+  const filterData = (criterion) => {
+    if (criterion === 'root') {
+      return catalog.filter(item => {
+        const isIdx = item.Featured && item.Featured.toLowerCase() === 'idx';
+        const isNum = /^\d/.test(item.Title);
+        return isIdx || isNum;
+      });
+    }
+    return catalog.filter(item => item.Artist.toUpperCase().startsWith(criterion));
+  };
+
+  // Initial Render ([ ])
+  render(filterData('root'));
+
+  // Nav Logic
+  document.getElementById('azNav').addEventListener('click', (e) => {
+    if (e.target.classList.contains('nav-item')) {
+      document.querySelectorAll('.nav-item').forEach(b => b.classList.remove('active'));
+      e.target.classList.add('active');
+      render(filterData(e.target.getAttribute('data-letter')));
+    }
+  });
+
+  // Carousel Logic (Featured: yes)
+  if (window.buildCarousel) {
+    const carouselItems = catalog.filter(item => item.Featured && item.Featured.toLowerCase() === 'yes');
+    buildCarousel(carouselItems);
+  }
+}
+
+document.addEventListener('DOMContentLoaded', initPrototype);
+</script>
+</body>
+</html>

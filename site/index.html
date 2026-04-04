@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+<script>document.documentElement.classList.toggle('dark', localStorage.getItem('lr_theme') === 'dark')</script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
 <title>LATE RECORDS</title>
@@ -12,46 +13,39 @@
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="LATE RECORDS">
 <meta name="twitter:description" content="Curated vinyl records. Rare, used, and hard to find.">
-<link rel="preload" as="font" type="font/woff2" crossorigin href="fonts/inter-latin.woff2">
-<link rel="stylesheet" href="fonts/inter.css">
-<link rel="stylesheet" href="style.css">
-
-<script>document.documentElement.classList.toggle('dark', localStorage.getItem('lr_theme') === 'dark')</script>
+<link rel="preload" as="font" type="font/woff2" crossorigin href="/fonts/inter-latin.woff2">
+<link rel="stylesheet" href="/fonts/inter.css">
+<link rel="stylesheet" href="/style.css">
 <style>
 
-/* Dot background for page body */
+/* ── Dot background ─────────────────────────────────────── */
 html, body {
   background-image: radial-gradient(circle, var(--bg-dot) 0.5px, transparent 0.5px);
   background-size: 3px 3px;
 }
-body { display: flex; flex-direction: column; }
-.container { flex: 1; max-width: 890px; margin: 0 auto; padding: 84px 30px 0; width: 100%; }
-.bottom-section { width: 100%; max-width: 890px; margin: 0 auto; padding: 0 30px 32px; }
+body { display: flex; flex-direction: column; min-height: 100vh; }
 
-
-/* ── Search icon + drop-down bar ──────────────────────────── */
+/* ── Search btn — hidden ─────────────────────────────────── */
 .search-btn {
-  background: none; border: none; padding: 4px;
-  color: var(--ink); cursor: pointer;
-  display: flex; align-items: center; justify-content: center;
+  background: none; border: none; padding: 4px; color: var(--ink);
+  cursor: pointer; display: none;
+  align-items: center; justify-content: center;
   transition: opacity .15s; flex-shrink: 0;
 }
-.search-btn:hover { opacity: .6; }
 .search-btn svg { width: 17px; height: 17px; }
+.search-btn:hover { opacity: .6; }
+/* body.view-catalog .search-btn { display: flex; } — search hidden */
 
+/* ── Search bar ─────────────────────────────────────────── */
 .search-bar {
-  position: fixed;
-  top: 74px; left: 0; right: 0;
-  z-index: 998;
+  position: fixed; top: 74px; left: 0; right: 0; z-index: 998;
   background-color: var(--bg);
   background-image: radial-gradient(circle, var(--bg-dot) 0.5px, transparent 0.5px);
   background-size: 3px 3px;
   border-bottom: 1px solid var(--border);
-  height: 0; overflow: hidden;
-  transition: height .18s ease;
+  height: 0; overflow: hidden; transition: height .18s ease;
 }
 .search-bar.open { height: 46px; }
-
 .search-bar-inner {
   max-width: 890px; margin: 0 auto; padding: 0 30px;
   height: 46px; display: flex; align-items: center;
@@ -74,161 +68,134 @@ body { display: flex; flex-direction: column; }
   text-transform: uppercase; color: var(--ink30);
   padding-left: 14px; white-space: nowrap; flex-shrink: 0;
 }
-@media (max-width: 600px) {
-  .search-bar-inner { padding: 0 20px; }
-  .search-count { display: none; }
+.avail-toggle {
+  display: none; width: 14px; height: 14px;
+  border: 1.5px solid var(--ink30); background: transparent;
+  cursor: pointer; flex-shrink: 0; margin-left: 12px; padding: 0;
+  transition: background .12s, border-color .12s;
 }
+.avail-toggle.active { background: var(--btn-bg); border-color: var(--btn-bg); }
 
-body.search-open .tbl thead th { top: 120px; }
-body.search-active .tbl thead th { top: 120px; }
-body.search-open .suggestions-header { padding-top: 56px; }
-body.search-active #catalogTable tbody tr:first-child td { border-top: none; padding-top: 48px; }
-body.search-open .no-results-empty { padding-top: 134px; }
+/* ── AUDIT: search-active rules scoped to catalog view.
+       .fixed-header and #audio-player are NOT targeted here. ── */
+body.search-open.view-catalog  .tbl thead th,
+body.search-active.view-catalog .tbl thead th   { top: 120px; }
+body.search-open.view-catalog  .suggestions-header { padding-top: 56px; }
+body.search-active.view-catalog #catalogTable tbody tr:first-child td { border-top: none; }
+body.search-open.view-catalog   #catalogTable tbody tr:first-child td { padding-top: 46px; }
+body.search-open.view-catalog  .no-results-empty { padding-top: 134px; }
+body.search-active.view-catalog .carousel-section,
+body.search-active.view-catalog .section-divider,
+body.search-active.view-catalog .az-nav,
+body.search-active.view-catalog .info-rotator,
+body.search-active.view-catalog .tag-cloud,
+body.search-active.view-catalog .sold-log { display: none; }
 
-/* ── Theme toggle ──────────────────────────────────────────── */
-
-/* ── Hide carousel + nav + rotator + tag cloud when searching ── */
-body.search-active .carousel-section,
-body.search-active .section-divider,
-body.search-active .az-nav,
-body.search-active .info-rotator,
-body.search-active .tag-cloud { display: none; }
-
-/* ── Info rotator (are.na style) ─────────────────────────── */
-.info-rotator {
+/* ── Persistent audio player ────────────────────────────── */
+/* ── Shell Player — edge-to-edge, single row, no borders ───── */
+#audio-player {
+  position: fixed; bottom: 0; left: 0; right: 0; z-index: 99;
+  height: 44px;
+  background-color: var(--bg);
+  background-image: radial-gradient(circle, var(--bg-dot) 0.5px, transparent 0.5px);
+  background-size: 3px 3px;
+  display: none;
+}
+/* Grid: col 1 = left block (fills space, capped at 65vw), col 2 = right block (natural width)
+   Both columns sit at the exact padding edges — no centering tricks needed */
+#player-inner {
+  max-width: 890px; margin: 0 auto; height: 100%;
+  padding: 0 30px;
+  display: grid;
+  grid-template-columns: minmax(0, 65vw) auto;
+  align-items: center;
+}
+/* Left block: play icon flush left + title/artist truncated */
+#player-left {
+  display: flex; align-items: center; gap: 6px;
+  min-width: 0; overflow: hidden;
+}
+#player-play {
+  flex-shrink: 0; background: none; border: none;
+  cursor: pointer; color: var(--ink);
+  padding: 10px 8px 10px 0; margin: -10px 0;
+  display: flex; align-items: center;
+  transition: opacity .1s;
+}
+#player-play:hover { opacity: .6; }
+#player-meta {
+  font-size: 12px; color: var(--ink55); min-width: 0;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  line-height: 1; cursor: pointer;
+}
+#player-meta:hover #player-title { opacity: .7; }
+#player-title { font-weight: 500; color: var(--ink); font-size: 12px; }
+#player-by    { color: var(--ink30); }
+#player-artist-name { color: var(--ink55); }
+/* Right block: justified to right edge via grid auto column */
+#player-right { display: flex; align-items: center; gap: 0; justify-content: flex-end; }
+#player-time-remaining {
+  font-size: 11px; color: var(--ink30); letter-spacing: .03em;
+  white-space: nowrap; margin-right: 8px; font-variant-numeric: tabular-nums;
+}
+.player-ctrl {
+  background: none; border: none; cursor: pointer; color: var(--ink30);
+  padding: 10px 8px; /* generous hit-box */
   display: flex; align-items: center; justify-content: center;
-  padding: 14px 0;
-  margin: 32px auto 32px;
-  gap: 12px;
-  max-width: 520px;
+  font-size: 18px; line-height: 1; transition: color .1s; font-family: inherit;
 }
-.info-rotator-btn {
-  width: 28px; height: 28px; flex-shrink: 0;
-  border: 1px solid transparent; background: transparent;
-  cursor: pointer; display: flex; align-items: center; justify-content: center;
-  font-size: 16px; color: var(--ink45); transition: color 0.1s, border-color 0.1s;
-}
-.info-rotator-btn:active { border-color: var(--ink30); color: var(--ink); }
-.info-rotator-content {
-  flex: 1; min-width: 0; text-align: center;
-}
-.info-rotator-title {
-  font-size: 10px; font-weight: 600; letter-spacing: .1em;
-  text-transform: uppercase; color: var(--ink45); margin-bottom: 4px;
-}
-.info-rotator-text {
-  font-size: 11px; font-weight: 200; color: var(--ink30);
-  letter-spacing: .01em; line-height: 1.5;
-}
+.player-ctrl:hover { color: var(--ink); }
+#player-close { font-size: 14px; padding-right: 0; } /* flush with right edge */
+/* Push content up when player is visible */
+body.player-active #app-root { padding-bottom: 44px; }
 
-/* ── Carousel ────────────────────────────────────────────── */
-.carousel-section { margin-bottom: 0; }
-
-.section-divider {
-  border: none;
-  margin: 3px 0;
+/* ── Catalog view ───────────────────────────────────────── */
+#app-root.view-catalog { display: flex; flex-direction: column; min-height: 100vh; gap: 28px; }
+#app-root.view-catalog .container {
+  max-width: 890px; margin: 0 auto; padding: 0 30px 20px; width: 100%;
+  display: flex; flex-direction: column; justify-content: flex-start;
 }
-
-.carousel-viewport {
-  height: 235px; overflow: hidden; position: relative;
-  border-bottom: 1px solid var(--border);
-}
-.carousel-track {
-  display: flex; height: 100%;
-}
-
-.carousel-card {
-  min-width: 100%; height: 100%;
+.tbl thead { display: none; }
+/* When search is active: carousel gone, container needs top offset for header+searchbar.
+   Must use #app-root to win over #app-root.view-catalog .container (specificity 1,2,0) */
+body.search-active.view-catalog #app-root .container { padding-top: calc(74px + 46px + 24px); }
+#app-root.view-catalog .bottom-section {
+  max-width: 890px; margin: 0 auto; padding: 0 30px 32px; width: 100%;
   display: flex; flex-direction: column;
-  position: relative; cursor: pointer;
 }
-
-.card-inner {
-  width: 100%; padding: 22px 0 18px; height: 100%;
-  display: flex; flex-direction: column; justify-content: space-between;
-  position: relative;
-}
-
-.carousel-nav {
-  position: absolute; top: 0; right: 0;
-  display: flex; align-items: center; gap: 5px; z-index: 10;
-}
-.carousel-btn {
-  width: 34px; height: 34px;
-  border: 1px solid var(--ink30); background: transparent;
-  cursor: pointer; display: flex; align-items: center; justify-content: center;
-  font-size: 20px; color: var(--ink); transition: color 0.1s linear;
-}
-.carousel-btn:hover { background: var(--btn-bg); color: var(--btn-fg); border-color: var(--btn-bg); }
-
-.card-top { flex: 1; min-height: 0; padding-right: 110px; }
-
-.card-staff-pick {
-  font-size: 10px; font-weight: 600; letter-spacing: .12em;
-  text-transform: uppercase; color: var(--ink30); margin-bottom: 14px;
-}
-.card-artist {
-  font-size: 13px; font-weight: 500; letter-spacing: .07em;
-  text-transform: uppercase; color: var(--ink45); margin-bottom: 8px;
-}
-.card-title {
-  font-size: 42px; font-weight: 500; line-height: 1.05;
-  letter-spacing: -.035em; margin-bottom: 12px; word-break: break-word;
-  color: var(--ink); transition: color 0.1s linear;
-  display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
-}
-.card-meta {
-  display: flex; 
-  align-items: center; 
-  gap: 6px; 
-  flex-wrap: wrap; /* Allows wrapping to the next line */
-}
-
-/* Add this new rule below .card-meta */
-.card-tags { 
-  display: flex; 
-  gap: 4px; 
-  flex-wrap: wrap; 
-  align-items: center; 
-  width: 100%; /* Forces the next elements to drop down */
-  margin-bottom: 6px; /* Adds space between the tag row and format row */
-}
-.card-format {
-  font-size: 11px; font-weight: 500; letter-spacing: .08em;
-  text-transform: uppercase; color: var(--ink45);
-}
-.card-meta-divider {
-  width: 1px; height: 10px; background: var(--ink30); flex-shrink: 0;
-}
-.card-tags { display: flex; gap: 4px; flex-wrap: wrap; align-items: center; }
-.card-tag {
-  font-size: 10px; font-weight: 500; letter-spacing: .07em;
-  text-transform: uppercase; border: 1px solid var(--border-tag);
-  padding: 3px 8px; color: var(--ink45);
-  cursor: pointer; transition: color 0.1s linear;
-}
-.card-tag:hover { background: var(--btn-bg); color: var(--btn-fg); border-color: var(--btn-bg); }
-
-.card-bottom { display: none; }
-
+/* ── Carousel ───────────────────────────────────────────── */
+.carousel-section { max-width: 890px; width: 100%; margin: calc(74px + 12px) auto 0; position: relative; }
+/* Top divider line at section top edge */
+.carousel-section::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 1px; background: var(--border-mid); z-index: 2; pointer-events: none; }
+.carousel-viewport { height: 180px; overflow: hidden; position: relative; }
+.carousel-track    { display: flex; height: 100%; }
+.carousel-card     { min-width: 100%; height: 100%; display: flex; flex-direction: column; position: relative; cursor: pointer; }
+.card-inner        { width: 100%; padding: 22px 30px 18px; height: 100%; display: flex; flex-direction: column; justify-content: space-between; box-sizing: border-box; }
+.card-top          { flex: 1; min-height: 0; padding-right: 90px; }
+.card-staff-pick   { font-size: 10px; font-weight: 600; letter-spacing: .12em; text-transform: uppercase; color: var(--ink30); margin-bottom: 10px; }
+.card-artist       { font-size: 13px; font-weight: 500; letter-spacing: .07em; text-transform: uppercase; color: var(--ink45); margin-bottom: 6px; }
+.card-title        { font-size: 42px; font-weight: 500; line-height: 1.05; letter-spacing: -.035em; margin-bottom: 10px; word-break: break-word; color: var(--ink); display: -webkit-box; -webkit-line-clamp: 1; -webkit-box-orient: vertical; overflow: hidden; }
+.card-meta         { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+.card-tags         { display: flex; gap: 4px; flex-wrap: wrap; align-items: center; width: 100%; margin-bottom: 4px; }
+.card-format       { font-size: 11px; font-weight: 500; letter-spacing: .08em; text-transform: uppercase; color: var(--ink45); }
+.card-meta-divider { width: 1px; height: 10px; background: var(--ink30); flex-shrink: 0; }
+.card-tag          { font-size: 10px; font-weight: 500; letter-spacing: .07em; text-transform: uppercase; border: 1px solid var(--border-tag); padding: 3px 8px; color: var(--ink45); cursor: default; pointer-events: none; }
 .carousel-card:hover .card-artist,
 .carousel-card:hover .card-title { color: var(--ink); }
+.carousel-nav      { position: absolute; top: 12px; right: 30px; display: flex; align-items: center; gap: 4px; z-index: 10; }
+.carousel-btn      { width: 34px; height: 34px; border: 1px solid var(--ink30); background: transparent; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 20px; color: var(--ink); transition: color 0.1s linear, background 0.1s linear, border-color 0.1s linear; padding: 0; }
+.carousel-btn:hover { background: var(--btn-bg); color: var(--btn-fg); border-color: var(--btn-bg); }
+.carousel-seg-bar  { display: flex; width: 100%; height: 1px; padding: 0 30px; box-sizing: border-box; margin-top: 6px; }
+.carousel-seg      { flex: 1; height: 1px; background: var(--ink30); cursor: pointer; transition: background .15s; }
+.carousel-seg.is-active { background: var(--ink); }
+.section-divider   { display: none; }
 
-/*
- * ── Table layout ────────────────────────────────────────────
- */
+
+
 .tbl { width: 100%; border-collapse: collapse; table-layout: fixed; }
-col.c-art    { width: 38px; }
-col.c-title  { width: auto; }
-col.c-genre  { width: 14%; }
-col.c-format { width: 8%; }
-col.c-stock  { width: 8%; }
-
-/* ── Header row (sticky) ──────────────────────────────────── */
+col.c-art    { width: 38px; } col.c-title { width: auto; } col.c-genre { width: 14%; } col.c-format { width: 8%; } col.c-stock { width: 8%; }
 .tbl thead th {
-  position: sticky;
-  top: 74px;
-  z-index: 30;
+  position: sticky; top: 74px; z-index: 30;
   background-color: var(--bg);
   background-image: radial-gradient(circle, var(--bg-dot) 0.5px, transparent 0.5px);
   background-size: 3px 3px;
@@ -240,68 +207,25 @@ col.c-stock  { width: 8%; }
 .tbl thead th:first-child { padding-left: 0; }
 .tbl thead th.c-art   { padding-right: 0; }
 .tbl thead th.c-stock { text-align: right; padding-right: 0; }
-
 .tbl thead th.c-title, .tbl tbody td.c-title { padding-left: 10px; }
-
 .art-icon { width: 20px; height: 20px; opacity: .4; display: block; margin: 0 auto; }
-
-/* ── Data rows ────────────────────────────────────────────── */
-.tbl tbody tr, .tbl tbody td { background: transparent; }
-.tbl tbody tr { cursor: pointer; transition: color 0.1s linear; }
-.tbl tbody tr:hover .rec-title, .tbl tbody tr:hover .rec-artist,
-.tbl tbody tr:hover .rec-stock { color: var(--ink); }
-.tbl tbody td {
-  padding: 10px 12px 10px 0; border-bottom: 1px solid var(--border-mid); vertical-align: middle;
-}
-.tbl tbody td:first-child { padding-left: 0; }
-.tbl tbody td:last-child  { padding-right: 0; }
+.tbl tbody tr { cursor: pointer; transition: color 0.1s linear; background: transparent; }
+.tbl tbody td { padding: 10px 12px 10px 0; border-bottom: 1px solid var(--border-mid); vertical-align: middle; background: transparent; }
+.tbl tbody td:first-child { padding-left: 0; } .tbl tbody td:last-child { padding-right: 0; }
 .tbl tbody td.c-art   { padding-right: 0; }
 .tbl tbody td.c-stock { padding-top: 8px; padding-bottom: 8px; padding-right: 0; }
-.tbl thead th.c-stock { padding-bottom: 10px; padding-right: 0; }
 .tbl tbody tr:first-child td { border-top: 1px solid var(--border-mid); }
-
-/* ── Album art ───────────────────────────────────────────── */
-.rec-art-wrap {
-  width: 38px; height: 38px;
-  overflow: hidden; flex-shrink: 0;
-  background: var(--art-bg);
-}
-.rec-art-wrap img {
-  width: 100%; height: 100%;
-  object-fit: cover; display: block;
-}
+.tbl tbody tr:hover .rec-title, .tbl tbody tr:hover .rec-artist, .tbl tbody tr:hover .rec-stock { color: var(--ink); }
+.rec-art-wrap { width: 38px; height: 38px; overflow: hidden; flex-shrink: 0; background: var(--art-bg); }
+.rec-art-wrap img { width: 100%; height: 100%; object-fit: cover; display: block; }
 .tbl tbody tr.sold .rec-art-wrap { opacity: .35; }
-
-/* ── Row text ────────────────────────────────────────────── */
-.rec-title {
-  font-size: 15px; font-weight: 500; line-height: 1.25; letter-spacing: -.01em;
-  transition: color 0.1s linear;
-  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
-}
-.rec-artist {
-  font-size: 12px; font-weight: 400; color: var(--ink55);
-  margin-top: 3px; line-height: 1.4; transition: color 0.1s linear;
-  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
-}
-
-.genre-tag {
-  display: inline-block; font-size: 10px; font-weight: 500; letter-spacing: .06em;
-  text-transform: uppercase; color: var(--ink55); border: 1px solid var(--ink30);
-  padding: 3px 7px; line-height: 1.4; white-space: nowrap; cursor: pointer;
-  transition: color 0.1s linear, border-color 0.1s linear;
-}
-.genre-tag:hover { color: var(--ink); border-color: var(--ink); }
-
+.rec-title  { font-size: 13px; font-weight: 500; line-height: 1.25; letter-spacing: -.01em; transition: color 0.1s linear; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.rec-artist { font-size: 12px; font-weight: 400; color: var(--ink55); margin-top: 3px; line-height: 1.4; transition: color 0.1s linear; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.genre-tag  { display: inline-block; font-size: 10px; font-weight: 500; letter-spacing: .07em; text-transform: uppercase; color: var(--ink55); border: 1px solid var(--border-tag); padding: 3px 8px; line-height: 1.4; white-space: nowrap; cursor: default; pointer-events: none; }
 .rec-format { font-size: 11px; font-weight: 400; letter-spacing: .05em; text-transform: uppercase; color: var(--ink55); }
-
-.rec-stock {
-  display: flex; align-items: center; justify-content: flex-end;
-  gap: 6px; font-size: 11px; font-weight: 500; letter-spacing: .06em; text-transform: uppercase;
-}
+.rec-stock  { display: flex; align-items: center; justify-content: flex-end; gap: 6px; font-size: 11px; font-weight: 500; letter-spacing: .06em; text-transform: uppercase; }
 .sdot { width: 5px; height: 5px; border-radius: 50%; flex-shrink: 0; }
-.sdot.a { background: var(--ink); }
-.sdot.s { background: var(--ink30); }
-
+.sdot.a { background: var(--ink); } .sdot.s { background: var(--ink30); }
 .tbl tbody tr.sold .rec-title  { color: var(--ink55); }
 .tbl tbody tr.sold .rec-artist { color: var(--ink30); }
 .tbl tbody tr.sold .genre-tag  { color: var(--ink30); border-color: var(--ink15); }
@@ -309,218 +233,325 @@ col.c-stock  { width: 8%; }
 .tbl tbody tr.sold .rec-stock  { color: var(--ink30); }
 .tbl tbody tr.sold .sdot       { background: var(--ink30) !important; }
 
-/* ── A-Z Nav ─────────────────────────────────────────────── */
-.az-nav {
-  display: flex; flex-wrap: wrap; align-items: center;
-  gap: 8px 6px; padding: 24px 0 22px;
-  border-bottom: 1px solid var(--border-mid);
-}
-.az-letter {
-  font-size: 12px; font-weight: 500; letter-spacing: .07em;
-  text-transform: uppercase; border: none; background: none;
-  color: var(--ink45); cursor: pointer;
-  padding: 7px 13px; min-width: 34px; text-align: center;
-  line-height: 1; transition: color .1s, background .1s;
-}
+.az-nav { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 6px; padding: 10px 0; border-bottom: 1px solid var(--border-mid); }
+.az-letter { font-size: 12px; font-weight: 500; letter-spacing: .07em; text-transform: uppercase; border: none; background: none; color: var(--ink45); cursor: pointer; padding: 7px 13px; min-width: 34px; text-align: center; line-height: 1; transition: color .1s, background .1s; }
 .az-letter:hover:not(:disabled) { color: var(--ink); background: var(--border-mid); }
 .az-letter.active { background: var(--btn-bg); color: var(--btn-fg); }
 .az-letter.empty, .az-letter:disabled { color: var(--ink15); cursor: default; }
+.suggestions-header { display: none; padding: 28px 0 16px; font-size: 11px; font-weight: 500; letter-spacing: .09em; text-transform: uppercase; color: var(--ink45); }
+.no-results-empty   { padding: 40px 0; font-size: 13px; color: var(--ink30); letter-spacing: .01em; display: none; position: relative; z-index: 1; }
 
-/* ── Search ──────────────────────────────────────────────── */
-.suggestions-header {
-  display: none;
-  padding: 28px 0 16px;
-  font-size: 11px; font-weight: 500; letter-spacing: .09em;
-  text-transform: uppercase; color: var(--ink45);
-}
-.no-results-empty {
-  padding: 40px 0;
-  font-size: 13px; color: var(--ink30); letter-spacing: .01em;
-  display: none;
-  position: relative; z-index: 1;
-}
+.info-rotator { display: flex; align-items: center; justify-content: center; padding: 4px 0 14px; margin: 0 auto 20px; gap: 12px; max-width: 420px; width: 100%; }
+.info-rotator-btn { width: 28px; height: 28px; flex-shrink: 0; border: 1px solid transparent; background: transparent; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 16px; color: var(--ink45); transition: color 0.1s, border-color 0.1s; }
+.info-rotator-btn:active { border-color: var(--ink30); color: var(--ink); }
+.info-rotator-content { flex: 1; min-width: 0; text-align: center; }
+.info-rotator-title { font-size: 10px; font-weight: 600; letter-spacing: .1em; text-transform: uppercase; color: var(--ink45); margin-bottom: 4px; }
+.info-rotator-text  { font-size: 11px; font-weight: 200; color: var(--ink30); letter-spacing: .01em; line-height: 1.5; }
 
-/* ── Availability toggle ─────────────────────────────────── */
-.avail-toggle {
-  display: none;
-  width: 14px; height: 14px;
-  border: 1.5px solid var(--ink30);
-  background: transparent;
-  cursor: pointer; flex-shrink: 0;
-  margin-left: 12px; padding: 0;
-  transition: background .12s, border-color .12s;
-}
-.avail-toggle.active {
-  background: var(--btn-bg);
-  border-color: var(--btn-bg);
-}
+.sold-log { background: rgba(26,26,20,.03); padding: 8px 0; margin: 0; }
+html.dark .sold-log { background: rgba(232,232,223,.03); }
+.sold-log-grid   { display: grid; grid-template-columns: 1fr 1fr; align-items: start; overflow: hidden; }
+.sold-log-col    { display: flex; flex-direction: column; justify-content: flex-start; align-items: flex-start; width: 100%; min-width: 0; overflow: hidden; }
+.sold-log-row    { display: flex; align-items: flex-start; gap: 8px; padding: 4px 10px; cursor: pointer; text-decoration: none; width: 100%; box-sizing: border-box; }
+.sold-log-tag    { font-size: 10px; color: var(--ink30); flex-shrink: 0; margin-top: 2px; }
+.sold-log-content{ flex: 1; display: block; min-width: 0; font-size: 11px; line-height: 1.4; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.sold-log-artist { color: var(--ink45); transition: color .1s; }
+.sold-log-sep    { color: var(--ink30); margin: 0 4px; }
+.sold-log-title  { color: var(--ink45); transition: color .1s; }
+.sold-log-row:hover .sold-log-artist, .sold-log-row:hover .sold-log-title { color: var(--ink); }
+.sold-log-toggle { background: var(--ink15); border: 0; width: 18px; height: 18px; display: inline-flex; align-items: center; justify-content: center; font-size: 13px; color: var(--ink); cursor: pointer; flex-shrink: 0; }
+.sold-log-toggle:hover { opacity: .6; }
 
-.sk {
-  background: linear-gradient(90deg, rgba(0,0,0,.07) 25%, rgba(0,0,0,.13) 50%, rgba(0,0,0,.07) 75%);
-  background-size: 200% 100%; animation: sh 1.4s infinite;
-}
-html.dark .sk {
-  background: linear-gradient(90deg, rgba(255,255,255,.05) 25%, rgba(255,255,255,.10) 50%, rgba(255,255,255,.05) 75%);
-  background-size: 200% 100%;
-}
+.tag-cloud       { min-height: 80px; display: flex; flex-direction: column; justify-content: flex-start; padding-top: 12px; padding-bottom: 12px; border-top: 1px solid var(--border-mid); text-align: left; line-height: 1.45; }
+.tag-cloud-item  { font-size: 11px; color: var(--ink45); cursor: pointer; text-decoration: none; }
+.tag-cloud-item:hover { color: var(--ink); text-decoration: underline; }
+.tag-cloud-sep   { font-size: 11px; color: var(--ink30); margin: 0 2px; }
+.tag-cloud-more  { font-size: 11px; font-weight: 500; color: var(--ink45); cursor: pointer; text-decoration: none; }
+.tag-cloud-more:hover { color: var(--ink); text-decoration: underline; }
+.lr-footer { display: block; padding: 0; }
+
+/* ── Album view ─────────────────────────────────────────── */
+#app-root.view-album .container { padding-bottom: 80px; padding-top: calc(74px + 36px); }
+
+/* Grid: left col = all content, right col = sticky image */
+.album-page        { display: grid; grid-template-columns: 1fr 48%; column-gap: 40px; align-items: start; }
+
+/* Image — right col, spans all rows, sticky */
+.album-image-wrap  { grid-column: 2; grid-row: 1 / span 10; position: sticky; top: calc(74px + 36px); align-self: start; }
+/* Inner gallery wrapper: relative for arrow positioning */
+.album-img-gallery { position: relative; }
+.album-img-track   { display: flex; flex-direction: column; gap: 6px; }
+.album-img-slide   { width: 100%; min-width: 0; }
+.album-img-arrow   { display: none; position: absolute; bottom: 6px; right: 6px; font-family: 'Inter', system-ui, sans-serif; font-size: 10px; font-weight: 500; letter-spacing: .04em; color: var(--ink45); background: var(--bg); padding: 2px 6px; line-height: 1.6; pointer-events: none; border: 1px solid var(--border-mid); }
+.album-image       { width: 100%; aspect-ratio: 1/1; object-fit: cover; display: block; }
+.album-placeholder { width: 100%; aspect-ratio: 1/1; background: var(--art-bg); display: flex; align-items: center; justify-content: center; }
+.album-placeholder-inner { display: flex; flex-direction: column; align-items: center; gap: 14px; }
+.placeholder-vinyl { width: 80px; height: 80px; opacity: .4; animation: spin 8s linear infinite; }
+@keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+.placeholder-label { font-size: 9px; font-weight: 500; letter-spacing: .14em; text-transform: uppercase; color: var(--ink45); }
+
+/* Title col — left, row 1 */
+.album-title-col   { min-width: 0; padding-bottom: 20px; border-bottom: 1px solid var(--border-mid); }
+/* Genre pills — after description, left row 5 */
+.album-genre-wrap  { display: flex; flex-wrap: wrap; gap: 4px; padding: 14px 0; }
+.album-genre-tag   { font-size: 10px; font-weight: 500; letter-spacing: .07em; text-transform: uppercase; border: 1px solid var(--border-tag); padding: 3px 8px; color: var(--ink55); cursor: default; pointer-events: none; display: inline-block; }
+.album-title       { font-size: 42px; font-weight: 500; line-height: 1.05; margin: 0 0 10px; color: var(--ink); letter-spacing: -.035em; }
+.album-artist      { font-size: 13px; font-weight: 500; letter-spacing: .07em; text-transform: uppercase; color: var(--ink45); margin: 0; }
+
+/* Info strip — left, row 2: format · condition */
+.album-info-strip  { padding: 10px 0; border-bottom: 1px solid var(--border-mid); }
+.album-info-spec   { font-size: 10px; font-weight: 500; letter-spacing: .1em; text-transform: uppercase; color: var(--ink45); }
+
+/* Commerce — left, row 3: large price + full-width button */
+.price-block       { padding: 16px 0; border-bottom: 1px solid var(--border-mid); display: flex; flex-direction: column; gap: 10px; }
+.price-label       { display: none; }
+.album-price       { font-size: 28px; font-weight: 700; letter-spacing: -.03em; color: var(--ink); }
+.add-to-cart-btn   { font-family: 'Inter', system-ui, sans-serif; font-size: 11px; font-weight: 500; letter-spacing: .09em; text-transform: uppercase; padding: 14px 32px; border: 1px solid var(--btn-bg); background: var(--btn-bg); color: var(--btn-fg); cursor: pointer; transition: opacity .15s; align-self: flex-start; }
+.add-to-cart-btn:hover { opacity: .82; }
+.add-to-cart-btn:disabled { opacity: .35; cursor: not-allowed; }
+.add-to-cart-btn.is-in-cart,
+.add-to-cart-btn.is-in-cart:disabled { background: transparent; border-color: var(--ink15); color: var(--ink30); opacity: 1; cursor: default; }
+.add-to-cart-btn.is-in-cart:hover { opacity: 1; }
+
+/* Description — left, row 4: always fully shown */
+.description-block { padding: 16px 0; border-bottom: 1px solid var(--border-mid); }
+.description       { font-size: 12px; line-height: 1.85; font-weight: 400; margin: 0; color: var(--ink45); }
+.description.is-collapsed { display: block !important; -webkit-line-clamp: unset !important; overflow: visible !important; }
+.description-toggle{ display: none !important; }
+
+/* Tracklist — left, row 5: pure text rows */
+.album-tracklist   { display: none; padding-top: 14px; }
+.album-tracklist.is-visible { display: block; }
+.tl-play-btn       { font-family: 'Inter', system-ui, sans-serif; font-size: 9px; font-weight: 600; letter-spacing: .12em; text-transform: uppercase; color: var(--ink45); background: none; border: none; cursor: pointer; display: block; padding: 0 0 10px; width: 100%; text-align: left; transition: color .1s; text-decoration: underline; text-underline-offset: 3px; text-decoration-color: var(--ink30); }
+.tl-play-btn:hover, .tl-play-btn.is-playing { color: var(--ink); text-decoration-color: var(--ink); }
+.tl-divider        { display: none; }
+#tlTracks          { display: block; }
+.tl-unit           { display: block; padding: 4px 0; }
+.tl-track-sep      { display: none; }
+.tl-track-btn      { font-family: 'Inter', system-ui, sans-serif; font-size: 11px; font-weight: 400; color: var(--ink45); background: none; border: none; cursor: default; padding: 0; text-align: left; pointer-events: none; display: block; width: 100%; line-height: 1.4; }
+.tl-track-lbl      { font-family: 'Inter', system-ui, sans-serif; font-size: 11px; font-weight: 400; color: var(--ink45); display: block; line-height: 1.4; }
+
+/* Image viewer — full-size overlay, no effects */
+.img-viewer        { display: none; position: fixed; top: 0; bottom: 0; left: max(0px, calc(50vw - 445px)); right: max(0px, calc(50vw - 445px)); z-index: 600; background-color: var(--bg); background-image: radial-gradient(circle, var(--bg-dot) 0.5px, transparent 0.5px); background-size: 3px 3px; cursor: pointer; align-items: center; justify-content: center; padding: 30px; }
+.img-viewer.is-open { display: flex; }
+.img-viewer img    { max-width: 100%; max-height: calc(100vh - 60px); width: 100%; height: auto; display: block; object-fit: contain; }
+
+/* Related — full width below grid */
+.related-section   { margin-top: 28px; padding-top: 24px; border-top: 1px solid var(--border-mid); }
+.related-title     { font-size: 10px; letter-spacing: .1em; text-transform: uppercase; color: var(--ink45); margin: 0 0 16px; font-weight: 500; }
+.related-grid      { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; }
+.related-card      { display: block; text-decoration: none; color: var(--ink); }
+.related-cover     { width: 100%; aspect-ratio: 1/1; object-fit: cover; display: block; transition: opacity .2s; }
+.related-card:hover .related-cover { opacity: .72; }
+.related-placeholder{ width: 100%; aspect-ratio: 1/1; background: var(--art-bg); display: flex; align-items: center; justify-content: center; }
+.related-info      { margin-top: 7px; }
+.related-name      { font-size: 11px; font-weight: 600; line-height: 1.25; margin: 0; word-break: break-word; }
+.related-artist    { font-size: 10px; color: var(--ink45); margin-top: 2px; }
+
+/* ── Shared: page-title, order items ───────────────────── */
+.page-title   { font-size: 26px; font-weight: 600; margin-bottom: 32px; letter-spacing: -.01em; color: var(--ink); }
+.section-label{ font-size: 11px; font-weight: 500; letter-spacing: .09em; text-transform: uppercase; color: var(--ink55); margin-bottom: 20px; }
+.order-item   { display: flex; justify-content: space-between; align-items: flex-start; gap: 16px; margin-bottom: 14px; }
+.order-item-left  { flex: 1; min-width: 0; }
+.order-item-title { font-size: 12px; font-weight: 600; line-height: 1.35; color: var(--ink); word-break: break-word; }
+.order-item-meta  { font-size: 11px; color: var(--ink55); margin-top: 2px; }
+.order-item-price { font-size: 14px; font-weight: 500; white-space: nowrap; flex-shrink: 0; color: var(--ink); }
+.order-divider    { border-top: 1px solid var(--border-mid); margin: 14px 0; }
+.order-total      { display: flex; justify-content: space-between; font-weight: 600; font-size: 18px; color: var(--ink); }
+
+/* ── Cart view ──────────────────────────────────────────── */
+#app-root.view-cart .container,
+#app-root.view-checkout .container,
+#app-root.view-success  .container { padding-bottom: 80px; }
+.cart-list        { display: flex; flex-direction: column; }
+.cart-item        { display: flex; align-items: center; gap: 12px; border-bottom: 1px solid var(--border-mid); padding: 14px 0; }
+.cart-item-details{ flex: 1; min-width: 0; }
+.cart-item-title  { font-size: 13px; font-weight: 600; margin: 0; color: var(--ink); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.cart-item-artist { font-size: 11px; color: var(--ink45); margin-top: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.cart-item-right  { display: flex; align-items: center; gap: 12px; flex-shrink: 0; }
+.cart-item-price  { font-size: 13px; font-weight: 500; color: var(--ink); min-width: 56px; text-align: right; }
+.qty-group        { display: flex; align-items: center; border: 1px solid var(--ink30); }
+.qty-btn          { width: 26px; height: 26px; border: 0; background: transparent; cursor: pointer; font-size: 15px; line-height: 1; color: var(--ink); font-family: inherit; transition: background .1s; }
+.qty-btn:hover    { background: var(--art-bg); }
+.qty-num          { width: 24px; text-align: center; font-size: 12px; color: var(--ink); }
+.remove-btn       { background: none; border: 0; padding: 0; font-size: 16px; line-height: 1; color: var(--ink30); cursor: pointer; font-family: inherit; transition: color .15s; flex-shrink: 0; }
+.remove-btn:hover { color: var(--ink); }
+.stock-label      { font-size: 9px; font-weight: 500; letter-spacing: .06em; text-transform: uppercase; color: var(--ink30); margin-top: 3px; opacity: 0; transition: opacity .3s; min-height: 12px; }
+.cart-summary     { margin-top: 28px; }
+.summary-row      { display: flex; justify-content: space-between; align-items: center; border-top: 1px solid var(--border); padding-top: 16px; }
+.summary-label    { font-size: 12px; color: var(--ink55); margin: 0; text-transform: uppercase; letter-spacing: .06em; font-weight: 500; }
+.shipping-note    { font-size: 10px; color: var(--ink30); margin-top: 3px; }
+.summary-price    { font-size: 20px; font-weight: 600; margin: 0; color: var(--ink); }
+.checkout-btn     { margin-top: 14px; padding: 13px 18px; border: 1px solid var(--btn-bg); background: var(--btn-bg); color: var(--btn-fg); cursor: pointer; width: 100%; font-size: 11px; font-weight: 500; letter-spacing: .09em; text-transform: uppercase; font-family: 'Inter', system-ui, sans-serif; transition: opacity .15s; }
+.checkout-btn:hover { opacity: .82; }
+
+/* ── Checkout view ──────────────────────────────────────── */
+.form-group label { font-size: 11px; font-weight: 500; letter-spacing: .07em; text-transform: uppercase; color: var(--ink55); }
+.form-group input { border: none; border-bottom: 1px solid var(--ink30); background: transparent; color: var(--ink); font-family: 'Inter', system-ui, sans-serif; font-size: 14px; padding: 9px 0; width: 100%; }
+.form-group input::placeholder { color: var(--ink30); }
+.form-group input:focus { border-bottom-color: var(--ink); outline: none; }
+.checkout-grid    { display: grid; grid-template-columns: 1fr 380px; column-gap: 60px; align-items: start; position: relative; }
+.checkout-grid::after { content: ''; position: absolute; top: 0; bottom: 0; right: 380px; width: 1px; background: var(--ink15); }
+.payment-note     { border-left: 2px solid var(--ink45); padding-left: 14px; margin-top: 10px; font-size: 13px; line-height: 1.7; color: var(--ink55); }
+.order-summary    { padding-left: 30px; }
+.delivery-methods { margin: 24px 0 20px; }
+.delivery-methods .section-label { margin-bottom: 12px; }
+.delivery-option  { display: flex; align-items: center; justify-content: space-between; padding: 9px 0; border: none; border-bottom: 1px solid var(--ink15); cursor: pointer; }
+.delivery-option:first-of-type { border-top: 1px solid var(--ink15); }
+.delivery-option input[type="radio"] { appearance: none; -webkit-appearance: none; width: 10px; height: 10px; border: 1px solid var(--ink30); border-radius: 0; margin: 0 10px 0 0; flex-shrink: 0; cursor: pointer; background: transparent; }
+.delivery-option input[type="radio"]:checked { border-color: var(--ink); background: var(--ink); }
+.delivery-option-left  { display: flex; align-items: center; flex: 1; min-width: 0; }
+.delivery-option-label { font-size: 13px; font-weight: 500; color: var(--ink); }
+.delivery-option-desc  { font-size: 11px; color: var(--ink45); margin-left: 8px; }
+.delivery-option-price { font-size: 13px; font-weight: 500; color: var(--ink); white-space: nowrap; flex-shrink: 0; }
+.complete-btn     { margin-top: 18px; padding: 14px 18px; border: 1px solid var(--btn-bg); background: var(--btn-bg); color: var(--btn-fg); cursor: pointer; font-family: 'Inter', system-ui, sans-serif; font-size: 11px; font-weight: 500; letter-spacing: .09em; text-transform: uppercase; width: 100%; transition: opacity .15s; }
+.complete-btn:hover    { opacity: .82; }
+.complete-btn:disabled { opacity: .5; cursor: not-allowed; }
+
+/* ── Success view ───────────────────────────────────────── */
+.success-layout   { display: grid; grid-template-columns: 1fr 380px; column-gap: 60px; align-items: start; }
+.order-meta       { border-top: 1px solid var(--border-mid); display: grid; grid-template-columns: 1fr 1fr; }
+.meta-cell        { padding: 16px 0; border-bottom: 1px solid var(--border-mid); }
+.meta-cell.left   { padding-right: 28px; border-right: 1px solid var(--border-mid); }
+.meta-cell.right  { padding-left: 28px; }
+.meta-label       { font-size: 9px; font-weight: 500; letter-spacing: .12em; text-transform: uppercase; color: var(--ink30); margin-bottom: 5px; }
+.meta-value       { font-size: 13px; color: var(--ink); line-height: 1.55; }
+.meta-value.amount{ font-size: 24px; font-weight: 600; letter-spacing: -.02em; line-height: 1.1; }
+.view-summary-btn { width: 100%; background: var(--art-bg); border: none; border-bottom: 1px solid var(--ink15); padding: 14px 16px; cursor: pointer; font-family: 'Inter', system-ui, sans-serif; text-align: left; margin-top: 20px; transition: background .15s; display: block; }
+.view-summary-btn:hover { background: var(--ink15); }
+.vsb-inner  { display: flex; justify-content: space-between; align-items: center; width: 100%; }
+.vsb-label  { font-size: 10px; font-weight: 500; letter-spacing: .1em; text-transform: uppercase; color: var(--ink55); }
+.vsb-arrow  { font-size: 14px; color: var(--ink30); transition: transform .15s; }
+.vsb-arrow.open { transform: rotate(90deg); }
+.payment-section { margin-top: 32px; }
+.payment-body { display: grid; grid-template-columns: 1fr auto; gap: 32px; align-items: start; margin-bottom: 28px; }
+.payment-left { display: flex; flex-direction: column; width: 40%; min-width: 180px; }
+.timer-label  { font-size: 9px; font-weight: 500; letter-spacing: .12em; text-transform: uppercase; color: var(--ink30); margin-bottom: 8px; }
+.countdown    { font-size: 36px; font-weight: 600; letter-spacing: -.02em; font-variant-numeric: tabular-nums; color: var(--ink); line-height: 1; margin-bottom: 10px; }
+.countdown.is-expired { font-size: 16px; color: var(--ink45); }
+.timer-note   { font-size: 11px; color: var(--ink45); line-height: 1.65; margin-bottom: 16px; }
+.wallet-logos-wrap { display: flex; flex-wrap: wrap; gap: 10px 14px; align-items: center; }
+.wallet-logo  { display: block; width: auto; flex-shrink: 0; filter: grayscale(100%) opacity(0.38); }
+html.dark .wallet-logo { filter: grayscale(100%) invert(1) opacity(0.6); }
+.qr-block     { display: flex; flex-direction: column; align-items: center; gap: 6px; }
+.qr-img       { width: 150px; display: block; object-fit: cover; }
+.qr-download  { font-size: 9px; letter-spacing: .07em; text-transform: uppercase; color: var(--ink30); cursor: pointer; font-family: inherit; background: none; border: none; padding: 0; text-decoration: underline; transition: color .1s; }
+.qr-download:hover { color: var(--ink55); }
+.order-note   { font-size: 12px; color: var(--ink45); line-height: 1.8; padding-left: 12px; border-left: 1px solid var(--ink15); }
+.summary-panel{ display: none; padding-left: 30px; }
+.summary-panel.is-open { display: block; }
+.modal-overlay{ display: none; position: fixed; inset: 0; z-index: 300; background: rgba(10,10,8,.82); align-items: center; justify-content: center; padding: 40px 24px; }
+.modal-overlay.is-open { display: flex; }
+.modal-dialog { width: 100%; max-width: 380px; background-color: var(--bg); background-image: radial-gradient(circle, var(--bg-dot) 0.5px, transparent 0.5px); background-size: 3px 3px; border: 2px solid var(--border); max-height: calc(100vh - 80px); overflow-y: auto; }
+.modal-close-row { display: flex; align-items: center; justify-content: flex-end; padding: 12px 16px 0; }
+.modal-close  { background: var(--ink15); border: 0; width: 18px; height: 18px; display: inline-flex; align-items: center; justify-content: center; font-size: 12px; color: var(--ink); cursor: pointer; font-family: 'Inter', system-ui, sans-serif; font-weight: 400; line-height: 1; transition: background .1s; }
+.modal-close:hover { background: var(--btn-bg); color: var(--btn-fg); }
+.modal-body   { padding: 20px 28px 36px; }
+
+/* ── Genre view ─────────────────────────────────────────── */
+#app-root.view-genre .container { max-width: 890px; margin: 0 auto; padding: 84px 30px 104px; }
+.genre-nav-label { font-size: 11px; font-weight: 500; letter-spacing: .09em; text-transform: uppercase; color: var(--ink45); margin-bottom: 12px; display: block; }
+.genre-nav-block { position: relative; margin-bottom: 10px; }
+.genre-pills-shell { position: relative; overflow: hidden; transition: max-height .18s ease; padding-right: 26px; }
+.genre-pills  { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+.genre-pill   { font-size: 10px; font-weight: 500; letter-spacing: .07em; text-transform: uppercase; border: 1px solid var(--border-tag); padding: 3px 8px; color: var(--ink55); cursor: pointer; transition: color 0.1s linear, background 0.1s linear, border-color 0.1s linear; text-decoration: none; display: inline-block; line-height: 1.4; background: none; }
+.genre-pill:hover { color: var(--ink); border-color: var(--ink); }
+.genre-pill.active { background: var(--btn-bg); color: var(--btn-fg); border-color: var(--btn-bg); }
+.genre-nav-toggle { position: absolute; right: 0; bottom: 0; background: var(--ink15); border: 0; width: 18px; height: 18px; display: none; align-items: center; justify-content: center; font-size: 13px; color: var(--ink); cursor: pointer; font-family: 'Inter', system-ui, sans-serif; font-weight: 400; line-height: 1; z-index: 2; }
+.genre-nav-toggle.is-visible { display: inline-flex; }
+.empty-state  { padding: 60px 0; font-size: 13px; color: var(--ink30); letter-spacing: .02em; }
+.guide-footer { position: fixed; left: 0; right: 0; bottom: 0; height: 34px; background: var(--footer-bg, rgba(226,226,226,.92)); border-top: 1px solid var(--footer-border, rgba(26,26,20,.14)); backdrop-filter: blur(2px); -webkit-backdrop-filter: blur(2px); z-index: 9998; display: none; }
+body.view-genre .guide-footer { display: block; }
+body.player-active.view-genre .guide-footer { bottom: 44px; }
+.guide-footer-inner { max-width: 890px; height: 100%; margin: 0 auto; padding: 0 30px; display: flex; align-items: center; justify-content: flex-end; }
+.guide-btn    { background: transparent; color: var(--ink55); font-family: 'Inter', system-ui, sans-serif; font-size: 9px; font-weight: 500; letter-spacing: .08em; text-transform: uppercase; padding: 0; border: none; cursor: pointer; user-select: none; display: inline-flex; align-items: center; opacity: .72; transition: opacity .12s linear, color .12s linear; }
+.guide-btn:hover { opacity: 1; color: var(--ink); }
+.guide-modal  { position: fixed; inset: 0; background: rgba(0,0,0,.18); backdrop-filter: blur(1px); -webkit-backdrop-filter: blur(1px); display: none; align-items: center; justify-content: center; z-index: 9999; padding: 20px; }
+.guide-modal.is-open { display: flex; }
+.guide-modal-inner { background: var(--modal-bg, rgba(233,233,233,.97)); border: 1px solid var(--border); width: 100%; max-width: 390px; font-family: 'Inter', system-ui, sans-serif; position: relative; }
+.guide-modal-body { padding: 16px 20px; }
+.guide-heading-wrap { margin-bottom: 18px; padding-bottom: 12px; border-bottom: 1px solid var(--border-mid); }
+.guide-subheading { font-size: 10px; font-weight: 500; letter-spacing: .18em; text-transform: uppercase; color: var(--ink30); }
+.guide-row    { display: grid; grid-template-columns: 56px 1fr 22px; gap: 12px; align-items: start; padding: 12px 0; border-bottom: 1px solid var(--border-mid); }
+.guide-row:last-child { border-bottom: none; }
+.guide-format { font-size: 11px; font-weight: 600; letter-spacing: .08em; color: var(--ink); }
+.guide-desc   { font-size: 12px; font-weight: 400; color: var(--ink55); line-height: 1.45; }
+.guide-index  { text-align: right; font-size: 9px; letter-spacing: .18em; text-transform: uppercase; color: var(--ink15); }
+
+/* ── Skeleton ───────────────────────────────────────────── */
+.sk { background: linear-gradient(90deg, rgba(0,0,0,.07) 25%, rgba(0,0,0,.13) 50%, rgba(0,0,0,.07) 75%); background-size: 200% 100%; animation: sh 1.4s infinite; display: inline-block; }
+html.dark .sk { background: linear-gradient(90deg, rgba(255,255,255,.05) 25%, rgba(255,255,255,.10) 50%, rgba(255,255,255,.05) 75%); background-size: 200% 100%; }
 @keyframes sh { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
 
-/* ── Responsive ──────────────────────────────────────────── */
+/* ── Responsive ─────────────────────────────────────────── */
 @media (max-width: 900px) {
+  col.c-format, col.c-stock { display: none; }
+  .tbl thead th.c-format, .tbl thead th.c-stock,
+  .tbl tbody td.c-format, .tbl tbody td.c-stock { display: none; }
   col.c-art    { width: 32px; }
-  col.c-format, col.c-stock { display: none; }
-  .tbl thead th.c-format, .tbl thead th.c-stock,
-  .tbl tbody td.c-format, .tbl tbody td.c-stock { display: none; }
-  col.c-genre { width: auto; }
-  .tbl thead th.c-genre { text-align: right; padding-right: 0; }
-  .tbl tbody  td.c-genre { text-align: right; padding-right: 0; }
-  .carousel-viewport { height: 235px; }
-  .card-title  { font-size: 32px; }
-  .card-artist { font-size: 11px; }
-  .rec-title   { font-size: 14px; }
-  .rec-artist  { font-size: 11px; }
+  col.c-genre  { width: auto; }
+  .tbl thead th.c-genre, .tbl tbody td.c-genre { text-align: right; padding-right: 0; }
   .rec-art-wrap { width: 32px; height: 32px; }
+  .album-page      { display: flex; flex-direction: column; }
+  .album-image-wrap { width: 100%; position: static; grid-column: unset; grid-row: unset; }
+  #app-root.view-album .container { padding-top: calc(74px + 22px); }
+  .album-title-col { padding-bottom: 16px; }
+  .album-title     { font-size: 28px; letter-spacing: -.025em; margin-bottom: 8px; }
+  /* Mobile: both images side by side, no swipe */
+  .album-img-track { flex-direction: row; gap: 4px; }
+  .album-img-slide { flex: 1; min-width: 0; }
+  .related-grid { grid-template-columns: repeat(2, 1fr); gap: 14px; }
+  .checkout-grid { grid-template-columns: 1fr; gap: 40px; }
+  .checkout-grid::after { display: none; }
+  .order-summary { padding-left: 0; }
+  .success-layout { grid-template-columns: 1fr; }
+  .summary-panel  { padding-left: 0; }
+  #player-progress-wrap { display: none; }
 }
-
 @media (max-width: 600px) {
-  .container    { padding: 94px 20px 0; }
-  .bottom-section { padding: 0 20px 28px; }
-  .card-inner   { padding: 10px 0 4px; }
-  .carousel-nav { right: 0; top: 0; }
-  .carousel-viewport { height: 155px; }
-  .card-top     { padding-right: 90px; }
-  .card-staff-pick { font-size: 8px; margin-bottom: 10px; }
-  .card-artist     {
-    font-size: 10px;
-    display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
-    margin-bottom: 8px;
-  }
-  .card-title      {
-    font-size: 20px; letter-spacing: -.02em;
-    display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
-    margin-bottom: 6px;
-  }
-  .card-format     { font-size: 9px; }
-  .card-tag        { font-size: 9px; padding: 2px 6px; }
-  .card-meta       { gap: 6px; }
-  .card-tags       { gap: 4px; }
-  .carousel-btn    { height: 24px; width: 28px; font-size: 16px; }
-  .tbl thead th { top: 74px; font-size: 10px; }
-  .rec-title    { font-size: 13px; }
-  .rec-artist   {
-    font-size: 11px;
-    display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
-  }
-  .genre-tag    { font-size: 9px; padding: 2px 5px; }
-  .az-nav       { justify-content: space-between; }
-  col.c-art    { width: 28px; }
-  col.c-format, col.c-stock { display: none; }
-  .tbl thead th.c-format, .tbl thead th.c-stock,
-  .tbl tbody td.c-format, .tbl tbody td.c-stock { display: none; }
-  .rec-art-wrap { width: 28px; height: 28px; }
+  .sold-log-grid { grid-template-columns: 1fr; }
+  #app-root.view-catalog .bottom-section { padding-left: 20px; padding-right: 20px; }
+  /* Gap: carousel closer to green box, header→carousel has breathing room */
+  #app-root.view-catalog { gap: 16px; }
+  .carousel-section { margin-top: calc(74px + 10px); }
+  .carousel-viewport { height: 150px; }
+  .card-inner { padding: 16px 20px 14px; }
+  .card-top   { padding-right: 82px; }
+  .card-staff-pick { font-size: 9px; margin-bottom: 7px; }
+  .card-artist { font-size: 11px; margin-bottom: 5px; }
+  .card-title  { font-size: 28px; letter-spacing: -.025em; margin-bottom: 8px; }
+  .card-tag    { font-size: 9px; padding: 2px 6px; }
+  .carousel-nav { top: 10px; right: 20px; }
+  .carousel-btn { width: 28px; height: 28px; font-size: 16px; }
+  .carousel-seg-bar { padding: 0 20px; }
+  #app-root.view-catalog .container { margin-left: 20px; margin-right: 20px; width: auto; padding: 4px 0 16px; }
+  .tag-cloud { margin-top: 0; }
+  .az-nav { padding: 6px 0; }
+  .az-letter { padding: 5px 10px; }
+  .search-bar-inner { padding: 0 20px; }
+  .search-count { display: none; }
+  .album-title { font-size: 24px; letter-spacing: -.02em; }
+  .price-block  { margin-top: 16px; padding-top: 16px; }
+  .description-block { margin-top: 16px; }
+  .album-tracklist { margin-top: 16px; padding-top: 12px; }
+  .page-title  { font-size: 22px; }
+  .countdown   { font-size: 26px; }
+  #player-track { display: none; }
+  /* Genre page mobile: hide table headers, hide format/stock columns */
+  body.view-genre .tbl thead { display: none; }
+  body.view-genre .tbl td.c-format,
+  body.view-genre .tbl td.c-stock { display: none; }
 }
-
-/* ── Sold log (FIXED) ────────────────────────────────────── */
-.sold-log { 
-  background: rgba(26,26,20,.03); 
-  padding: 8px 0; 
-  margin-top: 32px; 
-}
-.sold-log-row {
-  display: flex; 
-  align-items: center; 
-  gap: 8px;
-  padding: 4px 10px; 
-  cursor: pointer; 
-  text-decoration: none;
-}
-.sold-log-tag { 
-  font-size: 10px; 
-  color: var(--ink30); 
-  flex-shrink: 0; 
-  margin-top: 1px;
-}
-.sold-log-content { 
-  flex: 1; 
-  display: block; 
-  min-width: 0; 
-  font-size: 11px; 
-  line-height: 1.4;
-}
-.sold-log-artist { 
-  color: var(--ink45); 
-  transition: color .1s; 
-}
-.sold-log-sep { 
-  color: var(--ink30); 
-  margin: 0 4px; 
-}
-.sold-log-title { 
-  color: var(--ink45); 
-  transition: color .1s; 
-}
-.sold-log-row:hover .sold-log-artist,
-.sold-log-row:hover .sold-log-title { 
-  color: var(--ink); 
-}
-
-/* Updated footer to position toggle on the right */
-.sold-log-footer { 
-  padding: 0 10px 4px; 
-  display: flex; 
-  justify-content: flex-end;
-  align-items: center;
-}
-.sold-log-toggle {
-  background: var(--ink15); 
-  border: 0;
-  width: 18px; 
-  height: 18px;
-  display: inline-flex; 
-  align-items: center; 
-  justify-content: center;
-  font-size: 13px; 
-  color: var(--ink); 
-  cursor: pointer;
-  flex-shrink: 0;
-}
-.sold-log-toggle:hover { opacity: .6; }
-html.dark .sold-log { background: rgba(232,232,223,.03); }
-
-/* ── Tag cloud ─────────────────────────────────────────── */
-.tag-cloud {
-  padding: 24px 0 48px;
-  border-top: 1px solid var(--border-mid);
-  text-align: left;
-  line-height: 1.7;
-}
-.tag-cloud-item {
-  font-size: 11px; color: var(--ink45);
-  cursor: pointer; text-decoration: none;
-}
-.tag-cloud-item:hover { color: var(--ink); text-decoration: underline; }
-.tag-cloud-sep {
-  font-size: 11px; color: var(--ink30);
-  margin: 0 3px;
-}
-.tag-cloud-more {
-  font-size: 11px; font-weight: 500; color: var(--ink45);
-  cursor: pointer; text-decoration: none;
-}
-.tag-cloud-more:hover { color: var(--ink); text-decoration: underline; }
-
-/* ── Footer ─────────────────────────────────────────────── */
-.lr-footer { display: block; padding: 0; }
 
 </style>
 </head>
 <body>
-
 <header class="fixed-header">
   <div class="header-inner">
-    <a href="index.html">
-      <img src="images/late-records-logo.png" class="header-logo logo-light" alt="LATE RECORDS">
-      <img src="images/late-records-logo-dark.png" class="header-logo logo-dark" alt="LATE RECORDS">
+    <!-- AUDIT: logo path is relative to site/ root — correct for app.html location -->
+    <a href="/">
+      <img src="/images/late-records-logo.png"      class="header-logo logo-light" alt="LATE RECORDS">
+      <img src="/images/late-records-logo-dark.png" class="header-logo logo-dark"  alt="LATE RECORDS">
     </a>
     <div class="header-right">
       <button class="search-btn" id="searchBtn" aria-label="Search">
@@ -529,235 +560,1661 @@ html.dark .sold-log { background: rgba(232,232,223,.03); }
         </svg>
       </button>
       <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme">
-        <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><line x1="12" y1="2"  x2="12" y2="5"/><line x1="12" y1="19" x2="12" y2="22"/><line x1="2"  y1="12" x2="5"  y2="12"/><line x1="19" y1="12" x2="22" y2="12"/><line x1="4.93"  y1="4.93"  x2="7.05" y2="7.05"/><line x1="16.95" y1="16.95" x2="19.07" y2="19.07"/><line x1="4.93"  y1="19.07" x2="7.05"  y2="16.95"/><line x1="16.95" y1="7.05"  x2="19.07" y2="4.93"/></svg>
-        <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+        <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="4"/>
+          <line x1="12" y1="2"  x2="12" y2="5"/>  <line x1="12" y1="19" x2="12" y2="22"/>
+          <line x1="2"  y1="12" x2="5"  y2="12"/>  <line x1="19" y1="12" x2="22" y2="12"/>
+          <line x1="4.93" y1="4.93"   x2="7.05"  y2="7.05"/>
+          <line x1="16.95" y1="16.95" x2="19.07" y2="19.07"/>
+          <line x1="4.93" y1="19.07"  x2="7.05"  y2="16.95"/>
+          <line x1="16.95" y1="7.05"  x2="19.07" y2="4.93"/>
+        </svg>
+        <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+        </svg>
       </button>
-      <a href="cart.html" class="cart-link">Cart (<span class="cart-count">0</span>)</a>
+      <a href="/cart" class="cart-link">Cart (<span class="cart-count">0</span>)</a>
     </div>
   </div>
 </header>
 
+<!-- Search bar — shell element, always in DOM, shown/hidden via CSS + JS -->
 <div class="search-bar" id="searchBar">
   <div class="search-bar-inner">
-    <input class="search-input" id="searchInput" type="text" autocomplete="off" spellcheck="false" placeholder="Search by title, artist, genre, format…">
+    <input class="search-input" id="searchInput" type="text"
+      autocomplete="off" spellcheck="false"
+      placeholder="Search by title, artist, genre, format…">
     <button class="search-clear" id="searchClear" aria-label="Clear search">&#215;</button>
     <span class="search-count" id="searchCount"></span>
-    <button class="avail-toggle" id="availToggle" aria-label="Show available only" onclick="toggleAvail()"></button>
+    <button class="avail-toggle" id="availToggle" aria-label="Show available only"></button>
   </div>
 </div>
 
-<div class="container">
-  <section class="carousel-section">
-    <div class="carousel-viewport">
-      <div class="carousel-track" id="carouselTrack"></div>
-      <div class="carousel-nav" id="carouselNav">
-        <button class="carousel-btn" id="prevBtn">&#8249;</button>
-        <button class="carousel-btn" id="nextBtn">&#8250;</button>
+<!-- Shell player — outside #app-root, never unmounted by router.
+     Single row: [▶] [Title by Artist ············ 70vw max] [-0:00] [‹] [›] [×]
+     LR_PLAYER.init() guard ensures listeners attach exactly once. -->
+<div id="audio-player" role="region" aria-label="Now playing">
+  <div id="player-inner">
+    <!-- Left: play icon + metadata (truncates at 70vw) -->
+    <div id="player-left">
+      <button id="player-play" aria-label="Play/Pause">
+        <svg id="player-play-icon" viewBox="0 0 10 10" width="12" height="12" fill="currentColor">
+          <polygon points="2,1 9,5 2,9"/>
+        </svg>
+      </button>
+      <div id="player-meta">
+        <span id="player-title"></span><span id="player-by"> by </span><span id="player-artist-name"></span>
       </div>
     </div>
-  </section>
-  <hr class="section-divider">
-  <div class="az-nav" id="azNav"></div>
-  <div class="suggestions-header" id="suggestionsHeader"></div>
-  <div class="no-results-empty" id="noResultsEmpty">Nothing found.</div>
-  <table class="tbl" id="catalogTable">
-    <colgroup><col class="c-art"><col class="c-title"><col class="c-genre"><col class="c-format"><col class="c-stock"></colgroup>
-    <thead>
-      <tr>
-        <th class="c-art"><svg class="art-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="0.75" stroke-linecap="round"><circle cx="12" cy="12" r="11"/><circle cx="12" cy="12" r="2"/></svg></th>
-        <th class="c-title">Title / Artist</th>
-        <th class="c-genre">Genre</th>
-        <th class="c-format">Format</th>
-        <th class="c-stock">Stock</th>
-      </tr>
-    </thead>
-    <tbody id="catalogList"></tbody>
-  </table>
-</div>
-
-<div class="bottom-section">
-  <div class="info-rotator" id="infoRotator">
-    <button class="info-rotator-btn" id="infoPrev">&#8249;</button>
-    <div class="info-rotator-content">
-      <div class="info-rotator-title" id="infoTitle"></div>
-      <div class="info-rotator-text" id="infoText"></div>
+    <!-- Right: remaining time + naked controls -->
+    <div id="player-right">
+      <span id="player-time-remaining"></span>
+      <button id="player-prev" class="player-ctrl" aria-label="Previous">&#8249;</button>
+      <button id="player-next" class="player-ctrl" aria-label="Next">&#8250;</button>
+      <button id="player-close" class="player-ctrl" aria-label="Dismiss">&#215;</button>
     </div>
-    <button class="info-rotator-btn" id="infoNext">&#8250;</button>
   </div>
-
-  <div class="sold-log" id="soldLog" style="display:none;">
-    <div id="soldLogVisible"></div>
-    <div id="soldLogHidden" style="display:none;"></div>
-   
-  </div>
-
-  <div class="tag-cloud" id="tagCloud">
-    <div class="tag-cloud-list" id="tagCloudList"></div>
-  </div>
-  <footer class="lr-footer"></footer>
 </div>
 
-<script src="last-updated.js"></script>
-<script src="script.js"></script>
-<script src="catalog.js"></script>
-<script src="search.js"></script>
-<script src="tagcloud.js"></script>
-<script>
+<!-- SPA mount point — router swaps innerHTML here only -->
+<div id="app-root"></div>
 
-function _escHTML(s) {
-  const d = document.createElement('div');
-  d.textContent = s;
-  return d.innerHTML;
+<!-- Guide modal — shell element shared by cart + genre views -->
+<div class="modal" id="guideModal">
+  <div class="modal-inner">
+    <button class="modal-close" id="guideClose">&#215;</button>
+    <h2>Guide</h2>
+    <p><strong>Shipping</strong></p>
+    <p>Orders are prepared and shipped within 1–2 business days. Each record is carefully packed in sturdy mailers.</p>
+    <p><strong>Payments</strong></p>
+    <p>Payments can be made through GCash, Maya, GoTyme, and local bank transfers.</p>
+    <p><strong>Returns &amp; Exchanges</strong></p>
+    <p>We accept return requests within 7 days of receiving your order. Contact us within 3 days if your order arrives damaged, with photos or an unboxing video.</p>
+    <p>Email <strong>info.late.records@gmail.com</strong> with your order number and details.</p>
+  </div>
+</div>
+
+<script src="/last-updated.js"></script>
+<script src="/script.js"></script>
+<script src="/catalog.js"></script>
+<script src="/search.js"></script>
+<script src="/tagcloud.js"></script>
+<!-- AUDIT: onerror installs a no-op shim so renderCheckout never throws
+     if the Turnstile CDN is unreachable. -->
+<script src="/turnstile.js" onerror="window.LR_TURNSTILE={init:function(){},getToken:function(){return Promise.resolve('');},reset:function(){}}"></script>
+<script>
+'use strict';
+
+// ─────────────────────────────────────────────────────────────
+// SECTION 1: OVERRIDES
+// Must run after the <script src> tags above.
+// ─────────────────────────────────────────────────────────────
+
+// Override script.js updateNav — use clean SPA routes, not .html paths.
+function updateNav() {
+  var count    = LR.cart.count();
+  var hasItems = count > 0;
+  var label    = hasItems ? 'Checkout' : 'Cart';
+  var dest     = hasItems ? '/checkout' : '/cart';
+  document.querySelectorAll('.cart-link').forEach(function(el) {
+    el.setAttribute('href', dest);
+    el.onclick = function(e) { e.preventDefault(); e.stopPropagation(); navigate(dest); };
+    var badge = el.querySelector('.cart-count');
+    if (badge) {
+      el.innerHTML = label + ' (<span class="cart-count">' + count + '</span>)';
+    } else {
+      el.textContent = label;
+    }
+  });
+}
+window.addEventListener('lr:cart:updated', updateNav);
+window.addEventListener('pageshow', function(e) { if (e.persisted) updateNav(); });
+
+// Override catalog.js rowHTML — data attributes instead of inline onclick.
+// AUDIT: encodeURIComponent on every id and genre.
+function rowHTML(item, query, isSuggestion, eager) {
+  var sold   = item.status !== 'available';
+  var genres = LR.ui.splitPipe(item.genre);
+  var genre  = (isSuggestion && item._matchedGenre) ? item._matchedGenre : (genres[0] || '');
+  var format = _escHTML((item.format || 'LP').trim());
+  var title  = query ? highlight(item.title, query) : _escHTML(item.title);
+  var artist = query ? highlight(item.artist, query) : _escHTML(item.artist);
+  return '<tr class="' + (sold ? 'sold' : '') + (isSuggestion ? ' is-suggestion' : '') + '"'
+    + ' data-album-id="' + encodeURIComponent(item.album_id) + '">'
+    + '<td class="c-art"><div class="rec-art-wrap"><img'
+    + ' src="https://media.late-records.shop/images/' + encodeURIComponent(item.album_id) + '.webp"'
+    + ' alt="" ' + (eager ? 'fetchpriority="high"' : 'loading="lazy"')
+    + ' onerror="_wf(this,function(e){e.parentNode.style.opacity=\'0\'})"></div></td>'
+    + '<td class="c-title"><div class="rec-title">' + title + '</div>'
+    + '<div class="rec-artist">' + artist + '</div></td>'
+    + '<td class="c-genre"><span class="genre-tag"'
+    + ' data-genre-nav="' + encodeURIComponent(genre.toLowerCase()) + '">'
+    + _escHTML(genre) + '</span></td>'
+    + '<td class="c-format"><span class="rec-format">' + format + '</span></td>'
+    + '<td class="c-stock"><div class="rec-stock">'
+    + '<span class="sdot ' + (sold ? 's' : 'a') + '"></span>'
+    + '<span>' + (sold ? 'Sold' : 'Avail') + '</span></div></td></tr>';
 }
 
-// ── Info rotator ────────────────────────────────────────────
-(function() {
-  const slides = [
-    { title: 'Shop Info', text: 'Catalog updated daily with new pressings and used record finds.' },
-    { title: 'Shipping & Handling', text: 'All records ship in custom mailers. Allow 3–5 business days for domestic delivery.' },
-    { title: 'Condition & Grading', text: 'All records graded visually and play-tested. Condition noted on each listing.' }
-  ];
-  let idx = 0;
-  const titleEl = document.getElementById('infoTitle');
-  const textEl  = document.getElementById('infoText');
-  function show(i) {
-    idx = (i + slides.length) % slides.length;
-    titleEl.textContent = slides[idx].title;
-    textEl.textContent  = slides[idx].text;
-  }
-  show(0);
-  document.getElementById('infoPrev').addEventListener('click', (e) => { e.stopPropagation(); show(idx - 1); });
-  document.getElementById('infoNext').addEventListener('click', (e) => { e.stopPropagation(); show(idx + 1); });
-})();
+// Override tagcloud.js buildTagHTML — SPA /album/:id links.
+function buildTagHTML(tags, limit) {
+  var slice = limit ? tags.slice(0, limit) : tags;
+  return slice.map(function(tag, i) {
+    var url = '/album/' + encodeURIComponent(tag.albumId);
+    return (i > 0 ? '<span class="tag-cloud-sep">\u00b7</span>' : '')
+      + '<a class="tag-cloud-item" href="' + url + '">' + _escHTML(tag.text) + '</a>';
+  }).join('');
+}
+
+// ─────────────────────────────────────────────────────────────
+// SECTION 2: CATALOG HELPERS (SPA-aware, defined here not index.html)
+// ─────────────────────────────────────────────────────────────
+
 
 function buildCarousel(albums) {
-  const featured = albums.filter(a => String(a.featured).toLowerCase() === 'yes').slice(0, 5);
-  const cards = featured.length >= 1 ? featured : albums.slice(0, 5);
-  const track = document.getElementById('carouselTrack');
-  let current = 0;
+  var featured = albums.filter(function(a) { return String(a.featured).toLowerCase() === 'yes'; }).slice(0, 5);
+  var cards    = featured.length >= 1 ? featured : albums.slice(0, 5);
+  var track    = document.getElementById('carouselTrack');
+  if (!track) return;
+  var current  = 0;
   track.innerHTML = '';
-  cards.forEach((album) => {
-    const tags     = LR.ui.splitPipe(album.genre).slice(0, 3);
-    const albumUrl = `albums/album.html?id=${encodeURIComponent(album.album_id)}`;
-    const card     = document.createElement('div');
-    card.className = 'carousel-card';
-    card.addEventListener('click', () => location.href = albumUrl);
-    card.innerHTML = `
-      <div class="card-inner">
-        <div class="card-top">
-          <div class="card-staff-pick">Staff Pick</div>
-          <div class="card-artist">${_escHTML(album.artist)}</div>
-          <div class="card-title">${_escHTML(album.title)}</div>
-          <div class="card-meta">
-            <div class="card-tags">
-              ${tags.map(t => `<span class="card-tag" onclick="event.stopPropagation();location.href='genre.html?g=${encodeURIComponent(t.toLowerCase())}'">${_escHTML(t)}</span>`).join('')}
-            </div>
-            <span class="card-format">${_escHTML(album.format || 'LP')}</span>
-            ${album.condition ? `<span class="card-meta-divider"></span><span class="card-format">${_escHTML(album.condition)}</span>` : ''}
-          </div>
-        </div>
-      </div>`;
+  cards.forEach(function(album) {
+    var tags      = LR.ui.splitPipe(album.genre).slice(0, 3);
+    var albumPath = '/album/' + encodeURIComponent(album.album_id);
+    var card      = document.createElement('div');
+    card.className    = 'carousel-card';
+    card.dataset.href = albumPath;
+    card.innerHTML = '<div class="card-inner"><div class="card-top">'
+      + '<div class="card-staff-pick">Staff Pick</div>'
+      + '<div class="card-artist">' + _escHTML(album.artist) + '</div>'
+      + '<div class="card-title">'  + _escHTML(album.title)  + '</div>'
+      + '</div>'
+      + '<div class="card-meta"><div class="card-tags">'
+      + tags.map(function(t) {
+          return '<span class="card-tag" data-genre-nav="' + encodeURIComponent(t.toLowerCase()) + '">'
+            + _escHTML(t) + '</span>';
+        }).join('')
+      + '</div>'
+      + '<div style="display:flex;align-items:center;gap:6px;">'
+      + '<span class="card-format">' + _escHTML(album.format || 'LP') + '</span>'
+      + (album.condition ? '<span class="card-meta-divider"></span><span class="card-format">' + _escHTML(album.condition) + '</span>' : '')
+      + '</div></div></div>';
     track.appendChild(card);
   });
 
-  function goTo(index) {
-    if (index < 0) index = cards.length - 1;
-    if (index >= cards.length) index = 0;
-    current = index;
-    track.style.transform = `translateX(-${current * 100}%)`;
+  function goTo(i) {
+    if (i < 0) i = cards.length - 1;
+    if (i >= cards.length) i = 0;
+    current = i;
+    track.style.transform = 'translateX(-' + (current * 100) + '%)';
+    document.querySelectorAll('.carousel-seg').forEach(function(s, si) {
+      s.classList.toggle('is-active', si === current);
+    });
+  }
+  var segBar = document.getElementById('carouselSegBar');
+  if (segBar) {
+    segBar.innerHTML = cards.map(function(_, i) {
+      return '<div class="carousel-seg' + (i === 0 ? ' is-active' : '') + '" data-idx="' + i + '"></div>';
+    }).join('');
+    segBar.addEventListener('click', function(e) {
+      var seg = e.target.closest('.carousel-seg');
+      if (seg) goTo(parseInt(seg.dataset.idx, 10));
+    });
   }
   goTo(0);
-  document.getElementById('prevBtn').addEventListener('click', (e) => { e.stopPropagation(); goTo(current - 1); });
-  document.getElementById('nextBtn').addEventListener('click', (e) => { e.stopPropagation(); goTo(current + 1); });
+  var prev = document.getElementById('prevBtn');
+  var next = document.getElementById('nextBtn');
+  if (prev) prev.addEventListener('click', function(e) { e.stopPropagation(); goTo(current - 1); });
+  if (next) next.addEventListener('click', function(e) { e.stopPropagation(); goTo(current + 1); });
 }
 
 function buildSoldLog(catalog) {
-  const sold = catalog.filter(a => String(a.status).toLowerCase() === 'sold_out');
-  const log = document.getElementById('soldLog');
-  const visEl = document.getElementById('soldLogVisible');
-  const hidEl = document.getElementById('soldLogHidden');
-  const toggle = document.getElementById('soldLogToggle');
-  if (!sold.length || !log) return;
+  var sold  = catalog.filter(function(a) { return String(a.status).toLowerCase() === 'sold_out'; });
+  var log   = document.getElementById('soldLog');
+  var visEl = document.getElementById('soldLogVisible');
+  if (!sold.length || !log || !visEl) return;
+  var COL_LIMIT = 7; // rows per column when collapsed
+  var LIMIT     = COL_LIMIT * 2;
+  var hasMore   = sold.length > LIMIT;
 
-  const LIMIT = 5;
-  const visible = sold.slice(0, LIMIT);
-  const hidden  = sold.slice(LIMIT);
-
-  function rowHTML(a, withToggle, isExpanded) {
-    const url = `albums/album.html?id=${encodeURIComponent(a.album_id)}`;
-    return `<a class="sold-log-row" href="${url}">
-      <span class="sold-log-tag">[SOLD]</span>
-      <div class="sold-log-content">
-        <span class="sold-log-artist">${_escHTML(a.artist)}</span>
-        <span class="sold-log-sep">—</span>
-        <span class="sold-log-title">${_escHTML(a.title)}</span>
-      </div>
-      ${withToggle ? `<button class="sold-log-toggle" id="soldLogToggle">${isExpanded ? '−' : '+'}</button>` : ''}
-    </a>`;
+  function mkRow(a, withToggle, expanded) {
+    return '<a class="sold-log-row" href="/album/' + encodeURIComponent(a.album_id) + '">'
+      + '<span class="sold-log-tag">[SOLD]</span>'
+      + '<div class="sold-log-content">'
+      + '<span class="sold-log-artist">' + _escHTML(a.artist) + '</span>'
+      + '<span class="sold-log-sep">—</span>'
+      + '<span class="sold-log-title">'  + _escHTML(a.title)  + '</span>'
+      + '</div>'
+      + (withToggle ? '<button class="sold-log-toggle" id="soldLogToggle">' + (expanded ? '&#8722;' : '+') + '</button>' : '')
+      + '</a>';
   }
 
   function render(expanded) {
-    const shown = expanded ? [...visible, ...hidden] : visible;
-    visEl.innerHTML = shown.map((a, i) => {
-      const isLast = i === shown.length - 1;
-      return rowHTML(a, isLast && hidden.length > 0, expanded);
+    var shown      = expanded ? sold : sold.slice(0, LIMIT);
+    var total      = shown.length;
+    var leftCount  = Math.floor(total / 2);
+    var rightItems = shown.slice(leftCount);
+    var leftItems  = shown.slice(0, leftCount);
+    var needToggle = hasMore || expanded;
+
+    var leftHTML  = leftItems.map(function(a) { return mkRow(a, false, expanded); }).join('');
+    var rightHTML = rightItems.map(function(a, i) {
+      return mkRow(a, needToggle && i === rightItems.length - 1, expanded);
     }).join('');
-    hidEl.innerHTML = '';
-    const t = document.getElementById('soldLogToggle');
+
+    visEl.innerHTML = '<div class="sold-log-grid">'
+      + '<div class="sold-log-col">' + leftHTML  + '</div>'
+      + '<div class="sold-log-col">' + rightHTML + '</div>'
+      + '</div>';
+
+    var t = document.getElementById('soldLogToggle');
     if (t) {
-      t.addEventListener('click', (e) => {
-        e.preventDefault();
-        e.stopPropagation();
-        render(!expanded);
+      t.addEventListener('click', function(e) {
+        e.preventDefault(); e.stopPropagation(); render(!expanded);
       });
     }
   }
-
   render(false);
   log.style.display = '';
 }
 
-// ── Search bar toggle ──────────────────────────────────────
+function scoreRelated(cur, cand) {
+  var s  = 0;
+  var cg = LR.ui.splitPipe(cur.genre);
+  var cc = LR.ui.splitPipe(cur.context);
+  var tg = LR.ui.splitPipe(cand.genre);
+  var tc = LR.ui.splitPipe(cand.context);
+  tg.forEach(function(t) { if (cg.includes(t)) s += 4; });
+  tc.forEach(function(t) { if (cc.includes(t)) s += 2; });
+  if (cur.artist === cand.artist) s += 6;
+  if ((cur.format || 'LP') === (cand.format || 'LP')) s += 2;
+  if (cand.status === 'available') s += 1; else s -= 5;
+  return s;
+}
+
+// ─────────────────────────────────────────────────────────────
+// SECTION 3: LR_PLAYER — persistent audio singleton
+// Architecture:
+//   playAlbum(id, samples, idx, title, artist) — sets current album + starts playback
+//   setContext(id, samples, title, artist)      — records the album page in view
+//   Smart ended handler: advances within album, then hands off to context album
+//   init() — attaches DOM listeners once (guard flag); catalog arg unused
+//   close button (#player-close) hides player and kills audio context
+// ─────────────────────────────────────────────────────────────
+var LR_PLAYER = (function() {
+  var audio       = new Audio();
+  var initialized = false;
+
+  // Currently playing
+  var _curAlbumId = '';
+  var _curSamples = [];
+  var _curIdx     = 0;
+  var _curTitle   = '';
+  var _curArtist  = '';
+
+  // Context: album page currently open (set by renderAlbum, not autoplay)
+  var _ctxAlbumId = '';
+  var _ctxSamples = [];
+  var _ctxTitle   = '';
+  var _ctxArtist  = '';
+
+  var PLAY_ICON  = '<polygon points="2,1 9,5 2,9"/>';
+  var PAUSE_ICON = '<rect x="1.5" y="1" width="3" height="8"/><rect x="5.5" y="1" width="3" height="8"/>';
+
+  function updateUI() {
+    var titleEl  = document.getElementById('player-title');
+    var artistEl = document.getElementById('player-artist-name');
+    var byEl     = document.getElementById('player-by');
+    if (titleEl)  titleEl.textContent  = _curTitle  || '';
+    if (artistEl) artistEl.textContent = _curArtist || '';
+    if (byEl)     byEl.style.display   = _curArtist ? '' : 'none';
+  }
+
+  function play() {
+    if (!_curSamples.length) return;
+    audio.play().catch(function() {});
+    document.getElementById('audio-player').style.display = 'flex';
+    document.body.classList.add('player-active');
+    var icon = document.getElementById('player-play-icon');
+    if (icon) icon.innerHTML = PAUSE_ICON;
+  }
+
+  function pause() {
+    audio.pause();
+    var icon = document.getElementById('player-play-icon');
+    if (icon) icon.innerHTML = PLAY_ICON;
+  }
+
+  function next() {
+    if (_curIdx + 1 < _curSamples.length) {
+      var wasPlaying = !audio.paused; /* capture BEFORE src change flips paused=true */
+      _curIdx++;
+      audio.src = _curSamples[_curIdx];
+      updateUI();
+      if (wasPlaying) audio.play().catch(function(){});
+    }
+  }
+
+  function prev() {
+    if (_curIdx > 0) {
+      var wasPlaying = !audio.paused;
+      _curIdx--;
+      audio.src = _curSamples[_curIdx];
+      updateUI();
+      if (wasPlaying) audio.play().catch(function(){});
+    }
+  }
+
+  function playAlbum(albumId, samples, startIdx, title, artist) {
+    _curAlbumId = albumId  || '';
+    _curSamples = samples  || [];
+    _curIdx     = startIdx || 0;
+    _curTitle   = title    || '';
+    _curArtist  = artist   || '';
+    if (!_curSamples.length) return;
+    audio.src = _curSamples[_curIdx];
+    updateUI();
+    play();
+  }
+
+  function setContext(albumId, samples, title, artist) {
+    _ctxAlbumId = albumId  || '';
+    _ctxSamples = samples  || [];
+    _ctxTitle   = title    || '';
+    _ctxArtist  = artist   || '';
+  }
+
+  function init(/* catalog — unused */) {
+    if (initialized) return;
+    initialized = true;
+
+    audio.addEventListener('ended', function() {
+      if (_curIdx + 1 < _curSamples.length) {
+        _curIdx++;
+        audio.src = _curSamples[_curIdx];
+        updateUI();
+        audio.play().catch(function(){});
+      } else if (_ctxAlbumId && _ctxAlbumId !== _curAlbumId && _ctxSamples.length) {
+        playAlbum(_ctxAlbumId, _ctxSamples, 0, _ctxTitle, _ctxArtist);
+      } else {
+        var icon = document.getElementById('player-play-icon');
+        if (icon) icon.innerHTML = PLAY_ICON;
+      }
+    });
+
+    audio.addEventListener('timeupdate', function() {
+      if (!audio.duration) return;
+      var rem  = audio.duration - audio.currentTime;
+      var m    = Math.floor(rem / 60);
+      var s    = String(Math.floor(rem % 60)).padStart(2, '0');
+      var timeEl = document.getElementById('player-time-remaining');
+      if (timeEl) timeEl.textContent = '-' + m + ':' + s;
+    });
+
+    var playBtn   = document.getElementById('player-play');
+    var prevBtn   = document.getElementById('player-prev');
+    var nextBtn   = document.getElementById('player-next');
+    var closeBtn  = document.getElementById('player-close');
+
+    if (playBtn) playBtn.addEventListener('click', function() {
+      audio.paused ? play() : pause();
+    });
+    if (prevBtn)  prevBtn.addEventListener('click', prev);
+    if (nextBtn)  nextBtn.addEventListener('click', next);
+    if (closeBtn) closeBtn.addEventListener('click', function() {
+      audio.pause();
+      audio.src = '';
+      _curAlbumId = ''; _curSamples = []; _curIdx = 0;
+      _curTitle = ''; _curArtist = '';
+      document.getElementById('audio-player').style.display = 'none';
+      document.body.classList.remove('player-active');
+      var timeEl = document.getElementById('player-time-remaining');
+      var icon   = document.getElementById('player-play-icon');
+      if (timeEl) timeEl.textContent = '';
+      if (icon)   icon.innerHTML     = PLAY_ICON;
+    });
+
+    /* Meta click: navigate to the playing album's page (no-op if already there) */
+    var metaEl = document.getElementById('player-meta');
+    if (metaEl) metaEl.addEventListener('click', function() {
+      if (!_curAlbumId) return;
+      var target = '/album/' + encodeURIComponent(_curAlbumId);
+      if (location.pathname === target) return;
+      navigate(target);
+    });
+  }
+
+  function getAudio() { return audio; }
+
+  return { init: init, play: play, pause: pause, next: next, prev: prev,
+           playAlbum: playAlbum, setContext: setContext, getAudio: getAudio };
+})();
+
+// ─────────────────────────────────────────────────────────────
+// SECTION 5: ROUTER
+// AUDIT: navigate() guards against null/undefined path.
+//        decodeURIComponent wrapped in try/catch per route handler.
+//        Trailing slash normalized.
+//        Same-URL pushState skipped to avoid redundant history entries.
+// ─────────────────────────────────────────────────────────────
+
+var ROUTES = [
+  { re: /^\/$/, fn: function() { renderCatalog(); } },
+  { re: /^\/album\/(.+)$/, fn: function(m) {
+      var id;
+      try { id = decodeURIComponent(m[1]); } catch(e) { id = m[1]; }
+      renderAlbum(id);
+    }
+  },
+  { re: /^\/cart$/,     fn: function() { renderCart();     } },
+  { re: /^\/checkout$/, fn: function() { renderCheckout(); } },
+  { re: /^\/success$/,  fn: function() { renderSuccess();  } },
+  { re: /^\/genre\/(.+)$/, fn: function(m) {
+      var slug;
+      try { slug = decodeURIComponent(m[1]); } catch(e) { slug = m[1]; }
+      renderGenre(slug);
+    }
+  },
+  { re: /^\/search$/,   fn: function() { renderSearch();   } },
+];
+
+function navigate(path, push) {
+  updateNav();
+  // AUDIT: null/undefined guard
+  if (!path || typeof path !== 'string') path = '/';
+  // Normalize trailing slash (except root)
+  if (path.length > 1 && path.endsWith('/')) path = path.slice(0, -1);
+  // Skip pushState if already on this URL
+  if (push !== false && location.pathname !== path) {
+    history.pushState(null, '', path);
+  }
+  // Scroll to top on every SPA navigation
+  window.scrollTo(0, 0);
+  // Close search bar on every navigation
+  var bar = document.getElementById('searchBar');
+  if (bar) bar.classList.remove('open');
+  document.body.classList.remove('search-open', 'search-active');
+  // Set body class for CSS scoping (search-btn visibility, guide-footer, etc.)
+  var viewName = 'home';
+  var match;
+  for (var r = 0; r < ROUTES.length; r++) {
+    match = path.match(ROUTES[r].re);
+    if (match) { ROUTES[r].fn(match); return; }
+  }
+  render404();
+}
+
+window.addEventListener('popstate', function() { navigate(location.pathname, false); });
+window.addEventListener('pageshow',  function(e) { if (e.persisted) navigate(location.pathname, false); });
+
+// Global <a> click interception — SPA navigation without full reload.
+// Does not intercept external links, mailto:, tel:, or hash-only anchors.
+document.addEventListener('click', function(e) {
+  var a = e.target.closest('a[href]');
+  if (!a) return;
+  var href = a.getAttribute('href');
+  if (!href) return;
+  if (href.startsWith('http') || href.startsWith('//') ||
+      href.startsWith('mailto:') || href.startsWith('tel:') ||
+      href === '#' || href.startsWith('#')) return;
+  e.preventDefault();
+  navigate(href);
+});
+
+// ─────────────────────────────────────────────────────────────
+// SECTION 5: SEARCH BAR TOGGLE (shell-level, not per-route)
+// ─────────────────────────────────────────────────────────────
 (function() {
   var btn   = document.getElementById('searchBtn');
   var bar   = document.getElementById('searchBar');
   var input = document.getElementById('searchInput');
+  if (!btn || !bar || !input) return;
 
   function openSearch() {
     bar.classList.add('open');
     document.body.classList.add('search-open');
     setTimeout(function() { input.focus(); }, 180);
   }
-
   function closeSearch() {
     bar.classList.remove('open');
-    document.body.classList.remove('search-open');
-    document.body.classList.remove('search-active');
+    document.body.classList.remove('search-open', 'search-active');
     input.value = '';
     input.dispatchEvent(new Event('input'));
   }
-
   input.addEventListener('input', function() {
     document.body.classList.toggle('search-active', input.value.trim().length > 0);
   });
-
   btn.addEventListener('click', function() {
     bar.classList.contains('open') ? closeSearch() : openSearch();
   });
+
+  var availBtn = document.getElementById('availToggle');
+  if (availBtn) {
+    availBtn.addEventListener('click', function() {
+      window.availFilterActive = !window.availFilterActive;
+      availBtn.classList.toggle('active', !!window.availFilterActive);
+      if (typeof applyAvailToggle === 'function') applyAvailToggle();
+    });
+  }
 })();
 
-document.addEventListener('DOMContentLoaded', async () => {
-  initSearch();
-  const catalog = await LR.api.catalog();
-  if (catalog) {
-    window._catalogCache = catalog;
-    buildCarousel(catalog);
-    buildTable(catalog);
-    buildAZNav(catalog);
-    buildSoldLog(catalog);
-    loadTagCloud(catalog);
+// ─────────────────────────────────────────────────────────────
+// SECTION 6: VIEW RENDERERS
+// ─────────────────────────────────────────────────────────────
+
+
+function _setView(root, name) {
+  root.className = 'view-' + name;
+  document.body.className = document.body.className
+    .replace(/\bview-\S+/g, '').trim() + ' view-' + name;
+}
+
+// ── Catalog ───────────────────────────────────────────────────
+async function renderCatalog() {
+  var root = document.getElementById('app-root');
+  _setView(root, 'catalog');
+  document.title = 'LATE RECORDS';
+
+  // Loading state — never blank
+  root.innerHTML = '<section class="carousel-section"><div class="carousel-viewport"></div></section><div class="container"></div>';
+
+  var catalog;
+  try { catalog = await LR.api.catalog(); }
+  catch(e) {
+    root.innerHTML = '<div class="container" style="padding:80px 0;font-size:13px;color:var(--ink30);">'
+      + 'Could not load catalog. '
+      + '<button onclick="renderCatalog()" style="font-size:11px;text-transform:uppercase;'
+      + 'letter-spacing:.06em;background:none;border:none;color:var(--ink45);cursor:pointer;'
+      + 'text-decoration:underline;">Try again</button></div>';
+    return;
   }
-});
+
+  LR_PLAYER.init(catalog);
+  window._catalogCache = catalog;
+
+  root.innerHTML = `
+    <section class="carousel-section">
+      <div class="carousel-viewport">
+        <div class="carousel-track" id="carouselTrack"></div>
+        <div class="carousel-nav" id="carouselNav">
+          <button class="carousel-btn" id="prevBtn">&#8249;</button>
+          <button class="carousel-btn" id="nextBtn">&#8250;</button>
+        </div>
+      </div>
+      <div class="carousel-seg-bar" id="carouselSegBar"></div>
+    </section>
+    <hr class="section-divider">
+    <div class="container">
+      <div class="az-nav" id="azNav"></div>
+      <div class="suggestions-header" id="suggestionsHeader"></div>
+      <div class="no-results-empty"   id="noResultsEmpty">Nothing found.</div>
+      <table class="tbl" id="catalogTable">
+        <colgroup>
+          <col class="c-art"><col class="c-title"><col class="c-genre">
+          <col class="c-format"><col class="c-stock">
+        </colgroup>
+        <thead><tr>
+          <th class="c-art">
+            <svg class="art-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="0.75" stroke-linecap="round">
+              <circle cx="12" cy="12" r="11"/><circle cx="12" cy="12" r="2"/>
+            </svg>
+          </th>
+          <th class="c-title">Title / Artist</th>
+          <th class="c-genre">Genre</th>
+          <th class="c-format">Format</th>
+          <th class="c-stock">Stock</th>
+        </tr></thead>
+        <tbody id="catalogList"></tbody>
+      </table>
+    </div>
+    <div class="bottom-section">
+      <div class="info-rotator" id="infoRotator">
+        <button class="info-rotator-btn" id="infoPrev">&#8249;</button>
+        <div class="info-rotator-content">
+          <div class="info-rotator-title" id="infoTitle"></div>
+          <div class="info-rotator-text"  id="infoText"></div>
+        </div>
+        <button class="info-rotator-btn" id="infoNext">&#8250;</button>
+      </div>
+      <div class="sold-log" id="soldLog" style="display:none;">
+        <div id="soldLogVisible"></div>
+        <div id="soldLogHidden" style="display:none;"></div>
+      </div>
+      <div class="tag-cloud" id="tagCloud">
+        <div class="tag-cloud-list" id="tagCloudList"></div>
+      </div>
+      <footer class="lr-footer"></footer>
+    </div>`;
+
+  // Info rotator
+  (function() {
+    var slides = [
+      { title: 'Shop Info',           text: 'Catalog updated daily with new pressings and used record finds.' },
+      { title: 'Shipping & Handling', text: 'All records ship in custom mailers. Allow 3–5 business days for domestic delivery.' },
+      { title: 'Condition & Grading', text: 'All records graded visually and play-tested. Condition noted on each listing.' }
+    ];
+    var idx = 0;
+    var titleEl = document.getElementById('infoTitle');
+    var textEl  = document.getElementById('infoText');
+    function show(i) { idx = (i + slides.length) % slides.length; titleEl.textContent = slides[idx].title; textEl.textContent = slides[idx].text; }
+    show(0);
+    document.getElementById('infoPrev').addEventListener('click', function(e) { e.stopPropagation(); show(idx - 1); });
+    document.getElementById('infoNext').addEventListener('click', function(e) { e.stopPropagation(); show(idx + 1); });
+  })();
+
+  buildCarousel(catalog);
+  buildTable(catalog);
+  buildAZNav(catalog);
+  buildSoldLog(catalog);
+  loadTagCloud(catalog);
+
+  // Always call initSearch() on each catalog render: root.innerHTML swap creates
+  // a fresh #searchInput element, so listeners from a previous call are on a dead
+  // node. Duplicate document-level click listeners are harmless (idempotent).
+  initSearch();
+
+  // AUDIT: event delegation on #catalogTable covers ALL dynamically rendered rows
+  // including those injected by A-Z nav, search, and filter.
+  document.getElementById('catalogTable').addEventListener('click', function(e) {
+    // genre-nav links temporarily deactivated
+    // var tag = e.target.closest('[data-genre-nav]');
+    // if (tag) { e.stopPropagation(); navigate('/genre/' + tag.dataset.genreNav); return; }
+    var row = e.target.closest('tr[data-album-id]');
+    if (row) navigate('/album/' + row.dataset.albumId);
+  });
+
+  document.getElementById('carouselTrack').addEventListener('click', function(e) {
+    // genre-nav links temporarily deactivated
+    // var tag  = e.target.closest('[data-genre-nav]');
+    // if (tag) { e.stopPropagation(); navigate('/genre/' + tag.dataset.genreNav); return; }
+    var card = e.target.closest('[data-href]');
+    if (card) navigate(card.dataset.href);
+  });
+}
+
+// ── Album ─────────────────────────────────────────────────────
+async function renderAlbum(albumId) {
+  var root = document.getElementById('app-root');
+  _setView(root, 'album');
+
+  root.innerHTML = '<div class="container">'
+    + '<div style="padding:80px 0;font-size:13px;color:var(--ink30);">Loading\u2026</div>'
+    + '</div>';
+
+  var all, item;
+  try {
+    all  = window._catalogCache || await LR.api.catalog();
+    window._catalogCache = all;
+    item = all.find(function(a) { return a.album_id === albumId; });
+    if (!item) item = await LR.api.album(albumId);
+  } catch(e) { item = null; }
+
+  if (!item) {
+    root.innerHTML = '<div class="container" style="padding:80px 0;text-align:center;">'
+      + '<p style="font-size:13px;color:var(--ink30);">Album not found.</p>'
+      + '<a href="/" style="font-size:11px;text-transform:uppercase;letter-spacing:.08em;'
+      + 'text-decoration:underline;color:var(--ink45);">\u2190 Back to shop</a></div>';
+    return;
+  }
+
+  document.title = item.title + ' by ' + item.artist + ' — LATE RECORDS';
+
+  // Update OG meta
+  var pageUrl  = 'https://late-records.shop/album/' + encodeURIComponent(item.album_id);
+  var imageUrl = 'https://media.late-records.shop/images/' + encodeURIComponent(item.album_id) + '.webp';
+  var ogDesc   = item.description
+    ? item.description.slice(0, 160)
+    : [(item.format || 'LP').trim(), item.condition, LR.ui.splitPipe(item.genre).slice(0, 2).join(', ')].filter(Boolean).join(' \u00b7 ');
+  [
+    ['property', 'og:type',        'product'],
+    ['property', 'og:url',         pageUrl],
+    ['property', 'og:title',       item.title + ' by ' + item.artist + ' \u2014 LATE RECORDS'],
+    ['property', 'og:description', ogDesc],
+    ['property', 'og:image',       imageUrl],
+    ['name',     'twitter:card',        'summary_large_image'],
+    ['name',     'twitter:title',       item.title + ' by ' + item.artist],
+    ['name',     'twitter:description', ogDesc],
+    ['name',     'twitter:image',       imageUrl],
+  ].forEach(function(arr) {
+    var attr = arr[0], name = arr[1], content = arr[2];
+    var el = document.querySelector('meta[' + attr + '="' + name + '"]');
+    if (!el) { el = document.createElement('meta'); el.setAttribute(attr, name); document.head.appendChild(el); }
+    el.content = content;
+  });
+
+  // JSON-LD
+  var existingLd = document.getElementById('album-jsonld');
+  if (existingLd) existingLd.remove();
+  var ld = document.createElement('script');
+  ld.id = 'album-jsonld'; ld.type = 'application/ld+json';
+  ld.text = JSON.stringify({
+    '@context': 'https://schema.org', '@type': 'Product',
+    name: item.title, description: ogDesc, image: imageUrl,
+    brand: { '@type': 'Brand', name: item.artist },
+    offers: {
+      '@type': 'Offer', price: String(item.price), priceCurrency: 'PHP',
+      availability: item.status === 'available' ? 'https://schema.org/InStock' : 'https://schema.org/OutOfStock',
+      url: pageUrl, seller: { '@type': 'Organization', name: 'Late Records' }
+    }
+  });
+  document.head.appendChild(ld);
+
+  var sold   = item.status !== 'available';
+  var tracks = LR.ui.splitPipe(item.tracklist);
+  var vTracks = tracks.slice(0, 4);
+  var hTracks = tracks.slice(4);
+
+  var related = [];
+  if (all) {
+    related = all
+      .filter(function(a) { return a.album_id !== item.album_id; })
+      .map(function(a) { return { i: a, s: scoreRelated(item, a) }; })
+      .sort(function(a, b) { return b.s - a.s; })
+      .slice(0, 4);
+  }
+
+  var vinylSVG = '<svg viewBox="0 0 80 80" class="placeholder-vinyl" xmlns="http://www.w3.org/2000/svg">'
+    + '<circle cx="40" cy="40" r="38" fill="none" stroke="rgba(26,26,20,.15)" stroke-width="1"/>'
+    + '<circle cx="40" cy="40" r="30" fill="none" stroke="rgba(26,26,20,.1)"  stroke-width="1"/>'
+    + '<circle cx="40" cy="40" r="22" fill="none" stroke="rgba(26,26,20,.1)"  stroke-width="1"/>'
+    + '<circle cx="40" cy="40" r="14" fill="none" stroke="rgba(26,26,20,.1)"  stroke-width="1"/>'
+    + '<circle cx="40" cy="40" r="6"  fill="none" stroke="rgba(26,26,20,.2)"  stroke-width="1"/>'
+    + '<circle cx="40" cy="40" r="2.5" fill="rgba(26,26,20,.25)"/></svg>';
+
+  root.innerHTML = '<div class="container"><div class="album-page">'
+
+    // Left col, row 1: title + artist (genre moved to after description)
+    + '<div class="album-title-col">'
+    + '<h1 class="album-title">' + _escHTML(item.title) + '</h1>'
+    + '<p class="album-artist">' + _escHTML(item.artist) + '</p>'
+    + '</div>'
+
+    // Right col, rows 1–10: sticky image gallery (main + optional 2nd image)
+    + '<div class="album-image-wrap">'
+    + '<div class="album-img-gallery">'
+    + '<div class="album-img-track">'
+    // Slide 1
+    + '<div class="album-img-slide">'
+    + '<img src="' + imageUrl + '" class="album-image" id="albumImg" alt="' + _escHTML(item.title) + '"'
+    + ' onerror="_wf(this,function(e){e.style.display=\'none\';var p=document.getElementById(\'albumPlaceholder\');if(p)p.style.display=\'flex\';})">'
+    + '<div id="albumPlaceholder" class="album-placeholder" style="display:none;">'
+    + '<div class="album-placeholder-inner">' + vinylSVG + '<span class="placeholder-label">Image Pending</span></div></div>'
+    + '</div>'
+    // Slide 2: album_id-1.jpg — hidden until loaded, removed if missing
+    + '<div class="album-img-slide" id="albumImgSlide2" style="display:none;">'
+    + '<img src="https://media.late-records.shop/images/' + encodeURIComponent(item.album_id) + '-1.webp"'
+    + ' class="album-image" alt="' + _escHTML(item.title) + '"'
+    + ' onload="this.closest(\'.album-image-wrap\').classList.add(\'has-second-img\');this.parentNode.style.display=\'\';"'
+    + ' onerror="_wf(this,function(e){e.parentNode.remove();})">'
+    + '</div>'
+    + '</div>'  // close album-img-track
+    + '<span class="album-img-arrow">›</span>'
+    + '</div>'  // close album-img-gallery
+    + '</div>'
+
+    // Left col, row 2: format · condition
+    + (function() {
+        var parts = [(item.format || 'LP').trim()];
+        if (item.condition) parts.push(item.condition);
+        return '<div class="album-info-strip"><span class="album-info-spec">' + _escHTML(parts.join(' · ')) + '</span></div>';
+      })()
+
+    // Price + add to cart
+    + '<div class="price-block"><div class="price-label">Price</div>'
+    + '<div class="album-price">' + (sold
+        ? '<span style="color:var(--ink30);text-decoration:line-through;">' + LR.ui.peso(item.price) + '</span>'
+        : LR.ui.peso(item.price))
+    + '</div>'
+    + '<button class="add-to-cart-btn" id="addToCartBtn"'
+    + ' data-id="' + _escHTML(item.album_id) + '" data-title="' + _escHTML(item.title) + '"'
+    + ' data-artist="' + _escHTML(item.artist) + '" data-price="' + item.price + '"'
+    + ' data-stock="' + item.stock + '" ' + (sold ? 'disabled' : '') + '>'
+    + (sold ? 'Sold Out' : 'Add to Cart') + '</button></div>'
+
+    // Description
+    + (item.description ? '<div class="description-block"><div style="display:flex;align-items:flex-end;gap:0;">'
+        + '<p class="description" id="albumDesc" style="flex:1;">' + _escHTML(item.description) + '</p>'
+        + '<button class="description-toggle" id="descToggle" style="display:none;">+</button>'
+        + '</div></div>' : '')
+
+    // Genre pills — after description
+    + (function() {
+        var genres = LR.ui.splitPipe(item.genre).slice(0, 3);
+        if (!genres.length) return '';
+        return '<div class="album-genre-wrap">'
+          + genres.map(function(g) { return '<span class="album-genre-tag">' + _escHTML(g) + '</span>'; }).join('')
+          + '</div>';
+      })()
+
+    // Tracklist
+    + '<div class="album-tracklist" id="albumTracklist">'
+    + '<button class="tl-play-btn" id="tlPlayBtn">PREVIEW</button>'
+    + '<span id="tlTracks"></span>'
+    + '</div>'
+
+    + '</div>' // close album-page
+
+    // Related
+    + (related.length ? '<section class="related-section"><h3 class="related-title">Recommended</h3>'
+        + '<div class="related-grid">'
+        + related.map(function(obj) {
+            var i = obj.i;
+            return '<a class="related-card" href="/album/' + encodeURIComponent(i.album_id) + '">'
+              + '<img src="https://media.late-records.shop/images/' + encodeURIComponent(i.album_id) + '.webp"'
+              + ' class="related-cover" alt="' + _escHTML(i.title) + '" loading="lazy"'
+              + ' onerror="_wf(this,function(e){e.style.display=\'none\';if(e.nextElementSibling)e.nextElementSibling.style.display=\'flex\';})">'
+              + '<div class="related-placeholder" style="display:none;">'
+              + '<div class="album-placeholder-inner">' + vinylSVG + '<span class="placeholder-label">Image Pending</span></div></div>'
+              + '<div class="related-info">'
+              + '<p class="related-name">'  + _escHTML(i.title)  + '</p>'
+              + '<p class="related-artist">' + _escHTML(i.artist) + '</p>'
+              + '</div></a>';
+          }).join('')
+        + '</div></section>' : '')
+
+    + '<div class="img-viewer" id="imgViewer"><img id="imgViewerImg" alt=""></div>'
+    + '</div>'; // close container
+
+  // Wire up image viewer
+  (function() {
+    var viewer = document.getElementById('imgViewer');
+    var vImg   = document.getElementById('imgViewerImg');
+    if (!viewer) return;
+    document.querySelectorAll('.album-img-slide .album-image').forEach(function(img) {
+      img.style.cursor = 'pointer';
+      img.addEventListener('click', function() {
+        vImg.src = this.src;
+        viewer.classList.add('is-open');
+      });
+    });
+    viewer.addEventListener('click', function() {
+      viewer.classList.remove('is-open');
+      vImg.src = '';
+    });
+  })();
+
+  // Wire up description toggle
+  (function() {
+    var desc   = document.getElementById('albumDesc');
+    var toggle = document.getElementById('descToggle');
+    if (!desc || !toggle) return;
+    requestAnimationFrame(function() {
+      if (desc.scrollHeight > 100) {
+        desc.classList.add('is-collapsed');
+        toggle.style.display = 'inline-flex';
+      }
+    });
+    toggle.addEventListener('click', function() {
+      var c = desc.classList.toggle('is-collapsed');
+      toggle.textContent = c ? '+' : '\u2212';
+    });
+  })();
+
+  // Wire up combined tracklist + sample player.
+  // [ PLAY ] | Track 1 | Track 2 | Track 3 | ...
+  // Tracks with a corresponding sample are <button>; others are plain <span>.
+  // setContext() called on load so shell player can hand off when ready.
+  // No autoplay on page load — only on explicit PLAY click.
+  (function() {
+    var wrap     = document.getElementById('albumTracklist');
+    var playBtn  = document.getElementById('tlPlayBtn');
+    var tracksEl = document.getElementById('tlTracks');
+    if (!wrap) return;
+
+    var shellAudio = LR_PLAYER.getAudio();
+    var sampleUrls = [];
+
+    function isThisAlbum() {
+      return shellAudio.src && shellAudio.src.indexOf('/' + item.album_id + '/') !== -1;
+    }
+
+    function syncPlayIcon() {
+      var playing = !shellAudio.paused && isThisAlbum();
+      if (playBtn) playBtn.textContent = playing ? 'PAUSE' : 'PREVIEW';
+      if (playBtn) playBtn.classList.toggle('is-playing', playing);
+    }
+
+    function syncActiveTrack() {
+      if (!isThisAlbum()) return;
+      var match = shellAudio.src.match(/sample(\d+)\.mp3/);
+      if (!match) return;
+      var idx = parseInt(match[1], 10) - 1;
+      wrap.querySelectorAll('.tl-track-btn').forEach(function(b, i) {
+        b.classList.toggle('is-active', i === idx);
+      });
+    }
+
+    shellAudio.addEventListener('play',       syncPlayIcon);
+    shellAudio.addEventListener('pause',      syncPlayIcon);
+    shellAudio.addEventListener('ended',      syncPlayIcon);
+    shellAudio.addEventListener('timeupdate', syncActiveTrack);
+
+    if (playBtn) playBtn.addEventListener('click', function() {
+      if (!shellAudio.paused && isThisAlbum()) {
+        LR_PLAYER.pause();
+      } else {
+        LR_PLAYER.playAlbum(item.album_id, sampleUrls, 0, item.title, item.artist);
+      }
+    });
+
+    // Event delegation for track buttons
+    wrap.addEventListener('click', function(e) {
+      var btn = e.target.closest('.tl-track-btn');
+      if (!btn) return;
+      var idx = parseInt(btn.getAttribute('data-idx'), 10);
+      LR_PLAYER.playAlbum(item.album_id, sampleUrls, idx, item.title, item.artist);
+    });
+
+    function buildTracks(urls) {
+      sampleUrls = urls;
+      LR_PLAYER.setContext(item.album_id, sampleUrls, item.title, item.artist);
+
+      var numSamples = sampleUrls.length;
+      var html;
+
+      if (tracks.length > 0) {
+        // Each track+sep wrapped in .tl-unit (nowrap inline-block) so browser can only
+        // break BETWEEN units — never between a separator and its following track name.
+        html = tracks.map(function(t, i) {
+          var sep = i < tracks.length - 1 ? '<span class="tl-track-sep">|</span>' : '';
+          var inner = i < numSamples
+            ? '<button class="tl-track-btn" data-idx="' + i + '">' + _escHTML(t) + '</button>'
+            : '<span class="tl-track-lbl">' + _escHTML(t) + '</span>';
+          return '<span class="tl-unit">' + inner + sep + '</span>';
+        }).join('');
+      } else if (numSamples > 0) {
+        // No tracklist — fall back to "Sample N" labels
+        html = sampleUrls.map(function(url, i) {
+          var sep = i < sampleUrls.length - 1 ? '<span class="tl-track-sep">|</span>' : '';
+          return '<span class="tl-unit"><button class="tl-track-btn" data-idx="' + i + '">Sample ' + (i + 1) + '</button>' + sep + '</span>';
+        }).join('');
+      } else {
+        // No samples AND no tracklist — hide
+        return;
+      }
+
+      tracksEl.innerHTML = html;
+      // Show/hide PLAY button based on whether samples exist
+      if (playBtn) playBtn.style.display = numSamples > 0 ? '' : 'none';
+      var divider = wrap.querySelector('.tl-divider');
+      if (divider) divider.style.display = numSamples > 0 ? '' : 'none';
+      wrap.classList.add('is-visible');
+      syncPlayIcon();
+    }
+
+    // If no samples AND has tracklist, show tracks immediately without PLAY button
+    if (tracks.length > 0 && parseInt(item.sample_count, 10) === 0) {
+      buildTracks([]);
+      return;
+    }
+
+    var n = parseInt(item.sample_count, 10);
+    var AUDIO_BASE = 'https://media.late-records.shop/audio/';
+    if (n > 0) {
+      var urls = [];
+      for (var k = 1; k <= n; k++) urls.push(AUDIO_BASE + item.album_id + '/sample' + k + '.mp3');
+      buildTracks(urls);
+    } else {
+      // Probe up to 5 samples
+      var probes = [1,2,3,4,5].map(function(k) {
+        return new Promise(function(resolve) {
+          var a = new Audio(); a.preload = 'metadata';
+          a.addEventListener('loadedmetadata', function() {
+            resolve(AUDIO_BASE + item.album_id + '/sample' + k + '.mp3');
+          }, { once: true });
+          a.addEventListener('error', function() { resolve(null); }, { once: true });
+          a.src = AUDIO_BASE + item.album_id + '/sample' + k + '.mp3';
+        });
+      });
+      Promise.all(probes).then(function(results) {
+        buildTracks(results.filter(Boolean));
+      });
+    }
+  })();
+
+  // Wire up add-to-cart
+  (function() {
+    var btn = document.getElementById('addToCartBtn');
+    if (!btn) return;
+    function setInCart() {
+      btn.textContent = 'Added to Cart';
+      btn.classList.add('is-in-cart');
+      btn.disabled = true;
+    }
+    if (LR.cart.get().find(function(i) { return i.id === item.album_id; })) setInCart();
+    btn.addEventListener('click', function() {
+      LR.cart.add({ id: item.album_id, title: item.title, artist: item.artist, price: item.price, stock: item.stock });
+      setInCart();
+    });
+  })();
+}
+
+// ── Cart ──────────────────────────────────────────────────────
+function renderCart() {
+  var root = document.getElementById('app-root');
+  _setView(root, 'cart');
+  document.title = 'Cart \u2014 LATE RECORDS';
+
+  root.innerHTML = '<div class="container">'
+    + '<h1 class="page-title">Cart</h1>'
+    + '<p id="emptyMsg" style="color:var(--ink45);font-size:13px;display:none;">Your cart is empty.</p>'
+    + '<div id="cartItems" class="cart-list"></div>'
+    + '<div class="cart-summary"><div class="summary-row">'
+    + '<div><p class="summary-label">Subtotal</p>'
+    + '<p class="shipping-note">Shipping calculated at checkout</p></div>'
+    + '<p id="cartTotal" class="summary-price">\u20b10</p></div>'
+    + '<button id="checkoutBtn" class="checkout-btn">Checkout</button>'
+    + '</div></div>';
+
+  function renderItems() {
+    var items     = LR.cart.get();
+    var container = document.getElementById('cartItems');
+    var emptyMsg  = document.getElementById('emptyMsg');
+    var totalEl   = document.getElementById('cartTotal');
+    if (!items.length) {
+      emptyMsg.style.display = 'block';
+      container.innerHTML = '';
+      totalEl.textContent = '\u20b10';
+      return;
+    }
+    emptyMsg.style.display = 'none';
+    container.innerHTML = items.map(function(item) {
+      return '<div class="cart-item" data-id="' + item.id + '">'
+        + '<div class="cart-item-details">'
+        + '<a href="/album/' + encodeURIComponent(item.id) + '" style="text-decoration:none;color:inherit;">'
+        + '<div class="cart-item-title">'  + _escHTML(item.title)  + '</div>'
+        + '<div class="cart-item-artist">' + _escHTML(item.artist) + '</div></a>'
+        + '<div class="stock-label"' + (item.stock === 1 ? ' style="opacity:1;"' : '') + '>'
+        + (item.stock === 1 ? 'Last copy' : '') + '</div></div>'
+        + '<div class="cart-item-right">'
+        + '<span class="cart-item-price">' + LR.ui.peso(item.price) + '</span>'
+        + '<div class="qty-group">'
+        + '<button class="qty-btn" data-minus="' + item.id + '">\u2212</button>'
+        + '<div class="qty-num">' + item.qty + '</div>'
+        + '<button class="qty-btn" data-plus="' + item.id + '">+</button>'
+        + '</div>'
+        + '<button class="remove-btn" data-remove="' + item.id + '">\u00d7</button>'
+        + '</div></div>';
+    }).join('');
+    totalEl.textContent = LR.ui.peso(LR.cart.subtotal());
+  }
+
+  // AUDIT: event delegation — handles dynamically rendered qty/remove buttons.
+  document.getElementById('cartItems').addEventListener('click', function(e) {
+    var removeId = e.target.dataset.remove;
+    var plusId   = e.target.dataset.plus;
+    var minusId  = e.target.dataset.minus;
+    if (removeId) { LR.cart.remove(removeId); renderItems(); return; }
+    if (plusId) {
+      var item  = LR.cart.get().find(function(i) { return i.id === plusId; });
+      var limit = item ? (item.stock || 10) : 10;
+      if (item && item.qty >= limit) {
+        var lbl = document.querySelector('.cart-item[data-id="' + plusId + '"] .stock-label');
+        if (lbl) { lbl.textContent = 'Only ' + limit + ' available'; lbl.style.opacity = '1'; setTimeout(function() { lbl.style.opacity = '0'; }, 2000); }
+        return;
+      }
+      LR.cart.updateQty(plusId,  1); renderItems(); return;
+    }
+    if (minusId) {
+      var it = LR.cart.get().find(function(i) { return i.id === minusId; });
+      if (!it) return;
+      if (it.qty <= 1) LR.cart.remove(minusId); else LR.cart.updateQty(minusId, -1);
+      renderItems();
+    }
+  });
+
+  document.getElementById('checkoutBtn').addEventListener('click', function() {
+    if (!LR.cart.count()) { alert('Your cart is empty.'); return; }
+    navigate('/checkout');
+  });
+
+  renderItems();
+}
+
+// ── Genre ─────────────────────────────────────────────────────
+async function renderGenre(slug) {
+  var root = document.getElementById('app-root');
+  _setView(root, 'genre');
+
+  var label = slug ? (slug.charAt(0).toUpperCase() + slug.slice(1)) : 'All';
+  document.title = label + ' \u2014 LATE RECORDS';
+
+  // Skeleton while loading
+  root.innerHTML = '<div class="container">'
+    + '<span class="genre-nav-label">Browse</span>'
+    + '<div class="genre-nav-block"><div class="genre-pills-shell" id="genreNavShell">'
+    + '<div class="genre-pills" id="genreNav"><div class="sk" style="width:200px;height:18px;border-radius:2px;"></div></div>'
+    + '</div></div>'
+    + '<table class="tbl"><colgroup><col class="c-title"><col class="c-format"><col class="c-stock"></colgroup>'
+    + '<thead><tr><th class="c-title">Title / Artist</th><th class="c-format">Format</th><th class="c-stock">Stock</th></tr></thead>'
+    + '<tbody id="genreList">'
+    + [1,2,3].map(function() {
+        return '<tr><td class="c-title"><div class="sk" style="width:55%;margin-bottom:6px;height:9px;"></div>'
+          + '<br><div class="sk" style="width:30%;height:9px;"></div></td>'
+          + '<td class="c-format"><div class="sk" style="width:55%;height:9px;"></div></td>'
+          + '<td class="c-stock"><div class="sk" style="width:68%;float:right;height:9px;"></div></td></tr>';
+      }).join('')
+    + '</tbody></table></div>'
+    + '<div class="guide-footer"><div class="guide-footer-inner">'
+    + '<button class="guide-btn" id="guideBtn">Guide</button></div></div>'
+    + '<div class="guide-modal" id="guideModal2">'
+    + '<div class="guide-modal-inner"><div class="guide-modal-body">'
+    + '<div class="guide-heading-wrap"><div class="guide-subheading">Format Guide</div></div>'
+    + '<div class="guide-row"><div class="guide-format">LP</div><div class="guide-desc">Full-length album, 33 RPM. Standard vinyl format.</div><div class="guide-index">01</div></div>'
+    + '<div class="guide-row"><div class="guide-format">EP</div><div class="guide-desc">Extended play, typically 4\u20136 tracks.</div><div class="guide-index">02</div></div>'
+    + '<div class="guide-row"><div class="guide-format">7"</div><div class="guide-desc">Single. Usually 45 RPM, one or two tracks per side.</div><div class="guide-index">03</div></div>'
+    + '<div class="guide-row"><div class="guide-format">12"</div><div class="guide-desc">Maxi-single or club mix. 45 RPM, extended cuts.</div><div class="guide-index">04</div></div>'
+    + '</div></div></div>';
+
+  var catalog;
+  try { catalog = window._catalogCache || await LR.api.catalog(); window._catalogCache = catalog; }
+  catch(e) {
+    document.getElementById('genreList').innerHTML =
+      '<tr><td colspan="3" class="empty-state">Could not load catalog.</td></tr>';
+    return;
+  }
+
+  LR_PLAYER.init(catalog);
+
+  // Build genre pills from catalog
+  var allGenres = new Set();
+  catalog.forEach(function(a) {
+    LR.ui.splitPipe(a.genre).forEach(function(g) { if (g) allGenres.add(g.toLowerCase()); });
+  });
+  var sorted = Array.from(allGenres).sort();
+  var activeSlug = slug ? slug.toLowerCase() : '';
+
+  var genreNav = document.getElementById('genreNav');
+  if (genreNav) {
+    genreNav.innerHTML = sorted.map(function(g) {
+      return '<button class="genre-pill' + (g === activeSlug ? ' active' : '') + '"'
+        + ' data-genre="' + encodeURIComponent(g) + '">'
+        + _escHTML(g.charAt(0).toUpperCase() + g.slice(1)) + '</button>';
+    }).join('');
+  }
+
+  // Render filtered table
+  function renderFiltered(filterSlug) {
+    var filtered = catalog.filter(function(a) {
+      if (String(a.status).toLowerCase() === 'sold_out') return false;
+      if (!filterSlug) return true;
+      return LR.ui.splitPipe(a.genre).some(function(g) { return g.toLowerCase() === filterSlug; });
+    });
+    var tbody = document.getElementById('genreList');
+    if (!filtered.length) {
+      tbody.innerHTML = '<tr><td colspan="3" class="empty-state">No records found for this genre.</td></tr>';
+      return;
+    }
+    tbody.innerHTML = filtered.map(function(item) {
+      var sold   = item.status !== 'available';
+      var format = _escHTML((item.format || 'LP').trim());
+      return '<tr class="' + (sold ? 'sold' : '') + '" data-album-id="' + encodeURIComponent(item.album_id) + '">'
+        + '<td class="c-title"><div class="rec-title">' + _escHTML(item.title) + '</div>'
+        + '<div class="rec-artist">' + _escHTML(item.artist) + '</div></td>'
+        + '<td class="c-format"><span class="rec-format">' + format + '</span></td>'
+        + '<td class="c-stock"><div class="rec-stock">'
+        + '<span class="sdot ' + (sold ? 's' : 'a') + '"></span>'
+        + '<span>' + (sold ? 'Sold' : 'Avail') + '</span></div></td></tr>';
+    }).join('');
+  }
+
+  renderFiltered(activeSlug);
+
+  // AUDIT: event delegation on tbody
+  var tbody = document.getElementById('genreList');
+  if (tbody) {
+    tbody.addEventListener('click', function(e) {
+      var row = e.target.closest('tr[data-album-id]');
+      if (row) navigate('/album/' + row.dataset.albumId);
+    });
+  }
+
+  // Genre pill delegation
+  if (genreNav) {
+    genreNav.addEventListener('click', function(e) {
+      var pill = e.target.closest('.genre-pill');
+      if (!pill) return;
+      var g = pill.dataset.genre;
+      genreNav.querySelectorAll('.genre-pill').forEach(function(p) { p.classList.remove('active'); });
+      pill.classList.add('active');
+      activeSlug = g ? decodeURIComponent(g) : '';
+      history.replaceState(null, '', '/genre/' + g);
+      renderFiltered(activeSlug);
+    });
+  }
+
+  // Guide modal
+  var guideBtn   = document.getElementById('guideBtn');
+  var guideModal = document.getElementById('guideModal2');
+  if (guideBtn && guideModal) {
+    guideBtn.addEventListener('click', function() { guideModal.classList.add('is-open'); });
+    guideModal.addEventListener('click', function(e) {
+      if (e.target === guideModal) guideModal.classList.remove('is-open');
+    });
+  }
+}
+
+// ── Checkout ──────────────────────────────────────────────────
+function renderCheckout() {
+  var root = document.getElementById('app-root');
+  _setView(root, 'checkout');
+  document.title = 'Checkout \u2014 LATE RECORDS';
+
+  if (!LR.cart.count()) { navigate('/cart'); return; }
+
+  var cart       = LR.cart.get();
+  var subtotal   = LR.cart.subtotal();
+  var shipDefault= LR.cart.shipping();
+  var shipping   = shipDefault;
+  var deliveryMethod = 'ship';
+
+  root.innerHTML = '<div class="container"><h1 class="page-title">Checkout</h1>'
+    + '<div class="checkout-grid">'
+    + '<form id="checkoutForm">'
+    + '<div class="section-label">Shipping Details</div>'
+    + '<div class="form-group"><label>Name</label>'
+    + '<input type="text" id="co-name" required placeholder="Full name" autocomplete="name"></div>'
+    + '<div class="form-group"><label>Email</label>'
+    + '<input type="email" id="co-email" required placeholder="your@email.com" autocomplete="email"></div>'
+    + '<div class="form-group"><label>Phone</label>'
+    + '<input type="tel" id="co-phone" required placeholder="+63 xxx xxx xxxx" autocomplete="tel"></div>'
+    + '<div class="form-group"><label>Shipping Address</label>'
+    + '<input type="text" id="co-address" required placeholder="Street address, city, province" autocomplete="street-address"></div>'
+    + '<div class="delivery-methods"><div class="section-label">Delivery Method</div>'
+    + '<label class="delivery-option is-selected">'
+    + '<div class="delivery-option-left"><input type="radio" name="deliveryMethod" value="ship" checked>'
+    + '<span class="delivery-option-label">Standard Shipping</span>'
+    + '<span class="delivery-option-desc">Domestic</span></div>'
+    + '<span class="delivery-option-price" id="shipPrice">' + LR.ui.peso(shipDefault) + '</span></label>'
+    + '<label class="delivery-option"><div class="delivery-option-left">'
+    + '<input type="radio" name="deliveryMethod" value="local">'
+    + '<span class="delivery-option-label">Local Delivery</span>'
+    + '<span class="delivery-option-desc">Within Bacolod City only</span></div>'
+    + '<span class="delivery-option-price">\u20b1100</span></label>'
+    + '<label class="delivery-option"><div class="delivery-option-left">'
+    + '<input type="radio" name="deliveryMethod" value="pickup">'
+    + '<span class="delivery-option-label">Local Pickup</span>'
+    + '<span class="delivery-option-desc">Bacolod City pickup, details provided after checkout</span></div>'
+    + '<span class="delivery-option-price">Free</span></label></div>'
+    + '<div class="payment-note"><strong>E-Wallet / QR PH</strong><br><br>'
+    + 'Payments accepted via <strong>GoTyme, GCash, or Maya</strong>.<br>'
+    + 'Payment instructions and QR code will appear on the next page.</div>'
+    + '</form>'
+    + '<div class="order-summary"><div style="display:flex;align-items:baseline;justify-content:space-between;margin-bottom:20px;">'
+    + '<div class="section-label" style="margin-bottom:0;">Order Summary</div>'
+    + '<a href="/cart" style="font-size:11px;color:var(--ink45);text-decoration:none;letter-spacing:.04em;">Edit Cart</a></div>'
+    + '<div id="coItems"></div>'
+    + '<div class="order-divider"></div>'
+    + '<div class="order-item"><div class="order-item-left"><div class="order-item-title">Shipping</div></div>'
+    + '<div class="order-item-price" id="coShipping">' + LR.ui.peso(shipDefault) + '</div></div>'
+    + '<div class="order-divider"></div>'
+    + '<div class="order-total"><span>Total</span><span id="coTotal">' + LR.ui.peso(subtotal + shipping) + '</span></div>'
+    + '<button class="complete-btn" id="completeBtn">Complete Order</button>'
+    + '</div></div></div>';
+
+  // Render items
+  var itemsEl = document.getElementById('coItems');
+  cart.forEach(function(item) {
+    var div = document.createElement('div');
+    div.className = 'order-item';
+    div.innerHTML = '<div class="order-item-left">'
+      + '<div class="order-item-title">' + _escHTML(item.title)  + '</div>'
+      + '<div class="order-item-meta">by ' + _escHTML(item.artist) + ' \u00d7 ' + item.qty + '</div>'
+      + '</div><div class="order-item-price">' + LR.ui.peso(item.price * item.qty) + '</div>';
+    itemsEl.appendChild(div);
+  });
+
+  function updateTotals() {
+    var total = subtotal + shipping;
+    document.getElementById('coShipping').textContent = shipping === 0 ? 'Free' : LR.ui.peso(shipping);
+    document.getElementById('coTotal').textContent    = LR.ui.peso(total);
+  }
+
+  // Delivery method toggle
+  document.querySelectorAll('input[name="deliveryMethod"]').forEach(function(radio) {
+    radio.addEventListener('change', function() {
+      deliveryMethod = radio.value;
+      if (radio.value === 'ship')   shipping = shipDefault;
+      if (radio.value === 'local')  shipping = 100;
+      if (radio.value === 'pickup') shipping = 0;
+      document.querySelectorAll('.delivery-option').forEach(function(el) { el.classList.remove('is-selected'); });
+      radio.closest('.delivery-option').classList.add('is-selected');
+      var addrInput = document.getElementById('co-address');
+      if (radio.value === 'pickup') { addrInput.required = false; addrInput.placeholder = 'Optional'; }
+      else { addrInput.required = true; addrInput.placeholder = 'Street address, city, province'; }
+      updateTotals();
+    });
+  });
+
+  // AUDIT: Turnstile safety — onerror shim on script tag ensures this never throws.
+  if (typeof LR_TURNSTILE !== 'undefined') LR_TURNSTILE.init();
+
+  document.getElementById('completeBtn').addEventListener('click', async function() {
+    var form = document.getElementById('checkoutForm');
+    if (!form.checkValidity()) { form.reportValidity(); return; }
+    if (!LR.cart.count()) { navigate('/cart'); return; }
+    var btn = document.getElementById('completeBtn');
+    btn.disabled = true; btn.textContent = 'Processing\u2026';
+    var total = subtotal + shipping;
+    try {
+      var normName  = document.getElementById('co-name').value.trim().replace(/\s+/g,' ').toLowerCase().replace(/\b\w/g, function(c){return c.toUpperCase();});
+      var normEmail = document.getElementById('co-email').value.trim().toLowerCase();
+      var normPhone = document.getElementById('co-phone').value.trim().replace(/[\s\-\.\(\)]/g,'');
+      var normAddr  = document.getElementById('co-address').value.trim().replace(/\s+/g,' ').toLowerCase().replace(/\b\w/g, function(c){return c.toUpperCase();});
+      var token = (typeof LR_TURNSTILE !== 'undefined') ? await LR_TURNSTILE.getToken() : '';
+      var result = await LR.api.order({
+        name: normName, email: normEmail, phone: normPhone, address: normAddr,
+        deliveryMethod: deliveryMethod, subtotal: subtotal, shipping: shipping, total: total,
+        items: cart.map(function(i) { return { album_id: i.id, quantity: i.qty }; }),
+        turnstileToken: token
+      });
+      if (!result.ok && !result.success) {
+        var detail = result.debug ? ' [' + result.debug + (result.codes && result.codes.length ? ': ' + result.codes.join(', ') : '') + ']' : '';
+        throw new Error((result.error || 'Order failed') + detail);
+      }
+      localStorage.setItem('lr_buyer',           normName);
+      localStorage.setItem('lr_order_total',     LR.ui.peso(total));
+      localStorage.setItem('lr_order_created_at',String(Date.now()));
+      localStorage.setItem('lr_address',         normAddr);
+      localStorage.setItem('lr_order_items',     JSON.stringify(cart));
+      localStorage.setItem('lr_order_subtotal',  String(subtotal));
+      localStorage.setItem('lr_order_shipping',  String(shipping));
+      localStorage.setItem('lr_delivery_method', deliveryMethod);
+      LR.cart.clear();
+      navigate('/success');
+    } catch(err) {
+      console.error(err);
+      alert('There was a problem processing your order. Please try again.\n\nError: ' + err.message);
+      btn.disabled = false; btn.textContent = 'Complete Order';
+      if (typeof LR_TURNSTILE !== 'undefined') LR_TURNSTILE.reset();
+    }
+  });
+}
+
+// ── Success ───────────────────────────────────────────────────
+function renderSuccess() {
+  var root = document.getElementById('app-root');
+  _setView(root, 'success');
+  document.title = 'Order Received \u2014 LATE RECORDS';
+
+  var buyer      = localStorage.getItem('lr_buyer');
+  var orderTotal = localStorage.getItem('lr_order_total');
+  if (!buyer || !orderTotal) { navigate('/'); return; }
+
+  var orderCreatedAt = Number(localStorage.getItem('lr_order_created_at') || Date.now());
+  var orderNum = localStorage.getItem('lr_order_number');
+  if (!orderNum) {
+    orderNum = '#LR-' + (Math.floor(Math.random() * 90000) + 10000);
+    localStorage.setItem('lr_order_number', orderNum);
+  }
+  var address        = localStorage.getItem('lr_address') || '\u2014';
+  var savedCart      = JSON.parse(localStorage.getItem('lr_order_items') || '[]');
+  var subtotal       = Number(localStorage.getItem('lr_order_subtotal') || 0);
+  var shipping       = Number(localStorage.getItem('lr_order_shipping')  || 0);
+  var total          = subtotal + shipping;
+  var deliveryMethod = localStorage.getItem('lr_delivery_method') || 'ship';
+  var dateStr        = new Date(orderCreatedAt).toLocaleDateString('en-GB', { day:'numeric', month:'short', year:'numeric' });
+  var shipLabel      = deliveryMethod === 'pickup' ? 'Pickup' : deliveryMethod === 'local' ? 'Local Delivery' : 'Shipping';
+
+  function buildItems(c) {
+    if (!c || !c.length) return '<div style="font-size:12px;color:var(--ink30);padding:8px 0 14px;">No items</div>';
+    return c.map(function(item) {
+      return '<div class="order-item">'
+        + '<div class="order-item-left">'
+        + '<div class="order-item-title">' + _escHTML(item.title)  + '</div>'
+        + '<div class="order-item-meta">by ' + _escHTML(item.artist || '') + ' \u00d7 ' + item.qty + '</div>'
+        + '</div><div class="order-item-price">' + LR.ui.peso(item.price * item.qty) + '</div></div>';
+    }).join('');
+  }
+
+  root.innerHTML = '<div class="container"><h1 class="page-title">Order Received</h1>'
+    + '<div class="success-layout"><div>'
+    + '<div class="order-meta">'
+    + '<div class="meta-cell left"><div class="meta-label">Order</div><div class="meta-value" id="metaOrder"></div></div>'
+    + '<div class="meta-cell right"><div class="meta-label" id="metaAddrLabel">Address</div><div class="meta-value" id="metaAddress"></div></div>'
+    + '<div class="meta-cell left"><div class="meta-label" id="metaBuyerLabel">Ship To</div><div class="meta-value" id="metaBuyer"></div></div>'
+    + '<div class="meta-cell right"><div class="meta-label">Amount Due</div><div class="meta-value amount" id="metaAmount"></div></div>'
+    + '</div>'
+    + '<button class="view-summary-btn" id="viewSummaryBtn"><div class="vsb-inner">'
+    + '<span class="vsb-label">View Order Summary</span>'
+    + '<span class="vsb-arrow" id="vsbArrow">&#x2192;</span></div></button>'
+    + '<div class="payment-section"><div class="payment-body"><div class="payment-left">'
+    + '<div class="timer-label">Pay Within</div>'
+    + '<div class="countdown" id="countdown">24:00:00</div>'
+    + '<div class="timer-note" id="timerNote">Scan or download the QR code and pay using any QR PH\u2013enabled app.</div>'
+    + '<div class="wallet-logos-wrap">'
+    + '<img src="images/late-records-payment-qrph.png"      class="wallet-logo" style="height:14px;" alt="QR PH">'
+    + '<img src="images/late-records-payment-bdo.png"       class="wallet-logo" style="height:13px;" alt="BDO">'
+    + '<img src="images/late-records-payment-gotyme.png"    class="wallet-logo" style="height:15px;" alt="GoTyme">'
+    + '<img src="images/late-records-payment-gcash.png"      class="wallet-logo" style="height:15px;" alt="GCash">'
+    + '<img src="images/late-records-payment-maya.png"       class="wallet-logo" style="height:13px;" alt="Maya">'
+    + '<img src="images/late-records-payment-shopeepay.png?v=2" class="wallet-logo" style="height:14px;" alt="ShopeePay">'
+    + '</div>'
+    + '</div>'    /* /payment-left */
+    + '<div class="qr-block">'
+    + '  <img src="images/late-records-qr-payment.jpg" class="qr-img" alt="Payment QR">'
+    + '  <button class="qr-download" id="qrDownloadBtn">\u2193 download</button>'
+    + '</div>'
+    + '</div>'    /* /payment-body */
+    + '</div>'    /* /payment-section */
+      + '<p class="order-note">Orders unpaid after the payment window may be cancelled and released back to stock. Contact us at info.late.records@gmail.com with any questions.</p>'
+      + '</div>'    /* /left col */
+
+      /* RIGHT COL — desktop summary panel */
+      + '<div class="summary-panel" id="summaryPanel">'
+      + '  <div class="section-label">Order Summary</div>'
+      + '  <div class="order-item"><div class="order-item-left"><div class="order-item-title">Date</div></div><div class="order-item-price" id="rDate" style="font-size:12px;font-weight:400;">\u2014</div></div>'
+      + '  <div class="order-divider"></div>'
+      + '  <div id="rItems"></div>'
+      + '  <div class="order-divider"></div>'
+      + '  <div class="order-item"><div class="order-item-left"><div class="order-item-title" id="rShipLabel">Shipping</div></div><div class="order-item-price" id="rShipping">\u2014</div></div>'
+      + '  <div class="order-divider"></div>'
+      + '  <div class="order-total"><span>Total</span><span id="rTotal">\u2014</span></div>'
+      + '</div>'    /* /summaryPanel */
+
+      + '</div>'    /* /success-layout */
+      + '</div>'    /* /container */
+
+      /* MOBILE MODAL */
+      + '<div class="modal-overlay" id="modalOverlay">'
+      + '  <div class="modal-dialog">'
+      + '    <div class="modal-close-row"><button class="modal-close" id="modalCloseBtn">\u2715</button></div>'
+      + '    <div class="modal-body">'
+      + '      <div class="section-label" style="margin-bottom:4px;">Order Summary</div>'
+      + '      <div class="order-item" style="margin-bottom:20px;"><div class="order-item-left"><div class="order-item-title" style="font-weight:400;color:var(--ink55);font-size:11px;">Date</div></div><div class="order-item-price" id="mDate" style="font-size:11px;font-weight:400;color:var(--ink55);">\u2014</div></div>'
+      + '      <div class="order-divider" style="margin-top:0;"></div>'
+      + '      <div id="mItems"></div>'
+      + '      <div class="order-divider"></div>'
+      + '      <div class="order-item"><div class="order-item-left"><div class="order-item-title" id="mShipLabel">Shipping</div></div><div class="order-item-price" id="mShipping">\u2014</div></div>'
+      + '      <div class="order-divider"></div>'
+      + '      <div class="order-total"><span>Total</span><span id="mTotal">\u2014</span></div>'
+      + '    </div>'
+      + '  </div>'
+      + '</div>';  /* /modal-overlay */
+
+    /* ── Populate data ──────────────────────────────────── */
+    var buyer      = localStorage.getItem('lr_buyer');
+    var orderTotal = localStorage.getItem('lr_order_total');
+    if (!buyer || !orderTotal) { navigate('/'); return; }   /* no order → back to catalog */
+
+    var orderCreatedAt = localStorage.getItem('lr_order_created_at');
+    if (!orderCreatedAt) {
+      orderCreatedAt = String(Date.now());
+      localStorage.setItem('lr_order_created_at', orderCreatedAt);
+    }
+    orderCreatedAt = Number(orderCreatedAt);
+
+    var orderNum = localStorage.getItem('lr_order_number');
+    if (!orderNum) {
+      orderNum = '#LR-' + String(Math.floor(Math.random() * 90000) + 10000);
+      localStorage.setItem('lr_order_number', orderNum);
+    }
+
+    var address        = localStorage.getItem('lr_address') || '\u2014';
+    var rawItems       = localStorage.getItem('lr_order_items');
+    var rawSubtotal    = localStorage.getItem('lr_order_subtotal');
+    var rawShipping    = localStorage.getItem('lr_order_shipping');
+    var deliveryMethod = localStorage.getItem('lr_delivery_method') || 'ship';
+    var savedCart      = rawItems ? JSON.parse(rawItems) : [];
+    var subtotal       = rawSubtotal ? Number(rawSubtotal) : 0;
+    var shipping       = rawShipping ? Number(rawShipping) : 0;
+    var total          = subtotal + shipping;
+
+    var dateStr = new Date(orderCreatedAt).toLocaleDateString('en-GB', {
+      day: 'numeric', month: 'short', year: 'numeric'
+    });
+
+    /* Meta cells */
+    document.getElementById('metaOrder').textContent  = orderNum;
+    document.getElementById('metaBuyer').textContent  = buyer;
+    document.getElementById('metaAmount').textContent = orderTotal;
+
+    if (deliveryMethod === 'pickup') {
+      document.getElementById('metaBuyerLabel').textContent  = 'Pickup By';
+      document.getElementById('metaAddrLabel').textContent = 'Pickup';
+      document.getElementById('metaAddress').innerHTML =
+        'Message <a href="https://www.instagram.com/late.records" target="_blank" rel="noopener" '
+        + 'style="color:var(--ink);font-weight:600;text-decoration:underline;text-underline-offset:2px;">'
+        + '@late.records</a> via Instagram for pickup details.';
+    } else if (deliveryMethod === 'local') {
+      document.getElementById('metaAddrLabel').textContent = 'Local Delivery';
+      document.getElementById('metaAddress').textContent = address;
+    } else {
+      document.getElementById('metaAddress').textContent = address;
+    }
+
+    function _buildItems(cart) {
+      if (!cart || !cart.length) return '<div style="font-size:12px;color:var(--ink30);padding:8px 0 14px;">No items</div>';
+      return cart.map(function(item) {
+        return '<div class="order-item">'
+          + '<div class="order-item-left">'
+          +   '<div class="order-item-title">' + _escHTML(item.title || '') + '</div>'
+          +   '<div class="order-item-meta">by ' + _escHTML(item.artist || '') + ' \xd7 ' + item.qty + '</div>'
+          + '</div>'
+          + '<div class="order-item-price">' + LR.ui.peso(item.price * item.qty) + '</div>'
+          + '</div>';
+      }).join('');
+    }
+
+    var shipLabel = deliveryMethod === 'pickup' ? 'Pickup'
+                  : deliveryMethod === 'local'  ? 'Local Delivery'
+                  : 'Shipping';
+
+    /* Desktop panel */
+    document.getElementById('rDate').textContent      = dateStr;
+    document.getElementById('rItems').innerHTML       = _buildItems(savedCart);
+    document.getElementById('rShipLabel').textContent = shipLabel;
+    document.getElementById('rShipping').textContent  = shipping === 0 ? 'Free' : LR.ui.peso(shipping);
+    document.getElementById('rTotal').textContent     = LR.ui.peso(total);
+
+    /* Mobile modal */
+    document.getElementById('mDate').textContent      = dateStr;
+    document.getElementById('mItems').innerHTML       = _buildItems(savedCart);
+    document.getElementById('mShipLabel').textContent = shipLabel;
+    document.getElementById('mShipping').textContent  = shipping === 0 ? 'Free' : LR.ui.peso(shipping);
+    document.getElementById('mTotal').textContent     = LR.ui.peso(total);
+
+    /* ── Countdown ──────────────────────────────────────── */
+    var deadline = orderCreatedAt + (24 * 60 * 60 * 1000);
+    var cdEl     = document.getElementById('countdown');
+    var noteEl   = document.getElementById('timerNote');
+
+    function _fmt(ms) {
+      var s   = Math.max(0, Math.floor(ms / 1000));
+      var h   = Math.floor(s / 3600);
+      var m   = Math.floor((s % 3600) / 60);
+      var sec = s % 60;
+      return String(h).padStart(2,'0') + ':' + String(m).padStart(2,'0') + ':' + String(sec).padStart(2,'0');
+    }
+    function _tick() {
+      var remaining = deadline - Date.now();
+      if (remaining <= 0) {
+        cdEl.textContent = 'Window Expired';
+        cdEl.classList.add('is-expired');
+        noteEl.textContent = 'The payment window has expired. Please contact us at info.late.records@gmail.com before sending payment.';
+        clearInterval(_timerInterval);
+        return;
+      }
+      cdEl.textContent = _fmt(remaining);
+    }
+    _tick();
+    var _timerInterval = setInterval(_tick, 1000);
+
+    /* ── localStorage wipe ──────────────────────────────── */
+    /* Data already rendered into DOM — wipe so next visit starts clean */
+    [
+      'lr_buyer','lr_order_total','lr_order_created_at',
+      'lr_order_number','lr_address','lr_order_items',
+      'lr_order_subtotal','lr_order_shipping','lr_delivery_method'
+    ].forEach(function(k) { localStorage.removeItem(k); });
+    LR.cart.clear();   /* removes lr_cart + fires lr:cart:updated → updateNav() */
+
+    /* ── QR download ─────────────────────────────────────── */
+    document.getElementById('qrDownloadBtn').addEventListener('click', function() {
+      var a = document.createElement('a');
+      a.href = 'images/late-records-qr-payment.jpg';
+      a.download = 'late-records-payment-qr.jpg';
+      a.click();
+    });
+
+    /* ── Summary toggle (desktop panel / mobile modal) ──── */
+    var _summaryOpen = false;
+    document.getElementById('viewSummaryBtn').addEventListener('click', function() {
+      if (window.innerWidth <= 860) { _openModal(); return; }
+      _summaryOpen = !_summaryOpen;
+      var panel = document.getElementById('summaryPanel');
+      var arrow = document.getElementById('vsbArrow');
+      if (_summaryOpen) { panel.classList.add('is-open'); arrow.classList.add('open'); }
+      else              { panel.classList.remove('is-open'); arrow.classList.remove('open'); }
+    });
+
+    function _openModal() {
+      document.getElementById('modalOverlay').classList.add('is-open');
+      document.body.style.overflow = 'hidden';
+    }
+    function _closeModal() {
+      document.getElementById('modalOverlay').classList.remove('is-open');
+      document.body.style.overflow = '';
+    }
+    document.getElementById('modalCloseBtn').addEventListener('click', _closeModal);
+    document.getElementById('modalOverlay').addEventListener('click', function(e) {
+      if (e.target === document.getElementById('modalOverlay')) _closeModal();
+    });
+  } /* end renderSuccess */
+  /* ── renderSearch ────────────────────────────────────────
+     /search is not a distinct view — it navigates to catalog
+     and programmatically opens the search bar.              */
+  function renderSearch() {
+    navigate('/', false);
+    /* Wait one tick for renderCatalog() to finish injecting DOM */
+    setTimeout(function() {
+      var bar   = document.getElementById('searchBar');
+      var input = document.getElementById('searchInput');
+      if (bar)   { bar.style.display = 'block'; document.body.classList.add('search-active'); }
+      if (input) { input.focus(); }
+    }, 0);
+  }
+
+  /* ── render404 ───────────────────────────────────────────── */
+  function render404() {
+    var root = document.getElementById('app-root');
+    _setView(root, 'view-404');
+    root.innerHTML =
+      '<div class="container" style="padding-top:60px;text-align:center;">'
+      + '<h1 style="font-size:22px;font-weight:600;color:var(--ink);margin-bottom:12px;">Page Not Found</h1>'
+      + '<p style="font-size:13px;color:var(--ink45);margin-bottom:28px;">The page you\'re looking for doesn\'t exist.</p>'
+      + '<a href="/" style="font-size:13px;color:var(--ink);font-weight:500;text-decoration:underline;text-underline-offset:3px;">Back to catalog</a>'
+      + '</div>';
+  }
+
+  /* ── Boot ────────────────────────────────────────────────── */
+  // Prevent browser from restoring scroll position on refresh
+  if (history.scrollRestoration) history.scrollRestoration = 'manual';
+  document.addEventListener('DOMContentLoaded', function() {
+    window.scrollTo(0, 0);
+    updateNav();
+    navigate(location.pathname, false);
+  });
 
 </script>
 </body>

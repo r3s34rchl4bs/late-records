@@ -106,12 +106,17 @@ No git commit or Cloudflare Pages deploy is needed for media uploads — R2 is l
 
 ### 0.3 Image Spec
 
-- Format: JPEG
-- Width: 600px (height proportional)
-- Quality: 80
-- Quick batch resize (Mac Terminal, from the folder containing images):
+- Format: **WebP** (primary), JPEG (fallback — same filename, `.jpg` extension)
+- Size: 1200×1200px
+- Quality: 80–85 (recommended: 82)
+- The `_wf(img, fallbackFn)` helper in `catalog.js` auto-retries with `.jpg` if `.webp` fails
+- Quick batch convert (Mac Terminal, from the folder containing images):
   ```bash
-  mogrify -resize 600x -quality 80 *.jpg
+  # Convert to WebP
+  for f in *.jpg *.png; do magick "$f" -resize 1200x1200 -quality 82 "${f%.*}.webp"; done
+
+  # Resize existing JPGs as fallback
+  mogrify -resize 1200x1200 -quality 82 *.jpg
   ```
 
 ### 0.4 Diagnosing a Missing or Broken Image
@@ -142,6 +147,15 @@ Upload them using the commands in 0.3 above:
 | Arthur Verocai | `self-titled-by-arthur-verocai` | `self-titled-by-arthur-verocai.jpg` |
 | ANRI | `catseye-by-anri` | `catseye-by-anri.jpg` |
 | Abdou El Omari | `nuits-d-ete-avec-abdou-el-omari-by-abdou-el-omari` | `nuits-d-ete-avec-abdou-el-omari-by-abdou-el-omari.jpg` |
+
+---
+
+## Release History
+
+| Version | Date | Summary |
+|---|---|---|
+| v1 | pre-2026-04-05 | Multi-page site. Worker + R2 cache. Security layer. Analytics. |
+| v1.1 | 2026-04-05 | Full SPA migration. WebP images. Cart→Checkout nav. Sold log 2-col. Image viewer redesign. Success page fixes. Worker catalog TTL → 2 min. |
 
 ---
 
@@ -356,17 +370,18 @@ Last updated: 2026-04-03
 | ~~`/api/order` input validation hardened~~ | ~~Max items, string type guards, album_id length limit.~~ | ~~1 hr~~ | ✅ Done |
 | ~~Mobile UX stabilization~~ | ~~Viewport lock, touch-action, 16px inputs, JS pinch-zoom kill.~~ | ~~1 hr~~ | ✅ Done |
 
-### 🔵 SPA Phase (future — do not start until current site is stable)
+### 🔵 SPA Phase — ✅ COMPLETED (v1.1, 2026-04-05)
 
-Full plan in Section 3. Key constraint: audio player must live outside `#app-root`.
-
-| Task | Notes |
-|---|---|
-| SPA shell (`app.html` + router) | New entry point. Old HTML files deleted after all routes covered. |
-| History API routing | `pushState` for clean URLs (`/album/:id`, `/cart`, etc.) |
-| Persistent audio player | Initialized once, survives all route transitions |
-| catalog.json as SPA data source | R2 snapshot replaces live Worker fetch entirely on the client |
-| Lazy-render album images | Only render images in viewport — already have `loading="lazy"`, may want IntersectionObserver for more control |
+| Task | Notes | Status |
+|---|---|---|
+| SPA shell (index.html + router) | History API, all views inline | ✅ Done |
+| History API routing | `/album/:id`, `/cart`, `/checkout`, `/success`, `/genre/:slug` | ✅ Done |
+| Persistent audio player | `#audio-player` outside `#app-root`, `LR_PLAYER` singleton | ✅ Done |
+| `_redirects` catch-all | Cloudflare Pages SPA routing | ✅ Done |
+| Cart → Checkout nav label | `updateNav()` in `script.js` | ✅ Done |
+| WebP images + fallback | `_wf()` in `catalog.js`, all srcs use `.webp` | ✅ Done |
+| Sold log 2-column layout | Desktop: 2 cols, 7 rows collapsed, right col gets toggle | ✅ Done |
+| Image viewer redesign | Dot background, content-column aligned, full-size on click | ✅ Done |
 
 ### ⏸ Parked — revisit when site grows
 

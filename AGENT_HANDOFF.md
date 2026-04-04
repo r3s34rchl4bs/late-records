@@ -1,16 +1,11 @@
-# Late Records — Agent Handoff (Entry Point)
-
-> **Start here.** This is the first file any AI agent should read. It contains the current state of production, what has been built, what is pending, and every constraint that must be respected.
->
-> Last updated: 2026-04-03
+# Late Records — Agent Handoff
+> **Start here.** Updated: 2026-04-05 (v1.1)
 
 ---
 
 ## What This Project Is
 
-**Late Records** is a live e-commerce storefront at `https://late-records.shop` selling curated vinyl records — primarily Japanese city pop, AOR, and rare pressings. It is a real, revenue-generating site.
-
-It is a hand-coded static site + Cloudflare Worker API. No React, no Next.js, no build step on the frontend. Keep it that way unless explicitly instructed otherwise.
+**Late Records** is a live vinyl e-commerce storefront at `https://late-records.shop`. Real store, real transactions. Hand-coded Vanilla JS SPA + Cloudflare Workers API. No React, no Next.js, no build step. Keep it that way.
 
 ---
 
@@ -18,137 +13,109 @@ It is a hand-coded static site + Cloudflare Worker API. No React, no Next.js, no
 
 | Item | Status |
 |---|---|
-| Site live | ✅ `https://late-records.shop` |
-| Worker live | ✅ Auto-deploys via GitHub Actions on push to `worker/**` |
-| R2 catalog cache | ✅ 10-min TTL, cron refresh `*/10 * * * *` |
-| R2 tags cache | ✅ 24-hr TTL, stale served on Gemini failure |
-| Cloudflare Observability | ✅ `head_sampling_rate = 1` in `wrangler.toml` |
-| PageSpeed (desktop) | ✅ 100 Performance / 93 Accessibility / 100 Best Practices |
-| PageSpeed (mobile) | ✅ 95 Performance / 93 Accessibility / 100 Best Practices |
+| Site live (SPA v1.1) | ✅ `https://late-records.shop` |
+| Worker live | ✅ Auto-deploys via GitHub Actions on push to `worker/**` on `main` |
+| R2 catalog cache | ✅ 2-min TTL, cron refresh every 10 min |
+| `_redirects` SPA routing | ✅ All paths → `index.html 200` |
+| WebP images + JPG fallback | ✅ `_wf()` in `catalog.js` |
+| Cart → Checkout dynamic nav | ✅ `updateNav()` in `script.js` |
 
 ---
 
-## Stack
+## SPA Architecture
 
-| Layer | Technology | Notes |
-|---|---|---|
-| Frontend hosting | Cloudflare Pages | Static files in `site/` |
-| API layer | Cloudflare Worker | `worker/index.js` |
-| Media storage | Cloudflare R2 | Bucket: `late-records-media`, served at `media.late-records.shop` |
-| Catalog data | Google Sheets + Apps Script | Single source of truth |
-| Catalog cache | R2 `data/catalog.json` | 10-min TTL + cron warm |
-| Tags cache | R2 `data/tags.json` | 24-hr TTL |
-| Tag generation | Google Gemini API | Called from Worker |
-| Payments | Manual (GCash/BPI bank transfer) | No payment processor |
-| CI/CD | GitHub Actions | `.github/workflows/deploy-worker.yml` |
-| Analytics | Cloudflare Web Analytics | Beacon in all HTML files |
-| Error visibility | Cloudflare Observability | `head_sampling_rate = 1` |
+### Single-file shell
+
+`site/index.html` (~2500+ lines) — single HTML file containing all CSS, all view HTML, all JS logic. External JS files ARE loaded:
+
+| File | Role |
+|---|---|
+| `script.js` | `LR.api`, `LR.cart`, `LR.ui`, `updateNav()`, theme toggle, pinch-zoom lock |
+| `catalog.js` | `rowHTML()` catalog row renderer, `_wf()` WebP fallback, `highlight()` |
+| `search.js` | `LR_SEARCH` — `buildTable()`, `buildAZNav()`, `renderTable()`, `applyAvailToggle()` |
+
+### Routes
+
+| Route | View |
+|---|---|
+| `/` | Home: carousel + catalog table + sold log + tag cloud |
+| `/album/:id` | Album detail (image, tracklist, audio samples, add to cart) |
+| `/cart` | Cart with qty controls |
+| `/checkout` | Checkout form (Turnstile-protected) |
+| `/success` | Order confirmation + countdown |
+| `/genre/:slug` | Genre filter view |
+
+### How routing works
+
+- `navigate(path)` — the SPA's router function, defined in `index.html`
+- History API `pushState` for clean URLs
+- `popstate` + `pageshow` listeners handle back/forward + iOS bfcache
+- `site/_redirects` contains `/*    /index.html    200` so Cloudflare Pages serves the SPA shell for all paths
+
+### Key SPA elements
+
+- **`#app-root`** — div whose `innerHTML` is swapped on every route change
+- **`#audio-player`** — persistent audio bar, lives OUTSIDE `#app-root`, never unmounted
+- **`LR_PLAYER` singleton** — one `new Audio()` created once. Survives route transitions. Exposes: `init()`, `play()`, `pause()`, `next()`, `prev()`, `playAlbum()`, `setContext()`
+- **`updateNav()`** in `script.js` — swaps nav link between "Cart (n)" and "Checkout (n)" based on cart state. Called on: DOMContentLoaded, `lr:cart:updated` event, `pageshow` (bfcache), and at the start of every `navigate()` call
 
 ---
 
-## Repository Structure
+## How to Deploy
 
+### Staging (feature branch)
+
+```bash
+export PATH="$PATH:/usr/local/bin"
+cd /Users/a4144/Documents/late-records
+wrangler pages deploy site --project-name=late-records --branch staging --commit-dirty=true
 ```
-late-records/
-├── site/                        # Static frontend (Cloudflare Pages)
-│   ├── index.html               # Main catalog page
-│   ├── genre.html               # Genre filter view
-│   ├── albums/
-│   │   └── album.html           # Album detail (?id= query param)
-│   ├── cart.html
-│   ├── checkout.html
-│   ├── success.html
-│   ├── script.js                # Shared: LR.cart, LR.api, LR.ui
-│   ├── catalog.js               # rowHTML() — catalog row renderer
-│   ├── search.js                # buildTable(), renderTable(), AZ nav
-│   ├── style.css
-│   └── fonts/
-│       ├── inter.css            # @font-face with font-display: swap
-│       ├── inter-latin.woff2
-│       └── inter-latin-ext.woff2
-├── worker/
-│   ├── index.js                 # Worker API + cron handler
-│   ├── wrangler.toml            # Config, R2 bindings, cron, observability
-│   └── package.json
-├── .github/workflows/
-│   └── deploy-worker.yml        # Auto-deploy on push to worker/**
-├── AGENT_HANDOFF.md             # ← You are here. Entry point for all AI sessions.
-├── ARCHITECTURE.md              # High-level system overview
-└── ARCHITECT_NOTES.md          # Decisions, constraints, backlog, rejected ideas
+
+Preview URL: `https://staging.late-records.pages.dev`
+
+### Production (main branch)
+
+Push to `main` — GitHub Actions handles Pages deploy automatically.
+
+Worker deploys automatically when `worker/**` changes are pushed to `main`.
+
+### Manual worker deploy (emergency)
+
+```bash
+export PATH="$PATH:/usr/local/bin"
+cd /Users/a4144/Documents/late-records/worker
+wrangler deploy
+```
+
+### Syntax-check JS before deploying
+
+```bash
+export PATH="$PATH:/usr/local/bin"
+cd /Users/a4144/Documents/late-records
+awk '/^<script>$/{found=1; next} /^<\/script>$/{found=0} found' site/index.html > /tmp/lr_check.js
+node --check /tmp/lr_check.js
 ```
 
 ---
 
-## Worker API — Active Rules
+## Hard Constraints
 
-All routes at `late-records.shop/api/*`.
+1. **Staging before main** — always test on staging first, never push untested code to main
+2. **Never trust client cart total** — Worker recalculates server-side, mismatches → 400
+3. **No payment processor** — no Stripe, PayMongo, or any gateway
+4. **No secrets in `wrangler.toml`** — use `wrangler secret put`
+5. **Never `git push --force` on main`**
+6. **No React / no build step** — hard constraint from day one
 
-| Method | Path | Behaviour |
+---
+
+## Pending Work
+
+| Item | Priority | Notes |
 |---|---|---|
-| `GET` | `/api/catalog` | R2 → 10-min TTL. Falls back to Apps Script on miss. |
-| `GET` | `/api/album?id=` | Single album lookup. |
-| `GET` | `/api/tags?id=` | R2 cached 24 hr. Stale served on Gemini 429. |
-| `GET` | `/api/suggest?q=` | Search suggestions. |
-| `POST` | `/api/order` | **Server-side price recalculation. Client total is never trusted.** |
-| cron | `*/10 * * * *` | Proactively refreshes R2 catalog cache. |
-
-**Order validation rules (never bypass):**
-- `album_id` must exist in live catalog
-- `quantity` must be integer ≥ 1
-- `deliveryMethod` must be `ship`, `local`, or `pickup`
-- Server recalculates subtotal + shipping independently
-- Mismatch between client and server total → `400 Bad Request`
-- CORS locked to `https://late-records.shop` and `http://localhost:<any>`
-
----
-
-## What Has Been Completed
-
-- CORS locked to allowlist (no wildcard)
-- Server-side price validation on `/api/order`
-- R2 catalog cache (10-min TTL, cron refresh, async write-back)
-- R2 tags cache (24-hr TTL, stale-on-failure for Gemini 429)
-- Canonical `<link>` tags on album pages (dynamic via `renderAlbum()`)
-- Open Graph + Twitter Card meta tags (all pages; dynamic on album pages)
-- JSON-LD Product schema (album pages, injected in `renderAlbum()`)
-- Cart redesign — utilitarian single-row layout, no album art
-- `success.html` wipes all 9 order localStorage keys + `LR.cart.clear()`
-- `robots.txt` + `sitemap.xml` (transactional pages excluded from crawl)
-- GitHub Actions auto-deploy for Worker
-- Cloudflare Observability (`head_sampling_rate = 1`)
-- 2-min localStorage catalog cache in `LR.api.catalog()`
-- `sample_count` support in `setupAudio()` — skips HEAD probes when known
-- **`fetchpriority="high"` on first 2 catalog images** (LCP improvement)
-- **`font-display: swap` already set; `<link rel="preload">` for `inter-latin.woff2` on all 6 pages** (FCP/CLS improvement)
-- **`defer` + `DOMContentLoaded` wrapper on `cart.html`, `success.html`, `album.html`**
-- **Shipping magic numbers named as constants** in `worker/index.js` (`SHIPPING_PICKUP`, `SHIPPING_LOCAL`, `SHIPPING_TIER_1/2/3`, `SHIPPING_QTY_T1/T2`)
-- **`/api/order` input validation hardened** — max 50 items, `typeof string` guards on `deliveryMethod` and `album_id`, `album_id` max length 128
-- **Mobile UX stabilization** — viewport hard-locked on all 7 pages (`maximum-scale=1.0, user-scalable=no, viewport-fit=cover`); `touch-action: manipulation` on all interactive elements; 16px input floor on mobile (prevents iOS auto-zoom); pinch-to-zoom killed via JS (`gesturestart`, `gesturechange`, `touchmove` interception) — required because iOS 10+ ignores the viewport meta tag
-
----
-
-## What Is Still Pending
-
-### User action needed (no code)
-- **Upload audio samples to R2 for 3 albums** — `altered-state-by-maldwyn-pope`, `10-by-various-artists`, `phase-iii-by-iao` have no audio in R2 and no `sample_count`. Add files then set `sample_count` in the Sheet.
-
-### Parked — do not implement yet
-- **Sentry** (`@sentry/cloudflare`, `withSentry` wrapper, `SENTRY_DSN` via `wrangler secret put`). GitHub Actions is now set up (source maps auto-upload). Revisit when order volume makes crash reports worth the setup.
-
-### Future — do not start until site is stable
-- **SPA migration** — full plan in ARCHITECT_NOTES.md Section 3. Entry point: `site/app.html`. Persistent audio player survives route changes. Do not start this.
-
----
-
-## Hard Constraints — Never Break These
-
-1. **Staging before main** — every change goes to a feature branch first. Cloudflare Pages auto-deploys a preview. Merge to `main` only after visual confirmation on staging. No exceptions.
-2. **Atomic Release Sync** — when the user says "Go live", "Push to main", "Deploy", or "Ship it": merge the code AND update all three `.md` files in the same commit. Never mark a task complete while still on staging. Full protocol in `ARCHITECT_NOTES.md` → *Standing Rule: Atomic Release Sync*.
-3. **No SPA work yet** — do not touch routing or create `app.html`.
-4. **No payment processor** — do not add Stripe, PayMongo, or any gateway.
-5. **No secrets in `wrangler.toml`** — use `wrangler secret put`.
-6. **Never trust client cart total** — always recalculate server-side in the Worker.
-7. **Never use `git push --force` on main**.
+| Upload audio samples | Medium | `altered-state-by-maldwyn-pope`, `10-by-various-artists`, `phase-iii-by-iao` — add to R2, set `sample_count` in Sheet |
+| Revisit Worker catalog TTL | Low | Currently 2 min (changed from 10 min in v1.1 for testing). Decide final value — 2 min is safe but cron runs every 10 min anyway. |
+| `sample_count` missing for 3 albums | Low | Once audio is uploaded to R2, fill `sample_count` column in Sheet for those albums |
 
 ---
 
@@ -156,35 +123,21 @@ All routes at `late-records.shop/api/*`.
 
 | Decision | Why |
 |---|---|
-| R2 over `caches.default` for catalog | Edge cache was unreliable and un-invalidatable. R2 is ~1–10ms, survives Worker restarts. |
-| Cart with no album art | Mobile UX — art made rows too tall on small screens. |
-| CORS allowlist | Prevents third-party pages from calling `/api/order` on behalf of users. |
-| Global Activity Feed — **permanently rejected** | Fake social proof, off-brand. Durable Objects complexity not justified. Evaluated twice. Do not reopen. |
-| Sentry parked | Not yet worth the setup at current order volume. |
+| R2 over `caches.default` | Edge cache unreliable, un-invalidatable. R2 ~1–10ms. |
+| No table header row | User decision — catalog rows stand alone |
+| Cart without album art | Mobile UX — art made rows too tall |
+| Global Activity Feed | **Permanently rejected.** Fake social proof, off-brand. |
+| Sentry | Parked — not worth setup at current order volume |
+| No React / no build step | Hard constraint from day one |
+| WebP images (1200×1200, q82) | Best quality/size ratio for free R2 hosting. JPG fallback via `_wf()`. |
+| 2-min catalog TTL | Sold-out status updates visible within 2 min of order — important for small inventory store |
 
 ---
 
-## Deployment Reference
+## Known Bugs — Fixed in v1.1
 
-**Frontend:**
-- Push to any branch → preview at `https://<branch-slug>.late-records.pages.dev`
-- Push to `main` → live at `https://late-records.shop`
-
-**Worker:**
-- Push to `main` with changes in `worker/**` → GitHub Actions runs `wrangler deploy` automatically
-- Manual: `cd worker && wrangler deploy`
-- Add secrets: `wrangler secret put <KEY>` (type value at prompt — never on command line)
-
-**R2 media:**
-- `wrangler r2 object put late-records-media/images/<album_id>.jpg --file=... --content-type=image/jpeg`
-
----
-
-## How to Use This File
-
-**Starting a new session with any AI agent:**
-1. Copy the contents of this file
-2. Paste it at the start of your prompt as context
-3. Then describe what you want to do
-
-The agent will have full context on the stack, what's done, what's pending, and every constraint — without needing to read the whole codebase first.
+| Bug | Root Cause | Fix |
+|---|---|---|
+| Cart 404 intermittent | `script.js` DOMContentLoaded captured old `updateNav` with `.html` routes | Changed `script.js` routes to `/cart` and `/checkout`; added `e.stopPropagation()` on onclick; called `updateNav()` in SPA's DOMContentLoaded and `navigate()` |
+| Success page summary/countdown broken | HTML used `metaAddrLabel` but JS referenced `metaAddressLabel` | Replaced all occurrences with `metaAddrLabel` |
+| Sold log text overflow | Long text breaking column layout | `min-width: 0; overflow: hidden` on `.sold-log-col` |
