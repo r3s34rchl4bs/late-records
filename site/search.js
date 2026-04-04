@@ -7,6 +7,9 @@ const LR_SEARCH = (() => {
   let _currentSuggestions = [];
   let _isSuggestionMode = false;
   let _activeAZLetter = null;
+  // Default state: show all records (max 6), A button appears active but no letter filter
+  let _showAllMax6 = false;
+  const ALL_MAX = 6;
 
   function _esc(s) {
     const d = document.createElement('div');
@@ -37,6 +40,15 @@ const LR_SEARCH = (() => {
 
     if (!q) {
       let base = _catalog.filter(a => String(a.status).toLowerCase() !== 'sold_out');
+      if (_showAllMax6) {
+        // Default state: all records, max 6
+        if (window.availFilterActive) {
+          base = base.filter(a => String(a.status).toLowerCase() === 'available');
+        }
+        tbody.innerHTML = base.slice(0, ALL_MAX).map((item, i) => rowHTML(item, '', false, i < 2)).join('');
+        count.textContent = '';
+        return;
+      }
       if (_activeAZLetter) {
         base = base.filter(a => {
           const first = String(a.artist || '').trim()[0]?.toUpperCase();
@@ -245,10 +257,25 @@ const LR_SEARCH = (() => {
       if (!btn || btn.disabled) return;
       const letter = btn.dataset.letter;
 
-      if (_activeAZLetter === letter) {
+      if (letter === 'A' && _showAllMax6) {
+        // Default state → filter to A only
+        _showAllMax6 = false;
+        _activeAZLetter = 'A';
+        nav.querySelectorAll('.az-letter').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+      } else if (letter === 'A' && _activeAZLetter === 'A') {
+        // A-filter → back to default (all, max 6)
+        _showAllMax6 = true;
+        _activeAZLetter = null;
+        nav.querySelectorAll('.az-letter').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+      } else if (_activeAZLetter === letter) {
+        // Any other letter toggled off → clear filter
         _activeAZLetter = null;
         btn.classList.remove('active');
       } else {
+        // Select a different letter
+        _showAllMax6 = false;
         _activeAZLetter = letter;
         nav.querySelectorAll('.az-letter').forEach(b => b.classList.remove('active'));
         btn.classList.add('active');
@@ -264,10 +291,11 @@ const LR_SEARCH = (() => {
       renderTable('');
     });
 
-    /* Default to letter A on page load */
+    /* Default: show all max 6, A button active */
     const aBtn = nav.querySelector('.az-letter[data-letter="A"]');
     if (aBtn && !aBtn.disabled) {
-      _activeAZLetter = 'A';
+      _showAllMax6 = true;
+      _activeAZLetter = null;
       aBtn.classList.add('active');
       renderTable('');
     }

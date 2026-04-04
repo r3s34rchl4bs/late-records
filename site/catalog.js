@@ -1,5 +1,16 @@
 /* Late Records — Catalog row renderer (scoped) */
 
+// WebP with automatic JPG fallback.
+// Usage in onerror: _wf(this, function(el){ /* truly missing handler */ })
+function _wf(el, afterFn) {
+  if (el.src.indexOf('.webp') !== -1) {
+    el.onerror = function() { el.onerror = null; if (afterFn) afterFn(el); };
+    el.src = el.src.replace('.webp', '.jpg');
+  } else if (afterFn) {
+    afterFn(el);
+  }
+}
+
 function _escHTML(s) {
   const d = document.createElement('div');
   d.textContent = s;

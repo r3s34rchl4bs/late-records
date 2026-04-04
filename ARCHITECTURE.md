@@ -2,7 +2,7 @@
 
 > This file describes the live production system. It is updated only when a release changes infrastructure — new/removed endpoints, cache strategy, R2 bindings, Worker triggers, or Sheets schema. Not updated for frontend-only releases.
 >
-> Last updated: 2026-04-03
+> Last updated: 2026-04-05 (v1.1)
 
 ---
 
@@ -13,7 +13,7 @@
 | Frontend hosting | Cloudflare Pages | Static files in `site/` |
 | API layer | Cloudflare Worker | `worker/index.js` — routes all `/api/*` |
 | Media storage | Cloudflare R2 | Bucket: `late-records-media` → `media.late-records.shop` |
-| Catalog + tags cache | Cloudflare R2 | `data/catalog.json` (10-min TTL), `data/tags.json` (24-hr TTL) |
+| Catalog + tags cache | Cloudflare R2 | `data/catalog.json` (2-min TTL), `data/tags.json` (24-hr TTL) |
 | Catalog data source | Google Sheets + Apps Script | Single source of truth for all album records |
 | Tag generation | Google Gemini API | Called from Worker; result cached in R2 |
 | Spam protection | Cloudflare Turnstile | Invisible widget on checkout |
@@ -28,19 +28,14 @@
 
 ```
 late-records/
-├── site/                          ← deployed to Cloudflare Pages
-│   ├── index.html                 ← main catalog page
-│   ├── genre.html                 ← genre filter view
-│   ├── cart.html
-│   ├── checkout.html
-│   ├── success.html
-│   ├── hidden-pricer.html
-│   ├── style.css                  ← single shared stylesheet
-│   ├── script.js                  ← shared: LR.api, LR.cart, LR.ui
-│   ├── catalog.js                 ← rowHTML() catalog row renderer
-│   ├── search.js                  ← buildTable(), renderTable(), AZ nav
+├── site/                          ← deployed to Cloudflare Pages (SPA)
+│   ├── index.html                 ← single-file SPA shell (all views + CSS + JS inline)
+│   ├── _redirects                 ← Cloudflare Pages SPA catch-all: /* → /index.html 200
+│   ├── style.css                  ← shared base stylesheet (loaded by index.html)
+│   ├── script.js                  ← shared: LR.api, LR.cart, LR.ui, updateNav()
+│   ├── catalog.js                 ← rowHTML() renderer + _wf() WebP fallback
+│   ├── search.js                  ← LR_SEARCH: buildTable(), renderTable(), AZ nav
 │   ├── tagcloud.js                ← tag cloud component
-│   ├── last-updated.js            ← footer timestamp
 │   ├── robots.txt                 ← transactional pages excluded
 │   ├── sitemap.xml
 │   ├── fonts/
@@ -48,8 +43,7 @@ late-records/
 │   │   ├── inter-latin.woff2
 │   │   └── inter-latin-ext.woff2
 │   ├── images/                    ← logo, static assets
-│   └── albums/
-│       └── album.html             ← album detail (?id= query param)
+│   └── audio/                     ← (empty placeholder — audio lives in R2)
 │
 └── worker/
     ├── index.js                   ← Worker API + cron handler
@@ -57,13 +51,21 @@ late-records/
     └── package.json
 ```
 
+### SPA Routing
+
+`site/_redirects` contains a single Cloudflare Pages catch-all rule:
+```
+/*    /index.html    200
+```
+This ensures all routes (`/album/...`, `/cart`, `/checkout`, etc.) are served from `index.html` with a 200 (not a redirect), enabling the History API router to handle them client-side.
+
 ---
 
 ## API Endpoints
 
 | Method | Path | Cache | Description |
 |---|---|---|---|
-| `GET` | `/api/catalog` | R2 `data/catalog.json`, 10-min TTL | Full catalog. Falls back to Apps Script on R2 miss. Async write-back to R2. |
+| `GET` | `/api/catalog` | R2 `data/catalog.json`, 2-min TTL | Full catalog. Falls back to Apps Script on R2 miss. Async write-back to R2. |
 | `GET` | `/api/album?id=` | None | Single album lookup from catalog. |
 | `GET` | `/api/tags?id=` | R2 `data/tags.json`, 24-hr TTL | Gemini-generated genre/mood tags. Stale served on Gemini failure. |
 | `GET` | `/api/suggest?q=` | None | Search suggestions. |
@@ -75,10 +77,11 @@ late-records/
 ## Caching Strategy
 
 ### R2 Catalog Cache (`data/catalog.json`)
-- TTL: 10 minutes
+- TTL: 2 minutes (set in `worker/index.js` as `CATALOG_TTL_MS`)
 - On request: Worker reads R2 first. If fresh → return immediately (~1–10ms). If stale/missing → fetch Apps Script, write back to R2 asynchronously, return result.
 - Cron (`*/10 * * * *`): proactively refreshes before TTL expires, keeping R2 warm even with no traffic.
 - Replaced the old `caches.default` edge cache, which was unreliable and couldn't be invalidated.
+- Note: TTL was 10 minutes in v1. Reduced to 2 minutes in v1.1 so sold-out status updates appear quickly after an order.
 
 ### R2 Tags Cache (`data/tags.json`)
 - TTL: 24 hours
@@ -161,10 +164,18 @@ wrangler r2 object put late-records-media/audio/{album_id}/sample1.mp3 \
   --file="/path/to/sample.mp3" --content-type="audio/mpeg"
 ```
 
-**Image spec:** 600px wide, JPEG, quality 80.
+**Image spec:** 1200×1200px, WebP primary (JPG fallback auto-served by `_wf()` in `catalog.js`), quality 80–85.
 ```bash
-mogrify -resize 600x -quality 80 *.jpg
+# Batch convert and resize (ImageMagick):
+for f in *.jpg *.png; do
+  magick "$f" -resize 1200x1200 -quality 82 "${f%.*}.webp"
+done
+
+# Also keep the JPG for fallback (resize in place):
+mogrify -resize 1200x1200 -quality 82 *.jpg
 ```
+
+The `_wf(img, fallbackFn)` helper in `catalog.js` automatically retries with `.jpg` if a `.webp` fails to load. All image `src` attributes in the site use `.webp`.
 
 ---
 

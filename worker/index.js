@@ -8,7 +8,7 @@
  */
 
 const CATALOG_R2_KEY = 'data/catalog.json';
-const CATALOG_TTL_MS = 10 * 60 * 1000; // 10 minutes
+const CATALOG_TTL_MS = 2 * 60 * 1000; // 2 minutes (temporary for testing)
 
 const TAGS_R2_KEY = 'data/tags.json';
 const TAGS_TTL_MS = 24 * 60 * 60 * 1000; // 24 hours

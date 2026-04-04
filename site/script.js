@@ -181,7 +181,7 @@ function updateNav() {
   var count    = LR.cart.count();
   var hasItems = count > 0;
   var label    = hasItems ? 'Checkout' : 'Cart';
-  var href     = hasItems ? '/checkout.html' : '/cart.html';
+  var href     = hasItems ? '/checkout' : '/cart';
   document.querySelectorAll('.cart-link').forEach(function(el) {
     el.href = href; // root-relative — safe from any directory depth
     var badge = el.querySelector('.cart-count');
