@@ -1337,7 +1337,7 @@ async function renderAlbum(albumId) {
     // Slide 1
     + '<div class="album-img-slide">'
     + '<img src="' + imageUrl + '" class="album-image" id="albumImg" alt="' + _escHTML(item.title) + '"'
-    + ' width="1200" height="1200" fetchpriority="high"'
+    + ' fetchpriority="high"'
     + ' onerror="_wf(this,function(e){e.style.display=\'none\';var p=document.getElementById(\'albumPlaceholder\');if(p)p.style.display=\'flex\';})">'
     + '<div id="albumPlaceholder" class="album-placeholder" style="display:none;">'
     + '<div class="album-placeholder-inner">' + vinylSVG + '<span class="placeholder-label">Image Pending</span></div></div>'
@@ -1346,7 +1346,7 @@ async function renderAlbum(albumId) {
     + '<div class="album-img-slide" id="albumImgSlide2" style="display:none;">'
     + '<img src="https://media.late-records.shop/images/' + encodeURIComponent(item.album_id) + '-1.webp"'
     + ' class="album-image" alt="' + _escHTML(item.title) + '"'
-    + ' width="1200" height="1200" loading="lazy"'
+    + ' loading="lazy"'
     + ' onload="this.closest(\'.album-image-wrap\').classList.add(\'has-second-img\');this.parentNode.style.display=\'\';"'
     + ' onerror="_wf(this,function(e){e.parentNode.remove();})">'
     + '</div>'
