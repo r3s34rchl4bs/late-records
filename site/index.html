@@ -95,7 +95,7 @@ body.search-active.view-catalog .sold-log { display: none; }
 /* ── Shell Player — edge-to-edge, single row, no borders ───── */
 #audio-player {
   position: fixed; bottom: 0; left: 0; right: 0; z-index: 99;
-  height: 44px;
+  height: 52px;
   background-color: var(--bg);
   background-image: radial-gradient(circle, var(--bg-dot) 0.5px, transparent 0.5px);
   background-size: 3px 3px;
@@ -104,7 +104,7 @@ body.search-active.view-catalog .sold-log { display: none; }
 /* Grid: col 1 = left block (fills space, capped at 65vw), col 2 = right block (natural width)
    Both columns sit at the exact padding edges — no centering tricks needed */
 #player-inner {
-  max-width: 890px; margin: 0 auto; height: 100%;
+  width: 100%; max-width: 890px; margin: 0 auto; height: 100%;
   padding: 0 30px;
   display: grid;
   grid-template-columns: minmax(0, 65vw) auto;
@@ -140,14 +140,14 @@ body.search-active.view-catalog .sold-log { display: none; }
 }
 .player-ctrl {
   background: none; border: none; cursor: pointer; color: var(--ink30);
-  padding: 10px 8px; /* generous hit-box */
+  padding: 12px 10px; /* generous hit-box */
   display: flex; align-items: center; justify-content: center;
-  font-size: 18px; line-height: 1; transition: color .1s; font-family: inherit;
+  font-size: 20px; line-height: 1; transition: color .1s; font-family: inherit;
 }
 .player-ctrl:hover { color: var(--ink); }
-#player-close { font-size: 14px; padding-right: 0; } /* flush with right edge */
+#player-close { font-size: 16px; padding-right: 0; } /* flush with right edge */
 /* Push content up when player is visible */
-body.player-active #app-root { padding-bottom: 44px; }
+body.player-active #app-root { padding-bottom: 52px; }
 
 /* ── Catalog view ───────────────────────────────────────── */
 #app-root.view-catalog { display: flex; flex-direction: column; min-height: 100vh; gap: 28px; }
@@ -462,7 +462,7 @@ html.dark .wallet-logo { filter: grayscale(100%) invert(1) opacity(0.6); }
 .empty-state  { padding: 60px 0; font-size: 13px; color: var(--ink30); letter-spacing: .02em; }
 .guide-footer { position: fixed; left: 0; right: 0; bottom: 0; height: 34px; background: var(--footer-bg, rgba(226,226,226,.92)); border-top: 1px solid var(--footer-border, rgba(26,26,20,.14)); backdrop-filter: blur(2px); -webkit-backdrop-filter: blur(2px); z-index: 9998; display: none; }
 body.view-genre .guide-footer { display: block; }
-body.player-active.view-genre .guide-footer { bottom: 44px; }
+body.player-active.view-genre .guide-footer { bottom: 52px; }
 .guide-footer-inner { max-width: 890px; height: 100%; margin: 0 auto; padding: 0 30px; display: flex; align-items: center; justify-content: flex-end; }
 .guide-btn    { background: transparent; color: var(--ink55); font-family: 'Inter', system-ui, sans-serif; font-size: 9px; font-weight: 500; letter-spacing: .08em; text-transform: uppercase; padding: 0; border: none; cursor: pointer; user-select: none; display: inline-flex; align-items: center; opacity: .72; transition: opacity .12s linear, color .12s linear; }
 .guide-btn:hover { opacity: 1; color: var(--ink); }
@@ -598,7 +598,7 @@ html.dark .sk { background: linear-gradient(90deg, rgba(255,255,255,.05) 25%, rg
     <!-- Left: play icon + metadata (truncates at 70vw) -->
     <div id="player-left">
       <button id="player-play" aria-label="Play/Pause">
-        <svg id="player-play-icon" viewBox="0 0 10 10" width="12" height="12" fill="currentColor">
+        <svg id="player-play-icon" viewBox="0 0 10 10" width="14" height="14" fill="currentColor">
           <polygon points="2,1 9,5 2,9"/>
         </svg>
       </button>
