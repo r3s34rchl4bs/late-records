@@ -95,7 +95,7 @@ body.search-active.view-catalog .sold-log { display: none; }
 /* ── Shell Player — edge-to-edge, single row, no borders ───── */
 #audio-player {
   position: fixed; bottom: 0; left: 0; right: 0; z-index: 99;
-  height: 44px;
+  height: 52px;
   background-color: var(--bg);
   background-image: radial-gradient(circle, var(--bg-dot) 0.5px, transparent 0.5px);
   background-size: 3px 3px;
@@ -105,7 +105,7 @@ body.search-active.view-catalog .sold-log { display: none; }
    Both columns sit at the exact padding edges — no centering tricks needed */
 #player-inner {
   max-width: 890px; margin: 0 auto; height: 100%;
-  padding: 0 30px;
+  padding: 0 var(--pad-h);
   display: grid;
   grid-template-columns: minmax(0, 65vw) auto;
   align-items: center;
@@ -140,14 +140,14 @@ body.search-active.view-catalog .sold-log { display: none; }
 }
 .player-ctrl {
   background: none; border: none; cursor: pointer; color: var(--ink30);
-  padding: 10px 8px; /* generous hit-box */
+  padding: 12px 11px; /* generous hit-box */
   display: flex; align-items: center; justify-content: center;
-  font-size: 18px; line-height: 1; transition: color .1s; font-family: inherit;
+  font-size: 22px; line-height: 1; transition: color .1s; font-family: inherit;
 }
 .player-ctrl:hover { color: var(--ink); }
-#player-close { font-size: 14px; padding-right: 0; } /* flush with right edge */
+#player-close { font-size: 16px; padding-right: 0; } /* flush with right edge */
 /* Push content up when player is visible */
-body.player-active #app-root { padding-bottom: 44px; }
+body.player-active #app-root { padding-bottom: 52px; }
 
 /* ── Catalog view ───────────────────────────────────────── */
 #app-root.view-catalog { display: flex; flex-direction: column; min-height: 100vh; gap: 28px; }
